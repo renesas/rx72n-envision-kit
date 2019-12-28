@@ -292,6 +292,28 @@
 <pinItem allocation="50" comments="" direction="None" id="CLKOUT25M" locked="false" status="0"/>
 <pinItem allocation="45" comments="" direction="None" id="RXD2" locked="false" status="0"/>
 <pinItem allocation="44" comments="" direction="None" id="TXD2" locked="false" status="0"/>
+<pinItem allocation="84$B" comments="" direction="None" id="LCD_TCON3" locked="false" status="0"/>
+<pinItem allocation="83$B" comments="" direction="None" id="LCD_TCON2" locked="false" status="0"/>
+<pinItem allocation="81$B" comments="" direction="None" id="LCD_TCON0" locked="false" status="0"/>
+<pinItem allocation="" comments="" direction="None" id="SSDA6" locked="false" status="0"/>
+<pinItem allocation="80$B" comments="" direction="None" id="LCD_CLK" locked="false" status="0"/>
+<pinItem allocation="" comments="" direction="None" id="SSCL6" locked="false" status="0"/>
+<pinItem allocation="110$B" comments="" direction="None" id="LCD_DATA15" locked="false" status="0"/>
+<pinItem allocation="102$B" comments="" direction="None" id="LCD_DATA10" locked="false" status="0"/>
+<pinItem allocation="109$B" comments="" direction="None" id="LCD_DATA14" locked="false" status="0"/>
+<pinItem allocation="108$B" comments="" direction="None" id="LCD_DATA13" locked="false" status="0"/>
+<pinItem allocation="107$B" comments="" direction="None" id="LCD_DATA12" locked="false" status="0"/>
+<pinItem allocation="106$B" comments="" direction="None" id="LCD_DATA11" locked="false" status="0"/>
+<pinItem allocation="87$B" comments="" direction="None" id="LCD_DATA0" locked="false" status="0"/>
+<pinItem allocation="88$B" comments="" direction="None" id="LCD_DATA1" locked="false" status="0"/>
+<pinItem allocation="89$B" comments="" direction="None" id="LCD_DATA2" locked="false" status="0"/>
+<pinItem allocation="90$B" comments="" direction="None" id="LCD_DATA3" locked="false" status="0"/>
+<pinItem allocation="92$B" comments="" direction="None" id="LCD_DATA4" locked="false" status="0"/>
+<pinItem allocation="94$B" comments="" direction="None" id="LCD_DATA5" locked="false" status="0"/>
+<pinItem allocation="95$B" comments="" direction="None" id="LCD_DATA6" locked="false" status="0"/>
+<pinItem allocation="96$B" comments="" direction="None" id="LCD_DATA7" locked="false" status="0"/>
+<pinItem allocation="97$B" comments="" direction="None" id="LCD_DATA8" locked="false" status="0"/>
+<pinItem allocation="101$B" comments="" direction="None" id="LCD_DATA9" locked="false" status="0"/>
 </tool>
 <tool id="Interrupt">
 <Item id="BSC_BUSERR" priority="15"/>
@@ -727,6 +749,61 @@
 <gridItem id="SCI_CFG_CH10_DATA_MATCH_INCLUDED" selectedIndex="0"/>
 <gridItem id="SCI_CFG_CH11_DATA_MATCH_INCLUDED" selectedIndex="0"/>
 </component>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+</configuration>
+<configuration inuse="true" name="r_glcdc_rx">
+<component description="依存モジュール: r_bsp バージョン 5.20&#10;The GLCDC FIT module provides the method to output image data read from memory to the LCD panel. " detailDescription="Graphics LCD Controller Module." display="r_glcdc_rx" id="r_glcdc_rx1.20" version="1.20">
+<gridItem id="LCD_CLK" selectedIndex="1"/>
+<gridItem id="LCD_TCON0" selectedIndex="1"/>
+<gridItem id="LCD_TCON1" selectedIndex="0"/>
+<gridItem id="LCD_TCON2" selectedIndex="1"/>
+<gridItem id="LCD_TCON3" selectedIndex="1"/>
+<gridItem id="LCD_DATA0" selectedIndex="1"/>
+<gridItem id="LCD_DATA1" selectedIndex="1"/>
+<gridItem id="LCD_DATA2" selectedIndex="1"/>
+<gridItem id="LCD_DATA3" selectedIndex="1"/>
+<gridItem id="LCD_DATA4" selectedIndex="1"/>
+<gridItem id="LCD_DATA5" selectedIndex="1"/>
+<gridItem id="LCD_DATA6" selectedIndex="1"/>
+<gridItem id="LCD_DATA7" selectedIndex="1"/>
+<gridItem id="LCD_DATA8" selectedIndex="1"/>
+<gridItem id="LCD_DATA9" selectedIndex="1"/>
+<gridItem id="LCD_DATA10" selectedIndex="1"/>
+<gridItem id="LCD_DATA11" selectedIndex="1"/>
+<gridItem id="LCD_DATA12" selectedIndex="1"/>
+<gridItem id="LCD_DATA13" selectedIndex="1"/>
+<gridItem id="LCD_DATA14" selectedIndex="1"/>
+<gridItem id="LCD_DATA15" selectedIndex="1"/>
+<gridItem id="LCD_DATA16" selectedIndex="0"/>
+<gridItem id="LCD_DATA17" selectedIndex="0"/>
+<gridItem id="LCD_DATA18" selectedIndex="0"/>
+<gridItem id="LCD_DATA19" selectedIndex="0"/>
+<gridItem id="LCD_DATA20" selectedIndex="0"/>
+<gridItem id="LCD_DATA21" selectedIndex="0"/>
+<gridItem id="LCD_DATA22" selectedIndex="0"/>
+<gridItem id="LCD_DATA23" selectedIndex="0"/>
+<gridItem id="LCD_EXTCLK" selectedIndex="0"/>
+<gridItem id="GLCDC_CFG_PARAM_CHECKING_ENABLE" selectedIndex="1"/>
+<gridItem id="GLCDC_CFG_INTERRUPT_PRIORITY_LEVEL" selectedIndex="5"/>
+</component>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+</configuration>
+<configuration inuse="true" name="r_cmt_rx">
+<component description="依存モジュール: r_bsp バージョン 5.20&#10;This module creates a timer tick using a CMT channel based on a frequency input by the user." detailDescription="Simple CMT driver for creating timer tick." display="r_cmt_rx" id="r_cmt_rx4.20" version="4.20">
+<gridItem id="CMT_RX_CFG_IPR" selectedIndex="5"/>
+</component>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+</configuration>
+<configuration inuse="true" name="r_simple_graphic_rx">
+<component description="依存モジュール: r_cmt_rx バージョン 3.21&#10;-" detailDescription="simple graphic configuration driver" display="r_simple_graphic_rx" id="r_simple_graphic_rx0.80" version="0.80"/>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+</configuration>
+<configuration inuse="true" name="r_simple_glcdc_config_rx">
+<component description="依存モジュール: r_glcdc_rx バージョン 1.00&#10;-" detailDescription="GLCDC configuration driver" display="r_simple_glcdc_config_rx" id="r_simple_glcdc_config_rx0.81" version="0.81"/>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 </configuration>

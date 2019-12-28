@@ -12,13 +12,15 @@
 #include "r_smc_entry.h"
 #include "r_flash_rx_if.h"
 #include "r_sci_rx_if.h"
+#include "r_simple_graphic_if.h"
+#include "r_simple_glcdc_config_rx_if.h"
 
 #include "r_sci_rx_pinset.h"
 
 #include "base64_decode.h"
 #include "code_signer_public_key.h"
 
-/* tinycrypto */
+/* tinycrypt */
 #include "tinycrypt/sha256.h"
 #include "tinycrypt/ecc.h"
 #include "tinycrypt/ecc_dsa.h"
@@ -232,6 +234,9 @@ void main(void)
 {
     int32_t result_secure_boot;
     nop();
+
+    R_SIMPLE_GLCDC_CONFIG_Open();
+    R_SIMPLE_GRAPHIC_Open();
 
     while(1)
     {
@@ -1189,6 +1194,7 @@ void my_sw_charput_function(uint8_t data)
     while (SCI_CFG_CH8_TX_BUFSIZ != arg);
     /* Casting uint8_t pointer is used for address. */
     R_SCI_Send(my_sci_handle, (uint8_t*)&data, 1);
+    R_SIMPLE_GRAPHIC_PutCharacter(data);
 
     return;
 }
