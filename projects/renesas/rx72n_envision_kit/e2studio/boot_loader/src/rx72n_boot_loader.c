@@ -245,6 +245,8 @@ void main(void)
 		{
 			/* stop all interrupt completely */
 			set_psw(0);
+			R_SIMPLE_GRAPHIC_Close();
+			R_SIMPLE_GLCDC_CONFIG_Close();
 			uint32_t addr;
 			addr = *(uint32_t*)USER_RESET_VECTOR_ADDRESS;
 			((void (*)())addr)();

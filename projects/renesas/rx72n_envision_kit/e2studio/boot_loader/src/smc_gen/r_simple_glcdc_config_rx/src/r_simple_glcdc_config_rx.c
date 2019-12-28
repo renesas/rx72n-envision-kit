@@ -294,6 +294,7 @@ void R_SIMPLE_GLCDC_CONFIG_Open(void)
 
 void R_SIMPLE_GLCDC_CONFIG_Close(void)
 {
+	R_GLCDC_Close();
 	_DisplayOnOff(0);
 }
 

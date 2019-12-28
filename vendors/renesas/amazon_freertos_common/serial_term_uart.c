@@ -122,13 +122,13 @@ void uart_config(void)
     R_SCI_PinSet_serial_term();
 
     /* Set up the configuration data structure for asynchronous (UART) operation. */
-    my_sci_config.async.baud_rate    = 115200;
+    my_sci_config.async.baud_rate    = MY_BSP_CFG_SERIAL_TERM_SCI_BITRATE;
     my_sci_config.async.clk_src      = SCI_CLK_INT;
     my_sci_config.async.data_size    = SCI_DATA_8BIT;
     my_sci_config.async.parity_en    = SCI_PARITY_OFF;
     my_sci_config.async.parity_type  = SCI_EVEN_PARITY;
     my_sci_config.async.stop_bits    = SCI_STOPBITS_1;
-    my_sci_config.async.int_priority = 3;    // 1=lowest, 15=highest
+    my_sci_config.async.int_priority = MY_BSP_CFG_SERIAL_TERM_SCI_INTERRUPT_PRIORITY;    // 1=lowest, 15=highest
 
     /* OPEN ASYNC CHANNEL
     *  Provide address of the configure structure,
