@@ -112,7 +112,7 @@ extern void drw_int_isr(void);
   //#define DISPLAY_DRIVER   GUIDRV_LIN_OSY_16  // CCW
   //#define DISPLAY_DRIVER   GUIDRV_LIN_OXY_16  // 180
   #define COLOR_FORMAT     FORMAT_RGB_565
-  #define NUM_BUFFERS      2
+  #define NUM_BUFFERS      1
 #elif (BITS_PER_PIXEL == 8)
   #define COLOR_CONVERSION GUICC_8666
   #define DISPLAY_DRIVER   GUIDRV_LIN_8
@@ -165,7 +165,6 @@ extern void drw_int_isr(void);
 */
 static const U32 _aBufferPTR[] = {
   0x00800000,  // Begin of On-Chip RAM
-  0x00840000   // Begin of Expansion RAM
 };
 
 static volatile int _PendingBuffer = -1;

@@ -165,15 +165,9 @@ void main_task(void)
 #endif
 	hWinSecureUpdatewindow = CreateSecureUpdateWindow();
 	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinSecureUpdatewindow, DEMO_NAME_SECURE_UPDATE);
-#if 0
+
 	hWinTitleLogoWindow = CreateTitleLogoWindow();
 	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinTitleLogoWindow, DEMO_NAME_TITLE_LOGO);
-#endif
-
-	/* Prevention of flicker 2 */
-	GUI_Delay(100);
-	LCD_X_DisplayDriver(0, LCD_X_ON, 0);
-	first_wait_flag = 0;
 
 	/* get each GUI IDs */
 	prev_button_id = get_prev_button_id();
