@@ -691,7 +691,7 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void Excep_FCU_FRDYI(void)
 #if (FLASH_CFG_CODE_FLASH_ENABLE == 1)
     uint32_t    size_boundary;
 #endif
-
+    R_BSP_InterruptsEnable();
     if ((FLASH_CUR_DF_BGO_WRITE == g_current_parameters.current_operation)
      || (FLASH_CUR_CF_BGO_WRITE == g_current_parameters.current_operation))
     {
