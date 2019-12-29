@@ -552,8 +552,8 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { TEXT_CreateIndirect, "Text", ID_TEXT_0, 19, 199, 403, 20, 0, 0x64, 0 },
   { TEXT_CreateIndirect, "VersionText", ID_TEXT_1, 403, 200, 68, 20, 0, 0x64, 0 },
   { TEXT_CreateIndirect, "Text", ID_TEXT_2, 106, 230, 248, 20, 0, 0x64, 0 },
-  { IMAGE_CreateIndirect, "Image", ID_IMAGE_0, 168, 69, 117, 125, 0, 0, 0 },
-  { IMAGE_CreateIndirect, "Image", ID_IMAGE_1, 31, 1, 425, 76, 0, 0, 0 },
+  { IMAGE_CreateIndirect, "Image", ID_IMAGE_0, 180, 73, 125, 124, 0, 0, 0 },
+  { IMAGE_CreateIndirect, "Image", ID_IMAGE_1, 34, 12, 425, 76, 0, 0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -659,7 +659,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 //    		WM_DeleteWindow(pMsg->hWin);
 //        	goto_user_program_screen();
         	delete_window_to_main(pMsg->hWin);
-  	}
+    	}
 		break;
     case WM_DELETE:
     	delete_window_to_main(pMsg->hWin);
