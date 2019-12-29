@@ -99,7 +99,6 @@ static eMAC_INIT_STATUS_TYPE xMacInitStatus = eMACInit;
 static int16_t SendData( uint8_t * pucBuffer,
                          size_t length );
 static int InitializeNetwork( void );
-static void check_ether_link(void * pvParameters);
 static void prvEMACDeferredInterruptHandlerTask( void * pvParameters );
 static void clear_all_ether_rx_discriptors( uint32_t event );
 
@@ -306,7 +305,15 @@ static void prvEMACDeferredInterruptHandlerTask( void * pvParameters )
         if( xBytesReceived < 0 )
         {
             /* This is an error. Logged. */
-            FreeRTOS_printf( ( "R_ETHER_Read_ZC2: rc = %d\n", xBytesReceived ) );
+        	if( xBytesReceived == ETHER_ERR_LINK )
+        	{
+				/* Auto-negotiation is not completed, and transmission/
+				reception is not enabled. Will be logged elsewhere. */
+        	}
+        	else
+         	{
+        		FreeRTOS_printf( ( "R_ETHER_Read_ZC2: rc = %d not %d\n", xBytesReceived, ETHER_ERR_LINK ) );
+        	}
         }
         else if( xBytesReceived > 0 )
         {
@@ -453,28 +460,9 @@ void prvLinkStatusChange( BaseType_t xStatus )
 {
     if( xReportedStatus != xStatus )
     {
-        FreeRTOS_printf( ( "prvLinkStatusChange( %d )\n", xStatus ) );
         xReportedStatus = xStatus;
     }
 }
-
-/***********************************************************************************************************************
- * Function Name: check_ether_link ()
- * Description  : Checks status of Ethernet link channel 0. Should be executed on a periodic basis.
- * Arguments    : none
- * Return Value : none
- **********************************************************************************************************************/
-static void check_ether_link(void * pvParameters)
-{
-	INTERNAL_NOT_USED(pvParameters);
-
-    while(1)
-    {
-        vTaskDelay(1000);
-        R_ETHER_LinkProcess(0);
-    }
-} /* End of function check_ether_link() */
-
 
 /***********************************************************************************************************************
  * Function Name: InitializeNetwork ()
@@ -516,12 +504,6 @@ static int InitializeNetwork( void )
         return pdFALSE;
     }
 
-    do //TODO allow for timeout
-    {
-        eth_ret = R_ETHER_CheckLink_ZC(0);
-    }
-    while(ETHER_SUCCESS != eth_ret);
-
     return_code = xTaskCreate( prvEMACDeferredInterruptHandlerTask,
                                "ETHER_RECEIVE_CHECK_TASK",
                                512u,
@@ -530,17 +512,6 @@ static int InitializeNetwork( void )
                                &ether_receive_check_task_handle );
 
     if( pdFALSE == return_code )
-    {
-        return pdFALSE;
-    }
-
-    return_code = xTaskCreate(check_ether_link,
-                              "CHECK_ETHER_LINK_TIMER",
-                              100,
-                              0,
-                              configMAX_PRIORITIES,
-                              &ether_link_check_task_handle);
-    if (pdFALSE == return_code)
     {
         return pdFALSE;
     }
