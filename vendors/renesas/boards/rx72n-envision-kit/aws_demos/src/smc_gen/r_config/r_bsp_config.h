@@ -119,7 +119,7 @@ NOTE: The RAM areas are not contiguous.It is separated by 512 KB each.
  * NOTE: This setting is available only when using CCRX and GNUC.
  *       This is invalid when using Renesas RTOS with CCRX.
  */
-#define BSP_CFG_USER_STACK_ENABLE       (1)
+#define BSP_CFG_USER_STACK_ENABLE       (0)
 
 /* If only 1 stack is chosen using BSP_CFG_USER_STACK_ENABLE then no RAM will be allocated for the user stack. */
 #if BSP_CFG_USER_STACK_ENABLE == 1
@@ -131,7 +131,7 @@ NOTE: The RAM areas are not contiguous.It is separated by 512 KB each.
 
 /* Interrupt Stack size in bytes.
  * NOTE: This setting is available only when using CCRX and GNUC. */
-#define BSP_CFG_ISTACK_BYTES            (0x400)
+#define BSP_CFG_ISTACK_BYTES            (0x1000)
 
 /* Heap size in bytes.
    To disable the heap you must follow these steps:
@@ -141,7 +141,7 @@ NOTE: The RAM areas are not contiguous.It is separated by 512 KB each.
       settings and choosing the Standard Library section. After that choose 'Contents' in e2 studio.
       This will present a list of modules that can be included. Uncheck the box for stdio.h.
    NOTE: This setting is available only when using CCRX and GNUC. */
-#define BSP_CFG_HEAP_BYTES              (0x400)
+#define BSP_CFG_HEAP_BYTES              (0x1000)
 
 /* Initializes C input & output library functions.
    0 = Disable I/O library initialization in resetprg.c. If you are not using stdio then use this value.
@@ -151,10 +151,10 @@ NOTE: The RAM areas are not contiguous.It is separated by 512 KB each.
 
 /* If desired the user may redirect the stdio charget() and/or charput() functions to their own respective functions
    by enabling below and providing and replacing the my_sw_... function names with the names of their own functions. */
-#define BSP_CFG_USER_CHARGET_ENABLED    (0)
+#define BSP_CFG_USER_CHARGET_ENABLED    (1)
 #define BSP_CFG_USER_CHARGET_FUNCTION     my_sw_charget_function
 
-#define BSP_CFG_USER_CHARPUT_ENABLED    (0)
+#define BSP_CFG_USER_CHARPUT_ENABLED    (1)
 #define BSP_CFG_USER_CHARPUT_FUNCTION     my_sw_charput_function
 
 /* After reset MCU will operate in Supervisor mode. To switch to User mode, set this macro to '1'. For more information

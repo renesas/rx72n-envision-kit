@@ -314,6 +314,8 @@
 <pinItem allocation="96$B" comments="" direction="None" id="LCD_DATA7" locked="false" status="0"/>
 <pinItem allocation="97$B" comments="" direction="None" id="LCD_DATA8" locked="false" status="0"/>
 <pinItem allocation="101$B" comments="" direction="None" id="LCD_DATA9" locked="false" status="0"/>
+<pinItem allocation="128" comments="" direction="None" id="RXD7" locked="false" status="0"/>
+<pinItem allocation="131" comments="" direction="None" id="TXD7" locked="false" status="0"/>
 </tool>
 <tool id="Interrupt">
 <Item id="BSC_BUSERR" priority="15"/>
@@ -661,10 +663,10 @@
 <gridItem id="CTS6#/RTS6#/SS6#" selectedIndex="0"/>
 <gridItem id="SCI6" selectedIndex="0"/>
 <gridItem id="SCK7" selectedIndex="0"/>
-<gridItem id="RXD7/SMISO7" selectedIndex="0"/>
-<gridItem id="TXD7/SMOSI7" selectedIndex="0"/>
+<gridItem id="RXD7/SMISO7" selectedIndex="1"/>
+<gridItem id="TXD7/SMOSI7" selectedIndex="1"/>
 <gridItem id="CTS7#/RTS7#/SS7#" selectedIndex="0"/>
-<gridItem id="SCI7" selectedIndex="0"/>
+<gridItem id="SCI7" selectedIndex="1"/>
 <gridItem id="SCK8" selectedIndex="0"/>
 <gridItem id="RXD8/SMISO8/SSCL8" selectedIndex="0"/>
 <gridItem id="TXD8/SMOSI8/SSDA8" selectedIndex="0"/>
@@ -687,7 +689,7 @@
 <gridItem id="SCI_CFG_CH4_INCLUDED" selectedIndex="0"/>
 <gridItem id="SCI_CFG_CH5_INCLUDED" selectedIndex="0"/>
 <gridItem id="SCI_CFG_CH6_INCLUDED" selectedIndex="0"/>
-<gridItem id="SCI_CFG_CH7_INCLUDED" selectedIndex="0"/>
+<gridItem id="SCI_CFG_CH7_INCLUDED" selectedIndex="1"/>
 <gridItem id="SCI_CFG_CH8_INCLUDED" selectedIndex="0"/>
 <gridItem id="SCI_CFG_CH9_INCLUDED" selectedIndex="0"/>
 <gridItem id="SCI_CFG_CH10_INCLUDED" selectedIndex="0"/>

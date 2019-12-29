@@ -33,11 +33,14 @@
 <booleanAttribute key="com.renesas.cdt.launch.dsf.USE_DEFAULT_IO_MAP" value="true"/>
 <listAttribute key="com.renesas.cdt.launch.dsf.downloadImages">
 <listEntry value="|true|true|true||true|No core"/>
+<listEntry value="${workspace_loc:\aws_demos\HardwareDebug\aws_demos.x}|true|false|true|0|true|No core"/>
 </listAttribute>
 <booleanAttribute key="com.renesas.cdt.launch.dsf.downloadImagesUpgradedV30" value="true"/>
 <stringAttribute key="com.renesas.cdt.launch.dsf.launchSeqType" value="com.renesas.cdt.launch.dsf.launchSequence.e2GdbServer"/>
 <stringAttribute key="com.renesas.cdt.launch.dsf.serverPath" value="${renesas.support.targetLoc:rx-debug}\e2-server-gdb"/>
 <listAttribute key="com.renesas.cdt.launch.ui.address.mruList.memoryMonitorExpression">
+<listEntry value="0xffc00000"/>
+<listEntry value="0"/>
 <listEntry value="0x00800000"/>
 </listAttribute>
 <booleanAttribute key="com.renesas.hardwaredebug.rx.e2.E2LiteDebugToolSettingsTree.resetAfterReload" value="true"/>
@@ -77,7 +80,7 @@
 <intAttribute key="org.eclipse.cdt.debug.gdbjtag.core.delay" value="3"/>
 <booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.doHalt" value="false"/>
 <booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.doReset" value="false"/>
-<stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.imageFileName" value="C:\fff\amazon-freertos\projects\renesas\rx72n_envision_kit\e2studio\boot_loader\HardwareDebug\rx72n_boot_loader.x"/>
+<stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.imageFileName" value="C:\git\rx72n-envision-kit\projects\renesas\rx72n_envision_kit\e2studio\boot_loader\HardwareDebug\rx72n_boot_loader.x"/>
 <stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.imageOffset" value=""/>
 <stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.initCommands" value=""/>
 <booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.loadImage" value="true"/>
@@ -88,7 +91,7 @@
 <booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.setResume" value="false"/>
 <booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.setStopAt" value="true"/>
 <stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.stopAt" value="main"/>
-<stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.symbolsFileName" value="C:\fff\amazon-freertos\projects\renesas\rx72n_envision_kit\e2studio\boot_loader\HardwareDebug\rx72n_boot_loader.x"/>
+<stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.symbolsFileName" value="C:\git\rx72n-envision-kit\projects\renesas\rx72n_envision_kit\e2studio\boot_loader\HardwareDebug\rx72n_boot_loader.x"/>
 <stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.symbolsOffset" value=""/>
 <booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.useFileForImage" value="false"/>
 <booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.useFileForSymbols" value="false"/>
@@ -110,6 +113,6 @@
 <listEntry value="4"/>
 </listAttribute>
 <booleanAttribute key="org.eclipse.debug.ui.ATTR_LAUNCH_IN_BACKGROUND" value="false"/>
-<stringAttribute key="org.eclipse.dsf.launch.MEMORY_BLOCKS" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#13;&#10;&lt;memoryBlockExpressionList context=&quot;reserved-for-future-use&quot;&gt;&#13;&#10;&lt;gdbmemoryBlockExpression address=&quot;8388608&quot; core_thread_id=&quot;1_i1&quot; label=&quot;0x00800000&quot;&gt;&#13;&#10;&lt;memoryRendering id=&quot;org.eclipse.debug.ui.rendering.hexint&quot;&gt;&#13;&#10;&lt;renderingInstance containerId=&quot;org.eclipse.debug.ui.MemoryView.RenderingViewPane.1&quot; viewId=&quot;org.eclipse.debug.ui.MemoryView&quot; viewSecondaryId=&quot;&quot;/&gt;&#13;&#10;&lt;/memoryRendering&gt;&#13;&#10;&lt;/gdbmemoryBlockExpression&gt;&#13;&#10;&lt;/memoryBlockExpressionList&gt;&#13;&#10;"/>
+<stringAttribute key="org.eclipse.dsf.launch.MEMORY_BLOCKS" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#13;&#10;&lt;memoryBlockExpressionList context=&quot;reserved-for-future-use&quot;&gt;&#13;&#10;&#13;&#10;&lt;gdbmemoryBlockExpression address=&quot;8388608&quot; core_thread_id=&quot;1_i1&quot; label=&quot;0x00800000&quot;&gt;&#13;&#10;&lt;memoryRendering id=&quot;org.eclipse.debug.ui.rendering.hexint&quot;&gt;&#13;&#10;&lt;renderingInstance containerId=&quot;org.eclipse.debug.ui.MemoryView.RenderingViewPane.1&quot; viewId=&quot;org.eclipse.debug.ui.MemoryView&quot; viewSecondaryId=&quot;&quot;/&gt;&#13;&#10;&lt;/memoryRendering&gt;&#13;&#10;&lt;/gdbmemoryBlockExpression&gt;&#13;&#10;&lt;gdbmemoryBlockExpression address=&quot;4290772992&quot; core_thread_id=&quot;1_i1&quot; label=&quot;0xffc00000&quot;&gt;&#13;&#10;&lt;memoryRendering id=&quot;org.eclipse.debug.ui.rendering.hexint&quot;&gt;&#13;&#10;&lt;renderingInstance containerId=&quot;org.eclipse.debug.ui.MemoryView.RenderingViewPane.1&quot; viewId=&quot;org.eclipse.debug.ui.MemoryView&quot; viewSecondaryId=&quot;&quot;/&gt;&#13;&#10;&lt;/memoryRendering&gt;&#13;&#10;&lt;memoryRendering id=&quot;org.eclipse.debug.ui.rendering.raw_memory&quot;&gt;&#13;&#10;&lt;renderingProperty name=&quot;org.eclipse.debug.ui.AbstractTableRendering.colSize&quot; value=&quot;1&quot;/&gt;&#13;&#10;&lt;renderingProperty name=&quot;org.eclipse.debug.ui.AbstractTableRendering.rowSize&quot; value=&quot;16&quot;/&gt;&#13;&#10;&lt;/memoryRendering&gt;&#13;&#10;&lt;/gdbmemoryBlockExpression&gt;&#13;&#10;&lt;/memoryBlockExpressionList&gt;&#13;&#10;"/>
 <stringAttribute key="process_factory_id" value="org.eclipse.cdt.dsf.gdb.GdbProcessFactory"/>
 </launchConfiguration>

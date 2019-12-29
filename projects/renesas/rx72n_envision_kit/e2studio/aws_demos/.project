@@ -135,6 +135,16 @@
 			<locationURI>AFR_HOME/freertos_kernel/timers.c</locationURI>
 		</link>
 		<link>
+			<name>application_code/renesas_code/guibuilder_output</name>
+			<type>2</type>
+			<locationURI>AFR_HOME/vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code/guibuilder_output</locationURI>
+		</link>
+		<link>
+			<name>application_code/renesas_code/main_task.c</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code/main_task.c</locationURI>
+		</link>
+		<link>
 			<name>demos/defender/aws_iot_demo_defender.c</name>
 			<type>1</type>
 			<locationURI>AFR_HOME/demos/defender/aws_iot_demo_defender.c</locationURI>
@@ -2417,7 +2427,7 @@
 	</linkedResources>
 	<filteredResources>
 		<filter>
-			<id>1575076842348</id>
+			<id>1577540605544</id>
 			<name>vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen</name>
 			<type>10</type>
 			<matcher>
