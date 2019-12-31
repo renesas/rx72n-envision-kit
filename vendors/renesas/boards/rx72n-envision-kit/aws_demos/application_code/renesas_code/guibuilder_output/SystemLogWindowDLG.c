@@ -19,6 +19,7 @@
 */
 
 // USER START (Optionally insert additional includes)
+#include <string.h>
 // USER END
 
 #include "DIALOG.h"
@@ -34,6 +35,7 @@
 
 
 // USER START (Optionally insert additional defines)
+#define MULTIEDIT_MAX_NUM_CHARS 2048
 // USER END
 
 /*********************************************************************
@@ -91,6 +93,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 	MULTIEDIT_SetAutoScrollV(hItem, 1);
 	MULTIEDIT_SetTextColor(hItem, MULTIEDIT_CI_READONLY, GUI_MAKE_COLOR(0x0000FF00));
     MULTIEDIT_SetBkColor(hItem, MULTIEDIT_CI_READONLY, GUI_MAKE_COLOR(0x00000000));
+    MULTIEDIT_SetMaxNumChars(hItem, MULTIEDIT_MAX_NUM_CHARS);
     // USER END
     break;
   case WM_NOTIFY_PARENT:
@@ -146,13 +149,15 @@ WM_HWIN CreateSystemLogWindow(void) {
 }
 
 // USER START (Optionally insert additional public code)
-void display_syslog_putchar(WM_HWIN hWin, char data)
+void display_syslog_putstring(WM_HWIN hWin, char *string)
 {
 	  WM_HWIN hItem;
-	  char string[2] = {0};
 
-	  string[0] = data;
 	  hItem = WM_GetDialogItem(hWin, ID_MULTIEDIT_0);
+	  if((MULTIEDIT_GetTextSize(hItem) + strlen(string)) > MULTIEDIT_MAX_NUM_CHARS)
+	  {
+		  MULTIEDIT_SetText(hItem, "");
+	  }
 	  MULTIEDIT_AddText(hItem, string);
 	  MULTIEDIT_SetCursorOffset(hItem, MULTIEDIT_GetTextSize(hItem));
 }

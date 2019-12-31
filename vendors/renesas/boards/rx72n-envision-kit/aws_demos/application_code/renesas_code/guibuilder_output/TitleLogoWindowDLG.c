@@ -19,6 +19,7 @@
 */
 
 // USER START (Optionally insert additional includes)
+#include "platform.h"
 // USER END
 
 #include "DIALOG.h"
@@ -541,6 +542,8 @@ extern void firmware_version_read(char **versionstr);
 extern void goto_user_program_screen(void);
 extern I32 wait_first_display(void);
 extern void delete_window_to_main(WM_HWIN delete_handle);
+
+extern volatile int32_t first_wait_flag;
 // USER END
 
 /*********************************************************************
@@ -646,25 +649,18 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     break;
   // USER START (Optionally insert additional message handling)
     case WM_TOUCH:
-    	if(0 == wait_first_display())
-    	{
-//        	WM_DeleteWindow(pMsg->hWin);
-//        	goto_user_program_screen();
-        	delete_window_to_main(pMsg->hWin);
-    	}
-		break;
+    	nop();
+    	break;
     case WM_TOUCH_CHILD:
-    	if(0 == wait_first_display())
+    	if(first_wait_flag)
     	{
-//    		WM_DeleteWindow(pMsg->hWin);
-//        	goto_user_program_screen();
-        	delete_window_to_main(pMsg->hWin);
+    		delete_window_to_main(pMsg->hWin);
+        	first_wait_flag = 0;
     	}
 		break;
     case WM_DELETE:
-    	delete_window_to_main(pMsg->hWin);
- //   	goto_user_program_screen();
-		break;
+    	nop();
+    	break;
   // USER END
   default:
     WM_DefaultProc(pMsg);

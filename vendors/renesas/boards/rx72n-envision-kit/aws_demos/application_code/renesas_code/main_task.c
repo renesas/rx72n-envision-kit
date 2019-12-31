@@ -77,7 +77,7 @@ typedef struct _demo_window_list
  ******************************************************************************/
 static SYS_TIME sys_time;
 static DEMO_WINDOW_LIST *demo_window_list_head;
-static WM_HWIN hWinFrameWindow, hWinSystemLogWindow, hWinNetworkStatWindow;
+static WM_HWIN hWinFrameWindow, hWinNetworkStatWindow;
 static DEMO_WINDOW_LIST* demo_window_add_list(DEMO_WINDOW_LIST *pdemo_window_list_head, WM_HWIN new_handle, char *demo_name);
 static void demo_window_free_list(DEMO_WINDOW_LIST *pdemo_window_list);
 static void demo_window_display_previous(DEMO_WINDOW_LIST *pdemo_window_list_head);
@@ -85,7 +85,6 @@ static void demo_window_display_next(DEMO_WINDOW_LIST *pdemo_window_list_head);
 static void firmware_update_update_file_search(void);
 
 static int32_t next_button_id, prev_button_id;
-static int32_t first_wait_flag;
 static usb_cfg_t usb_cfg;
 static usb_ctrl_t  usb_ctrl;
 static const uint8_t firmware_version[] = VERSION;
@@ -109,6 +108,7 @@ extern void display_update_ip_stat(WM_HWIN hWin, uint8_t *ip_address);
 extern void display_update_time(WM_HWIN hWin, SYS_TIME *sys_time);
 extern void display_update_demo_name(WM_HWIN hWin, char *demo_name);
 extern void display_syslog_putchar(WM_HWIN hWin, char data);
+extern void display_syslog_putstring(WM_HWIN hWin, char *string);
 extern int get_prev_button_id(void);
 extern int get_next_button_id(void);
 extern int frame_next_button_enable(WM_HWIN hWin, uint8_t onoff);
@@ -118,12 +118,14 @@ extern int frame_prev_button_enable(WM_HWIN hWin, uint8_t onoff);
  global variables and functions
 ********************************************************************************/
 void main_100ms_display_update(void);
+void main_10ms_emWin_update(void);
 void emWinCallback(WM_MESSAGE * pMsg);
 void callback_frame_window_to_main(int32_t id, int32_t event);
 int32_t wait_first_display(void);
 void firmware_version_read(char **ver_str);
 
-WM_HWIN hWinSecureUpdatewindow, hWinTitleLogoWindow, hWinStorageBenchmark, hWinCryptoBenchmark1, hWinCryptoBenchmark2;
+WM_HWIN hWinSecureUpdatewindow, hWinTitleLogoWindow, hWinStorageBenchmark, hWinCryptoBenchmark1, hWinCryptoBenchmark2, hWinSystemLogWindow;
+volatile int32_t first_wait_flag;
 
 /******************************************************************************
  Function Name   : main
@@ -146,6 +148,7 @@ void main_task(void)
     R_Pins_Create();
 
 	/* GUI initialization */
+    GUI_Exit();
 	GUI_Init();
 
 	/* generate frame window */
@@ -166,11 +169,8 @@ void main_task(void)
 	hWinSecureUpdatewindow = CreateSecureUpdateWindow();
 	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinSecureUpdatewindow, DEMO_NAME_SECURE_UPDATE);
 
-	first_wait_flag = 1;
 	hWinTitleLogoWindow = CreateTitleLogoWindow();
 	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinTitleLogoWindow, DEMO_NAME_TITLE_LOGO);
-	GUI_Delay(100);
-	first_wait_flag = 0;
 
 	/* get each GUI IDs */
 	prev_button_id = get_prev_button_id();
@@ -178,45 +178,42 @@ void main_task(void)
 
 	/* hello message */
 	sprintf(buff, "hello, this is RX65N Envision Kit system log.\n");
-	printf("%s", buff);
 	firmware_update_log_string(buff);
 	sprintf(buff, "built in %s, %s\n", __DATE__, __TIME__);
-	printf("%s", buff);
 	firmware_update_log_string(buff);
 	sprintf(buff, "\n");
-	printf("%s", buff);
 	firmware_update_log_string(buff);
 
 	/* TCP/IP initialization */
 	R_SYS_TIME_Open();
 	R_SYS_TIME_RegisterPeriodicCallback(main_100ms_display_update, 10);
+	R_SYS_TIME_RegisterPeriodicCallback(main_10ms_emWin_update, 1);
 
 	R_FLASH_Open();
     R_FLASH_Control(FLASH_CMD_BANK_GET, &bank_info);
     sprintf(buff, "bank info = %d, start bank = %d\n", bank_info, bank_info ^ 0x01);
-	printf("%s", buff);
 	firmware_update_log_string(buff);
 
+	/* wait until first touch screen */
+	vTaskDelay(1000);	/* this wait needs for ignoring touch event at WM_TOUCH_CHILD in TitleLogoWindowDLG.c when initializing. */
+	first_wait_flag = 1;
+	while(first_wait_flag)
+	{
+		GUI_Exec();
+		vTaskDelay(1);
+	}
+
 	/* main loop */
+	int counter = 0;
 	while(1)
 	{
-    	vTaskDelay(1);
-    	GUI_Delay(1);
+    	vTaskDelay(10);
 	}
 }
 /******************************************************************************
  End of function main_task()
  ******************************************************************************/
 
-char my_sw_charget_function(void)
-{
-	return 0;
-}
-
-void my_sw_charput_function(char data)
-{
-	display_syslog_putchar(hWinSystemLogWindow, data);
-}
 
 void main_100ms_display_update(void)
 {
@@ -258,6 +255,11 @@ void main_100ms_display_update(void)
 	}
 }
 
+void main_10ms_emWin_update(void)
+{
+	GUI_Exec();
+}
+
 void emWinCallback(WM_MESSAGE * pMsg)
 {
 
@@ -284,10 +286,6 @@ void callback_frame_window_to_main(int32_t id, int32_t event)
 void goto_user_program_screen(void)
 {
 	demo_window_display_next(demo_window_list_head);
-}
-int32_t wait_first_display(void)
-{
-	return first_wait_flag;
 }
 
 void delete_window_to_main(WM_HWIN delete_handle)
