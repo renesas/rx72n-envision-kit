@@ -125,7 +125,8 @@ int32_t wait_first_display(void);
 void firmware_version_read(char **ver_str);
 
 WM_HWIN hWinSecureUpdatewindow, hWinTitleLogoWindow, hWinStorageBenchmark, hWinCryptoBenchmark1, hWinCryptoBenchmark2, hWinSystemLogWindow;
-volatile int32_t first_wait_flag;
+volatile int32_t first_touch_wait_flag;
+volatile int32_t gui_initialize_complete_flag;
 
 /******************************************************************************
  Function Name   : main
@@ -196,12 +197,15 @@ void main_task(void)
 
 	/* wait until first touch screen */
 	vTaskDelay(1000);	/* this wait needs for ignoring touch event at WM_TOUCH_CHILD in TitleLogoWindowDLG.c when initializing. */
-	first_wait_flag = 1;
-	while(first_wait_flag)
+	first_touch_wait_flag = 1;
+	while(first_touch_wait_flag)
 	{
 		GUI_Exec();
 		vTaskDelay(1);
 	}
+
+	/* GUI initialize complete */
+	gui_initialize_complete_flag = 1;
 
 	/* main loop */
 	int counter = 0;

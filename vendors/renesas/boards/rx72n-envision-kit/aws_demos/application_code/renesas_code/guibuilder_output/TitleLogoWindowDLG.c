@@ -540,10 +540,9 @@ static const U8 _acImage_1[13480] = {
 // USER START (Optionally insert additional static data)
 extern void firmware_version_read(char **versionstr);
 extern void goto_user_program_screen(void);
-extern I32 wait_first_display(void);
 extern void delete_window_to_main(WM_HWIN delete_handle);
 
-extern volatile int32_t first_wait_flag;
+extern volatile int32_t first_touch_wait_flag;
 // USER END
 
 /*********************************************************************
@@ -650,10 +649,10 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
   // USER START (Optionally insert additional message handling)
     case WM_TOUCH:
     case WM_TOUCH_CHILD:
-    	if(first_wait_flag)
+    	if(first_touch_wait_flag)
     	{
     		delete_window_to_main(pMsg->hWin);
-        	first_wait_flag = 0;
+    		first_touch_wait_flag = 0;
     	}
 		break;
     case WM_DELETE:

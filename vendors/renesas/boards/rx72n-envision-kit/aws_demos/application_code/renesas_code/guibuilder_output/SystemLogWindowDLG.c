@@ -20,6 +20,10 @@
 
 // USER START (Optionally insert additional includes)
 #include <string.h>
+/* FreeRTOS includes. */
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
 // USER END
 
 #include "DIALOG.h"
@@ -35,7 +39,15 @@
 
 
 // USER START (Optionally insert additional defines)
-#define MULTIEDIT_MAX_NUM_CHARS 2048
+#define MULTIEDIT_MAX_NUM_CHARS 1024 * 16
+#define displayconfigMAX_NUM_BLOCKS_REQUEST 8
+#define displayconfigMAX_REQUEST_SIZE 256
+
+typedef struct _packet_block_for_queue
+{
+	WM_HWIN hWin_handle;
+	char *string;
+}PACKET_BLOCK_FOR_QUEUE;
 // USER END
 
 /*********************************************************************
@@ -46,6 +58,8 @@
 */
 
 // USER START (Optionally insert additional static data)
+static TaskHandle_t xTask;
+static QueueHandle_t xQueue;
 // USER END
 
 /*********************************************************************
@@ -67,6 +81,33 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 */
 
 // USER START (Optionally insert additional static code)
+static void display_syslog_putstring_task(void * pvParameters);
+static void display_syslog_putstring_private(WM_HWIN hWin, char *string);
+
+static void display_syslog_putstring_task(void * pvParameters)
+{
+	PACKET_BLOCK_FOR_QUEUE packet_block_for_queue;
+	while(1)
+	{
+		xQueueReceive(xQueue, &packet_block_for_queue, portMAX_DELAY);
+		display_syslog_putstring_private(packet_block_for_queue.hWin_handle, packet_block_for_queue.string);
+		vPortFree(packet_block_for_queue.string);
+		GUI_Exec();
+	}
+}
+
+static void display_syslog_putstring_private(WM_HWIN hWin, char *string)
+{
+	  WM_HWIN hItem;
+
+	  hItem = WM_GetDialogItem(hWin, ID_MULTIEDIT_0);
+	  if((MULTIEDIT_GetTextSize(hItem) + strlen(string)) > MULTIEDIT_MAX_NUM_CHARS)
+	  {
+		  MULTIEDIT_SetText(hItem, "");
+	  }
+	  MULTIEDIT_AddText(hItem, string);
+	  MULTIEDIT_SetCursorOffset(hItem, MULTIEDIT_GetTextSize(hItem));
+}
 // USER END
 
 /*********************************************************************
@@ -90,10 +131,15 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     // USER START (Optionally insert additional code for further widget initialization)
     hItem = WM_GetDialogItem(pMsg->hWin, ID_MULTIEDIT_0);
     MULTIEDIT_SetReadOnly(hItem, 1);
+    MULTIEDIT_SetAutoScrollH(hItem, 1);
 	MULTIEDIT_SetAutoScrollV(hItem, 1);
+    MULTIEDIT_SetFont(hItem, GUI_FONT_6X8_ASCII);
 	MULTIEDIT_SetTextColor(hItem, MULTIEDIT_CI_READONLY, GUI_MAKE_COLOR(0x0000FF00));
     MULTIEDIT_SetBkColor(hItem, MULTIEDIT_CI_READONLY, GUI_MAKE_COLOR(0x00000000));
     MULTIEDIT_SetMaxNumChars(hItem, MULTIEDIT_MAX_NUM_CHARS);
+	/* create task/queue for display */
+	xQueue = xQueueCreate(displayconfigMAX_NUM_BLOCKS_REQUEST, sizeof(PACKET_BLOCK_FOR_QUEUE));
+	xTaskCreate(display_syslog_putstring_task, "SYSLOG", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, &xTask);
     // USER END
     break;
   case WM_NOTIFY_PARENT:
@@ -149,18 +195,37 @@ WM_HWIN CreateSystemLogWindow(void) {
 }
 
 // USER START (Optionally insert additional public code)
-void display_syslog_putstring(WM_HWIN hWin, char *string)
+void display_syslog_putstring(WM_HWIN hWin_handle, char *string);
+void display_syslog_putstring(WM_HWIN hWin_handle, char *string)
 {
-	  WM_HWIN hItem;
+	char *string_pointer;
+	PACKET_BLOCK_FOR_QUEUE packet_block_for_queue;
+	BaseType_t queue_send_error_code;
 
-	  hItem = WM_GetDialogItem(hWin, ID_MULTIEDIT_0);
-	  if((MULTIEDIT_GetTextSize(hItem) + strlen(string)) > MULTIEDIT_MAX_NUM_CHARS)
-	  {
-		  MULTIEDIT_SetText(hItem, "");
-	  }
-	  MULTIEDIT_AddText(hItem, string);
-	  MULTIEDIT_SetCursorOffset(hItem, MULTIEDIT_GetTextSize(hItem));
+	display_syslog_putstring_private(packet_block_for_queue.hWin_handle, packet_block_for_queue.string);
+
+#if 0
+	if(strlen(string) < displayconfigMAX_REQUEST_SIZE)
+	{
+		string_pointer = pvPortMalloc(strlen(string));
+		packet_block_for_queue.string = string_pointer;
+		strcpy(packet_block_for_queue.string, string);
+		packet_block_for_queue.hWin_handle = hWin_handle
+		queue_send_error_code = xQueueSend(xQueue, &packet_block_for_queue, NULL);
+		if(queue_send_error_code != pdPASS)
+		{
+			vPortFree(packet_block_for_queue.string);
+			/* display_output_send_queue() could not send queue */
+		}
+	}
+	else
+	{
+		/* display_output_send_queue() could not accept requested string due to length. */
+	}
+#endif
 }
+
+
 // USER END
 
 /*************************** End of file ****************************/

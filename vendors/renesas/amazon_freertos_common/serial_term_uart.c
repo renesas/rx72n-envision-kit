@@ -40,6 +40,9 @@ Includes   <System Includes> , "Project Includes"
 #include "r_sci_rx_if.h"        // The SCI module API interface file.
 #include "r_pinset.h"
 
+/* for using Segger emWin */
+#include "GUI.h"
+#include "DIALOG.h"
 
 /*******************************************************************************
  Macro definitions
@@ -96,6 +99,9 @@ Includes   <System Includes> , "Project Includes"
 /*******************************************************************************
  Private variables and functions
  *******************************************************************************/
+extern void display_syslog_putstring(WM_HWIN hWin_handle, char *string);
+extern WM_HWIN hWinSystemLogWindow;
+extern volatile int32_t gui_initialize_complete_flag;
 
 /*****************************************************************************
 Private global variables and functions
@@ -201,8 +207,15 @@ void uart_string_printf(char *pString)
     sci_err_t sci_err;
     uint32_t retry = 0xFFFF;
 
-    str_length = (uint16_t)strlen(pString);
+    while(!gui_initialize_complete_flag)
+    {
+    	vTaskDelay(1);
+    }
 
+    str_length = (uint16_t)strlen(pString);
+    display_syslog_putstring(hWinSystemLogWindow, pString);
+
+#if 0
     while ((retry > 0) && (str_length > 0))
     {
 
@@ -231,5 +244,5 @@ void uart_string_printf(char *pString)
     {
     	R_BSP_NOP(); //TODO error handling code
     }
-
+#endif
 }
