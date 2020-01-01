@@ -30,12 +30,12 @@
 *
 **********************************************************************
 */
-#define ID_WINDOW_0 (GUI_ID_USER + 0x00)
-#define ID_TEXT_0 (GUI_ID_USER + 0x01)
-#define ID_TEXT_1 (GUI_ID_USER + 0x02)
-#define ID_TEXT_2 (GUI_ID_USER + 0x03)
-#define ID_IMAGE_0 (GUI_ID_USER + 0x04)
-#define ID_IMAGE_1 (GUI_ID_USER + 0x05)
+#define ID_WINDOW_0              (GUI_ID_USER + 0x00)
+#define ID_TEXT_0              (GUI_ID_USER + 0x01)
+#define ID_TEXT_1              (GUI_ID_USER + 0x02)
+#define ID_TEXT_2              (GUI_ID_USER + 0x03)
+#define ID_IMAGE_0              (GUI_ID_USER + 0x04)
+#define ID_IMAGE_1              (GUI_ID_USER + 0x05)
 
 #define ID_IMAGE_0_IMAGE_0  0x00
 #define ID_IMAGE_1_IMAGE_0  0x01
@@ -555,7 +555,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { TEXT_CreateIndirect, "Text", ID_TEXT_0, 19, 199, 403, 20, 0, 0x64, 0 },
   { TEXT_CreateIndirect, "VersionText", ID_TEXT_1, 403, 200, 68, 20, 0, 0x64, 0 },
   { TEXT_CreateIndirect, "Text", ID_TEXT_2, 106, 230, 248, 20, 0, 0x64, 0 },
-  { IMAGE_CreateIndirect, "Image", ID_IMAGE_0, 180, 73, 125, 124, 0, 0, 0 },
+  { IMAGE_CreateIndirect, "Image", ID_IMAGE_0, 180, 77, 125, 124, 0, 0, 0 },
   { IMAGE_CreateIndirect, "Image", ID_IMAGE_1, 34, 12, 425, 76, 0, 0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
@@ -649,8 +649,6 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     break;
   // USER START (Optionally insert additional message handling)
     case WM_TOUCH:
-    	nop();
-    	break;
     case WM_TOUCH_CHILD:
     	if(first_wait_flag)
     	{
