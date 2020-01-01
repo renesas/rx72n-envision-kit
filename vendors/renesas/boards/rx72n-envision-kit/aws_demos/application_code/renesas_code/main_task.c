@@ -53,7 +53,7 @@
 Typedef definitions
 **********************************************************************************************************************/
 #define DEMO_NAME_NETWORK_STAT "Network Statistics"
-#define DEMO_NAME_SYSTEM_LOG "System Log"
+#define DEMO_NAME_SYSTEM_LOG "Amazon FreeRTOS Log"
 #define DEMO_NAME_STORAGEBENCH  "Storage Benchmark"
 #define DEMO_NAME_SECURE_UPDATE "Secure Update"
 #define DEMO_NAME_TITLE_LOGO "Title Logo"
@@ -151,6 +151,8 @@ void main_task(void)
 	/* GUI initialization */
     GUI_Exit();
 	GUI_Init();
+	LCDCONF_EnableDave2D();
+	WM_MULTIBUF_Enable(1);
 
 	/* generate frame window */
 	demo_window_free_list(demo_window_list_head);

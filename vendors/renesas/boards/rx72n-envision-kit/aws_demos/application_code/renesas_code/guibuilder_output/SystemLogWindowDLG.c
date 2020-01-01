@@ -81,21 +81,6 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 */
 
 // USER START (Optionally insert additional static code)
-static void display_syslog_putstring_task(void * pvParameters);
-static void display_syslog_putstring_private(WM_HWIN hWin, char *string);
-
-static void display_syslog_putstring_task(void * pvParameters)
-{
-	PACKET_BLOCK_FOR_QUEUE packet_block_for_queue;
-	while(1)
-	{
-		xQueueReceive(xQueue, &packet_block_for_queue, portMAX_DELAY);
-		display_syslog_putstring_private(packet_block_for_queue.hWin_handle, packet_block_for_queue.string);
-		vPortFree(packet_block_for_queue.string);
-		GUI_Exec();
-	}
-}
-
 static void display_syslog_putstring_private(WM_HWIN hWin, char *string)
 {
 	  WM_HWIN hItem;
@@ -137,9 +122,6 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 	MULTIEDIT_SetTextColor(hItem, MULTIEDIT_CI_READONLY, GUI_MAKE_COLOR(0x0000FF00));
     MULTIEDIT_SetBkColor(hItem, MULTIEDIT_CI_READONLY, GUI_MAKE_COLOR(0x00000000));
     MULTIEDIT_SetMaxNumChars(hItem, MULTIEDIT_MAX_NUM_CHARS);
-	/* create task/queue for display */
-	xQueue = xQueueCreate(displayconfigMAX_NUM_BLOCKS_REQUEST, sizeof(PACKET_BLOCK_FOR_QUEUE));
-	xTaskCreate(display_syslog_putstring_task, "SYSLOG", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, &xTask);
     // USER END
     break;
   case WM_NOTIFY_PARENT:
@@ -203,26 +185,6 @@ void display_syslog_putstring(WM_HWIN hWin_handle, char *string)
 	BaseType_t queue_send_error_code;
 
 	display_syslog_putstring_private(packet_block_for_queue.hWin_handle, packet_block_for_queue.string);
-
-#if 0
-	if(strlen(string) < displayconfigMAX_REQUEST_SIZE)
-	{
-		string_pointer = pvPortMalloc(strlen(string));
-		packet_block_for_queue.string = string_pointer;
-		strcpy(packet_block_for_queue.string, string);
-		packet_block_for_queue.hWin_handle = hWin_handle
-		queue_send_error_code = xQueueSend(xQueue, &packet_block_for_queue, NULL);
-		if(queue_send_error_code != pdPASS)
-		{
-			vPortFree(packet_block_for_queue.string);
-			/* display_output_send_queue() could not send queue */
-		}
-	}
-	else
-	{
-		/* display_output_send_queue() could not accept requested string due to length. */
-	}
-#endif
 }
 
 
