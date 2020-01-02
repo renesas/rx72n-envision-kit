@@ -1194,7 +1194,7 @@
 <gridItem id="LCD_DATA23" selectedIndex="0"/>
 <gridItem id="LCD_EXTCLK" selectedIndex="0"/>
 <gridItem id="GLCDC_CFG_PARAM_CHECKING_ENABLE" selectedIndex="1"/>
-<gridItem id="GLCDC_CFG_INTERRUPT_PRIORITY_LEVEL" selectedIndex="5"/>
+<gridItem id="GLCDC_CFG_INTERRUPT_PRIORITY_LEVEL" selectedIndex="14"/>
 </component>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
@@ -1214,7 +1214,7 @@
 </configuration>
 <configuration inuse="true" name="r_cmt_rx">
 <component description="依存モジュール: r_bsp バージョン 5.20&#10;This module creates a timer tick using a CMT channel based on a frequency input by the user." detailDescription="Simple CMT driver for creating timer tick." display="r_cmt_rx" id="r_cmt_rx4.20" version="4.20">
-<gridItem id="CMT_RX_CFG_IPR" selectedIndex="5"/>
+<gridItem id="CMT_RX_CFG_IPR" selectedIndex="13"/>
 </component>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>

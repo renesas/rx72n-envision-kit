@@ -47,6 +47,7 @@ Includes   <System Includes> , "Project Includes"
 /*******************************************************************************
  Macro definitions
  *******************************************************************************/
+#if 0
 #if !defined(MY_BSP_CFG_SERIAL_TERM_SCI)
 #error "Error! Need to define MY_BSP_CFG_SERIAL_TERM_SCI in r_bsp_config.h"
 #elif MY_BSP_CFG_SERIAL_TERM_SCI == (0)
@@ -91,6 +92,7 @@ Includes   <System Includes> , "Project Includes"
 #else
 #error "Error! Invalid setting for MY_BSP_CFG_SERIAL_TERM_SCI in r_bsp_config.h"
 #endif
+#endif
 
 /*******************************************************************************
  Exported global variables and functions (to be accessed by other files)
@@ -122,6 +124,8 @@ void uart_config(void)
     sci_cfg_t   my_sci_config;
     sci_err_t   my_sci_err;
 
+    /* Amazon FreeRTOS system log will be output into RX72N Envision Kit display Amazon FreeRTOS Log window. */
+#if 0
     /* Initialize the I/O port pins for communication on this SCI channel.
     * This is specific to the MCU and ports chosen. For the RSKRX65-2M we will use the
     * SCI channel connected to the USB serial port emulation. */
@@ -147,6 +151,7 @@ void uart_config(void)
     {
         R_BSP_NOP(); // Your error handling code would go here.
     }
+#endif
 } /* End of function uart_config() */
 
 
@@ -215,6 +220,7 @@ void uart_string_printf(char *pString)
     str_length = (uint16_t)strlen(pString);
     display_syslog_putstring(hWinSystemLogWindow, pString);
 
+    /* Amazon FreeRTOS system log will be output into RX72N Envision Kit display Amazon FreeRTOS Log window. */
 #if 0
     while ((retry > 0) && (str_length > 0))
     {
