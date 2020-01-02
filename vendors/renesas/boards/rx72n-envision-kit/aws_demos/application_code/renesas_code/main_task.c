@@ -61,6 +61,7 @@ Typedef definitions
 #define DEMO_NAME_STORAGEBENCH  "Storage Benchmark"
 #define DEMO_NAME_FIRMWARE_UPDATE "Firmware Update"
 #define DEMO_NAME_TITLE_LOGO "Title Logo"
+#define DEMO_NAME_SERIAL_TERMINAL "Serial Terminal"
 
 typedef struct _demo_window_list
 {
@@ -79,15 +80,17 @@ typedef struct _demo_window_list
  ******************************************************************************/
 static SYS_TIME sys_time;
 static DEMO_WINDOW_LIST *demo_window_list_head;
-static WM_HWIN hWinFrameWindow, hWinNetworkStatWindow;
+static WM_HWIN hWinFrameWindow, hWinNetworkStatWindow, hWinSerialTerminalindow;
 static DEMO_WINDOW_LIST* demo_window_add_list(DEMO_WINDOW_LIST *pdemo_window_list_head, WM_HWIN new_handle, char *demo_name);
 static void demo_window_free_list(DEMO_WINDOW_LIST *pdemo_window_list);
 static void demo_window_display_previous(DEMO_WINDOW_LIST *pdemo_window_list_head);
 static void demo_window_display_next(DEMO_WINDOW_LIST *pdemo_window_list_head);
 
 static int32_t next_button_id, prev_button_id;
+static TaskHandle_t serial_terminal_task_handle;
 
 /******************************************************************************
+
  External functions
  ******************************************************************************/
 extern WM_HWIN CreateFrameWindow(void);
@@ -96,6 +99,7 @@ extern WM_HWIN CreateNetworkStatWindow(void);
 extern WM_HWIN CreateStorageBenchmark(void);
 extern WM_HWIN CreateTitleLogoWindow(void);
 extern WM_HWIN CreateFirmwareUpdateWindow(void);
+extern WM_HWIN CreateSerialTerminalWindow(void);
 
 extern void display_update_usb_stat(WM_HWIN hWin, int8_t usb_stat);
 extern void display_update_sd_stat(WM_HWIN hWin, int8_t sd_stat);
@@ -108,6 +112,8 @@ extern int get_next_button_id(void);
 extern int frame_next_button_enable(WM_HWIN hWin, uint8_t onoff);
 extern int frame_prev_button_enable(WM_HWIN hWin, uint8_t onoff);
 extern void LCDCONF_EnableDave2D(void);
+
+extern void serial_terminal_task( void * pvParameters );
 
 /*******************************************************************************
  global variables and functions
@@ -164,6 +170,9 @@ void main_task(void)
 	hWinStorageBenchmark = CreateStorageBenchmark();
 	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinStorageBenchmark, DEMO_NAME_STORAGEBENCH);
 #endif
+	hWinSerialTerminalindow = CreateSerialTerminalWindow();
+	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinSerialTerminalindow, DEMO_NAME_SERIAL_TERMINAL);
+
 	hWinFirmwareUpdatewindow = CreateFirmwareUpdateWindow();
 	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinFirmwareUpdatewindow, DEMO_NAME_FIRMWARE_UPDATE);
 
@@ -174,13 +183,17 @@ void main_task(void)
 	prev_button_id = get_prev_button_id();
 	next_button_id = get_next_button_id();
 
-	/* TCP/IP initialization */
+	/* system timer initialization */
 	R_SYS_TIME_Open();
 	R_SYS_TIME_RegisterPeriodicCallback(main_100ms_display_update, 10);
 	R_SYS_TIME_RegisterPeriodicCallback(main_10ms_emWin_update, 1);
 
+	/* flash initialization */
 	R_FLASH_Open();
     R_FLASH_Control(FLASH_CMD_BANK_GET, &bank_info);
+
+    /* serial terminal task creation */
+    xTaskCreate(serial_terminal_task, "terminal", configMINIMAL_STACK_SIZE, &hWinSerialTerminalindow, tskIDLE_PRIORITY, &serial_terminal_task_handle);
 
 	/* wait until first touch screen */
 	vTaskDelay(1000);	/* this wait needs for ignoring touch event at WM_TOUCH_CHILD in TitleLogoWindowDLG.c when initializing. */

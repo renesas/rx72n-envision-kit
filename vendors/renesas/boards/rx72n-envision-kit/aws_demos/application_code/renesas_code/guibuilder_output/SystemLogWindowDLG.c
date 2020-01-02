@@ -40,8 +40,6 @@
 
 // USER START (Optionally insert additional defines)
 #define MULTIEDIT_MAX_NUM_CHARS 1024 * 16
-#define displayconfigMAX_NUM_BLOCKS_REQUEST 8
-#define displayconfigMAX_REQUEST_SIZE 256
 
 typedef struct _packet_block_for_queue
 {
@@ -81,18 +79,6 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 */
 
 // USER START (Optionally insert additional static code)
-static void display_syslog_putstring_private(WM_HWIN hWin, char *string)
-{
-	  WM_HWIN hItem;
-
-	  hItem = WM_GetDialogItem(hWin, ID_MULTIEDIT_0);
-	  if((MULTIEDIT_GetTextSize(hItem) + strlen(string)) > MULTIEDIT_MAX_NUM_CHARS)
-	  {
-		  MULTIEDIT_SetText(hItem, "");
-	  }
-	  MULTIEDIT_AddText(hItem, string);
-	  MULTIEDIT_SetCursorOffset(hItem, MULTIEDIT_GetTextSize(hItem));
-}
 // USER END
 
 /*********************************************************************
@@ -180,14 +166,16 @@ WM_HWIN CreateSystemLogWindow(void) {
 void display_syslog_putstring(WM_HWIN hWin_handle, char *string);
 void display_syslog_putstring(WM_HWIN hWin_handle, char *string)
 {
-	char *string_pointer;
-	PACKET_BLOCK_FOR_QUEUE packet_block_for_queue;
-	BaseType_t queue_send_error_code;
+  WM_HWIN hItem;
 
-	display_syslog_putstring_private(packet_block_for_queue.hWin_handle, packet_block_for_queue.string);
+  hItem = WM_GetDialogItem(hWin_handle, ID_MULTIEDIT_0);
+  if((MULTIEDIT_GetTextSize(hItem) + strlen(string)) > MULTIEDIT_MAX_NUM_CHARS)
+  {
+    MULTIEDIT_SetText(hItem, "");
+  }
+  MULTIEDIT_AddText(hItem, string);
+  MULTIEDIT_SetCursorOffset(hItem, MULTIEDIT_GetTextSize(hItem));
 }
-
-
 // USER END
 
 /*************************** End of file ****************************/
