@@ -49,16 +49,18 @@
 #include "GUI.h"
 #include "DIALOG.h"
 
+/* for using Amazon FreeRTOS */
+#include "FreeRTOS.h"
+#include "aws_application_version.h"
+
 /**********************************************************************************************************************
 Typedef definitions
 **********************************************************************************************************************/
 #define DEMO_NAME_NETWORK_STAT "Network Statistics"
 #define DEMO_NAME_SYSTEM_LOG "Amazon FreeRTOS Log"
 #define DEMO_NAME_STORAGEBENCH  "Storage Benchmark"
-#define DEMO_NAME_SECURE_UPDATE "Secure Update"
+#define DEMO_NAME_SECURE_UPDATE "Firmware Update"
 #define DEMO_NAME_TITLE_LOGO "Title Logo"
-
-#define VERSION "V.1.00"
 
 typedef struct _demo_window_list
 {
@@ -87,7 +89,6 @@ static void firmware_update_update_file_search(void);
 static int32_t next_button_id, prev_button_id;
 static usb_cfg_t usb_cfg;
 static usb_ctrl_t  usb_ctrl;
-static const uint8_t firmware_version[] = VERSION;
 static FATFS fatfs;
 static FILINFO filinfo;
 static DIR dir;
@@ -113,6 +114,7 @@ extern int get_prev_button_id(void);
 extern int get_next_button_id(void);
 extern int frame_next_button_enable(WM_HWIN hWin, uint8_t onoff);
 extern int frame_prev_button_enable(WM_HWIN hWin, uint8_t onoff);
+extern void LCDCONF_EnableDave2D(void);
 
 /*******************************************************************************
  global variables and functions
@@ -453,6 +455,8 @@ static void demo_window_display_next(DEMO_WINDOW_LIST *pdemo_window_list_head)
 
 void firmware_version_read(char **ver_str)
 {
+	static char firmware_version[16];
+	sprintf(firmware_version, "v%d.%d.%d", APP_VERSION_MAJOR, APP_VERSION_MINOR, APP_VERSION_BUILD);
 	*ver_str = (char*)firmware_version;
 }
 
