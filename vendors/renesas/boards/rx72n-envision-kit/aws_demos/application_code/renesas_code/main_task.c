@@ -59,7 +59,7 @@ Typedef definitions
 #define DEMO_NAME_NETWORK_STAT "Network Statistics"
 #define DEMO_NAME_SYSTEM_LOG "Amazon FreeRTOS Log"
 #define DEMO_NAME_STORAGEBENCH  "Storage Benchmark"
-#define DEMO_NAME_SECURE_UPDATE "Firmware Update"
+#define DEMO_NAME_FIRMWARE_UPDATE "Firmware Update"
 #define DEMO_NAME_TITLE_LOGO "Title Logo"
 
 typedef struct _demo_window_list
@@ -84,14 +84,8 @@ static DEMO_WINDOW_LIST* demo_window_add_list(DEMO_WINDOW_LIST *pdemo_window_lis
 static void demo_window_free_list(DEMO_WINDOW_LIST *pdemo_window_list);
 static void demo_window_display_previous(DEMO_WINDOW_LIST *pdemo_window_list_head);
 static void demo_window_display_next(DEMO_WINDOW_LIST *pdemo_window_list_head);
-static void firmware_update_update_file_search(void);
 
 static int32_t next_button_id, prev_button_id;
-static usb_cfg_t usb_cfg;
-static usb_ctrl_t  usb_ctrl;
-static FATFS fatfs;
-static FILINFO filinfo;
-static DIR dir;
 
 /******************************************************************************
  External functions
@@ -101,14 +95,13 @@ extern WM_HWIN CreateSystemLogWindow(void);
 extern WM_HWIN CreateNetworkStatWindow(void);
 extern WM_HWIN CreateStorageBenchmark(void);
 extern WM_HWIN CreateTitleLogoWindow(void);
-extern WM_HWIN CreateSecureUpdateWindow(void);
+extern WM_HWIN CreateFirmwareUpdateWindow(void);
 
 extern void display_update_usb_stat(WM_HWIN hWin, int8_t usb_stat);
 extern void display_update_sd_stat(WM_HWIN hWin, int8_t sd_stat);
 extern void display_update_ip_stat(WM_HWIN hWin, uint8_t *ip_address);
 extern void display_update_time(WM_HWIN hWin, SYS_TIME *sys_time);
 extern void display_update_demo_name(WM_HWIN hWin, char *demo_name);
-extern void display_syslog_putchar(WM_HWIN hWin, char data);
 extern void display_syslog_putstring(WM_HWIN hWin, char *string);
 extern int get_prev_button_id(void);
 extern int get_next_button_id(void);
@@ -126,7 +119,7 @@ void callback_frame_window_to_main(int32_t id, int32_t event);
 int32_t wait_first_display(void);
 void firmware_version_read(char **ver_str);
 
-WM_HWIN hWinSecureUpdatewindow, hWinTitleLogoWindow, hWinStorageBenchmark, hWinCryptoBenchmark1, hWinCryptoBenchmark2, hWinSystemLogWindow;
+WM_HWIN hWinFirmwareUpdatewindow, hWinTitleLogoWindow, hWinStorageBenchmark, hWinCryptoBenchmark1, hWinCryptoBenchmark2, hWinSystemLogWindow;
 volatile int32_t first_touch_wait_flag;
 volatile int32_t gui_initialize_complete_flag;
 
@@ -171,8 +164,8 @@ void main_task(void)
 	hWinStorageBenchmark = CreateStorageBenchmark();
 	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinStorageBenchmark, DEMO_NAME_STORAGEBENCH);
 #endif
-	hWinSecureUpdatewindow = CreateSecureUpdateWindow();
-	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinSecureUpdatewindow, DEMO_NAME_SECURE_UPDATE);
+	hWinFirmwareUpdatewindow = CreateFirmwareUpdateWindow();
+	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinFirmwareUpdatewindow, DEMO_NAME_FIRMWARE_UPDATE);
 
 	hWinTitleLogoWindow = CreateTitleLogoWindow();
 	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinTitleLogoWindow, DEMO_NAME_TITLE_LOGO);
@@ -181,14 +174,6 @@ void main_task(void)
 	prev_button_id = get_prev_button_id();
 	next_button_id = get_next_button_id();
 
-	/* hello message */
-	sprintf(buff, "hello, this is RX65N Envision Kit system log.\n");
-	firmware_update_log_string(buff);
-	sprintf(buff, "built in %s, %s\n", __DATE__, __TIME__);
-	firmware_update_log_string(buff);
-	sprintf(buff, "\n");
-	firmware_update_log_string(buff);
-
 	/* TCP/IP initialization */
 	R_SYS_TIME_Open();
 	R_SYS_TIME_RegisterPeriodicCallback(main_100ms_display_update, 10);
@@ -196,8 +181,6 @@ void main_task(void)
 
 	R_FLASH_Open();
     R_FLASH_Control(FLASH_CMD_BANK_GET, &bank_info);
-    sprintf(buff, "bank info = %d, start bank = %d\n", bank_info, bank_info ^ 0x01);
-	firmware_update_log_string(buff);
 
 	/* wait until first touch screen */
 	vTaskDelay(1000);	/* this wait needs for ignoring touch event at WM_TOUCH_CHILD in TitleLogoWindowDLG.c when initializing. */
@@ -458,62 +441,6 @@ void firmware_version_read(char **ver_str)
 	static char firmware_version[16];
 	sprintf(firmware_version, "v%d.%d.%d", APP_VERSION_MAJOR, APP_VERSION_MINOR, APP_VERSION_BUILD);
 	*ver_str = (char*)firmware_version;
-}
-
-void SetSwbankchangeRebootBotton(void)
-{
-	firmware_update_log_string(" Bank change ... ");
-	GUI_Delay(1);
-	firmware_update_editor_move();
-	firmware_update_log_string("[ OK ]\r\n\r\n");
-	GUI_Delay(1);
-	firmware_update_log_string("Rebooting...");
-	GUI_Delay(1);
-	R_BSP_SoftwareDelay(3000, BSP_DELAY_MILLISECS);
-//	bank_swap();
-    while(1);
-}
-
-static void firmware_update_update_file_search(void)
-{
-	FRESULT tfat_ret;
-	int32_t i;
-
-	firmware_update_list_clear();
-	tfat_ret = R_tfat_f_opendir (&dir,"0:");
-	if(tfat_ret == TFAT_FR_OK)
-	{
-		while(1)
-		{
-			tfat_ret = R_tfat_f_readdir (&dir,	&filinfo );
-			if(tfat_ret == TFAT_FR_OK)
-			{
-				if(filinfo.fname[0] == '\0')
-				{
-					break;
-				}
-				if(TFAT_AM_DIR == (filinfo.fattrib & TFAT_AM_DIR) )
-				{
-					continue;
-				}
-				for(i= 0;i<sizeof(filinfo.fname);i++)
-				{
-					if('A' <=  filinfo.fname[i] && filinfo.fname[i] <= 'Z' )
-					{
-						filinfo.fname[i] += 0x20;
-					}
-				}
-				if(0 != strstr(filinfo.fname,".rsu"))
-				{
-					firmware_update_list_add(filinfo.fname);
-				}
-			}
-			else
-			{
-				break;
-			}
-		}
-	}
 }
 
 /******************************************************************************
