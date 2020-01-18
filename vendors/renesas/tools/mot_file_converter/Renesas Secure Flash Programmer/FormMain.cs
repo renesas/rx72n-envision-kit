@@ -222,10 +222,14 @@ namespace Renesas_Secure_Flash_Programmer
         const string FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP = "mac-aes128-cmac-with-tsip";
         const string FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA_WITH_TSIP = "sig-sha256-ecdsa-with-tsip";
 
-        /// <summary>
-        /// For Firm Update Tab - MCU name / Memory map
-        /// </summary>
-        public static readonly Dictionary<string, AddressMap> McuSpecs = new Dictionary<string, AddressMap>()
+		const string OUTPUT_FORMAT_TYPE_BANK0 = "Bank0 User Program (Binary Format)";
+		const string OUTPUT_FORMAT_TYPE_BANK0_BOOTLOADR = "Bank0 User Program + Boot Loader (Motorola S Format)";
+		const string OUTPUT_FORMAT_TYPE_BANK0_BANK1_BOOTLOADR = "Bank0 & Bank1 User Program + Boot Loader (Motorola S Format)";
+
+		/// <summary>
+		/// For Firm Update Tab - MCU name / Memory map
+		/// </summary>
+		public static readonly Dictionary<string, AddressMap> McuSpecs = new Dictionary<string, AddressMap>()
         {
             /* name (SB means Secure Bootloader) */
             { MCUROM_RX65N_2M_SB_64KB,                  new AddressMap(0x00000001, 0xfff00300, 0xfffeffff, 0xffe00300, 0xffefffff, 0xfff00000, 0xffffffff, 0x00100000, 0x00107fff, 0x00100000, 0x00107fff) },
@@ -247,7 +251,14 @@ namespace Renesas_Secure_Flash_Programmer
             { FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA_WITH_TSIP, 4 },
         };
 
-        public class rsu_header
+		public static readonly Dictionary<string, uint> OutputFormatType = new Dictionary<string, uint>()
+		{
+			{ OUTPUT_FORMAT_TYPE_BANK0, 1 },
+			{ OUTPUT_FORMAT_TYPE_BANK0_BOOTLOADR, 2 },
+			{ OUTPUT_FORMAT_TYPE_BANK0_BANK1_BOOTLOADR, 3 },
+		};
+
+		public class rsu_header
         {
             /*
             ----------------------------------------------------------------------------------------------------
@@ -325,21 +336,26 @@ namespace Renesas_Secure_Flash_Programmer
         const int IMAGE_FLAG_VALID = 0xf8;
         const int IMAGE_FLAG_INVALID = 0xf0;
         const int CommandLineArgumentFirst = 0;
-        const int ARGUMENT_INTERFACE_TYPE = 0;                              // GUI, CUI
-        const int ARGUMENT_FIRMWARE_TYPE = 1;                               // Initial, Update
-        const int ARGUMENT_INITIAL_MCU = 2;                                 // "RX65N(ROM 2MB)/Secure Bootloader=256KB"
-        const int ARGUMENT_INITIAL_INPUT_FIRMWARE_VERIFICATION_TYPE = 3;    // "sig-sha256-ecdsa"
-        const int ARGUMENT_INITIAL_INPUT_FIRMWARE_SEQUENCE_NUMBER = 4;      // 1
-        const int ARGUMENT_INITIAL_INPUT_BOOTLOADER_FILE_PATH = 5;          // "C:\\amazon-rx\\amazon-freertos\\demos\\renesas\\rx65n-rsk\\e2studio\\ccrx\\boot_loader\\type2\\HardwareDebug\\boot_loader.mot"
-        const int ARGUMENT_INITIAL_INPUT_FIRMWARE_FILE_PATH = 6;            // "C:\\amazon-rx\\amazon-freertos\\tests\\renesas\\rx65n-rsk\\e2studio\\HardwareDebug\\aws_tests.mot"
-        const int ARGUMENT_INITIAL_INPUT_PRIVATE_KEY_PATH = 7;              // "C:\\Users\\a5090440\\Desktop\\newfolder\\openssl\\device_tester_basico0303\\server.privatekey"
-        const int ARGUMENT_INITIAL_OUTPUT_FILE_PATH = 8;                    // "C:\\amazon-rx\\amazon-freertos\\tests\\renesas\\rx65n-rsk\\e2studio\\HardwareDebug"
-        const int ARGUMENT_UPDATE_MCU = 2;                                  // "RX65N(ROM 2MB)/Secure Bootloader=256KB"
-        const int ARGUMENT_UPDATE_INPUT_FIRMWARE_VERIFICATION_TYPE = 3;    // "sig-sha256-ecdsa"
-        const int ARGUMENT_UPDATE_INPUT_FIRMWARE_SEQUENCE_NUMBER = 4;      // 1
-        const int ARGUMENT_UPDATE_INPUT_FIRMWARE_FILE_PATH = 5;            // "C:\\amazon-rx\\amazon-freertos\\tests\\renesas\\rx65n-rsk\\e2studio\\HardwareDebug\\aws_tests.mot"
-        const int ARGUMENT_UPDATE_OUTPUT_FILE_PATH = 6;                    // "C:\\amazon-rx\\amazon-freertos\\tests\\renesas\\rx65n-rsk\\e2studio\\HardwareDebug"
-        const string FIRMWARE_TYPE_INITIAL = "Initial";
+
+		const int ARGUMENT_INTERFACE_TYPE = 0;                                  // GUI, CUI
+		const int ARGUMENT_FIRMWARE_TYPE = 1;                                   // Initial, Update
+		const int ARGUMENT_INITIAL_MCU = 2;                                     // [Settings] Select MCU
+		const int ARGUMENT_INITIAL_INPUT_FIRMWARE_VERIFICATION_TYPE = 3;        // [Settings] Select Firmware Verification Type
+		const int ARGUMENT_INITIAL_INPUT_AES_MAC_KEY = 4;                       // [Settings] AES MAC Key (16 byte hex / 32 characters)
+		const int ARGUMENT_INITIAL_INPUT_PRIVATE_KEY_PATH = 5;                  // [Settings]Private Key Path (PEM Format)
+		const int ARGUMENT_INITIAL_INPUT_BOOTLOADER_FILE_PATH = 6;              // [Boot Loader] File Path (Motorala Format)
+		const int ARGUMENT_INITIAL_INPUT_FIRMWARE_SEQUENCE_NUMBER_BANK0 = 7;    // [Bank0 User Program] Firmware Sequence Number
+		const int ARGUMENT_INITIAL_INPUT_FIRMWARE_FILE_PATH_BANK0 = 6;          // [Bank0 User Program] File Path (Motorala Format)
+		const int ARGUMENT_INITIAL_INPUT_FIRMWARE_SEQUENCE_NUMBER_BANK1 = 8;    // [Bank1 User Program] Firmware Sequence Number
+		const int ARGUMENT_INITIAL_INPUT_FIRMWARE_FILE_PATH_BANK1 = 9;          // [Bank1 User Program] File Path (Motorala Format)
+		const int ARGUMENT_INITIAL_OUTPUT_FILE_PATH = 8;                        //
+		const int ARGUMENT_UPDATE_MCU = 2;                                      // Select MCU
+		const int ARGUMENT_UPDATE_INPUT_FIRMWARE_VERIFICATION_TYPE = 3;         // Select Firmware Verification Type
+		const int ARGUMENT_UPDATE_INPUT_FIRMWARE_SEQUENCE_NUMBER = 4;           // Firmware Sequence Number
+		const int ARGUMENT_UPDATE_INPUT_FIRMWARE_FILE_PATH = 5;                 // File Path (Motorala Format)
+		const int ARGUMENT_UPDATE_OUTPUT_FILE_PATH = 6;                         //
+
+		const string FIRMWARE_TYPE_INITIAL = "Initial";
         const string FIRMWARE_TYPE_UPDATE = "Update";
         const string INITIAL_FIRM_MOT_S0_FORMAT = "0F00006177735F746573742E6D6F74";
         private int log_count = 0;
@@ -366,7 +382,7 @@ namespace Renesas_Secure_Flash_Programmer
             if ((args.Length != 0) && (args[ARGUMENT_INTERFACE_TYPE] == "CUI"))
             {
                 string mcuName;
-                checkBox1_InitialOutputBinaryFormat.Checked = false;
+                comboBoxInitialFirmwareOutputFormat.Text = OUTPUT_FORMAT_TYPE_BANK0_BOOTLOADR;
                 if (args[ARGUMENT_FIRMWARE_TYPE] == FIRMWARE_TYPE_INITIAL)
                 {
                     Console.WriteLine("Reneas Secure Flash Programmer CUI");
@@ -374,9 +390,9 @@ namespace Renesas_Secure_Flash_Programmer
                     /* 引数設定  */
                     mcuName = args[ARGUMENT_INITIAL_MCU];
                     comboBoxInitialFirmwareVerificationType.Text = args[ARGUMENT_INITIAL_INPUT_FIRMWARE_VERIFICATION_TYPE];
-                    textBoxInitialFirmwareSequenceNumber.Text = args[ARGUMENT_INITIAL_INPUT_FIRMWARE_SEQUENCE_NUMBER];
+                    textBoxInitialFirmwareSequenceNumberBank0.Text = args[ARGUMENT_INITIAL_INPUT_FIRMWARE_SEQUENCE_NUMBER_BANK0];
                     textBoxInitialBootLoaderUserProgramFilePath.Text = args[ARGUMENT_INITIAL_INPUT_BOOTLOADER_FILE_PATH];
-                    textBoxInitialUserProgramFilePath.Text = args[ARGUMENT_INITIAL_INPUT_FIRMWARE_FILE_PATH];
+                    textBoxInitialUserProgramFilePathBank0.Text = args[ARGUMENT_INITIAL_INPUT_FIRMWARE_FILE_PATH_BANK0];
                     textBoxInitialUserPrivateKeyPath.Text = args[ARGUMENT_INITIAL_INPUT_PRIVATE_KEY_PATH];
                     saveFileDialog.FileName = args[ARGUMENT_INITIAL_OUTPUT_FILE_PATH];
                     comboBox_Initial_Mcu_firmupdate.Text = mcuName;
@@ -424,13 +440,414 @@ namespace Renesas_Secure_Flash_Programmer
             return checksum.ToString("X");
 
         }
+		/// <summary>
+		/// Get user program
+		/// </summary>
+		/// <param name="mcuName"></param>
+		/// <param name="user_program_file_path"></param>
+		/// <param name="code_flash_image"></param>
+		/// <param name="data_flash_image"></param>
+		private void GetUserProgram(string mcuName, string user_program_file_path, ref byte[] code_flash_image, ref byte[] data_flash_image)
+		{
+			uint user_program_top_address = McuSpecs[mcuName].userProgramTopAddress;
+			uint user_program_bottom_address = McuSpecs[mcuName].userProgramBottomAddress;
+			uint user_program_mirror_top_address = McuSpecs[mcuName].userProgramMirrorTopAddress;
+			uint user_program_mirror_bottom_address = McuSpecs[mcuName].userProgramMirrorBottomAddress;
+			uint code_flash_top_address = McuSpecs[mcuName].codeFlashTopAddress;
+			uint code_flash_bottom_address = McuSpecs[mcuName].codeFlashBottomAddress;
+			uint user_program_const_data_top_address = McuSpecs[mcuName].userProgramConstDataTopAddress;
+			uint user_program_const_data_bottom_address = McuSpecs[mcuName].userProgramConstDataBottomAddress;
+			uint data_flash_top_address = McuSpecs[mcuName].dataFlashTopAddress;
+			uint data_flash_bottom_address = McuSpecs[mcuName].dataFlashBottomAddress;
 
-        /// <summary>
-        /// Form loading
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void FormMain_Load(object sender, EventArgs e)
+			for (int i = 0; i < code_flash_image.Length; i++)
+			{
+				code_flash_image[i] = 0xff;
+			}
+
+			for (int i = 0; i < data_flash_image.Length; i++)
+			{
+				data_flash_image[i] = 0xff;
+			}
+
+			using (StreamReader sr = new StreamReader(user_program_file_path))
+			{
+				uint current_user_firm_address = 0;
+				int total_length = 0;
+
+				while (true)
+				{
+					string line = sr.ReadLine();
+					if (line == null)
+					{
+						break;
+					}
+
+					string[] line_buf = new string[16];
+
+					line_buf[0] = line.Substring(0, 2);    // type field
+					line_buf[1] = line.Substring(2, 2);    // length
+
+					switch (line_buf[0])
+					{
+						case "S0":
+							line_buf[2] = line.Substring(4, 4);                 // zero
+							line_buf[3] = line.Substring(8, line.Length - 8);   // comment
+							break;
+						case "S1":
+							line_buf[2] = line.Substring(4, 4);                 // address
+							line_buf[3] = line.Substring(8, line.Length - 8);   // comment
+							break;
+						case "S2":
+							line_buf[2] = line.Substring(4, 6);                 // address
+							line_buf[3] = line.Substring(10, line.Length - 10); // comment
+							break;
+						case "S3":
+							line_buf[2] = line.Substring(4, 8);                 // address
+							line_buf[3] = line.Substring(12, line.Length - 12); // comment
+							break;
+						case "S4":
+							break;
+						case "S5":
+							line_buf[2] = line.Substring(4, 4);                 // recode number
+							break;
+						case "S6":
+							break;
+						case "S7":
+							break;
+					}
+
+					if ((line_buf[0] == "S3") || (line_buf[0] == "S2"))
+					{
+						int data_len;
+						if (line_buf[0] == "S3")
+						{
+							data_len = Convert.ToByte(line_buf[1], 16) - 5;     // -5 means: (address = 4 byte + checksum = 1 byte)
+						}
+						else
+						{
+							data_len = Convert.ToByte(line_buf[1], 16) - 4;     // -4 means: (address = 3 byte + checksum = 1 byte)
+						}
+
+						current_user_firm_address = Convert.ToUInt32(line_buf[2], 16);
+
+						if ((current_user_firm_address >= data_flash_top_address)
+							&& (current_user_firm_address <= data_flash_bottom_address))
+						{
+							if ((current_user_firm_address < user_program_const_data_top_address)
+								|| (current_user_firm_address > user_program_const_data_bottom_address))
+							{
+								print_log(String.Format("your motorola file includes prohibited address 0x{0:x08} on data flash, out of 0x{1:x08}-0x{2:x08}.\r\n", current_user_firm_address, user_program_const_data_top_address, user_program_const_data_bottom_address));
+								return;
+							}
+							uint offset = Convert.ToUInt32(line_buf[2], 16) - user_program_const_data_top_address;
+							for (int i = 0; (i / 2) < data_len; i += 2)
+							{
+								data_flash_image[(i / 2) + offset] = Convert.ToByte(line_buf[3].Substring(i, 2), 16);
+							}
+							current_user_firm_address = 0;
+							continue;
+						}
+
+						if ((current_user_firm_address >= code_flash_top_address)
+							&& (current_user_firm_address <= code_flash_bottom_address))
+						{
+							if ((current_user_firm_address < user_program_top_address)
+								|| (current_user_firm_address > (user_program_bottom_address + 1)))
+							{
+								print_log(String.Format("your motorola file includes prohibited address 0x{0:x08} on code flash, out of 0x{1:x08}-0x{2:x08}.\r\n", current_user_firm_address, user_program_top_address, user_program_bottom_address));
+								return;
+							}
+							uint offset = Convert.ToUInt32(line_buf[2], 16) - user_program_top_address;
+							for (int i = 0; (i / 2) < data_len; i += 2)
+							{
+								code_flash_image[(i / 2) + offset] = Convert.ToByte(line_buf[3].Substring(i, 2), 16);
+							}
+							total_length += data_len;
+							current_user_firm_address = 0;
+							continue;
+						}
+					}
+				}
+			}
+		}
+		/// <summary>
+		/// Create crypt stream
+		/// </summary>
+		/// <param name="mcuName"></param>
+		/// <param name="firm_verification_type"></param>
+		/// <param name="code_flash_image"></param>
+		/// <param name="rsu_header_data"></param>
+		private void CreateCryptStream(string mcuName, string firm_type, string firm_verification_type, string sequence_number_text,
+									   ref byte[] code_flash_image, ref byte[] data_flash_image,
+									   ref rsu_header rsu_header_data, byte[] userProgramKey)
+		{
+			uint user_program_top_address = McuSpecs[mcuName].userProgramTopAddress;
+			uint user_program_bottom_address = McuSpecs[mcuName].userProgramBottomAddress;
+			uint user_program_mirror_top_address = McuSpecs[mcuName].userProgramMirrorTopAddress;
+			uint user_program_mirror_bottom_address = McuSpecs[mcuName].userProgramMirrorBottomAddress;
+			uint code_flash_top_address = McuSpecs[mcuName].codeFlashTopAddress;
+			uint code_flash_bottom_address = McuSpecs[mcuName].codeFlashBottomAddress;
+			uint user_program_const_data_top_address = McuSpecs[mcuName].userProgramConstDataTopAddress;
+			uint user_program_const_data_bottom_address = McuSpecs[mcuName].userProgramConstDataBottomAddress;
+			uint data_flash_top_address = McuSpecs[mcuName].dataFlashTopAddress;
+			uint data_flash_bottom_address = McuSpecs[mcuName].dataFlashBottomAddress;
+			using (BinaryWriter bw = new BinaryWriter(File.Open(saveFileDialog.FileName, FileMode.Create)))
+			{
+				if (firm_verification_type == FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP)
+				{
+					//Set Aes key size
+					aesCryptoProvider.KeySize = 128;
+
+					byte[] iv = new byte[16];
+					byte[] iv_init = new byte[16];
+					byte[] tmpCBCKey = new byte[16];
+					byte[] tmpCBCMACKey = new byte[16];
+
+					RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+					rng.GetBytes(iv);
+					rng.GetBytes(tmpCBCKey);
+					rng.GetBytes(tmpCBCMACKey);
+
+					for (int i = 0; i < aesCryptoProvider.BlockSize / 8; i++)
+					{
+						iv_init[i] = iv[i];
+					}
+
+					//Create AES encryption object
+					aesCryptoProvider.Key = tmpCBCKey;
+					ICryptoTransform encrypt1 = aesCryptoProvider.CreateEncryptor();
+					aesCryptoProvider.Key = tmpCBCMACKey;
+					ICryptoTransform encrypt2 = aesCryptoProvider.CreateEncryptor();
+					aesCryptoProvider.Key = userProgramKey;
+					ICryptoTransform encrypt3 = aesCryptoProvider.CreateEncryptor();
+					aesCryptoProvider.Key = tmpCBCKey;
+					ICryptoTransform encrypt4 = aesCryptoProvider.CreateEncryptor();
+
+					//Create MemoryStream
+					MemoryStream ms1 = new MemoryStream();
+					MemoryStream ms2 = new MemoryStream();
+					MemoryStream ms3 = new MemoryStream();
+					MemoryStream ms4 = new MemoryStream();
+
+					//Create CryptoStream
+					using (CryptoStream cs1 = new CryptoStream(ms1, encrypt1, CryptoStreamMode.Write))
+					using (CryptoStream cs2 = new CryptoStream(ms2, encrypt2, CryptoStreamMode.Write))
+					using (CryptoStream cs3 = new CryptoStream(ms3, encrypt3, CryptoStreamMode.Write))
+					using (CryptoStream cs4 = new CryptoStream(ms4, encrypt4, CryptoStreamMode.Write))
+					{
+						// Execute encryption follow TSIP procedure
+						byte[] tmp = new byte[16];
+						byte[] UpProgram = new byte[16];
+						byte[] checksum = new byte[16];
+						byte[] SessionKey0 = new byte[16];
+						byte[] SessionKey1 = new byte[16];
+						byte[] data;
+
+						for (int i = 0; i < (user_program_bottom_address + 1) - user_program_top_address; i += (aesCryptoProvider.BlockSize / 8))
+						{
+							for (int j = 0; j < aesCryptoProvider.BlockSize / 8; j++)
+							{
+								checksum[j] = Convert.ToByte(code_flash_image[i + j] ^ checksum[j]);
+								UpProgram[j] = Convert.ToByte(code_flash_image[i + j] ^ iv[j]);
+							}
+							for (int j = 0; j < aesCryptoProvider.BlockSize / 8; j++)
+							{
+								cs2.Write(checksum, j, 1);  // encrypt using CBCMAC
+							}
+							tmp = ms2.GetBuffer();
+							for (int j = 0; j < aesCryptoProvider.BlockSize / 8; j++)
+							{
+								checksum[j] = tmp[i + j];
+							}
+							for (int j = 0; j < aesCryptoProvider.BlockSize / 8; j++)
+							{
+								cs1.Write(UpProgram, j, 1);  // encrypt using CBC
+							}
+							tmp = ms1.GetBuffer();
+							for (int j = 0; j < aesCryptoProvider.BlockSize / 8; j++)
+							{
+								UpProgram[j] = tmp[i + j];
+							}
+							for (int j = 0; j < aesCryptoProvider.BlockSize / 8; j++)
+							{
+								iv[j] = UpProgram[j];
+							}
+						}
+						for (int i = 0; i < aesCryptoProvider.BlockSize / 8; i++)
+						{
+							checksum[i] = Convert.ToByte(iv[i] ^ checksum[i]);
+						}
+						cs4.Write(checksum, 0, aesCryptoProvider.BlockSize / 8);  // encrypt using CBCMAC
+						tmp = ms4.GetBuffer();
+						for (int i = 0; i < aesCryptoProvider.BlockSize / 8; i++)
+						{
+							checksum[i] = tmp[i];
+						}
+
+						cs3.Write(tmpCBCKey, 0, aesCryptoProvider.BlockSize / 8);  // encrypt using user_program_key
+						cs3.Write(tmpCBCMACKey, 0, aesCryptoProvider.BlockSize / 8);
+						tmp = ms3.GetBuffer();
+						for (int i = 0; i < 2; i++)
+						{
+							for (int j = 0; j < aesCryptoProvider.BlockSize / 8; j++)
+							{
+								if (i == 0)
+								{
+									SessionKey0[j] = tmp[(i * (aesCryptoProvider.BlockSize / 8)) + j];
+								}
+								else
+								{
+									SessionKey1[j] = tmp[(i * (aesCryptoProvider.BlockSize / 8)) + j];
+								}
+							}
+						}
+
+						// Create pdate data①(iv, sessionkey0, sessionkey1, max_cnt, checksum)
+						string iv_base64 = Convert.ToBase64String(iv_init, 0, 16);
+						string sessionkey0_base64 = Convert.ToBase64String(SessionKey0, 0, 16);
+						string sessionkey1_base64 = Convert.ToBase64String(SessionKey1, 0, 16);
+						string max_cnt = Convert.ToString((((user_program_bottom_address + 1) - user_program_top_address) / 4) + 4, 16); // +4 means for checksum
+						string checksum_base64 = Convert.ToBase64String(checksum, 0, 16);
+						string script;
+						script = $"iv {iv_base64}\r\n";
+						script += $"sessionkey0 {sessionkey0_base64}\r\n";
+						script += $"sessionkey1 {sessionkey1_base64}\r\n";
+						script += $"max_cnt {max_cnt}\r\n";
+						script += $"checksum {checksum_base64}\r\n";
+						data = System.Text.Encoding.ASCII.GetBytes(script);
+						bw.Write(data);
+
+						/* todo: upconst側と書き方を合わせる */
+						for (int i = 0; i < ms2.Length; i += 16)
+						{
+							string user_program_address = Convert.ToString(user_program_top_address + i, 16);
+							string user_program_base64 = Convert.ToBase64String(ms1.GetBuffer(), i, 16);
+
+							// Create pdate data②(upprogram)
+							script = $"upprogram {user_program_address} {user_program_base64}\r\n";
+							data = System.Text.Encoding.ASCII.GetBytes(script);
+							bw.Write(data);
+						}
+					}
+				}
+				else if ((firm_verification_type == FIRMWARE_VERIFICATION_TYPE_HASH_SHA256) ||
+						 (firm_verification_type == FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA))
+				{
+					//string script;
+					byte[] bs;
+					int hash_size;
+					string hash_value;
+					//string hash_string;
+
+					// prepair the rsu_header
+					rsu_header_data.magic_code = System.Text.Encoding.ASCII.GetBytes("Renesas");
+					rsu_header_data.image_flag = IMAGE_FLAG_TESTING;
+					rsu_header_data.dataflash_flag = 1;
+					rsu_header_data.dataflash_start_address = McuSpecs[mcuName].userProgramConstDataTopAddress;
+					rsu_header_data.dataflash_end_address = McuSpecs[mcuName].userProgramConstDataBottomAddress;
+					rsu_header_data.sequence_number = Convert.ToUInt32(sequence_number_text);
+					rsu_header_data.start_address = McuSpecs[mcuName].userProgramTopAddress;
+					rsu_header_data.end_address = McuSpecs[mcuName].userProgramBottomAddress;
+					rsu_header_data.execution_address = McuSpecs[mcuName].userProgramBottomAddress - 3;
+					rsu_header_data.hardware_id = McuSpecs[mcuName].hardwareId;
+
+					// calculate hash
+					if (firm_verification_type == FIRMWARE_VERIFICATION_TYPE_HASH_SHA256)
+					{
+						System.Security.Cryptography.SHA256CryptoServiceProvider sha_256 =
+						new System.Security.Cryptography.SHA256CryptoServiceProvider();
+
+						byte[] tmp = new byte[0];
+						tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.sequence_number)).ToArray();
+						tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.start_address)).ToArray();
+						tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.end_address)).ToArray();
+						tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.execution_address)).ToArray();
+						tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.hardware_id)).ToArray();
+						tmp = tmp.Concat(rsu_header_data.reserved2).ToArray();
+						tmp = tmp.Concat(code_flash_image).ToArray();
+
+						int offset = CODE_FLASH_SIGNATURE_AREA_OFFSET;
+						int size = Convert.ToInt32((user_program_bottom_address + 1) - code_flash_top_address) - offset;
+						bs = sha_256.ComputeHash(tmp, 0, size);
+						sha_256.Clear();
+						hash_size = (sha_256.HashSize / 8);
+						hash_value = Convert.ToBase64String(bs, 0, hash_size);
+
+						Array.Copy(System.Text.Encoding.ASCII.GetBytes(firm_verification_type), rsu_header_data.signature_type, firm_verification_type.Length);
+						rsu_header_data.signature_size = (uint)hash_size;
+						Array.Copy(bs, rsu_header_data.signature, hash_size);
+					}
+					else if (firm_verification_type == FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA)
+					{
+						if (FIRMWARE_TYPE_INITIAL == firm_type)
+						{
+							hash_value = "dummy"; // FIX ME. Necessary when entering a value in hash_string later. But unnecessary data for ECDSA signature.
+
+							byte[] tmp = new byte[0];
+							UInt32 Descriptor_address_size = 0x100;
+							tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.sequence_number)).ToArray();
+							tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.start_address)).ToArray();
+							tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.end_address)).ToArray();
+							tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.execution_address)).ToArray();
+							tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.hardware_id)).ToArray();
+							tmp = tmp.Concat(rsu_header_data.reserved2).ToArray();
+							tmp = tmp.Concat(code_flash_image).ToArray();
+							Array.Resize(ref tmp, (Int32)(Descriptor_address_size + (user_program_bottom_address + 1) - user_program_top_address));
+
+							byte[] signature = Sign(tmp, textBoxInitialUserPrivateKeyPath.Text);
+							bool result = Verify(tmp, signature, textBoxInitialUserPrivateKeyPath.Text);
+							if (false == result)
+							{
+								print_log(String.Format("Failed to signature\r\n"));
+								return;
+							}
+							Array.Copy(System.Text.Encoding.ASCII.GetBytes(firm_verification_type), rsu_header_data.signature_type, firm_verification_type.Length);
+							rsu_header_data.signature_size = (uint)signature.Length;
+							Array.Copy(signature, rsu_header_data.signature, rsu_header_data.signature_size);
+						}
+					}
+					else
+					{
+						print_log(String.Format("This Firmware Verification Type is not implemented yet: [{0:s}]\r\n", firm_verification_type));
+						return;
+					}
+
+					if (OUTPUT_FORMAT_TYPE_BANK0 == comboBoxInitialFirmwareOutputFormat.Text)
+					{
+						if (FIRMWARE_TYPE_INITIAL == firm_type)
+						{
+							bw.Write(rsu_header_data.magic_code);
+							bw.Write(rsu_header_data.image_flag);
+							bw.Write(rsu_header_data.signature_type);
+							bw.Write(rsu_header_data.signature_size);
+							bw.Write(rsu_header_data.signature);
+							bw.Write(rsu_header_data.dataflash_flag);
+							bw.Write(rsu_header_data.dataflash_start_address);
+							bw.Write(rsu_header_data.dataflash_end_address);
+							bw.Write(rsu_header_data.reserved1);
+						}
+						bw.Write(rsu_header_data.sequence_number);
+						bw.Write(rsu_header_data.start_address);
+						bw.Write(rsu_header_data.end_address);
+						bw.Write(rsu_header_data.execution_address);
+						bw.Write(rsu_header_data.hardware_id);
+						bw.Write(rsu_header_data.reserved2);
+						bw.Write(code_flash_image, 0, (int)((user_program_bottom_address + 1) - user_program_top_address));
+						if (FIRMWARE_TYPE_INITIAL == firm_type)
+						{
+							bw.Write(data_flash_image, 0, (int)((data_flash_bottom_address + 1) - data_flash_top_address));
+						}
+					}
+				}
+			}
+		}
+		/// <summary>
+		/// Form loading
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void FormMain_Load(object sender, EventArgs e)
         {
             // initialize Session Key Tab
 
@@ -467,38 +884,49 @@ namespace Renesas_Secure_Flash_Programmer
             // [IV] textbox 
             textBoxIV.Text = STR_RAMDOM_DATA_GENERATE;
 
-            // initialize Firm Update tab
+            // Firm Update tab
 
             // [Select Mcu] combobox 
             foreach (var mcu in McuSpecs)
             {
                 comboBoxMcu_firmupdate.Items.Add(mcu.Key);
             }
-            // [Select Mcu] combobox 
-            foreach (var mcu in FirmVerificationType)
+			// [Select Firmware Verification Type] combobox 
+			foreach (var mcu in FirmVerificationType)
             {
                 comboBoxFirmwareVerificationType.Items.Add(mcu.Key);
             }
 
-            // initialize Initial  tab
+            // Initial tab
 
             // [Select Mcu] combobox 
             foreach (var mcu in McuSpecs)
             {
                 comboBox_Initial_Mcu_firmupdate.Items.Add(mcu.Key);
             }
-            // [Select Mcu] combobox 
-            foreach (var mcu in FirmVerificationType)
+			// [Select Firmware Verification Type] combobox 
+			foreach (var mcu in FirmVerificationType)
             {
                 comboBoxInitialFirmwareVerificationType.Items.Add(mcu.Key);
             }
-        }
+			// [Select Output Format] combobox
+			foreach (var mcu in OutputFormatType)
+			{
+				comboBoxInitialFirmwareOutputFormat.Items.Add(mcu.Key);
+			}
 
-        /// <summary>
-        /// create [Key Type] list
-        /// </summary>
-        /// <param name="mcu"></param>
-        private void setKeyTypeList(Mcu mcu)
+			// Initialize variable
+			textBoxInitialUserPrivateKeyPath.Enabled = false;
+			textBoxInitialBootLoaderUserProgramFilePath.Enabled = false;
+			textBoxInitialFirmwareSequenceNumberBank1.Enabled = false;
+			textBoxInitialUserProgramFilePathBank1.Enabled = false;
+		}
+
+		/// <summary>
+		/// create [Key Type] list
+		/// </summary>
+		/// <param name="mcu"></param>
+		private void setKeyTypeList(Mcu mcu)
         {
             List<KeyInfo> keyInfoList = null;
 
@@ -1391,7 +1819,6 @@ namespace Renesas_Secure_Flash_Programmer
             uint data_flash_top_address = McuSpecs[mcuName].dataFlashTopAddress;
             uint data_flash_bottom_address = McuSpecs[mcuName].dataFlashBottomAddress;
 
-
             string[] block_buf = new string[32];
 
             byte[] userProgramKey = convertStrDataToKeyData(textBoxUserProgramKey_Aes128.Text, USER_PROGRAM_KEY_BYTE_SIZE);
@@ -1407,8 +1834,14 @@ namespace Renesas_Secure_Flash_Programmer
             {
                 data_flash_image[i] = 0xff;
             }
-            //Set Aes key size
-            aesCryptoProvider.KeySize = 128;
+#if !MYDEFINE
+			rsu_header rsu_header_data = new rsu_header();
+			GetUserProgram(mcuName, textBoxUserProgramFilePath.Text, ref code_flash_image, ref data_flash_image);
+			CreateCryptStream(mcuName, FIRMWARE_TYPE_UPDATE, comboBoxFirmwareVerificationType.Text, textBoxFirmwareSequenceNumber.Text,
+							  ref code_flash_image, ref data_flash_image, ref rsu_header_data, userProgramKey);
+#else
+			//Set Aes key size
+			aesCryptoProvider.KeySize = 128;
 
             byte[] iv = new byte[16];
             byte[] iv_init = new byte[16];
@@ -1446,108 +1879,9 @@ namespace Renesas_Secure_Flash_Programmer
             using (CryptoStream cs2 = new CryptoStream(ms2, encrypt2, CryptoStreamMode.Write))
             using (CryptoStream cs3 = new CryptoStream(ms3, encrypt3, CryptoStreamMode.Write))
             using (CryptoStream cs4 = new CryptoStream(ms4, encrypt4, CryptoStreamMode.Write))
-            using (StreamReader sr = new StreamReader(textBoxUserProgramFilePath.Text))
             using (BinaryWriter bw = new BinaryWriter(File.Open(saveFileDialog.FileName, FileMode.Create)))
             {
-                uint current_user_firm_address = 0;
-                int total_length = 0;
-                byte[] data;
-
-                while (true)
-                {
-                    string line = sr.ReadLine();
-                    if (line == null)
-                    {
-                        break;
-                    }
-
-                    string[] line_buf = new string[16];
-
-                    line_buf[0] = line.Substring(0, 2);    // type field
-                    line_buf[1] = line.Substring(2, 2);    // length
-
-                    switch (line_buf[0])
-                    {
-                        case "S0":
-                            line_buf[2] = line.Substring(4, 4);                 // zero
-                            line_buf[3] = line.Substring(8, line.Length - 8);   // comment
-                            break;
-                        case "S1":
-                            line_buf[2] = line.Substring(4, 4);                 // address
-                            line_buf[3] = line.Substring(8, line.Length - 8);   // comment
-                            break;
-                        case "S2":
-                            line_buf[2] = line.Substring(4, 6);                 // address
-                            line_buf[3] = line.Substring(10, line.Length - 10); // comment
-                            break;
-                        case "S3":
-                            line_buf[2] = line.Substring(4, 8);                 // address
-                            line_buf[3] = line.Substring(12, line.Length - 12); // comment
-                            break;
-                        case "S4":
-                            break;
-                        case "S5":
-                            line_buf[2] = line.Substring(4, 4);                 // recode number
-                            break;
-                        case "S6":
-                            break;
-                        case "S7":
-                            break;
-                    }
-
-                    if ((line_buf[0] == "S3") || (line_buf[0] == "S2"))
-                    {
-                        int data_len;
-                        if (line_buf[0] == "S3")
-                        {
-                            data_len = Convert.ToByte(line_buf[1], 16) - 5;     // -5 means: (address = 4 byte + checksum = 1 byte)
-                        }
-                        else
-                        {
-                            data_len = Convert.ToByte(line_buf[1], 16) - 4;     // -4 means: (address = 3 byte + checksum = 1 byte)
-                        }
-
-                        current_user_firm_address = Convert.ToUInt32(line_buf[2], 16);
-
-                        if ((current_user_firm_address >= data_flash_top_address)
-                            && (current_user_firm_address <= data_flash_bottom_address))
-                        {
-                            if ((current_user_firm_address < user_program_const_data_top_address)
-                                || (current_user_firm_address > user_program_const_data_bottom_address))
-                            {
-                                print_log(String.Format("your motorola file includes prohibited address 0x{0:x08} on data flash, out of 0x{1:x08}-0x{2:x08}.\r\n", current_user_firm_address, user_program_const_data_top_address, user_program_const_data_bottom_address));
-                                return;
-                            }
-                            uint offset = Convert.ToUInt32(line_buf[2], 16) - user_program_const_data_top_address;
-                            for (int i = 0; (i / 2) < data_len; i += 2)
-                            {
-                                data_flash_image[(i / 2) + offset] = Convert.ToByte(line_buf[3].Substring(i, 2), 16);
-                            }
-                            current_user_firm_address = 0;
-                            continue;
-                        }
-
-                        if ((current_user_firm_address >= code_flash_top_address)
-                            && (current_user_firm_address <= code_flash_bottom_address))
-                        {
-                            if ((current_user_firm_address < user_program_top_address)
-                                || (current_user_firm_address > (user_program_bottom_address + 1)))
-                            {
-                                print_log(String.Format("your motorola file includes prohibited address 0x{0:x08} on code flash, out of 0x{1:x08}-0x{2:x08}.\r\n", current_user_firm_address, user_program_top_address, user_program_bottom_address));
-                                return;
-                            }
-                            uint offset = Convert.ToUInt32(line_buf[2], 16) - user_program_top_address;
-                            for (int i = 0; (i / 2) < data_len; i += 2)
-                            {
-                                code_flash_image[(i / 2) + offset] = Convert.ToByte(line_buf[3].Substring(i, 2), 16);
-                            }
-                            total_length += data_len;
-                            current_user_firm_address = 0;
-                            continue;
-                        }
-                    }
-                }
-
+				GetUserProgram(mcuName, textBoxUserProgramFilePath.Text, ref code_flash_image, ref data_flash_image);
                 if (comboBoxFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP)
                 {
                     // Execute encryption follow TSIP procedure
@@ -1556,8 +1890,9 @@ namespace Renesas_Secure_Flash_Programmer
                     byte[] checksum = new byte[16];
                     byte[] SessionKey0 = new byte[16];
                     byte[] SessionKey1 = new byte[16];
+					byte[] data;
 
-                    for (int i = 0; i < (user_program_bottom_address + 1) - user_program_top_address; i += (aesCryptoProvider.BlockSize / 8))
+					for (int i = 0; i < (user_program_bottom_address + 1) - user_program_top_address; i += (aesCryptoProvider.BlockSize / 8))
                     {
                         for (int j = 0; j < aesCryptoProvider.BlockSize / 8; j++)
                         {
@@ -1827,14 +2162,15 @@ namespace Renesas_Secure_Flash_Programmer
                 }*/
 
             }
-        }
+#endif
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void buttonGenerateUserprog_Click(object sender, EventArgs e)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void buttonGenerateUserprog_Click(object sender, EventArgs e)
         {
             try
             {
@@ -2055,23 +2391,24 @@ namespace Renesas_Secure_Flash_Programmer
 
         private void buttonBrowseInitialUserPrivateKey_Click(object sender, EventArgs e)
         {
-            openFileDialog.Filter = "User Private Key File|*.privatekey";
-            openFileDialog.Title = "Specify the User Private Key File Name";
-            openFileDialog.FileName = "";
+			if (textBoxInitialUserPrivateKeyPath.Enabled)
+			{
+				openFileDialog.Filter = "User Private Key File|*.privatekey";
+				openFileDialog.Title = "Specify the User Private Key File Name";
+				openFileDialog.FileName = "";
 
-            if (openFileDialog.ShowDialog() != DialogResult.OK || openFileDialog.FileName == "")
-            {
-                print_log("please specify the user private key file name.");
-                return;
-            }
+				if (openFileDialog.ShowDialog() != DialogResult.OK || openFileDialog.FileName == "")
+				{
+					print_log("please specify the user private key file name.");
+					return;
+				}
 
-            textBoxInitialUserPrivateKeyPath.Text = openFileDialog.FileName;
-
+				textBoxInitialUserPrivateKeyPath.Text = openFileDialog.FileName;
+			}
         }
 #endregion [Inital Firm] Tab
 
-        //generate
-        private void buttonBrowseInitialUserprog_Click(object sender, EventArgs e)
+        private void buttonBrowseInitialUserprogBank0_Click(object sender, EventArgs e)
         {
             // Displays a OpenFileDialog so the user can save the Image
             openFileDialog.Filter = "Motorola Format File|*.mot";
@@ -2084,18 +2421,29 @@ namespace Renesas_Secure_Flash_Programmer
                 return;
             }
 
-            textBoxInitialUserProgramFilePath.Text = openFileDialog.FileName;
+            textBoxInitialUserProgramFilePathBank0.Text = openFileDialog.FileName;
         }
 
-        
+		private void buttonBrowseInitialUserprogBank1_Click(object sender, EventArgs e)
+		{
+			if (textBoxInitialUserProgramFilePathBank1.Enabled)
+			{
+				// Displays a OpenFileDialog so the user can save the Image
+				openFileDialog.Filter = "Motorola Format File|*.mot";
+				openFileDialog.Title = "Open the Motorola Format File";
+				openFileDialog.FileName = "";
 
-        //end generate
-        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
-        {
+				if (openFileDialog.ShowDialog() != DialogResult.OK || openFileDialog.FileName == "")
+				{
+					print_log("please specify the motorola file name.");
+					return;
+				}
 
-        }
+				textBoxInitialUserProgramFilePathBank1.Text = openFileDialog.FileName;
+			}
+		}
 
-        private void comboBoxInitialFirmwareVerificationType_SelectedIndexChanged(object sender, EventArgs e)
+		private void comboBoxInitialFirmwareVerificationType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP)
             {
@@ -2118,7 +2466,62 @@ namespace Renesas_Secure_Flash_Programmer
             }
         }
 
-        private void GenerateInitialUserprog(string mcuName)
+		private void comboBoxInitialFirmwareOutputFormatType_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (comboBoxInitialFirmwareOutputFormat.Text == OUTPUT_FORMAT_TYPE_BANK0)
+			{
+				textBoxInitialBootLoaderUserProgramFilePath.Enabled = false;
+				textBoxInitialFirmwareSequenceNumberBank1.Enabled = false;
+				textBoxInitialUserProgramFilePathBank1.Enabled = false;
+			}
+			else if (comboBoxInitialFirmwareOutputFormat.Text == OUTPUT_FORMAT_TYPE_BANK0_BOOTLOADR)
+			{
+				textBoxInitialBootLoaderUserProgramFilePath.Enabled = true;
+				textBoxInitialFirmwareSequenceNumberBank1.Enabled = false;
+				textBoxInitialUserProgramFilePathBank1.Enabled = false;
+			}
+			else if (comboBoxInitialFirmwareOutputFormat.Text == OUTPUT_FORMAT_TYPE_BANK0_BANK1_BOOTLOADR)
+			{
+				textBoxInitialBootLoaderUserProgramFilePath.Enabled = true;
+				textBoxInitialFirmwareSequenceNumberBank1.Enabled = true;
+				textBoxInitialUserProgramFilePathBank1.Enabled = true;
+			}
+			else
+			{
+				textBoxInitialBootLoaderUserProgramFilePath.Enabled = false;
+				textBoxInitialFirmwareSequenceNumberBank1.Enabled = false;
+				textBoxInitialUserProgramFilePathBank1.Enabled = false;
+			}
+		}
+
+		private void GenerateInitialUserprog(string mcuName)
+		{
+			if ((OUTPUT_FORMAT_TYPE_BANK0 == comboBoxInitialFirmwareOutputFormat.Text) ||
+				(OUTPUT_FORMAT_TYPE_BANK0_BOOTLOADR == comboBoxInitialFirmwareOutputFormat.Text))
+			{
+				GenerateInitialUserprogDefault(mcuName);
+			}
+			else
+			{
+				GenerateInitialUserprogOption(mcuName);
+			}
+		}
+
+		private void GenerateInitialUserprogOption(string mcuName)
+		{
+			byte[] code_flash_image = new byte[1024 * 1024 * 4];  // 4MB image
+			byte[] data_flash_image = new byte[1024 * 1024 * 4];  // 4MB image
+			rsu_header rsu_header_data = new rsu_header();
+			byte[] userProgramKey = convertStrDataToKeyData(textBoxInitialUserProgramKey_Aes128.Text, USER_PROGRAM_KEY_BYTE_SIZE);
+			GetUserProgram(mcuName, textBoxInitialUserProgramFilePathBank0.Text, ref code_flash_image, ref data_flash_image);
+			CreateCryptStream(mcuName, FIRMWARE_TYPE_INITIAL, comboBoxInitialFirmwareVerificationType.Text, textBoxInitialFirmwareSequenceNumberBank0.Text,
+				  ref code_flash_image, ref data_flash_image, ref rsu_header_data, userProgramKey);
+			GetUserProgram(mcuName, textBoxInitialUserProgramFilePathBank1.Text, ref code_flash_image, ref data_flash_image);
+			CreateCryptStream(mcuName, FIRMWARE_TYPE_INITIAL, comboBoxInitialFirmwareVerificationType.Text, textBoxInitialFirmwareSequenceNumberBank1.Text,
+							  ref code_flash_image, ref data_flash_image, ref rsu_header_data, userProgramKey);
+		}
+
+		private void GenerateInitialUserprogDefault(string mcuName)
         {
             string check_sum;
             string s0_buf = "";
@@ -2128,20 +2531,19 @@ namespace Renesas_Secure_Flash_Programmer
             string s3_header_buf = "";
             string s3_app_buf = "";
             string s3_boot_buf = "";
-			            
-            /* ユーザアプリ読み出す。指定したパスから読み出せるようにする */
-            //StreamReader sr_user_application = new StreamReader(textBoxUserProgramFilePath.Text, Encoding.GetEncoding("Shift_JIS"));
-            StreamReader sr_user_application = new StreamReader(textBoxInitialUserProgramFilePath.Text, Encoding.GetEncoding("Shift_JIS"));
+
+			/* ユーザアプリ読み出す。指定したパスから読み出せるようにする */
+			StreamReader sr_user_application = new StreamReader(textBoxInitialUserProgramFilePathBank0.Text, Encoding.GetEncoding("Shift_JIS"));
             string str_user_application = sr_user_application.ReadToEnd();
             sr_user_application.Close();
 
-            /* S0: Initila_firm.mot */
-            /* レコードマーク/タイプ: S0 */
-            /* レコード長: 0F */
-            /* アドレス: 0000 */
-            /* データ: 6177735F746573742E6D6F74(userprog.mot) */
-            /* チェックサム: check_sumの値 */
-            current_pointer = 0;
+			/* S0: Initila_firm.mot */
+			/* レコードマーク/タイプ: S0 */
+			/* レコード長: 0F */
+			/* アドレス: 0000 */
+			/* データ: 6177735F746573742E6D6F74(userprog.mot) */
+			/* チェックサム: check_sumの値 */
+			current_pointer = 0;
             next_pointer = 0;
             check_sum = CalculateMotorolaChecksum(INITIAL_FIRM_MOT_S0_FORMAT);
             StringBuilder sb = new StringBuilder();
@@ -2188,8 +2590,16 @@ namespace Renesas_Secure_Flash_Programmer
             {
                 data_flash_image[i] = 0xff;
             }
-            //Set Aes key size
-            aesCryptoProvider.KeySize = 128;
+
+#if !MYDEFINE
+			rsu_header rsu_header_data = new rsu_header();
+			GetUserProgram(mcuName, textBoxInitialUserProgramFilePathBank0.Text, ref code_flash_image, ref data_flash_image);
+			CreateCryptStream(mcuName, FIRMWARE_TYPE_INITIAL, comboBoxInitialFirmwareVerificationType.Text, textBoxInitialFirmwareSequenceNumberBank0.Text,
+							  ref code_flash_image, ref data_flash_image, ref rsu_header_data, userProgramKey);
+
+#else
+			//Set Aes key size
+			aesCryptoProvider.KeySize = 128;
 
             byte[] iv = new byte[16];
             byte[] iv_init = new byte[16];
@@ -2229,109 +2639,12 @@ namespace Renesas_Secure_Flash_Programmer
             using (CryptoStream cs2 = new CryptoStream(ms2, encrypt2, CryptoStreamMode.Write))
             using (CryptoStream cs3 = new CryptoStream(ms3, encrypt3, CryptoStreamMode.Write))
             using (CryptoStream cs4 = new CryptoStream(ms4, encrypt4, CryptoStreamMode.Write))
-            using (StreamReader sr = new StreamReader(textBoxInitialUserProgramFilePath.Text))
+
+			//using (StreamReader sr = new StreamReader(textBoxInitialUserProgramFilePathBank0.Text))
             using (BinaryWriter bw = new BinaryWriter(File.Open(saveFileDialog.FileName, FileMode.Create)))
             {
-                uint current_user_firm_address = 0;
-                int total_length = 0;
-                byte[] data;
-
-                while (true)
-                {
-                    string line = sr.ReadLine();
-                    if (line == null)
-                    {
-                        break;
-                    }
-
-                    string[] line_buf = new string[16];
-
-                    line_buf[0] = line.Substring(0, 2);    // type field
-                    line_buf[1] = line.Substring(2, 2);    // length
-
-                    switch (line_buf[0])
-                    {
-                        case "S0":
-                            line_buf[2] = line.Substring(4, 4);                 // zero
-                            line_buf[3] = line.Substring(8, line.Length - 8);   // comment
-                            break;
-                        case "S1":
-                            line_buf[2] = line.Substring(4, 4);                 // address
-                            line_buf[3] = line.Substring(8, line.Length - 8);   // comment
-                            break;
-                        case "S2":
-                            line_buf[2] = line.Substring(4, 6);                 // address
-                            line_buf[3] = line.Substring(10, line.Length - 10); // comment
-                            break;
-                        case "S3":
-                            line_buf[2] = line.Substring(4, 8);                 // address
-                            line_buf[3] = line.Substring(12, line.Length - 12); // comment
-                            break;
-                        case "S4":
-                            break;
-                        case "S5":
-                            line_buf[2] = line.Substring(4, 4);                 // recode number
-                            break;
-                        case "S6":
-                            break;
-                        case "S7":
-                            break;
-                    }
-
-                    if ((line_buf[0] == "S3") || (line_buf[0] == "S2"))
-                    {
-                        int data_len;
-                        if (line_buf[0] == "S3")
-                        {
-                            data_len = Convert.ToByte(line_buf[1], 16) - 5;     // -5 means: (address = 4 byte + checksum = 1 byte)
-                        }
-                        else
-                        {
-                            data_len = Convert.ToByte(line_buf[1], 16) - 4;     // -4 means: (address = 3 byte + checksum = 1 byte)
-                        }
-
-                        current_user_firm_address = Convert.ToUInt32(line_buf[2], 16);
-
-                        if ((current_user_firm_address >= data_flash_top_address)
-                            && (current_user_firm_address <= data_flash_bottom_address))
-                        {
-                            if ((current_user_firm_address < user_program_const_data_top_address)
-                                || (current_user_firm_address > user_program_const_data_bottom_address))
-                            {
-                                print_log(String.Format("your motorola file includes prohibited address 0x{0:x08} on data flash, out of 0x{1:x08}-0x{2:x08}.\r\n", current_user_firm_address, user_program_const_data_top_address, user_program_const_data_bottom_address));
-                                return;
-                            }
-                            uint offset = Convert.ToUInt32(line_buf[2], 16) - user_program_const_data_top_address;
-                            for (int i = 0; (i / 2) < data_len; i += 2)
-                            {
-                                data_flash_image[(i / 2) + offset] = Convert.ToByte(line_buf[3].Substring(i, 2), 16);
-                            }
-                            current_user_firm_address = 0;
-                            continue;
-                        }
-
-                        if ((current_user_firm_address >= code_flash_top_address)
-                            && (current_user_firm_address <= code_flash_bottom_address))
-                        {
-                            if ((current_user_firm_address < user_program_top_address)
-                                || (current_user_firm_address > (user_program_bottom_address + 1)))
-                            {
-                                print_log(String.Format("your motorola file includes prohibited address 0x{0:x08} on code flash, out of 0x{1:x08}-0x{2:x08}.\r\n", current_user_firm_address, user_program_top_address, user_program_bottom_address));
-                                return;
-                            }
-                            uint offset = Convert.ToUInt32(line_buf[2], 16) - user_program_top_address;
-                            for (int i = 0; (i / 2) < data_len; i += 2)
-                            {
-                                code_flash_image[(i / 2) + offset] = Convert.ToByte(line_buf[3].Substring(i, 2), 16);
-                            }
-                            total_length += data_len;
-                            current_user_firm_address = 0;
-                            continue;
-                        }
-                    }
-                }
-
-                if (comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP)
+				GetUserProgram(mcuName, textBoxInitialUserProgramFilePathBank0.Text, ref code_flash_image, ref data_flash_image);
+				if (comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP)
                 {
                     // Execute encryption follow TSIP procedure
                     byte[] tmp = new byte[16];
@@ -2339,9 +2652,10 @@ namespace Renesas_Secure_Flash_Programmer
                     byte[] checksum = new byte[16];
                     byte[] SessionKey0 = new byte[16];
                     byte[] SessionKey1 = new byte[16];
+					byte[] data;
 
-                    for (int i = 0; i < (user_program_bottom_address + 1) - user_program_top_address; i += (aesCryptoProvider.BlockSize / 8))
-                    {
+					for (int i = 0; i < (user_program_bottom_address + 1) - user_program_top_address; i += (aesCryptoProvider.BlockSize / 8))
+					{
                         for (int j = 0; j < aesCryptoProvider.BlockSize / 8; j++)
                         {
                             checksum[j] = Convert.ToByte(code_flash_image[i + j] ^ checksum[j]);
@@ -2404,7 +2718,7 @@ namespace Renesas_Secure_Flash_Programmer
                     string sessionkey0_base64 = Convert.ToBase64String(SessionKey0, 0, 16);
                     string sessionkey1_base64 = Convert.ToBase64String(SessionKey1, 0, 16);
                     string max_cnt = Convert.ToString((((user_program_bottom_address + 1) - user_program_top_address) / 4) + 4, 16); // +4 means for checksum
-                    string checksum_base64 = Convert.ToBase64String(checksum, 0, 16);
+					string checksum_base64 = Convert.ToBase64String(checksum, 0, 16);
                     string script;
                     script = $"iv {iv_base64}\r\n";
                     script += $"sessionkey0 {sessionkey0_base64}\r\n";
@@ -2418,7 +2732,7 @@ namespace Renesas_Secure_Flash_Programmer
                     for (int i = 0; i < ms2.Length; i += 16)
                     {
                         string user_program_address = Convert.ToString(user_program_top_address + i, 16);
-                        string user_program_base64 = Convert.ToBase64String(ms1.GetBuffer(), i, 16);
+						string user_program_base64 = Convert.ToBase64String(ms1.GetBuffer(), i, 16);
 
                         // Create pdate data②(upprogram)
                         script = $"upprogram {user_program_address} {user_program_base64}\r\n";
@@ -2441,13 +2755,13 @@ namespace Renesas_Secure_Flash_Programmer
 
                     rsu_header_data.dataflash_flag = 1;
                     rsu_header_data.dataflash_start_address = McuSpecs[comboBox_Initial_Mcu_firmupdate.Text].userProgramConstDataTopAddress;
-                    rsu_header_data.dataflash_end_address = McuSpecs[comboBox_Initial_Mcu_firmupdate.Text].userProgramConstDataBottomAddress;
+					rsu_header_data.dataflash_end_address = McuSpecs[comboBox_Initial_Mcu_firmupdate.Text].userProgramConstDataBottomAddress;
 
-                    rsu_header_data.sequence_number = Convert.ToUInt32(textBoxInitialFirmwareSequenceNumber.Text);
+					rsu_header_data.sequence_number = Convert.ToUInt32(textBoxInitialFirmwareSequenceNumberBank0.Text);
                     rsu_header_data.start_address = McuSpecs[comboBox_Initial_Mcu_firmupdate.Text].userProgramTopAddress;
-                    rsu_header_data.end_address = McuSpecs[comboBox_Initial_Mcu_firmupdate.Text].userProgramBottomAddress;
-                    rsu_header_data.execution_address = McuSpecs[comboBox_Initial_Mcu_firmupdate.Text].userProgramBottomAddress - 3;
-                    rsu_header_data.hardware_id = McuSpecs[comboBox_Initial_Mcu_firmupdate.Text].hardwareId;
+					rsu_header_data.end_address = McuSpecs[comboBox_Initial_Mcu_firmupdate.Text].userProgramBottomAddress;
+					rsu_header_data.execution_address = McuSpecs[comboBox_Initial_Mcu_firmupdate.Text].userProgramBottomAddress - 3;
+					rsu_header_data.hardware_id = McuSpecs[comboBox_Initial_Mcu_firmupdate.Text].hardwareId;
 
                     // calculate hash
                     if (comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_HASH_SHA256)
@@ -2466,7 +2780,7 @@ namespace Renesas_Secure_Flash_Programmer
 
                         int offset = CODE_FLASH_SIGNATURE_AREA_OFFSET;
                         int size = Convert.ToInt32((user_program_bottom_address + 1) - code_flash_top_address) - offset;
-                        bs = sha_1.ComputeHash(tmp, 0, size);
+						bs = sha_1.ComputeHash(tmp, 0, size);
                         sha_1.Clear();
                         hash_size = (sha_1.HashSize / 8);
                         hash_value = Convert.ToBase64String(bs, 0, hash_size);
@@ -2491,7 +2805,7 @@ namespace Renesas_Secure_Flash_Programmer
 
                         int offset = CODE_FLASH_SIGNATURE_AREA_OFFSET;
                         int size = Convert.ToInt32((user_program_bottom_address + 1) - code_flash_top_address) - offset;
-                        bs = sha_256.ComputeHash(tmp, 0, size);
+						bs = sha_256.ComputeHash(tmp, 0, size);
                         sha_256.Clear();
                         hash_size = (sha_256.HashSize / 8);
                         hash_value = Convert.ToBase64String(bs, 0, hash_size);
@@ -2515,7 +2829,7 @@ namespace Renesas_Secure_Flash_Programmer
                         tmp = tmp.Concat(code_flash_image).ToArray();
                         Array.Resize(ref tmp, (Int32)(Descriptor_address_size + (user_program_bottom_address + 1) - user_program_top_address));
 
-                        byte[] signature = Sign(tmp, textBoxInitialUserPrivateKeyPath.Text);
+						byte[] signature = Sign(tmp, textBoxInitialUserPrivateKeyPath.Text);
                         bool result = Verify(tmp, signature, textBoxInitialUserPrivateKeyPath.Text);
                         if (false == result)
                         {
@@ -2532,7 +2846,7 @@ namespace Renesas_Secure_Flash_Programmer
                         return;
                     }
 
-                    if (checkBox1_InitialOutputBinaryFormat.Checked)
+					if (OUTPUT_FORMAT_TYPE_BANK0 == comboBoxInitialFirmwareOutputFormat.Text)
                     {
                         bw.Write(rsu_header_data.magic_code);
                         bw.Write(rsu_header_data.image_flag);
@@ -2550,12 +2864,14 @@ namespace Renesas_Secure_Flash_Programmer
                         bw.Write(rsu_header_data.hardware_id);
                         bw.Write(rsu_header_data.reserved2);
                         bw.Write(code_flash_image, 0, (int)((user_program_bottom_address + 1) - user_program_top_address));
-                        bw.Write(data_flash_image, 0, (int)((data_flash_bottom_address + 1) - data_flash_top_address));
+						bw.Write(data_flash_image, 0, (int)((data_flash_bottom_address + 1) - data_flash_top_address));
                     }
                 }
             }
-            if ((checkBox1_InitialOutputBinaryFormat.Checked == false) && ((comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_HASH_SHA256) ||
-                         (comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA)))
+#endif
+			if ((OUTPUT_FORMAT_TYPE_BANK0 != comboBoxInitialFirmwareOutputFormat.Text) && 
+				((comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_HASH_SHA256) ||
+                 (comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA)))
             {
 				/* ブートローダ読みだす。指定したパスから読み出せるようにする */
 				StreamReader sr_boot_loader = new StreamReader(textBoxInitialBootLoaderUserProgramFilePath.Text, Encoding.GetEncoding("Shift_JIS"));
@@ -2712,7 +3028,7 @@ namespace Renesas_Secure_Flash_Programmer
                 // check combination of Firmware Verification Type x Use Code signing for AWS IoT
 
                 // check user proguram file path
-                if (!File.Exists(textBoxInitialUserProgramFilePath.Text))
+                if (!File.Exists(textBoxInitialUserProgramFilePathBank0.Text))
                 {
                     print_log("please specify the motorola file name.");
                     return;
@@ -2738,7 +3054,7 @@ namespace Renesas_Secure_Flash_Programmer
                     }
                 }
 
-                if (checkBox1_InitialOutputBinaryFormat.Checked)
+                if (OUTPUT_FORMAT_TYPE_BANK0 == comboBoxInitialFirmwareOutputFormat.Text)
                 {
                     // Displays a SaveFileDialog so the user can save
                     saveFileDialog.Filter = "Renesas Secure Update|*.rsu";
@@ -2770,41 +3086,23 @@ namespace Renesas_Secure_Flash_Programmer
             }
         }
 
-        private void groupBox5_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label9_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void buttonBrowseInitialBootLoaderUserprog_Click(object sender, EventArgs e)
         {
-            // Displays a OpenFileDialog so the user can save the Image
-            openFileDialog.Filter = "Motorola Format File|*.mot";
-            openFileDialog.Title = "Open the Motorola Format File from Boot Loader";
-            openFileDialog.FileName = "";
+			if (textBoxInitialBootLoaderUserProgramFilePath.Enabled)
+			{
+				// Displays a OpenFileDialog so the user can save the Image
+				openFileDialog.Filter = "Motorola Format File|*.mot";
+				openFileDialog.Title = "Open the Motorola Format File from Boot Loader";
+				openFileDialog.FileName = "";
 
-            if (openFileDialog.ShowDialog() != DialogResult.OK || openFileDialog.FileName == "")
-            {
-                print_log("please specify the motorola file name.");
-                return;
-            }
+				if (openFileDialog.ShowDialog() != DialogResult.OK || openFileDialog.FileName == "")
+				{
+					print_log("please specify the motorola file name.");
+					return;
+				}
 
-            textBoxInitialBootLoaderUserProgramFilePath.Text = openFileDialog.FileName;
+				textBoxInitialBootLoaderUserProgramFilePath.Text = openFileDialog.FileName;
+			}
         }
-
-        private void checkBox1_InitialOutputBinaryFormat_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBox1_InitialOutputBinaryFormat.Checked)
-            {
-                textBoxInitialBootLoaderUserProgramFilePath.Enabled = false;
-            } else
-            {
-                textBoxInitialBootLoaderUserProgramFilePath.Enabled = true;
-            }
-        }
-    }
+	}
 }
