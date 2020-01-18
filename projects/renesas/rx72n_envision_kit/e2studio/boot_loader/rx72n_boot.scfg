@@ -18,10 +18,10 @@
 <Item current="" id="vccSetting.InputValue"/>
 <Item current="vcc2_7-3_6" id="vccSetting.OutputValue"/>
 <Item current="3.3" id="vccSetting.vccTxt"/>
-<Item current="false" id="mainclock.selectBox"/>
+<Item current="true" id="mainclock.selectBox"/>
 <Item current="" id="mainclock.InputValue"/>
-<Item current="" id="mainclock.OutputValue"/>
-<Item current="24" error="false" id="mainclock.frequencyTxt"/>
+<Item current="16 MHz" id="mainclock.OutputValue"/>
+<Item current="16" error="false" id="mainclock.frequencyTxt"/>
 <Item current="srcR" id="mainclock.sourceBox"/>
 <Item current="9980" id="mainclock.cycleValueTxt"/>
 <Item current="false" id="subclock.selectBox"/>
@@ -30,9 +30,9 @@
 <Item current="32.768" error="false" id="subclock.frequencyTxt"/>
 <Item current="standardCL" id="subclock.generalBox"/>
 <Item current="2000" id="subclock.cycleValueTxt"/>
-<Item current="true" id="hococlock.selectBox"/>
+<Item current="false" id="hococlock.selectBox"/>
 <Item current="" id="hococlock.InputValue"/>
-<Item current="16 MHz" id="hococlock.OutputValue"/>
+<Item current="" id="hococlock.OutputValue"/>
 <Item current="frq16" id="hococlock.frequencyListBox"/>
 <Item current="false" id="lococlock.selectBox"/>
 <Item current="" id="lococlock.InputValue"/>
@@ -45,10 +45,10 @@
 <Item current="true" id="pllSourceSelect.isSelected"/>
 <Item current="" id="pllSourceSelect.InputValue"/>
 <Item current="16 MHz" id="pllSourceSelect.OutputValue"/>
-<Item current="swthococlock" id="pllSourceSelect.radiobutton"/>
-<Item current="1" id="pllSourceSelect.CurrentValue"/>
-<Item current="true" id="pllSourceSelect.buttonDisable.0"/>
-<Item current="false" id="pllSourceSelect.buttonDisable.1"/>
+<Item current="swtmainclock" id="pllSourceSelect.radiobutton"/>
+<Item current="0" id="pllSourceSelect.CurrentValue"/>
+<Item current="false" id="pllSourceSelect.buttonDisable.0"/>
+<Item current="true" id="pllSourceSelect.buttonDisable.1"/>
 <Item current="true" id="pll.isSelected"/>
 <Item current="16 MHz" id="pll.InputValue"/>
 <Item current="240.0 MHz" id="pll.OutputValue"/>
@@ -67,20 +67,20 @@
 <Item current="swtpll" id="sckselector.radiobutton"/>
 <Item current="0" id="sckselector.CurrentValue"/>
 <Item current="false" id="sckselector.buttonDisable.0"/>
-<Item current="true" id="sckselector.buttonDisable.1"/>
+<Item current="false" id="sckselector.buttonDisable.1"/>
 <Item current="true" id="sckselector.buttonDisable.2"/>
-<Item current="false" id="sckselector.buttonDisable.3"/>
+<Item current="true" id="sckselector.buttonDisable.3"/>
 <Item current="true" id="sckselector.buttonDisable.4"/>
 <Item current="true" id="ckoselector.isSelected"/>
 <Item current="" id="ckoselector.InputValue"/>
 <Item current="16 MHz" id="ckoselector.OutputValue"/>
-<Item current="swthococlock" id="ckoselector.radiobutton"/>
-<Item current="4" id="ckoselector.CurrentValue"/>
+<Item current="swtmainclock" id="ckoselector.radiobutton"/>
+<Item current="2" id="ckoselector.CurrentValue"/>
 <Item current="false" id="ckoselector.buttonDisable.0"/>
 <Item current="false" id="ckoselector.buttonDisable.1"/>
-<Item current="true" id="ckoselector.buttonDisable.2"/>
+<Item current="false" id="ckoselector.buttonDisable.2"/>
 <Item current="true" id="ckoselector.buttonDisable.3"/>
-<Item current="false" id="ckoselector.buttonDisable.4"/>
+<Item current="true" id="ckoselector.buttonDisable.4"/>
 <Item current="true" id="ckoselector.buttonDisable.5"/>
 <Item current="true" id="bckdivider.isSelected"/>
 <Item current="240.0 MHz" id="bckdivider.InputValue"/>
@@ -124,9 +124,9 @@
 <Item current="120.0 MHz" id="pclkadivider.OutputValue"/>
 <Item current="sckselector.radiobutton.swtpll" id="pclkadivider.Condition"/>
 <Item current="comboBox1-2" error="false" id="pclkadivider.comboBox"/>
-<Item current="false" id="uckdivider.selectBox"/>
+<Item current="true" id="uckdivider.selectBox"/>
 <Item current="240.0 MHz" id="uckdivider.InputValue"/>
-<Item current="" id="uckdivider.OutputValue"/>
+<Item current="48.0 MHz" id="uckdivider.OutputValue"/>
 <Item current="sckselector.radiobutton.swtpll" id="uckdivider.Condition"/>
 <Item current="comboBox1-5" error="false" id="uckdivider.comboBox"/>
 <Item current="true" id="iclkdivider.isSelected"/>
@@ -141,16 +141,16 @@
 <Item current="true" id="ckodivider.isSelected"/>
 <Item current="16 MHz" id="ckodivider.InputValue"/>
 <Item current="16.0 MHz" id="ckodivider.OutputValue"/>
-<Item current="ckoselector.radiobutton.swthococlock" id="ckodivider.Condition"/>
+<Item current="ckoselector.radiobutton.swtmainclock" id="ckodivider.Condition"/>
 <Item current="comboBox1-1" error="false" id="ckodivider.comboBox"/>
 <Item current="16 MHz" error="false" id="ckodivider.PreOutput"/>
 <Item current="ckoselector" error="false" id="ckodivider.PreOutputController"/>
-<Item current="false" id="uclkSourceSelect.isSelected"/>
-<Item current="" id="uclkSourceSelect.InputValue"/>
-<Item current="" id="uclkSourceSelect.OutputValue"/>
+<Item current="true" id="uclkSourceSelect.isSelected"/>
+<Item current="48.0 MHz" id="uclkSourceSelect.InputValue"/>
+<Item current="48.0 MHz" id="uclkSourceSelect.OutputValue"/>
 <Item current="swtuckdivider" id="uclkSourceSelect.radiobutton"/>
 <Item current="0" id="uclkSourceSelect.CurrentValue"/>
-<Item current="true" id="uclkSourceSelect.buttonDisable.0"/>
+<Item current="false" id="uclkSourceSelect.buttonDisable.0"/>
 <Item current="false" id="uclkSourceSelect.buttonDisable.1"/>
 <Item current="true" id="outckSourceSelect.isSelected"/>
 <Item current="200.0 MHz" id="outckSourceSelect.InputValue"/>
@@ -222,13 +222,13 @@
 <Item current="80.0" id="sdclk.CurrentValue"/>
 <Item current="true" id="sdclk.Disabled"/>
 <Item current="false" id="sdclk.SelectBoxDisabled"/>
-<Item current="false" id="uclk.isSelected"/>
-<Item current="" id="uclk.InputValue"/>
-<Item current="0" id="uclk.OutputValue"/>
-<Item current="-" id="uclk.frequencyTxt"/>
+<Item current="true" id="uclk.isSelected"/>
+<Item current="48.0 MHz" id="uclk.InputValue"/>
+<Item current="48.0 MHz" id="uclk.OutputValue"/>
+<Item current="48.0" id="uclk.frequencyTxt"/>
 <Item current="MHz" id="uclk.unitTxt"/>
 <Item current="48.0" id="uclk.CurrentValue"/>
-<Item current="true" id="uclk.Disabled"/>
+<Item current="false" id="uclk.Disabled"/>
 <Item current="true" id="outckdivider.isSelected"/>
 <Item current="200.0 MHz" id="outckdivider.InputValue"/>
 <Item current="25.0 MHz" id="outckdivider.OutputValue"/>
@@ -260,13 +260,13 @@
 <Item current="-" id="caclclk.frequencyTxt"/>
 <Item current="MHz" id="caclclk.unitTxt"/>
 <Item current="true" id="caclclk.Disabled"/>
-<Item current="true" id="cachclk.isSelected"/>
-<Item current="16 MHz" id="cachclk.InputValue"/>
-<Item current="16 MHz" id="cachclk.OutputValue"/>
-<Item current="16" id="cachclk.frequencyTxt"/>
+<Item current="false" id="cachclk.isSelected"/>
+<Item current="" id="cachclk.InputValue"/>
+<Item current="0" id="cachclk.OutputValue"/>
+<Item current="-" id="cachclk.frequencyTxt"/>
 <Item current="MHz" id="cachclk.unitTxt"/>
 <Item current="16" id="cachclk.CurrentValue"/>
-<Item current="false" id="cachclk.Disabled"/>
+<Item current="true" id="cachclk.Disabled"/>
 <Item current="false" id="cacsclk.isSelected"/>
 <Item current="" id="cacsclk.InputValue"/>
 <Item current="0" id="cacsclk.OutputValue"/>
@@ -280,13 +280,13 @@
 <Item current="MHz" id="rtcclk.unitTxt"/>
 <Item current="true" id="rtcclk.Disabled"/>
 <Item current="true" id="rtcclk.SelectBoxDisabled"/>
-<Item current="false" id="cacmclk.isSelected"/>
-<Item current="" id="cacmclk.InputValue"/>
-<Item current="0" id="cacmclk.OutputValue"/>
-<Item current="-" id="cacmclk.frequencyTxt"/>
+<Item current="true" id="cacmclk.isSelected"/>
+<Item current="16 MHz" id="cacmclk.InputValue"/>
+<Item current="16 MHz" id="cacmclk.OutputValue"/>
+<Item current="16" id="cacmclk.frequencyTxt"/>
 <Item current="MHz" id="cacmclk.unitTxt"/>
-<Item current="24" id="cacmclk.CurrentValue"/>
-<Item current="true" id="cacmclk.Disabled"/>
+<Item current="16" id="cacmclk.CurrentValue"/>
+<Item current="false" id="cacmclk.Disabled"/>
 </tool>
 <tool id="Pins" version="1.0.1.0">
 <pinItem allocation="50" comments="" direction="None" id="CLKOUT25M" locked="false" status="0"/>
@@ -316,6 +316,8 @@
 <pinItem allocation="101$B" comments="" direction="None" id="LCD_DATA9" locked="false" status="0"/>
 <pinItem allocation="128" comments="" direction="None" id="RXD7" locked="false" status="0"/>
 <pinItem allocation="131" comments="" direction="None" id="TXD7" locked="false" status="0"/>
+<pinItem allocation="20" comments="" direction="None" id="XTAL" locked="false" status="0"/>
+<pinItem allocation="22" comments="" direction="None" id="EXTAL" locked="false" status="0"/>
 </tool>
 <tool id="Interrupt">
 <Item id="BSC_BUSERR" priority="15"/>
@@ -755,7 +757,7 @@
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 </configuration>
 <configuration inuse="true" name="r_glcdc_rx">
-<component description="依存モジュール: r_bsp バージョン 5.20&#10;The GLCDC FIT module provides the method to output image data read from memory to the LCD panel. " detailDescription="Graphics LCD Controller Module." display="r_glcdc_rx" id="r_glcdc_rx1.20" version="1.20">
+<component description="依存モジュール: r_bsp バージョン 5.50&#10;The GLCDC FIT module provides the method to output image data read from memory to the LCD panel. " detailDescription="Graphics LCD Controller Module." display="r_glcdc_rx" id="r_glcdc_rx1.20" version="1.20">
 <gridItem id="LCD_CLK" selectedIndex="1"/>
 <gridItem id="LCD_TCON0" selectedIndex="1"/>
 <gridItem id="LCD_TCON1" selectedIndex="0"/>

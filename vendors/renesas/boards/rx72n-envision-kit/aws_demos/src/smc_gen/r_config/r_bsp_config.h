@@ -281,7 +281,7 @@ NOTE: The RAM areas are not contiguous.It is separated by 512 KB each.
    0 = Main clock (default)
    1 = HOCO
 */
-#define BSP_CFG_PLL_SRC                 (1) /* Generated value. Do not edit this manually */
+#define BSP_CFG_PLL_SRC                 (0) /* Generated value. Do not edit this manually */
 
 /* PLL Input Frequency Division Ratio Select (PLIDIV).
    Available divisors = /1 (no division), /2, /3

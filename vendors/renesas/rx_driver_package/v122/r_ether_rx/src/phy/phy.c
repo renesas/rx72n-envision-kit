@@ -165,11 +165,20 @@ void phy_start_autonegotiate (uint32_t ether_channel, uint8_t pause)
     /* When pause frame is not used */
     if (ETHER_FLAG_OFF == pause)
     {
-        local_advertise[ether_channel] = ((((PHY_AN_ADVERTISEMENT_100F |
+#if 0
+    	/* enable 100Mbps link (default) */
+    	local_advertise[ether_channel] = ((((PHY_AN_ADVERTISEMENT_100F |
         PHY_AN_ADVERTISEMENT_100H) |
         PHY_AN_ADVERTISEMENT_10F) |
         PHY_AN_ADVERTISEMENT_10H) |
         PHY_AN_ADVERTISEMENT_SELECTOR);
+#else
+    	/* disable 100Mbps link (patch for RX72N Envision Kit prototype) */
+    	local_advertise[ether_channel] = (((
+        PHY_AN_ADVERTISEMENT_10F) |
+        PHY_AN_ADVERTISEMENT_10H) |
+        PHY_AN_ADVERTISEMENT_SELECTOR);
+#endif
 #if BSP_CFG_PLL_SRC == 1
         local_advertise[ether_channel] = (((
         PHY_AN_ADVERTISEMENT_10F) |

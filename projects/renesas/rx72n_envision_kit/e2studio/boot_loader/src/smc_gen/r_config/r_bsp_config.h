@@ -220,7 +220,7 @@ NOTE: The RAM areas are not contiguous.It is separated by 512 KB each.
    4 = PLL circuit
    6 = PPLL circuit
  */
-#define BSP_CFG_CLKOUT_SOURCE           (1) /* Generated value. Do not edit this manually */
+#define BSP_CFG_CLKOUT_SOURCE           (2) /* Generated value. Do not edit this manually */
 
 /* The sub-clock oscillation control for using the RTC.
    When '1' is selected, the registers related to RTC are initialized and the sub-clock oscillator is operated.
@@ -266,7 +266,7 @@ NOTE: The RAM areas are not contiguous.It is separated by 512 KB each.
 */
 
 /* Input clock frequency in Hz (XTAL or EXTAL). */
-#define BSP_CFG_XTAL_HZ                 (24000000) /* Generated value. Do not edit this manually */
+#define BSP_CFG_XTAL_HZ                 (16000000) /* Generated value. Do not edit this manually */
 
 /* The HOCO can operate at several different frequencies. Choose which one using the macro below.
    Available frequency settings:
@@ -281,7 +281,7 @@ NOTE: The RAM areas are not contiguous.It is separated by 512 KB each.
    0 = Main clock (default)
    1 = HOCO
 */
-#define BSP_CFG_PLL_SRC                 (1) /* Generated value. Do not edit this manually */
+#define BSP_CFG_PLL_SRC                 (0) /* Generated value. Do not edit this manually */
 
 /* PLL Input Frequency Division Ratio Select (PLIDIV).
    Available divisors = /1 (no division), /2, /3
@@ -331,7 +331,7 @@ NOTE: The RAM areas are not contiguous.It is separated by 512 KB each.
 /* USB Clock Divider Select.
    Available divisors = /2, /3, /4, /5
 */
-#define BSP_CFG_UCK_DIV                 (2) /* Generated value. Do not edit this manually */
+#define BSP_CFG_UCK_DIV                 (5) /* Generated value. Do not edit this manually */
 
 /* PPLL Input Frequency Division Ratio Select (PPLIDIV).
    Available divisors = /1 (no division), /2, /3
