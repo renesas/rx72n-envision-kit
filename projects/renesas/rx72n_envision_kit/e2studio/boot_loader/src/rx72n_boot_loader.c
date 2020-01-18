@@ -14,13 +14,13 @@
 #include "r_sci_rx_if.h"
 #include "r_simple_graphic_if.h"
 #include "r_simple_glcdc_config_rx_if.h"
-
+#include "r_simple_filesystem_on_dataflash_if.h"
 #include "r_sci_rx_pinset.h"
 
 #include "base64_decode.h"
 #include "code_signer_public_key.h"
 
-/* tinycrypto */
+/* tinycrypt */
 #include "tinycrypt/sha256.h"
 #include "tinycrypt/ecc.h"
 #include "tinycrypt/ecc_dsa.h"
@@ -38,8 +38,8 @@
 #define BOOT_LOADER_MIRROR_BLOCK_NUM_FOR_SMALL 8
 #define BOOT_LOADER_MIRROR_BLOCK_NUM_FOR_MEDIUM 6
 
-#define BOOT_LOADER_USER_CONST_DATA_LOW_ADDRESS FLASH_DF_BLOCK_0
-#define BOOT_LOADER_CONST_DATA_BLOCK_NUM 256
+#define BOOT_LOADER_USER_CONST_DATA_LOW_ADDRESS FLASH_DF_BLOCK_32
+#define BOOT_LOADER_USER_CONST_DATA_BLOCK_NUM 256
 
 #define BOOT_LOADER_USER_FIRMWARE_HEADER_LENGTH 0x200
 #define BOOT_LOADER_USER_FIRMWARE_DESCRIPTOR_LENGTH 0x100
@@ -54,7 +54,7 @@
 #define BOOT_LOADER_UPDATE_TEMPORARY_AREA_LOW_ADDRESS FLASH_CF_LO_BANK_LO_ADDR
 #define BOOT_LOADER_UPDATE_EXECUTE_AREA_LOW_ADDRESS FLASH_CF_HI_BANK_LO_ADDR
 #define BOOT_LOADER_UPDATE_TARGET_BLOCK_NUMBER (FLASH_NUM_BLOCKS_CF - BOOT_LOADER_MIRROR_BLOCK_NUM_FOR_SMALL - BOOT_LOADER_MIRROR_BLOCK_NUM_FOR_MEDIUM)
-#define BOOT_LOADER_UPDATE_CONST_DATA_TARGET_BLOCK_NUMBER (FLASH_NUM_BLOCKS_DF - BOOT_LOADER_CONST_DATA_BLOCK_NUM)
+#define BOOT_LOADER_UPDATE_CONST_DATA_TARGET_BLOCK_NUMBER (FLASH_NUM_BLOCKS_DF - BOOT_LOADER_USER_CONST_DATA_BLOCK_NUM)
 #define USER_RESET_VECTOR_ADDRESS (BOOT_LOADER_LOW_ADDRESS - 4)
 
 #define BOOT_LOADER_SUCCESS         (0)
@@ -227,9 +227,10 @@ sci_hdl_t     my_sci_handle;
 SCI_RECEIVE_CONTROL_BLOCK sci_receive_control_block;
 SCI_BUFFER_CONTROL sci_buffer_control[BOOT_LOADER_SCI_CONTROL_BLOCK_TOTAL_NUM];
 
-static int32_t firmware_verification_sha256_ecdsa(const uint8_t * pucData, uint32_t ulSize, const uint8_t * pucSignature, uint32_t ulSignatureSize);
+static int32_t firmware_verification_sha256_ecdsa(const uint8_t * pucData, uint32_t ulSize, const uint8_t * pucSignature, uint32_t ulSignatureSize, uint8_t *local_code_signer_public_key);
 const uint8_t code_signer_public_key[] = CODE_SIGNENR_PUBLIC_KEY_PEM;
 const uint32_t code_signer_public_key_length = sizeof(code_signer_public_key);
+const uint8_t code_signer_public_key_label[] = "code signer public key";
 
 void main(void)
 {
@@ -282,6 +283,8 @@ static int32_t secure_boot(void)
     flash_interrupt_config_t cb_func_info;
 	FIRMWARE_UPDATE_CONTROL_BLOCK *firmware_update_control_block_tmp = (FIRMWARE_UPDATE_CONTROL_BLOCK*)load_firmware_control_block.flash_buffer;
 	int32_t verification_result = -1;
+	uint8_t *local_code_signer_public_key;
+	uint32_t local_code_signer_public_key_size;
 
     switch(secure_boot_state)
     {
@@ -290,6 +293,7 @@ static int32_t secure_boot(void)
 
     	    sci_cfg_t   my_sci_config;
     	    sci_err_t   my_sci_err;
+    	    SFD_HANDLE sfd_handle;
 
     	    /* Set up the configuration data structure for asynchronous (UART) operation. */
     	    my_sci_config.async.baud_rate    = MY_BSP_CFG_SERIAL_TERM_SCI_BITRATE;
@@ -318,6 +322,41 @@ static int32_t secure_boot(void)
     	    load_firmware_control_block.progress = 0;
     	    load_firmware_control_block.offset = 0;
 
+    	    /* startup system */
+    	    printf("-------------------------------------------------\r\n");
+    	    printf("RX72N secure boot program\r\n");
+    	    printf("-------------------------------------------------\r\n");
+
+    	    printf("Checking data flash ROM status.\r\n");
+    	    R_SFD_Open();
+
+    	    printf("Loading user code signer public key: ");
+    	    sfd_handle = R_SFD_FindObject((uint8_t *)code_signer_public_key_label, sizeof(code_signer_public_key_label));
+    	    if(sfd_handle != SFD_HANDLE_INVALID)
+    	    {
+    	    	printf("found.\r\n");
+    	    	R_SFD_GetObjectValue(sfd_handle, (uint8_t **)&local_code_signer_public_key, &local_code_signer_public_key_size);
+    	    }
+    	    else
+    	    {
+    	    	printf("not found.\r\n");
+				printf("provision the user code signer public key: ");
+				R_SFD_Open();
+				sfd_handle = R_SFD_SaveObject((uint8_t *)code_signer_public_key_label, sizeof(code_signer_public_key_label), (uint8_t *)code_signer_public_key, code_signer_public_key_length);
+				if(sfd_handle != SFD_HANDLE_INVALID)
+				{
+					printf("OK.\r\n");
+	    	    	R_SFD_GetObjectValue(sfd_handle, (uint8_t **)&local_code_signer_public_key, &local_code_signer_public_key_size);
+				}
+				else
+				{
+					printf("NG.\r\n");
+				}
+				R_SFD_Close();
+    	    }
+    	    R_SFD_Close();
+
+    	    printf("Checking code flash ROM status.\r\n");
     	    flash_api_error_code = R_FLASH_Open();
     	    if (FLASH_SUCCESS == flash_api_error_code)
     	    {
@@ -331,13 +370,6 @@ static int32_t secure_boot(void)
 				secure_boot_error_code = BOOT_LOADER_FAIL;
     	    }
 
-    	    /* startup system */
-    	    printf("-------------------------------------------------\r\n");
-    	    printf("RX72N secure boot program\r\n");
-    	    printf("-------------------------------------------------\r\n");
-
-    	    printf("Checking flash ROM status.\r\n");
-
     	    printf("bank 0 status = 0x%x [%s]\r\n", firmware_update_control_block_bank0->image_flag, get_status_string(firmware_update_control_block_bank0->image_flag));
     	    printf("bank 1 status = 0x%x [%s]\r\n", firmware_update_control_block_bank1->image_flag, get_status_string(firmware_update_control_block_bank1->image_flag));
 
@@ -347,6 +379,7 @@ static int32_t secure_boot(void)
     		cb_func_info.pcallback = my_flash_callback;
     		cb_func_info.int_priority = FLASH_INTERRUPT_PRIORITY;
     	    R_FLASH_Control(FLASH_CMD_SET_BGO_CALLBACK, (void *)&cb_func_info);
+
     	    secure_boot_state = BOOT_LOADER_STATE_BANK1_CHECK;
     		break;
 
@@ -377,7 +410,8 @@ static int32_t secure_boot(void)
 														(const uint8_t *)BOOT_LOADER_UPDATE_TEMPORARY_AREA_LOW_ADDRESS + BOOT_LOADER_USER_FIRMWARE_HEADER_LENGTH,
 														(FLASH_CF_MEDIUM_BLOCK_SIZE * BOOT_LOADER_UPDATE_TARGET_BLOCK_NUMBER) - BOOT_LOADER_USER_FIRMWARE_HEADER_LENGTH,
 														firmware_update_control_block_bank1->signature,
-														firmware_update_control_block_bank1->signature_size);
+														firmware_update_control_block_bank1->signature_size,
+														local_code_signer_public_key);
 				}
 				else
 				{
@@ -759,7 +793,8 @@ static int32_t secure_boot(void)
 																		(const uint8_t *)BOOT_LOADER_UPDATE_TEMPORARY_AREA_LOW_ADDRESS + BOOT_LOADER_USER_FIRMWARE_HEADER_LENGTH,
 																		(FLASH_CF_MEDIUM_BLOCK_SIZE * BOOT_LOADER_UPDATE_TARGET_BLOCK_NUMBER) - BOOT_LOADER_USER_FIRMWARE_HEADER_LENGTH,
 																		firmware_update_control_block_bank1->signature,
-																		firmware_update_control_block_bank1->signature_size);
+																		firmware_update_control_block_bank1->signature_size,
+																		local_code_signer_public_key);
 								}
 								else
 								{
@@ -886,7 +921,8 @@ static int32_t secure_boot(void)
 																	(const uint8_t *)BOOT_LOADER_UPDATE_EXECUTE_AREA_LOW_ADDRESS + BOOT_LOADER_USER_FIRMWARE_HEADER_LENGTH,
 																	(FLASH_CF_MEDIUM_BLOCK_SIZE * BOOT_LOADER_UPDATE_TARGET_BLOCK_NUMBER) - BOOT_LOADER_USER_FIRMWARE_HEADER_LENGTH,
 																	firmware_update_control_block_bank0->signature,
-																	firmware_update_control_block_bank0->signature_size);
+																	firmware_update_control_block_bank0->signature_size,
+																	local_code_signer_public_key);
 							}
 							else
 							{
@@ -977,7 +1013,8 @@ static int32_t secure_boot(void)
 															(const uint8_t *)BOOT_LOADER_UPDATE_TEMPORARY_AREA_LOW_ADDRESS + BOOT_LOADER_USER_FIRMWARE_HEADER_LENGTH,
 															(FLASH_CF_MEDIUM_BLOCK_SIZE * BOOT_LOADER_UPDATE_TARGET_BLOCK_NUMBER) - BOOT_LOADER_USER_FIRMWARE_HEADER_LENGTH,
 															firmware_update_control_block_bank1->signature,
-															firmware_update_control_block_bank1->signature_size);
+															firmware_update_control_block_bank1->signature_size,
+															local_code_signer_public_key);
 					}
 					else
 					{
@@ -1281,7 +1318,7 @@ static const uint8_t *get_status_string(uint8_t status)
 	return tmp;
 }
 
-static int32_t firmware_verification_sha256_ecdsa(const uint8_t * pucData, uint32_t ulSize, const uint8_t * pucSignature, uint32_t ulSignatureSize)
+static int32_t firmware_verification_sha256_ecdsa(const uint8_t * pucData, uint32_t ulSize, const uint8_t * pucSignature, uint32_t ulSignatureSize, uint8_t *local_code_signer_public_key)
 {
     int32_t xResult = -1;
     uint8_t pucHash[TC_SHA256_DIGEST_SIZE];
@@ -1297,11 +1334,11 @@ static int32_t firmware_verification_sha256_ecdsa(const uint8_t * pucData, uint3
     tc_sha256_final(pucHash, &xCtx);
 
     /* extract public key from code_signer_public_key (pem format) */
-    head_pointer = (uint8_t*)strstr((char *)code_signer_public_key, "-----BEGIN PUBLIC KEY-----");
+    head_pointer = (uint8_t*)strstr((char *)local_code_signer_public_key, "-----BEGIN PUBLIC KEY-----");
     if(head_pointer)
     {
     	head_pointer += strlen("-----BEGIN PUBLIC KEY-----");
-        tail_pointer = (uint8_t*)strstr((char *)code_signer_public_key, "-----END PUBLIC KEY-----");
+        tail_pointer = (uint8_t*)strstr((char *)local_code_signer_public_key, "-----END PUBLIC KEY-----");
     	base64_decode(head_pointer, binary, tail_pointer - head_pointer);
     	current_pointer = binary;
 		data_length = *(current_pointer + 1);
