@@ -135,6 +135,11 @@
 			<locationURI>AFR_HOME/freertos_kernel/timers.c</locationURI>
 		</link>
 		<link>
+			<name>application_code/renesas_code/gui_task.c</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code/gui_task.c</locationURI>
+		</link>
+		<link>
 			<name>application_code/renesas_code/guibuilder_output</name>
 			<type>2</type>
 			<locationURI>AFR_HOME/vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code/guibuilder_output</locationURI>
