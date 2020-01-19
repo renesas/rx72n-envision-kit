@@ -111,9 +111,9 @@ peripheral chosen.  As supplied this is CMT0. */
 /* Run time stats gathering definitions. */
 unsigned long ulGetRunTimeCounterValue( void );
 void vConfigureTimerForRunTimeStats( void );
-#define configGENERATE_RUN_TIME_STATS    0
-//#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()    vConfigureTimerForRunTimeStats()
-//#define portGET_RUN_TIME_COUNTER_VALUE()            ulGetRunTimeCounterValue()
+#define configGENERATE_RUN_TIME_STATS    1
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()    vConfigureTimerForRunTimeStats()
+#define portGET_RUN_TIME_COUNTER_VALUE()            ulGetRunTimeCounterValue()
 
 /* Co-routine definitions. */
 #define configUSE_CO_ROUTINES                   0
@@ -284,5 +284,7 @@ uint32_t ulRand(void);
 
 /* When the FIT configurator or the Smart Configurator is used, platform.h has to be used. */
 #define configINCLUDE_PLATFORM_H_INSTEAD_OF_IODEFINE_H  1
+
+#define configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H 1
 
 #endif /* FREERTOS_CONFIG_H */

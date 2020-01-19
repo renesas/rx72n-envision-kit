@@ -112,7 +112,7 @@ void main_task(void)
     R_FLASH_Control(FLASH_CMD_BANK_GET, &bank_info);
 
     /* serial terminal task creation */
-    xTaskCreate(serial_terminal_task, "terminal", configMINIMAL_STACK_SIZE, &hWinSerialTerminalindow, tskIDLE_PRIORITY, &serial_terminal_task_handle);
+    xTaskCreate(serial_terminal_task, "terminal", 4096, &hWinSerialTerminalindow, tskIDLE_PRIORITY, &serial_terminal_task_handle);
 
     /* GUI task creation */
     xTaskCreate(gui_task, "gui", 4096, NULL, configMAX_PRIORITIES - 1, &gui_task_handle);

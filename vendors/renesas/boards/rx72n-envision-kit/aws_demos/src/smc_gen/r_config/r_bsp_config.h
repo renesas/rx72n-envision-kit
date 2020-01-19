@@ -767,15 +767,18 @@ NOTE: The RAM areas are not contiguous.It is separated by 512 KB each.
    RX72N-Envision-Kit Default: SCI2 - G1CUSB0(RL78/G1C), bit rate 115200bps.
    RX72N-Envision-Kit Default: SCI7 - external of PMOD2, bit rate ~912600bps if user would attach FTDI chip.
  */
-#define MY_BSP_CFG_SERIAL_TERM_SCI                  (7)
+#define MY_BSP_CFG_SERIAL_TERM_SCI                  (2)
+#define MY_BSP_CFG_AFR_TERM_SCI                     (7)
 
 /* This macro is used to select which SCI bit-rate.
  */
-#define MY_BSP_CFG_SERIAL_TERM_SCI_BITRATE          (912600)
+#define MY_BSP_CFG_AFR_TERM_SCI_BITRATE             (912600)
+#define MY_BSP_CFG_SERIAL_TERM_SCI_BITRATE          (115200)
 
 /* This macro is used to select which SCI interrupt priority.
    0(low) - 15(high)
  */
+#define MY_BSP_CFG_AFR_TERM_SCI_INTERRUPT_PRIORITY   (15)
 #define MY_BSP_CFG_SERIAL_TERM_SCI_INTERRUPT_PRIORITY   (15)
 
 #endif /* R_BSP_CONFIG_REF_HEADER_FILE */

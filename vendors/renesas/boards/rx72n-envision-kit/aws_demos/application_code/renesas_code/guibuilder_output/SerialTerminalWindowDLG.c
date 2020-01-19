@@ -39,7 +39,7 @@
 
 
 // USER START (Optionally insert additional defines)
-#define MULTIEDIT_MAX_NUM_CHARS 1024 * 16
+#define MULTIEDIT_MAX_NUM_CHARS 1024 * 4
 
 typedef struct _packet_block_for_queue
 {

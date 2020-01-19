@@ -47,45 +47,45 @@ Includes   <System Includes> , "Project Includes"
 /*******************************************************************************
  Macro definitions
  *******************************************************************************/
-#if !defined(MY_BSP_CFG_SERIAL_TERM_SCI)
+#if !defined(MY_BSP_CFG_AFR_TERM_SCI)
 #error "Error! Need to define MY_BSP_CFG_SERIAL_TERM_SCI in r_bsp_config.h"
-#elif MY_BSP_CFG_SERIAL_TERM_SCI == (0)
+#elif MY_BSP_CFG_AFR_TERM_SCI == (0)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI0()
 #define SCI_CH_serial_term          SCI_CH0
-#elif MY_BSP_CFG_SERIAL_TERM_SCI == (1)
+#elif MY_BSP_CFG_AFR_TERM_SCI == (1)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI1()
 #define SCI_CH_serial_term          SCI_CH1
-#elif MY_BSP_CFG_SERIAL_TERM_SCI == (2)
+#elif MY_BSP_CFG_AFR_TERM_SCI == (2)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI2()
 #define SCI_CH_serial_term          SCI_CH2
-#elif MY_BSP_CFG_SERIAL_TERM_SCI == (3)
+#elif MY_BSP_CFG_AFR_TERM_SCI == (3)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI3()
 #define SCI_CH_serial_term          SCI_CH3
-#elif MY_BSP_CFG_SERIAL_TERM_SCI == (4)
+#elif MY_BSP_CFG_AFR_TERM_SCI == (4)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI4()
 #define SCI_CH_serial_term          SCI_CH4
-#elif MY_BSP_CFG_SERIAL_TERM_SCI == (5)
+#elif MY_BSP_CFG_AFR_TERM_SCI == (5)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI5()
 #define SCI_CH_serial_term          SCI_CH5
-#elif MY_BSP_CFG_SERIAL_TERM_SCI == (6)
+#elif MY_BSP_CFG_AFR_TERM_SCI == (6)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI6()
 #define SCI_CH_serial_term          SCI_CH6
-#elif MY_BSP_CFG_SERIAL_TERM_SCI == (7)
+#elif MY_BSP_CFG_AFR_TERM_SCI == (7)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI7()
 #define SCI_CH_serial_term          SCI_CH7
-#elif MY_BSP_CFG_SERIAL_TERM_SCI == (8)
+#elif MY_BSP_CFG_AFR_TERM_SCI == (8)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI8()
 #define SCI_CH_serial_term          SCI_CH8
-#elif MY_BSP_CFG_SERIAL_TERM_SCI == (9)
+#elif MY_BSP_CFG_AFR_TERM_SCI == (9)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI9()
 #define SCI_CH_serial_term          SCI_CH9
-#elif MY_BSP_CFG_SERIAL_TERM_SCI == (10)
+#elif MY_BSP_CFG_AFR_TERM_SCI == (10)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI10()
 #define SCI_CH_serial_term          SCI_CH10
-#elif MY_BSP_CFG_SERIAL_TERM_SCI == (11)
+#elif MY_BSP_CFG_AFR_TERM_SCI == (11)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI11()
 #define SCI_CH_serial_term          SCI_CH11
-#elif MY_BSP_CFG_SERIAL_TERM_SCI == (12)
+#elif MY_BSP_CFG_AFR_TERM_SCI == (12)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI12()
 #define SCI_CH_serial_term          SCI_CH12
 #else
@@ -134,7 +134,7 @@ void uart_config(void)
     my_sci_config.async.parity_en    = SCI_PARITY_OFF;
     my_sci_config.async.parity_type  = SCI_EVEN_PARITY;
     my_sci_config.async.stop_bits    = SCI_STOPBITS_1;
-    my_sci_config.async.int_priority = MY_BSP_CFG_SERIAL_TERM_SCI_INTERRUPT_PRIORITY;    // 1=lowest, 15=highest
+    my_sci_config.async.int_priority = MY_BSP_CFG_AFR_TERM_SCI_INTERRUPT_PRIORITY;    // 1=lowest, 15=highest
 
     /* OPEN ASYNC CHANNEL
     *  Provide address of the configure structure,

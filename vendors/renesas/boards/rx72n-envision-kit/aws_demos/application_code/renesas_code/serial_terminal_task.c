@@ -37,6 +37,8 @@
 /* for using FIT Module */
 #include "platform.h"
 #include "r_sci_rx_if.h"
+#include "r_cmt_rx_if.h"
+#include "r_pinset.h"
 
 /* for using Segger emWin */
 #include "GUI.h"
@@ -50,9 +52,59 @@
 Typedef definitions
 **********************************************************************************************************************/
 #define PROMPT "RX72N Envision Kit\r\n$ "
+#define COMMAND_NOT_FOUND "command not found\r\n$ "
 
 #define SERIAL_BUFFER_QUEUE_NUMBER 1024
 #define SERIAL_BUFFER_SIZE 1
+
+#define COMMAND_UNKNOWN -1
+#define COMMAND_FREERTOS 1
+#define COMMAND_VERSION 2
+
+#if !defined(MY_BSP_CFG_AFR_TERM_SCI)
+#error "Error! Need to define MY_BSP_CFG_SERIAL_TERM_SCI in r_bsp_config.h"
+#elif MY_BSP_CFG_SERIAL_TERM_SCI == (0)
+#define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI0()
+#define SCI_CH_serial_term          SCI_CH0
+#elif MY_BSP_CFG_SERIAL_TERM_SCI == (1)
+#define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI1()
+#define SCI_CH_serial_term          SCI_CH1
+#elif MY_BSP_CFG_SERIAL_TERM_SCI == (2)
+#define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI2()
+#define SCI_CH_serial_term          SCI_CH2
+#elif MY_BSP_CFG_SERIAL_TERM_SCI == (3)
+#define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI3()
+#define SCI_CH_serial_term          SCI_CH3
+#elif MY_BSP_CFG_SERIAL_TERM_SCI == (4)
+#define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI4()
+#define SCI_CH_serial_term          SCI_CH4
+#elif MY_BSP_CFG_SERIAL_TERM_SCI == (5)
+#define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI5()
+#define SCI_CH_serial_term          SCI_CH5
+#elif MY_BSP_CFG_SERIAL_TERM_SCI == (6)
+#define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI6()
+#define SCI_CH_serial_term          SCI_CH6
+#elif MY_BSP_CFG_SERIAL_TERM_SCI == (7)
+#define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI7()
+#define SCI_CH_serial_term          SCI_CH7
+#elif MY_BSP_CFG_SERIAL_TERM_SCI == (8)
+#define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI8()
+#define SCI_CH_serial_term          SCI_CH8
+#elif MY_BSP_CFG_SERIAL_TERM_SCI == (9)
+#define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI9()
+#define SCI_CH_serial_term          SCI_CH9
+#elif MY_BSP_CFG_SERIAL_TERM_SCI == (10)
+#define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI10()
+#define SCI_CH_serial_term          SCI_CH10
+#elif MY_BSP_CFG_SERIAL_TERM_SCI == (11)
+#define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI11()
+#define SCI_CH_serial_term          SCI_CH11
+#elif MY_BSP_CFG_SERIAL_TERM_SCI == (12)
+#define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI12()
+#define SCI_CH_serial_term          SCI_CH12
+#else
+#error "Error! Invalid setting for MY_BSP_CFG_SERIAL_TERM_SCI in r_bsp_config.h"
+#endif
 
 /******************************************************************************
  External variables
@@ -63,9 +115,13 @@ Typedef definitions
  ******************************************************************************/
 static void display_serial_terminal_putstring_with_uart(WM_HWIN hWin_handle, sci_hdl_t sci_handle, char *string);
 static void sci_callback(void *pArgs);
+static void execute_command(uint8_t *command_line);
+static int32_t get_command_code(uint8_t *command);
 
 static sci_hdl_t sci_handle;
 static QueueHandle_t xQueue;
+static char stats_buffer[1024 * 8];
+static uint32_t _1us_timer_count;
 
 /******************************************************************************
  External functions
@@ -76,6 +132,9 @@ extern void display_serial_terminal_putstring(WM_HWIN hWin_handle, char *string)
  global variables and functions
 ********************************************************************************/
 void serial_terminal_task( void * pvParameters );
+void _1us_timer_tick(void *arg);
+void vConfigureTimerForRunTimeStats(void);
+uint32_t ulGetRunTimeCounterValue(void);
 
 /******************************************************************************
  Function Name   : serial_terminal_task
@@ -86,36 +145,145 @@ void serial_terminal_task( void * pvParameters );
 void serial_terminal_task( void * pvParameters )
 {
     sci_cfg_t   sci_config;
-    sci_err_t   sci_err;
     char tmp[2];
     tmp[1] = 0;
+    char sci_buffer[2048];
+    uint32_t current_buffer_pointer = 0;
+    uint8_t command[16], arg1[256], arg2[256], arg3[256], arg4[256];
 
-	WM_HWIN hWinSerialTerminalindow = (*(WM_HWIN *)pvParameters);
+    memset(sci_buffer, 0, sizeof(sci_buffer));
+
+    WM_HWIN hWinSerialTerminalindow = (*(WM_HWIN *)pvParameters);
+
+    R_SCI_PinSet_serial_term();
 
     /* Set up the configuration data structure for asynchronous (UART) operation. */
-    sci_config.async.baud_rate    = 115200;
+    sci_config.async.baud_rate    = MY_BSP_CFG_SERIAL_TERM_SCI_BITRATE;
     sci_config.async.clk_src      = SCI_CLK_INT;
     sci_config.async.data_size    = SCI_DATA_8BIT;
     sci_config.async.parity_en    = SCI_PARITY_OFF;
     sci_config.async.parity_type  = SCI_EVEN_PARITY;
     sci_config.async.stop_bits    = SCI_STOPBITS_1;
-    sci_config.async.int_priority = 15;    // 1=lowest, 15=highest
-    sci_err = R_SCI_Open(SCI_CH2, SCI_MODE_ASYNC, &sci_config, sci_callback, &sci_handle);
+    sci_config.async.int_priority = MY_BSP_CFG_SERIAL_TERM_SCI_INTERRUPT_PRIORITY;    // 1=lowest, 15=highest
+    R_SCI_Open(SCI_CH_serial_term, SCI_MODE_ASYNC, &sci_config, sci_callback, &sci_handle);
 
     /* create queue */
 	xQueue = xQueueCreate(SERIAL_BUFFER_QUEUE_NUMBER, SERIAL_BUFFER_SIZE);
 
+	display_serial_terminal_putstring_with_uart(hWinSerialTerminalindow, sci_handle, PROMPT);
 	while(1)
 	{
-	    display_serial_terminal_putstring_with_uart(hWinSerialTerminalindow, sci_handle, PROMPT);
 		xQueueReceive(xQueue, &tmp, portMAX_DELAY);
-	    display_serial_terminal_putstring_with_uart(hWinSerialTerminalindow, sci_handle, tmp);
+		display_serial_terminal_putstring_with_uart(hWinSerialTerminalindow, sci_handle, tmp);
+		sci_buffer[current_buffer_pointer++] = tmp[0];
+		if((tmp[0] == 0x0a) && (sci_buffer[current_buffer_pointer - 2] == 0x0d))
+		{
+			display_serial_terminal_putstring_with_uart(hWinSerialTerminalindow, sci_handle, PROMPT);
+		    /* command execution */
+		    if ( 0 != sscanf((char*)sci_buffer, "%16s %256s %256s %256s %256s", command, arg1, arg2, arg3, arg4))
+		    {
+		        switch(get_command_code(command))
+		        {
+		        	case COMMAND_FREERTOS:
+		        		if(!strcmp(arg1, "cpuload"))
+		        		{
+		        			if(!strcmp(arg2, "read"))
+		        			{
+				        		vTaskGetRunTimeStats(stats_buffer);
+				        		display_serial_terminal_putstring_with_uart(hWinSerialTerminalindow, sci_handle, stats_buffer);
+		        			}
+		        			if(!strcmp(arg2, "reset"))
+		        			{
+		        				vTaskClearUsage();
+				        		vTaskGetRunTimeStats(stats_buffer);
+				        		display_serial_terminal_putstring_with_uart(hWinSerialTerminalindow, sci_handle, stats_buffer);
+		        			}
+		        		}
+		        		break;
+		        	case COMMAND_VERSION:
+		        		break;
+		        	default:
+		        		display_serial_terminal_putstring_with_uart(hWinSerialTerminalindow, sci_handle, COMMAND_NOT_FOUND);
+		        		break;
+		        }
+		    }
+		    else
+		    {
+
+		    }
+		    memset(sci_buffer, 0, sizeof(sci_buffer));
+		    current_buffer_pointer = 0;
+		    command[0] = 0;
+		    arg1[0] = 0;
+		    arg2[0] = 0;
+		    arg3[0] = 0;
+		    arg4[0] = 0;
+		}
+		else if(current_buffer_pointer == sizeof(sci_buffer))
+		{
+		    memset(sci_buffer, 0, sizeof(sci_buffer));
+		    current_buffer_pointer = 0;
+		}
 	}
+}
+
+static int32_t get_command_code(uint8_t *command)
+{
+    int32_t return_code;
+
+    if(!strcmp((char*)command, "freertos"))
+    {
+    	return_code = COMMAND_FREERTOS;
+    }
+    else if(!strcmp((char*)command, "version"))
+    {
+    	return_code = COMMAND_VERSION;
+    }
+    else
+    {
+        return_code = COMMAND_UNKNOWN;
+    }
+    return return_code;
 }
 
 static void display_serial_terminal_putstring_with_uart(WM_HWIN hWin_handle, sci_hdl_t sci_handle, char *string)
 {
+    uint16_t str_length = 0;
+    uint16_t transmit_length = 0;
+    sci_err_t sci_err;
+    uint32_t retry = 0xFFFF;
+
 	display_serial_terminal_putstring(hWin_handle, string);
+
+    str_length = (uint16_t)strlen(string);
+
+    while ((retry > 0) && (str_length > 0))
+    {
+
+        R_SCI_Control(sci_handle, SCI_CMD_TX_Q_BYTES_FREE, &transmit_length);
+
+        if(transmit_length > str_length)
+        {
+            transmit_length = str_length;
+        }
+
+        sci_err = R_SCI_Send(sci_handle, (uint8_t *) string,
+                             transmit_length);
+
+        if ((sci_err == SCI_ERR_XCVR_BUSY) || (sci_err == SCI_ERR_INSUFFICIENT_SPACE))
+        {
+            retry--; // retry if previous transmission still in progress or tx buffer is insufficient.
+            continue;
+        }
+
+        str_length -= transmit_length;
+        string += transmit_length;
+    }
+
+    if (SCI_SUCCESS != sci_err)
+    {
+    	R_BSP_NOP(); //TODO error handling code
+    }
 }
 
 static void sci_callback(void *pArgs)
@@ -160,4 +328,25 @@ static void sci_callback(void *pArgs)
            Error condition is cleared in calling interrupt routine */
         nop();
     }
+    else if (args->event == SCI_EVT_TEI)
+    {
+        nop();
+    }
+}
+
+void vConfigureTimerForRunTimeStats(void)
+{
+	uint32_t channel;
+	/* 1us tick timer start */
+	R_CMT_CreatePeriodic(1000000, _1us_timer_tick, &channel);
+}
+
+uint32_t ulGetRunTimeCounterValue(void)
+{
+	return _1us_timer_count;
+}
+
+void _1us_timer_tick(void *arg)
+{
+	_1us_timer_count++;
 }
