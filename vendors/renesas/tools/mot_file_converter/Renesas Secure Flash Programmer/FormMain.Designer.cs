@@ -76,7 +76,7 @@
 			this.groupBox9 = new System.Windows.Forms.GroupBox();
 			this.buttonBrowseInitialBootLoaderUserprog = new System.Windows.Forms.Button();
 			this.label9 = new System.Windows.Forms.Label();
-			this.textBoxInitialBootLoaderUserProgramFilePath = new System.Windows.Forms.TextBox();
+			this.textBoxInitialBootLoaderFilePath = new System.Windows.Forms.TextBox();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.textBoxInitialFirmwareSequenceNumberBank0 = new System.Windows.Forms.TextBox();
 			this.label12 = new System.Windows.Forms.Label();
@@ -611,7 +611,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox9.Controls.Add(this.buttonBrowseInitialBootLoaderUserprog);
 			this.groupBox9.Controls.Add(this.label9);
-			this.groupBox9.Controls.Add(this.textBoxInitialBootLoaderUserProgramFilePath);
+			this.groupBox9.Controls.Add(this.textBoxInitialBootLoaderFilePath);
 			this.groupBox9.Location = new System.Drawing.Point(4, 162);
 			this.groupBox9.Name = "groupBox9";
 			this.groupBox9.Size = new System.Drawing.Size(787, 44);
@@ -639,15 +639,15 @@
 			this.label9.TabIndex = 9;
 			this.label9.Text = "File Path (Motorola Format)";
 			// 
-			// textBoxInitialBootLoaderUserProgramFilePath
+			// textBoxInitialBootLoaderFilePath
 			// 
-			this.textBoxInitialBootLoaderUserProgramFilePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.textBoxInitialBootLoaderFilePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBoxInitialBootLoaderUserProgramFilePath.Enabled = false;
-			this.textBoxInitialBootLoaderUserProgramFilePath.Location = new System.Drawing.Point(277, 17);
-			this.textBoxInitialBootLoaderUserProgramFilePath.Name = "textBoxInitialBootLoaderUserProgramFilePath";
-			this.textBoxInitialBootLoaderUserProgramFilePath.Size = new System.Drawing.Size(393, 19);
-			this.textBoxInitialBootLoaderUserProgramFilePath.TabIndex = 10;
+			this.textBoxInitialBootLoaderFilePath.Enabled = false;
+			this.textBoxInitialBootLoaderFilePath.Location = new System.Drawing.Point(277, 17);
+			this.textBoxInitialBootLoaderFilePath.Name = "textBoxInitialBootLoaderFilePath";
+			this.textBoxInitialBootLoaderFilePath.Size = new System.Drawing.Size(393, 19);
+			this.textBoxInitialBootLoaderFilePath.TabIndex = 10;
 			// 
 			// groupBox5
 			// 
@@ -1116,7 +1116,7 @@
 		private System.Windows.Forms.Button Generate_Init_Firm;
 		private System.Windows.Forms.Button buttonBrowseInitialBootLoaderUserprog;
 		private System.Windows.Forms.Label label9;
-		private System.Windows.Forms.TextBox textBoxInitialBootLoaderUserProgramFilePath;
+		private System.Windows.Forms.TextBox textBoxInitialBootLoaderFilePath;
 		private System.Windows.Forms.TextBox textBoxInitialFirmwareSequenceNumberBank0;
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.GroupBox groupBox10;
