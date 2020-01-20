@@ -128,6 +128,10 @@ static uint32_t _1us_timer_count;
  ******************************************************************************/
 extern void display_serial_terminal_putstring(WM_HWIN hWin_handle, char *string);
 
+extern void vTaskGetCombinedRunTimeStats( char* pcWriteBuffer,  UBaseType_t uxClear);
+extern void vTaskClearUsage(void);
+extern void vTaskClearUsageSingleList(List_t *pxList);
+
 /*******************************************************************************
  global variables and functions
 ********************************************************************************/
@@ -189,13 +193,12 @@ void serial_terminal_task( void * pvParameters )
 		        		{
 		        			if(!strcmp(arg2, "read"))
 		        			{
-				        		vTaskGetRunTimeStats(stats_buffer);
+		        				vTaskGetCombinedRunTimeStats(stats_buffer, 0);
 				        		display_serial_terminal_putstring_with_uart(hWinSerialTerminalindow, sci_handle, stats_buffer);
 		        			}
 		        			if(!strcmp(arg2, "reset"))
 		        			{
-		        				vTaskClearUsage();
-				        		vTaskGetRunTimeStats(stats_buffer);
+		        				vTaskGetCombinedRunTimeStats(stats_buffer, 1);
 				        		display_serial_terminal_putstring_with_uart(hWinSerialTerminalindow, sci_handle, stats_buffer);
 		        			}
 		        		}
