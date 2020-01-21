@@ -160,7 +160,7 @@
 #endif
 
 #define BOOT_LOADER_MAGIC_CODE "Renesas"
-#define BOOT_LOADER_MAGIC_CODE_LENGTH 8
+#define BOOT_LOADER_MAGIC_CODE_LENGTH 16
 
 typedef struct _load_firmware_control_block {
     uint32_t flash_buffer[FLASH_CF_MEDIUM_BLOCK_SIZE / 4];
