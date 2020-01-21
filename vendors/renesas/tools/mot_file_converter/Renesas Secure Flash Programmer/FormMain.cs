@@ -2290,7 +2290,7 @@ namespace Renesas_Secure_Flash_Programmer
 				sb.Clear();
 				sb.Append("S214");
 				sb.Append(Convert.ToString(user_program_const_data_bottom_address, 16).ToUpper());
-				user_program_address_motorola_tmp = sb.ToString();
+				user_program_address_motorola_tmp = sb.ToString().Remove(9, 1);
 				user_program_const_data_one_line_length = 44 + 2; // 最終1行(S2フォーマット) + 改行コード(CRLF)加算
 				next_pointer = str_user_application.IndexOf(user_program_address_motorola_tmp) + user_program_const_data_one_line_length;
 				sb.Clear();
@@ -2304,7 +2304,7 @@ namespace Renesas_Secure_Flash_Programmer
 				sb.Clear();
 				sb.Append("S315");
 				sb.Append(Convert.ToString(user_program_const_data_bottom_address, 16).ToUpper());
-				user_program_address_motorola_tmp = sb.ToString();
+				user_program_address_motorola_tmp = sb.ToString().Remove(11, 1);
 				user_program_const_data_one_line_length = 46 + 2; // 最終1行(S3フォーマット) + 改行コード(CRLF)加算
 				next_pointer = str_user_application.IndexOf(user_program_address_motorola_tmp) + user_program_const_data_one_line_length;
 				sb.Clear();
