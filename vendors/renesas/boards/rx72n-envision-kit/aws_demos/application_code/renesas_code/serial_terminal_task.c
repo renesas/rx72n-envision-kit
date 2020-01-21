@@ -193,12 +193,13 @@ void serial_terminal_task( void * pvParameters )
 		        		{
 		        			if(!strcmp(arg2, "read"))
 		        			{
-		        				vTaskGetCombinedRunTimeStats(stats_buffer, 0);
+		        				vTaskGetCombinedRunTimeStats(stats_buffer, 0);	/* 0 means read */
 				        		display_serial_terminal_putstring_with_uart(hWinSerialTerminalindow, sci_handle, stats_buffer);
 		        			}
 		        			if(!strcmp(arg2, "reset"))
 		        			{
-		        				vTaskGetCombinedRunTimeStats(stats_buffer, 1);
+		        				vTaskGetCombinedRunTimeStats(stats_buffer, 1);	/* 1 means read->reset */
+		        				vTaskGetCombinedRunTimeStats(stats_buffer, 0);	/* 0 means read */
 				        		display_serial_terminal_putstring_with_uart(hWinSerialTerminalindow, sci_handle, stats_buffer);
 		        			}
 		        		}

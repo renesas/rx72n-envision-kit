@@ -153,6 +153,7 @@ static void callback_link_on(uint32_t channel)
 
         /* Please add necessary processing when becoming Link up. */
 		prvLinkStatusChange( 1 );
+		vTaskDelay(100);	/* this wait needs for RX72N Envision Kit prototype using HOCO 16MHz. */
     }
 } /* End of function callback_link_on() */
 
