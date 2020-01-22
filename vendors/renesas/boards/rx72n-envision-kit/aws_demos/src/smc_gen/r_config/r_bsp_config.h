@@ -772,14 +772,17 @@ NOTE: The RAM areas are not contiguous.It is separated by 512 KB each.
 
 /* This macro is used to select which SCI bit-rate.
  */
-#define MY_BSP_CFG_AFR_TERM_SCI_BITRATE             (912600)
 #define MY_BSP_CFG_SERIAL_TERM_SCI_BITRATE          (115200)
+#define MY_BSP_CFG_AFR_TERM_SCI_BITRATE             (912600)
 
 /* This macro is used to select which SCI interrupt priority.
    0(low) - 15(high)
  */
 #define MY_BSP_CFG_AFR_TERM_SCI_INTERRUPT_PRIORITY   (15)
 #define MY_BSP_CFG_SERIAL_TERM_SCI_INTERRUPT_PRIORITY   (15)
+
+/* This macro is used for RX72N Envision Kit prototype that includes wrong main clock oscillator. NG=12MHz, OK=16MHz */
+#define MY_BSP_CFG_RX72N_ENVISION_KIT_PROTOTYPE_THAT_INCLUDES_WRONG_MAIN_CLOCK_OSCILATTOR 0
 
 #endif /* R_BSP_CONFIG_REF_HEADER_FILE */
 

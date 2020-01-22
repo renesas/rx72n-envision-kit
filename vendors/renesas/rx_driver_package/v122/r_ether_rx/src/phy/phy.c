@@ -165,7 +165,7 @@ void phy_start_autonegotiate (uint32_t ether_channel, uint8_t pause)
     /* When pause frame is not used */
     if (ETHER_FLAG_OFF == pause)
     {
-#if 0
+#if (MY_BSP_CFG_RX72N_ENVISION_KIT_PROTOTYPE_THAT_INCLUDES_WRONG_MAIN_CLOCK_OSCILATTOR != 1)
     	/* enable 100Mbps link (default) */
     	local_advertise[ether_channel] = ((((PHY_AN_ADVERTISEMENT_100F |
         PHY_AN_ADVERTISEMENT_100H) |
