@@ -1416,7 +1416,8 @@ static void _cbBk(WM_MESSAGE * pMsg) {
 
   switch (pMsg->MsgId) {
   case WM_CREATE:
-    //
+	in_main_menu_flag = 0;
+	//
     // Save background window and create menu button
     //
     _hBk         = pMsg->hWin;
@@ -1481,6 +1482,7 @@ static void _cbBk(WM_MESSAGE * pMsg) {
         }
         GUI_ANIM_DeleteAll();
         RemoveCurrentWindow();
+        in_main_menu_flag = 1;
         break;
       }
     }

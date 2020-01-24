@@ -60,10 +60,10 @@ void R_Pins_Create(void)
     MPC.P56PFS.BYTE = 0x2AU;
     PORT5.PMR.BYTE |= 0x40U;
 
-    /* Set IRQ4 pin */
-    MPC.PF5PFS.BYTE = 0x40U;
-    PORTF.PMR.BYTE &= 0xDFU;
-    PORTF.PDR.BYTE &= 0xDFU;
+    /* Set IRQ15 pin */
+    MPC.P07PFS.BYTE = 0x40U;
+    PORT0.PMR.BYTE &= 0x7FU;
+    PORT0.PDR.BYTE &= 0x7FU;
 
     /* Set LCD_CLK pin */
     MPC.PB5PFS.BYTE = 0x25U;

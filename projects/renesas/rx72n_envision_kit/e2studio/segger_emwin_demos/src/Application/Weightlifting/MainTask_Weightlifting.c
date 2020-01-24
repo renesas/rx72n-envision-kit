@@ -633,7 +633,8 @@ static void _cbWin(WM_MESSAGE * pMsg) {
 
   switch (pMsg->MsgId) {
   case WM_CREATE:
-    //
+    in_main_menu_flag = 0;
+	//
     // Create minus button
     //
     _hButtonMinus = BUTTON_CreateEx(-36, 170, 36, 36, pMsg->hWin, WM_CF_SHOW, 0, ID_BUTTON_WEIGHT_LESS);
@@ -1043,6 +1044,7 @@ static void _cbWin(WM_MESSAGE * pMsg) {
         SweatAnim1 = SweatAnim2 = 0;
         GUI_ANIM_DeleteAll();
         RemoveCurrentWindow();
+        in_main_menu_flag = 1;
         break;
       }
       break;

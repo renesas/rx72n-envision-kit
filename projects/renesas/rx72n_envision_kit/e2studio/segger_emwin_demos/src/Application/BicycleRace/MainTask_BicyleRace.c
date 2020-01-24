@@ -603,7 +603,8 @@ static void _cbBicycle(WM_MESSAGE * pMsg) {
 
   switch (pMsg->MsgId) {
   case WM_CREATE:
-    xPos = LCD_X - SIZE_ROTARY - SIZE_BORDER;
+    in_main_menu_flag = 0;
+	xPos = LCD_X - SIZE_ROTARY - SIZE_BORDER;
     yPos = LCD_Y - SIZE_ROTARY - SIZE_BORDER;
 
     GoalReached = IsMoving = BarPos = Pos0 = rPos = 0;
@@ -950,6 +951,7 @@ static void _cbBicycle(WM_MESSAGE * pMsg) {
         GUI_ANIM_DeleteAll();
         RemoveCurrentWindow();
         _DisplayStats = 0;
+        in_main_menu_flag = 1;
         break;
       }
       break;

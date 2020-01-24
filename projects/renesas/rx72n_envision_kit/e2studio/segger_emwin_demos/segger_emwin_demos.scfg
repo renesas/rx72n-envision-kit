@@ -296,7 +296,7 @@
 <pinItem allocation="83$B" comments="" direction="None" id="LCD_TCON2" locked="false" status="0"/>
 <pinItem allocation="81$B" comments="" direction="None" id="LCD_TCON0" locked="false" status="0"/>
 <pinItem allocation="27" comments="" direction="None" id="SSDA6" locked="false" status="0"/>
-<pinItem allocation="9" comments="" direction="None" id="IRQ4" locked="false" status="0"/>
+<pinItem allocation="" comments="" direction="None" id="IRQ4" locked="false" status="0"/>
 <pinItem allocation="80$B" comments="" direction="None" id="LCD_CLK" locked="false" status="0"/>
 <pinItem allocation="26" comments="" direction="None" id="SSCL6" locked="false" status="0"/>
 <pinItem allocation="110$B" comments="" direction="None" id="LCD_DATA15" locked="false" status="0"/>
@@ -317,6 +317,7 @@
 <pinItem allocation="96$B" comments="" direction="None" id="LCD_DATA7" locked="false" status="0"/>
 <pinItem allocation="97$B" comments="" direction="None" id="LCD_DATA8" locked="false" status="0"/>
 <pinItem allocation="101$B" comments="" direction="None" id="LCD_DATA9" locked="false" status="0"/>
+<pinItem allocation="144" comments="" direction="None" id="IRQ15" locked="false" status="0"/>
 </tool>
 <tool id="Interrupt">
 <Item id="BSC_BUSERR" priority="15"/>
@@ -808,7 +809,7 @@
 <gridItem id="IRQ1" selectedIndex="0"/>
 <gridItem id="IRQ2" selectedIndex="0"/>
 <gridItem id="IRQ3" selectedIndex="0"/>
-<gridItem id="IRQ4" selectedIndex="1"/>
+<gridItem id="IRQ4" selectedIndex="0"/>
 <gridItem id="IRQ5" selectedIndex="0"/>
 <gridItem id="IRQ6" selectedIndex="0"/>
 <gridItem id="IRQ7" selectedIndex="0"/>
@@ -819,7 +820,7 @@
 <gridItem id="IRQ12" selectedIndex="0"/>
 <gridItem id="IRQ13" selectedIndex="0"/>
 <gridItem id="IRQ14" selectedIndex="0"/>
-<gridItem id="IRQ15" selectedIndex="0"/>
+<gridItem id="IRQ15" selectedIndex="1"/>
 <gridItem id="IRQ_CFG_REQUIRE_LOCK" selectedIndex="0"/>
 <gridItem id="IRQ_CFG_PARAM_CHECKING" selectedIndex="0"/>
 <gridItem id="IRQ_CFG_FILT_EN_IRQ0" selectedIndex="1"/>
@@ -852,8 +853,8 @@
 <gridItem id="IRQ_CFG_FILT_PLCK_IRQ13" selectedIndex="0"/>
 <gridItem id="IRQ_CFG_FILT_EN_IRQ14" selectedIndex="1"/>
 <gridItem id="IRQ_CFG_FILT_PLCK_IRQ14" selectedIndex="0"/>
-<gridItem id="IRQ_CFG_FILT_EN_IRQ15" selectedIndex="1"/>
-<gridItem id="IRQ_CFG_FILT_PLCK_IRQ15" selectedIndex="0"/>
+<gridItem id="IRQ_CFG_FILT_EN_IRQ15" selectedIndex="0"/>
+<gridItem id="IRQ_CFG_FILT_PLCK_IRQ15" selectedIndex="3"/>
 </component>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>

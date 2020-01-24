@@ -177,7 +177,7 @@ Digital Filtering
 #define IRQ_CFG_FILT_EN_IRQ12      (0)   /* Filtering disabled on IRQ 12. */
 #define IRQ_CFG_FILT_EN_IRQ13      (0)   /* Filtering disabled on IRQ 13. */
 #define IRQ_CFG_FILT_EN_IRQ14      (0)   /* Filtering disabled on IRQ 14. */
-#define IRQ_CFG_FILT_EN_IRQ15      (0)   /* Filtering disabled on IRQ 15. */
+#define IRQ_CFG_FILT_EN_IRQ15      (1)   /* Filtering disabled on IRQ 15. */
 
 /* Example settings for IRQ input pin digital filtering sample clock divisors for each IRQ.
  * Change as required by selecting a divisor value from the IRQ_CFG_PCLK_DIVxx definitions.
@@ -197,7 +197,7 @@ Digital Filtering
 #define IRQ_CFG_FILT_PLCK_IRQ12   (IRQ_CFG_PCLK_DIV1)   /* Filter sample clock divisor for IRQ 12 = PCLK. */
 #define IRQ_CFG_FILT_PLCK_IRQ13   (IRQ_CFG_PCLK_DIV1)   /* Filter sample clock divisor for IRQ 13 = PCLK. */
 #define IRQ_CFG_FILT_PLCK_IRQ14   (IRQ_CFG_PCLK_DIV1)   /* Filter sample clock divisor for IRQ 14 = PCLK. */
-#define IRQ_CFG_FILT_PLCK_IRQ15   (IRQ_CFG_PCLK_DIV1)   /* Filter sample clock divisor for IRQ 15 = PCLK. */
+#define IRQ_CFG_FILT_PLCK_IRQ15   (IRQ_CFG_PCLK_DIV64)   /* Filter sample clock divisor for IRQ 15 = PCLK. */
 
 /***********************************************************************************************************************
 Typedef definitions

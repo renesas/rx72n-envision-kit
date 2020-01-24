@@ -21,6 +21,8 @@ Purpose     : Resources
 #include <stdlib.h>
 #include <math.h>
 
+#include "r_irq_rx_if.h"
+
 /*********************************************************************
 *
 *       Externals
@@ -129,6 +131,11 @@ extern GUI_CONST_STORAGE GUI_BITMAP bmStartFinish_Right_125x264;
 extern GUI_CONST_STORAGE GUI_BITMAP bmKnob_150x150;
 
 extern const GUI_BITMAP * apbmBicycleRider_15F_134x122[15];
+
+extern irq_handle_t  my_irq15_handle;
+extern int in_main_menu_flag;
+extern int in_sw_active;
+extern int in_sw_rising_count;
 
 /*********************************************************************
 *
@@ -411,5 +418,9 @@ void AddHighscoreCycling(int Time);
 // Helper functions
 //
 int RandomNumber(int min, int max);
+
+void CheckPressedState(void);
+void my_irq15_callback(void *pdata);
+void bank_swap_with_software_reset(void);
 
 #endif /* RESOURCE_H */

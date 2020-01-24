@@ -21,6 +21,8 @@
 #include "DIALOG.h"
 #include "Resource.h"
 
+#include "r_irq_rx_if.h"
+
 /*********************************************************************
 *
 *       Types
@@ -1566,14 +1568,18 @@ void MainTask(void) {
     _Count[3]++;
   }
 
+  /* SW2 Setting */
+  R_ICU_PinSet();
+  R_IRQ_Open(IRQ_NUM_15, IRQ_TRIG_FALLING, IRQ_PRI_3, &my_irq15_handle, my_irq15_callback);
+
   GUI_Init();
   WM_MOTION_Enable(1);
   WM_MULTIBUF_Enable(1);
   BUTTON_SetReactOnLevel();
   _hMainMenu = CreateMainMenu();
   while (1) {
-    GUI_Delay(100);
+    GUI_Delay(1);
+    CheckPressedState();
   }
 }
-
 /*************************** End of file ****************************/

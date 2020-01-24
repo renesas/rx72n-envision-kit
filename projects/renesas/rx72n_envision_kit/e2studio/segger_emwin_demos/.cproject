@@ -144,6 +144,8 @@
 									<listOptionValue builtIn="false" value="&quot;.\src/Application/BicycleRace/Resource\OctinSportsRg40.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/Application/BicycleRace/Resource\StartFinish_Left_26x160.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/Application/BicycleRace/Resource\StartFinish_Right_125x264.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/Application/MainMenu\APP_BankSwap.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/Application/MainMenu\APP_Update.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/Application/MainMenu\GUI_KeyPad.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/Application/MainMenu\MainTask_Menu.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/Application/MainMenu/Resource\Archery_200x113.obj&quot;"/>

@@ -45,10 +45,10 @@ void R_ICU_PinSet()
 {
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_MPC);
 
-    /* Set IRQ4 pin */
-    PORTF.PMR.BIT.B5 = 0U;
-    PORTF.PDR.BIT.B5 = 0U;
-    MPC.PF5PFS.BYTE = 0x40U;
+    /* Set IRQ15 pin */
+    PORT0.PMR.BIT.B7 = 0U;
+    PORT0.PDR.BIT.B7 = 0U;
+    MPC.P07PFS.BYTE = 0x40U;
 
     R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_MPC);
 }

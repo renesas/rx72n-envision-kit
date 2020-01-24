@@ -44,8 +44,8 @@ Global variables and functions
 #define IRQ_PORT_IRQ2_BIT      ('n')
 #define IRQ_PORT_IRQ3_PORT     ('m')
 #define IRQ_PORT_IRQ3_BIT      ('n')
-#define IRQ_PORT_IRQ4_PORT     ('F')
-#define IRQ_PORT_IRQ4_BIT      ('5')
+#define IRQ_PORT_IRQ4_PORT     ('m')
+#define IRQ_PORT_IRQ4_BIT      ('n')
 #define IRQ_PORT_IRQ5_PORT     ('m')
 #define IRQ_PORT_IRQ5_BIT      ('n')
 #define IRQ_PORT_IRQ6_PORT     ('m')
@@ -66,8 +66,8 @@ Global variables and functions
 #define IRQ_PORT_IRQ13_BIT      ('n')
 #define IRQ_PORT_IRQ14_PORT     ('m')
 #define IRQ_PORT_IRQ14_BIT      ('n')
-#define IRQ_PORT_IRQ15_PORT     ('m')
-#define IRQ_PORT_IRQ15_BIT      ('n')
+#define IRQ_PORT_IRQ15_PORT     ('0')
+#define IRQ_PORT_IRQ15_BIT      ('7')
 
 void R_ICU_PinSet();
 

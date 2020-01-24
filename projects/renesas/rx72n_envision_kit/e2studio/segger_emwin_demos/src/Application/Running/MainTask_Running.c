@@ -595,7 +595,8 @@ static void _cbWin(WM_MESSAGE * pMsg) {
   
   switch (pMsg->MsgId) {
   case WM_CREATE:
-    APP_CreateMenuButton(pMsg->hWin);
+	in_main_menu_flag = 0;
+	APP_CreateMenuButton(pMsg->hWin);
     //
     // Reset variables
     //
@@ -897,6 +898,7 @@ static void _cbWin(WM_MESSAGE * pMsg) {
         GUI_ANIM_DeleteAll();
         RemoveCurrentWindow();
         _DisplayStats = 0;
+        in_main_menu_flag = 1;
         break;
       }
       break;
