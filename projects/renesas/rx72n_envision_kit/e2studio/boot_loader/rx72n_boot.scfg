@@ -58,9 +58,9 @@
 <Item current="true" id="ppll.isSelected"/>
 <Item current="16 MHz" id="ppll.InputValue"/>
 <Item current="200.0 MHz" id="ppll.OutputValue"/>
-<Item current="mul25-1" error="false" id="ppll.multiplyBox"/>
-<Item current="div1-2" error="false" id="ppll.dividerBox"/>
-<Item current="8.0 MHz" error="false" id="ppll.MiddleValue"/>
+<Item current="mul12_5-1" error="false" id="ppll.multiplyBox"/>
+<Item current="div1-1" error="false" id="ppll.dividerBox"/>
+<Item current="16.0 MHz" error="false" id="ppll.MiddleValue"/>
 <Item current="true" id="sckselector.isSelected"/>
 <Item current="240.0 MHz" id="sckselector.InputValue"/>
 <Item current="240.0 MHz" id="sckselector.OutputValue"/>

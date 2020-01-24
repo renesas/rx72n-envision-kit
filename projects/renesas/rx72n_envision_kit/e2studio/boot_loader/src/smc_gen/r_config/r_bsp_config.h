@@ -336,12 +336,12 @@ NOTE: The RAM areas are not contiguous.It is separated by 512 KB each.
 /* PPLL Input Frequency Division Ratio Select (PPLIDIV).
    Available divisors = /1 (no division), /2, /3
 */
-#define BSP_CFG_PPLL_DIV                (2) /* Generated value. Do not edit this manually */
+#define BSP_CFG_PPLL_DIV                (1) /* Generated value. Do not edit this manually */
 
 /* PPLL Frequency Multiplication Factor Select (PPLSTC). 
    Available multipliers = x10.0 to x30.0 in 0.5 increments (e.g. 10.0, 10.5, 11.0, 11.5, ..., 29.0, 29.5, 30.0)
 */
-#define BSP_CFG_PPLL_MUL                (25.0) /* Generated value. Do not edit this manually */
+#define BSP_CFG_PPLL_MUL                (12.5) /* Generated value. Do not edit this manually */
 
 /* PPLL Clock Divider Select. 
    Available divisors = /2, /3, /4, /5
@@ -763,11 +763,11 @@ NOTE: The RAM areas are not contiguous.It is separated by 512 KB each.
 */
 #define BSP_CFG_SWINT_IPR_INITIAL_VALUE     (0x1)
 
-#define MY_BSP_CFG_SERIAL_TERM_SCI                  (2)
+#define MY_BSP_CFG_SERIAL_TERM_SCI                  (7)
 
 /* This macro is used to select which SCI bit-rate.
  */
-#define MY_BSP_CFG_SERIAL_TERM_SCI_BITRATE          (115200)
+#define MY_BSP_CFG_SERIAL_TERM_SCI_BITRATE          (921600)
 
 /* This macro is used to select which SCI interrupt priority.
    0(low) - 15(high)
