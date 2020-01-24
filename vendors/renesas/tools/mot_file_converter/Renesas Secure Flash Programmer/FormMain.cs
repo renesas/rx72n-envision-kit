@@ -2434,10 +2434,10 @@ namespace Renesas_Secure_Flash_Programmer
 
 					// S2 or S3: Const Data
 					string motorola_user_program_const_data_buf_tmp = "";
-					uint user_program_const_data_size = (data_flash_bottom_address + 1) - data_flash_top_address;
+					uint user_program_const_data_size = (data_flash_bottom_address + 1) - user_program_const_data_top_address;
 					for (uint i = 0; i < user_program_const_data_size; i += 16)
 					{
-						uint address = i + data_flash_top_address;
+						uint address = i + user_program_const_data_top_address;
 						sb_app_tmp.Append("14");
 						sb_app_tmp.Append(address.ToString("X2"));
 						for (uint j = 0; j < 16; j++)
@@ -2769,10 +2769,10 @@ namespace Renesas_Secure_Flash_Programmer
 
 					// S2 or S3: Const Data
 					string motorola_user_program_const_data_buf_tmp = "";
-					uint user_program_const_data_size = (data_flash_bottom_address + 1) - data_flash_top_address;
+					uint user_program_const_data_size = (data_flash_bottom_address + 1) - user_program_const_data_top_address;
 					for (uint i = 0; i < user_program_const_data_size; i += 16)
 					{
-						uint address = i + data_flash_top_address;
+						uint address = i + user_program_const_data_top_address;
 						sb_app_tmp.Append("14");
 						sb_app_tmp.Append(address.ToString("X2"));
 						for (uint j = 0; j < 16; j++)
