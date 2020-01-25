@@ -1938,7 +1938,6 @@ namespace Renesas_Secure_Flash_Programmer
 
         }
 
-
         private void buttonBrowseInitialUserPrivateKey_Click(object sender, EventArgs e)
         {
             if (textBoxInitialUserPrivateKeyPath.Enabled)
@@ -1974,6 +1973,847 @@ namespace Renesas_Secure_Flash_Programmer
                 textBoxInitialUserPublicKeyPath.Text = openFileDialog.FileName;
             }
         }
+
+        private void buttonBrowseInitialBootLoaderUserprog_Click(object sender, EventArgs e)
+        {
+            if (textBoxInitialBootLoaderFilePath.Enabled)
+            {
+                // Displays a OpenFileDialog so the user can save the Image
+                openFileDialog.Filter = "Motorola Format File|*.mot";
+                openFileDialog.Title = "Open the Motorola Format File from Boot Loader";
+                openFileDialog.FileName = "";
+
+                if (openFileDialog.ShowDialog() != DialogResult.OK || openFileDialog.FileName == "")
+                {
+                    print_log("please specify the motorola file name.");
+                    return;
+                }
+
+                textBoxInitialBootLoaderFilePath.Text = openFileDialog.FileName;
+            }
+        }
+
+        private void buttonBrowseInitialUserprogBank0_Click(object sender, EventArgs e)
+        {
+            // Displays a OpenFileDialog so the user can save the Image
+            openFileDialog.Filter = "Motorola Format File|*.mot";
+            openFileDialog.Title = "Open the Motorola Format File";
+            openFileDialog.FileName = "";
+
+            if (openFileDialog.ShowDialog() != DialogResult.OK || openFileDialog.FileName == "")
+            {
+                print_log("please specify the motorola file name.");
+                return;
+            }
+
+            textBoxInitialUserProgramFilePathBank0.Text = openFileDialog.FileName;
+        }
+
+        private void buttonBrowseInitialUserprogBank1_Click(object sender, EventArgs e)
+        {
+            if (textBoxInitialUserProgramFilePathBank1.Enabled)
+            {
+                // Displays a OpenFileDialog so the user can save the Image
+                openFileDialog.Filter = "Motorola Format File|*.mot";
+                openFileDialog.Title = "Open the Motorola Format File";
+                openFileDialog.FileName = "";
+
+                if (openFileDialog.ShowDialog() != DialogResult.OK || openFileDialog.FileName == "")
+                {
+                    print_log("please specify the motorola file name.");
+                    return;
+                }
+
+                textBoxInitialUserProgramFilePathBank1.Text = openFileDialog.FileName;
+            }
+        }
+
+        private void comboBoxFirmwareVerificationType_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            if (comboBoxFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP)
+            {
+                textBoxUserProgramKey_Aes128.Enabled = true;
+            }
+            else
+            {
+                textBoxUserProgramKey_Aes128.Enabled = false;
+            }
+        }
+
+        private void comboBoxInitialFirmwareVerificationType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP)
+            {
+                textBoxInitialUserProgramKey_Aes128.Enabled = true;
+            }
+            else
+            {
+                textBoxInitialUserProgramKey_Aes128.Enabled = false;
+            }
+
+            if ((comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA) ||
+                (comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA_WITH_TSIP))
+
+            {
+                textBoxInitialUserPrivateKeyPath.Enabled = true;
+                textBoxInitialUserPublicKeyPath.Enabled = true;
+            }
+            else
+            {
+                textBoxInitialUserPrivateKeyPath.Enabled = false;
+                textBoxInitialUserPublicKeyPath.Enabled = false;
+            }
+        }
+
+        private void comboBoxInitialFirmwareOutputFormatType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxInitialFirmwareOutputFormat.Text == OUTPUT_FORMAT_TYPE_BANK0)
+            {
+                textBoxInitialBootLoaderFilePath.Enabled = false;
+                textBoxInitialFirmwareSequenceNumberBank1.Enabled = false;
+                textBoxInitialUserProgramFilePathBank1.Enabled = false;
+            }
+            else if (comboBoxInitialFirmwareOutputFormat.Text == OUTPUT_FORMAT_TYPE_BANK0_BOOTLOADR)
+            {
+                textBoxInitialBootLoaderFilePath.Enabled = true;
+                textBoxInitialFirmwareSequenceNumberBank1.Enabled = false;
+                textBoxInitialUserProgramFilePathBank1.Enabled = false;
+            }
+            else if (comboBoxInitialFirmwareOutputFormat.Text == OUTPUT_FORMAT_TYPE_BANK0_BANK1_BOOTLOADR)
+            {
+                textBoxInitialBootLoaderFilePath.Enabled = true;
+                textBoxInitialFirmwareSequenceNumberBank1.Enabled = true;
+                textBoxInitialUserProgramFilePathBank1.Enabled = true;
+            }
+            else
+            {
+                textBoxInitialBootLoaderFilePath.Enabled = false;
+                textBoxInitialFirmwareSequenceNumberBank1.Enabled = false;
+                textBoxInitialUserProgramFilePathBank1.Enabled = false;
+            }
+        }
+
+        private bool GenerateInitialUserprog(string mcuName)
+        {
+            if (OUTPUT_FORMAT_TYPE_BANK0 == comboBoxInitialFirmwareOutputFormat.Text)
+            {
+                return GenerateInitialUserprogBank0(mcuName);
+            }
+            else if (OUTPUT_FORMAT_TYPE_BANK0_BOOTLOADR == comboBoxInitialFirmwareOutputFormat.Text)
+            {
+                return GenerateInitialUserprogBank0Bootloader(mcuName);
+            }
+            else if (OUTPUT_FORMAT_TYPE_BANK0_BANK1_BOOTLOADR == comboBoxInitialFirmwareOutputFormat.Text)
+            {
+                return GenerateInitialUserprogBank0Bank1Bootloader(mcuName);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private bool GenerateInitialUserprogBank0(string mcuName)
+        {
+            try
+            {
+                StreamReader sr_user_application = new StreamReader(textBoxInitialUserProgramFilePathBank0.Text, Encoding.GetEncoding("Shift_JIS"));
+                string str_user_application = sr_user_application.ReadToEnd();
+                sr_user_application.Close();
+
+                // Convert user userprogram key data string to binary
+                byte[] userProgramKey = convertStrDataToKeyData(textBoxInitialUserProgramKey_Aes128.Text, USER_PROGRAM_KEY_BYTE_SIZE);
+                byte[] code_flash_image = new byte[1024 * 1024 * 4];  // 4MB image
+                for (int i = 0; i < code_flash_image.Length; i++)
+                {
+                    code_flash_image[i] = 0xff;
+                }
+                byte[] data_flash_image = new byte[1024 * 64];  // 64KB image
+                for (int i = 0; i < data_flash_image.Length; i++)
+                {
+                    data_flash_image[i] = 0xff;
+                }
+                rsu_header rsu_header_data = new rsu_header();
+
+                if (true == GetUserProgram(mcuName, textBoxInitialUserProgramFilePathBank0.Text, ref code_flash_image, ref data_flash_image))
+                {
+                    if (false == CreateCryptStream(mcuName, FIRMWARE_TYPE_INITIAL, comboBoxInitialFirmwareVerificationType.Text, textBoxInitialFirmwareSequenceNumberBank0.Text,
+                                        ref code_flash_image, ref data_flash_image, ref rsu_header_data, userProgramKey))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool GenerateInitialUserprogBank0Bootloader(string mcuName)
+        {
+            string check_sum;
+            int current_pointer;
+            int next_pointer;
+            int bootloader_const_data_one_line_length;
+            string motorola_top_buf = "";
+            string motorola_bootloader_const_data_buf = "";
+            string motorola_user_program_const_data_buf = "";
+            string motorola_bootloader_option_memory_buf = "";
+            string motorola_user_program_header_buf = "";
+            string motorola_user_program_buf = "";
+            string motorola_bootloader_buf = "";
+            uint user_program_top_address = McuSpecs[mcuName].userProgramTopAddress;
+            uint user_program_bottom_address = McuSpecs[mcuName].userProgramBottomAddress;
+            uint user_program_mirror_top_address = McuSpecs[mcuName].userProgramMirrorTopAddress;
+            uint user_program_mirror_bottom_address = McuSpecs[mcuName].userProgramMirrorBottomAddress;
+            uint bootloader_top_address = McuSpecs[mcuName].bootloaderTopAddress;
+            uint bootloader_bottom_address = McuSpecs[mcuName].bootloaderBottomAddress;
+            uint code_flash_top_address = McuSpecs[mcuName].codeFlashTopAddress;
+            uint code_flash_bottom_address = McuSpecs[mcuName].codeFlashBottomAddress;
+            uint bootloader_const_data_top_address = McuSpecs[mcuName].bootloaderConstDataTopAddress;
+            uint bootloader_const_data_bottom_address = McuSpecs[mcuName].bootloaderConstDataBottomAddress;
+            uint user_program_const_data_top_address = McuSpecs[mcuName].userProgramConstDataTopAddress;
+            uint user_program_const_data_bottom_address = McuSpecs[mcuName].userProgramConstDataBottomAddress;
+            uint data_flash_top_address = McuSpecs[mcuName].dataFlashTopAddress;
+            uint data_flash_bottom_address = McuSpecs[mcuName].dataFlashBottomAddress;
+            StringBuilder sb = new StringBuilder();
+
+            try
+            {
+                StreamReader sr_user_application = new StreamReader(textBoxInitialUserProgramFilePathBank0.Text, Encoding.GetEncoding("Shift_JIS"));
+                string str_user_application = sr_user_application.ReadToEnd();
+                sr_user_application.Close();
+
+                StreamReader sr_bootloader = new StreamReader(textBoxInitialBootLoaderFilePath.Text, Encoding.GetEncoding("Shift_JIS"));
+                string str_bootloader = sr_bootloader.ReadToEnd();
+                sr_bootloader.Close();
+
+                /* S0: userprog.mot */
+                current_pointer = 0;
+                next_pointer = 0;
+                check_sum = CalculateMotorolaChecksum(INITIAL_FIRM_MOT_S0_FORMAT);
+                sb.Append("S0");
+                sb.Append(INITIAL_FIRM_MOT_S0_FORMAT);
+                sb.Append(check_sum.PadLeft(2, '0'));
+                sb.Append("\r\n");
+                motorola_top_buf = sb.ToString();
+                sb.Clear();
+
+                // S2 or S3: Data Flash of Boot Loader
+                string bootloader_address_motorola_tmp = "";
+                if (0 < str_bootloader.IndexOf("S2"))
+                {
+                    sb.Append("S214");
+                    sb.Append(Convert.ToString(bootloader_const_data_top_address, 16).ToUpper());
+                    bootloader_address_motorola_tmp = sb.ToString();
+                    current_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp);
+                    sb.Clear();
+                    sb.Append("S214");
+                    sb.Append(Convert.ToString(bootloader_const_data_bottom_address, 16).ToUpper());
+                    bootloader_address_motorola_tmp = sb.ToString().Remove(9, 1);
+                    bootloader_const_data_one_line_length = 44 + 2; // S2 format last line length + CRLF
+                    next_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp) + bootloader_const_data_one_line_length;
+                    sb.Clear();
+                }
+                else
+                {
+                    sb.Append("S315");
+                    sb.Append(Convert.ToString(bootloader_const_data_top_address, 16).ToUpper());
+                    bootloader_address_motorola_tmp = sb.ToString();
+                    current_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp);
+                    sb.Clear();
+                    sb.Append("S315");
+                    sb.Append(Convert.ToString(bootloader_const_data_bottom_address, 16).ToUpper());
+                    bootloader_address_motorola_tmp = sb.ToString().Remove(11, 1);
+                    bootloader_const_data_one_line_length = 46 + 2; // S3 format last line length + CRLF
+                    next_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp) + bootloader_const_data_one_line_length;
+                    sb.Clear();
+                }
+                motorola_bootloader_const_data_buf = str_bootloader.Substring(current_pointer, next_pointer - current_pointer);
+
+                // S3: Option Setting Memory of Boot Loader
+                string bootloader_option_memory_address_motorola_tmp = "";
+                current_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp) + bootloader_const_data_one_line_length;
+                sb.Clear();
+                sb.Append("S315");
+                sb.Append(Convert.ToString(bootloader_top_address, 16).ToUpper());
+                bootloader_option_memory_address_motorola_tmp = sb.ToString();
+                next_pointer = str_bootloader.IndexOf(bootloader_option_memory_address_motorola_tmp);
+                sb.Clear();
+                motorola_bootloader_option_memory_buf = str_bootloader.Substring(current_pointer, next_pointer - current_pointer);
+
+                // Convert user userprogram key data string to binary
+                byte[] userProgramKey = convertStrDataToKeyData(textBoxInitialUserProgramKey_Aes128.Text, USER_PROGRAM_KEY_BYTE_SIZE);
+                byte[] code_flash_image = new byte[1024 * 1024 * 4];  // 4MB image
+                for (int i = 0; i < code_flash_image.Length; i++)
+                {
+                    code_flash_image[i] = 0xff;
+                }
+                byte[] data_flash_image = new byte[1024 * 64];  // 64KB image
+                for (int i = 0; i < data_flash_image.Length; i++)
+                {
+                    data_flash_image[i] = 0xff;
+                }
+                rsu_header rsu_header_data = new rsu_header();
+
+                if (true == GetUserProgram(mcuName, textBoxInitialUserProgramFilePathBank0.Text, ref code_flash_image, ref data_flash_image))
+                {
+                    if (false == CreateCryptStream(mcuName, FIRMWARE_TYPE_INITIAL, comboBoxInitialFirmwareVerificationType.Text, textBoxInitialFirmwareSequenceNumberBank0.Text,
+                                        ref code_flash_image, ref data_flash_image, ref rsu_header_data, userProgramKey))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+
+                if (comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA)
+                {
+                    // S3: Bank1 Header Information (Convert from Bank0 to Bank1)
+                    byte[] s3_header_byte = new byte[0];
+                    byte[] s3_header_byte_tmp = new byte[1];
+                    s3_header_byte = s3_header_byte.Concat(rsu_header_data.magic_code).ToArray();
+                    s3_header_byte_tmp[0] = (byte)IMAGE_FLAG_INITIAL_FIRM_INSTALLED;
+                    s3_header_byte = s3_header_byte.Concat(s3_header_byte_tmp).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(rsu_header_data.signature_type).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.signature_size)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(rsu_header_data.signature).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.dataflash_flag)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.dataflash_start_address)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.dataflash_end_address)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(rsu_header_data.reserved1).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.sequence_number)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.start_address)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.end_address)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.execution_address)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.hardware_id)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(rsu_header_data.reserved2).ToArray();
+
+                    sb.Append("S315");
+                    sb.Append(Convert.ToString(user_program_top_address, 16).ToUpper());
+                    string user_program_top_address_motolora = sb.ToString();
+                    sb.Clear();
+                    for (int i = 0; i < 0x300; i += 0x10)
+                    {
+                        string s3_header_line = user_program_top_address_motolora.Remove(9, 3);
+                        s3_header_line = String.Concat(s3_header_line, i.ToString("X3"));
+                        byte[] s3_header_line_tmp = new byte[16];
+                        Buffer.BlockCopy(s3_header_byte, i, s3_header_line_tmp, 0, 0x10);
+                        s3_header_line = String.Concat(s3_header_line, BitConverter.ToString(s3_header_line_tmp).Replace("-", string.Empty));
+                        check_sum = CalculateMotorolaChecksum(s3_header_line.Substring(2, 42));
+                        s3_header_line = String.Concat(s3_header_line, check_sum.PadLeft(2, '0'));
+                        s3_header_line = String.Concat(s3_header_line, "\r\n");
+                        motorola_user_program_header_buf = String.Concat(motorola_user_program_header_buf, s3_header_line);
+                    }
+
+                    // S3: Bank1 User Program (Convert from Bank0 to Bank1)
+                    string motorola_user_program_buf_tmp = "";
+                    uint user_program_size = (user_program_bottom_address + 1) - user_program_top_address;
+                    StringBuilder sb_app_tmp = new StringBuilder();
+                    for (uint i = 0; i < user_program_size; i += 16)
+                    {
+                        uint address = i + user_program_top_address;
+                        sb_app_tmp.Append("15");
+                        sb_app_tmp.Append(address.ToString("X2"));
+                        for (uint j = 0; j < 16; j++)
+                        {
+                            sb_app_tmp.Append(code_flash_image[i + j].ToString("X2"));
+                        }
+                        motorola_user_program_buf_tmp = sb_app_tmp.ToString();
+                        sb_app_tmp.Clear();
+                        check_sum = CalculateMotorolaChecksum(motorola_user_program_buf_tmp);
+                        sb.Append("S3");
+                        sb.Append(motorola_user_program_buf_tmp);
+                        sb.Append(check_sum.PadLeft(2, '0'));
+                        sb.Append("\r\n");
+                    }
+                    motorola_user_program_buf = sb.ToString();
+                    sb.Clear();
+                    sb_app_tmp.Clear();
+
+                    // S2 or S3: Const Data
+                    string motorola_user_program_const_data_buf_tmp = "";
+                    uint user_program_const_data_size = (data_flash_bottom_address + 1) - user_program_const_data_top_address;
+                    for (uint i = 0; i < user_program_const_data_size; i += 16)
+                    {
+                        uint address = i + user_program_const_data_top_address;
+                        sb_app_tmp.Append("14");
+                        sb_app_tmp.Append(address.ToString("X2"));
+                        for (uint j = 0; j < 16; j++)
+                        {
+                            sb_app_tmp.Append(data_flash_image[i + j].ToString("X2"));
+                        }
+                        motorola_user_program_const_data_buf_tmp = sb_app_tmp.ToString();
+                        sb_app_tmp.Clear();
+                        check_sum = CalculateMotorolaChecksum(motorola_user_program_const_data_buf_tmp);
+                        sb.Append("S2");
+                        sb.Append(motorola_user_program_const_data_buf_tmp);
+                        sb.Append(check_sum.PadLeft(2, '0'));
+                        sb.Append("\r\n");
+                    }
+                    motorola_user_program_const_data_buf = sb.ToString();
+                    sb.Clear();
+                    sb_app_tmp.Clear();
+
+                    // S3: Boot Loader
+                    sb.Append("S315");
+                    sb.Append(Convert.ToString(bootloader_top_address, 16).ToUpper());
+                    string boot_loader_address_motorola = sb.ToString().Remove(10, 1);
+                    current_pointer = str_bootloader.IndexOf(boot_loader_address_motorola);
+                    next_pointer = str_bootloader.Length;
+                    motorola_bootloader_buf = str_bootloader.Substring(current_pointer, next_pointer - current_pointer);
+                    sb.Clear();
+
+                    // Output Motorola file
+                    string total_buf = "";
+                    sb.Append(motorola_top_buf);
+                    sb.Append(motorola_bootloader_const_data_buf);
+                    sb.Append(motorola_user_program_const_data_buf);
+                    sb.Append(motorola_user_program_header_buf);
+                    sb.Append(motorola_user_program_buf);
+                    sb.Append(motorola_bootloader_buf);
+                    total_buf = sb.ToString();
+                    File.WriteAllText(saveFileDialog.FileName, total_buf);
+                    sb.Clear();
+                }
+                else if (comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_HASH_SHA256)
+                {
+                    print_log("This cipher suite is not yet supported\r\n");
+                    return false;
+                }
+                else
+                {
+                    print_log("This cipher suite is not supported\r\n");
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool GenerateInitialUserprogBank0Bank1Bootloader(string mcuName)
+        {
+            string check_sum;
+            int current_pointer;
+            int next_pointer;
+            int bootloader_const_data_one_line_length;
+            string motorola_top_buf = "";
+            string motorola_bootloader_const_data_buf = "";
+            string motorola_user_program_const_data_buf = "";
+            string motorola_bootloader_option_memory_buf = "";
+            string motorola_user_program_header_buf = "";
+            string motorola_user_program_buf = "";
+            string motorola_user_program_header_mirror_buf = "";
+            string motorola_user_program_mirror_buf = "";
+            string motorola_bootloader_buf = "";
+            uint user_program_top_address = McuSpecs[mcuName].userProgramTopAddress;
+            uint user_program_bottom_address = McuSpecs[mcuName].userProgramBottomAddress;
+            uint user_program_mirror_top_address = McuSpecs[mcuName].userProgramMirrorTopAddress;
+            uint user_program_mirror_bottom_address = McuSpecs[mcuName].userProgramMirrorBottomAddress;
+            uint bootloader_top_address = McuSpecs[mcuName].bootloaderTopAddress;
+            uint bootloader_bottom_address = McuSpecs[mcuName].bootloaderBottomAddress;
+            uint code_flash_top_address = McuSpecs[mcuName].codeFlashTopAddress;
+            uint code_flash_bottom_address = McuSpecs[mcuName].codeFlashBottomAddress;
+            uint bootloader_const_data_top_address = McuSpecs[mcuName].bootloaderConstDataTopAddress;
+            uint bootloader_const_data_bottom_address = McuSpecs[mcuName].bootloaderConstDataBottomAddress;
+            uint user_program_const_data_top_address = McuSpecs[mcuName].userProgramConstDataTopAddress;
+            uint user_program_const_data_bottom_address = McuSpecs[mcuName].userProgramConstDataBottomAddress;
+            uint data_flash_top_address = McuSpecs[mcuName].dataFlashTopAddress;
+            uint data_flash_bottom_address = McuSpecs[mcuName].dataFlashBottomAddress;
+            StringBuilder sb = new StringBuilder();
+
+            try
+            {
+                StreamReader sr_user_application = new StreamReader(textBoxInitialUserProgramFilePathBank0.Text, Encoding.GetEncoding("Shift_JIS"));
+                string str_user_application = sr_user_application.ReadToEnd();
+                sr_user_application.Close();
+
+                StreamReader sr_user_application_mirror = new StreamReader(textBoxInitialUserProgramFilePathBank1.Text, Encoding.GetEncoding("Shift_JIS"));
+                string str_user_application_mirror = sr_user_application_mirror.ReadToEnd();
+                sr_user_application_mirror.Close();
+
+                StreamReader sr_bootloader = new StreamReader(textBoxInitialBootLoaderFilePath.Text, Encoding.GetEncoding("Shift_JIS"));
+                string str_bootloader = sr_bootloader.ReadToEnd();
+                sr_bootloader.Close();
+
+                // S0: userprog.mot
+                current_pointer = 0;
+                next_pointer = 0;
+                check_sum = CalculateMotorolaChecksum(INITIAL_FIRM_MOT_S0_FORMAT);
+                sb.Append("S0");
+                sb.Append(INITIAL_FIRM_MOT_S0_FORMAT);
+                sb.Append(check_sum.PadLeft(2, '0'));
+                sb.Append("\r\n");
+                motorola_top_buf = sb.ToString();
+                sb.Clear();
+
+                // S2 or S3: Data Flash of Boot Loader
+                string bootloader_address_motorola_tmp = "";
+                if (0 < str_bootloader.IndexOf("S2"))
+                {
+                    sb.Append("S214");
+                    sb.Append(Convert.ToString(bootloader_const_data_top_address, 16).ToUpper());
+                    bootloader_address_motorola_tmp = sb.ToString();
+                    current_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp);
+                    sb.Clear();
+                    sb.Append("S214");
+                    sb.Append(Convert.ToString(bootloader_const_data_bottom_address, 16).ToUpper());
+                    bootloader_address_motorola_tmp = sb.ToString().Remove(9, 1);
+                    bootloader_const_data_one_line_length = 44 + 2; // S2 format last line length + CRLF
+                    next_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp) + bootloader_const_data_one_line_length;
+                    sb.Clear();
+                }
+                else
+                {
+                    sb.Append("S315");
+                    sb.Append(Convert.ToString(bootloader_const_data_top_address, 16).ToUpper());
+                    bootloader_address_motorola_tmp = sb.ToString();
+                    current_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp);
+                    sb.Clear();
+                    sb.Append("S315");
+                    sb.Append(Convert.ToString(bootloader_const_data_bottom_address, 16).ToUpper());
+                    bootloader_address_motorola_tmp = sb.ToString().Remove(11, 1);
+                    bootloader_const_data_one_line_length = 46 + 2; // S3 format last line length + CRLF
+                    next_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp) + bootloader_const_data_one_line_length;
+                    sb.Clear();
+                }
+                motorola_bootloader_const_data_buf = str_bootloader.Substring(current_pointer, next_pointer - current_pointer);
+
+                // S3: Option Setting Memory of Boot Loader
+                string bootloader_option_memory_address_motorola_tmp = "";
+                current_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp) + bootloader_const_data_one_line_length;
+                sb.Clear();
+                sb.Append("S315");
+                sb.Append(Convert.ToString(bootloader_top_address, 16).ToUpper());
+                bootloader_option_memory_address_motorola_tmp = sb.ToString();
+                next_pointer = str_bootloader.IndexOf(bootloader_option_memory_address_motorola_tmp);
+                sb.Clear();
+                motorola_bootloader_option_memory_buf = str_bootloader.Substring(current_pointer, next_pointer - current_pointer);
+
+                // Convert user userprogram key data string to binary
+                byte[] userProgramKey = convertStrDataToKeyData(textBoxInitialUserProgramKey_Aes128.Text, USER_PROGRAM_KEY_BYTE_SIZE);
+                byte[] code_flash_image = new byte[1024 * 1024 * 4];  // 4MB image
+                for (int i = 0; i < code_flash_image.Length; i++)
+                {
+                    code_flash_image[i] = 0xff;
+                }
+                byte[] data_flash_image = new byte[1024 * 64];  // 64KB image
+                for (int i = 0; i < data_flash_image.Length; i++)
+                {
+                    data_flash_image[i] = 0xff;
+                }
+                rsu_header rsu_header_data = new rsu_header();
+
+                if (true == GetUserProgram(mcuName, textBoxInitialUserProgramFilePathBank1.Text, ref code_flash_image, ref data_flash_image))
+                {
+                    if (false == CreateCryptStream(mcuName, FIRMWARE_TYPE_INITIAL, comboBoxInitialFirmwareVerificationType.Text, textBoxInitialFirmwareSequenceNumberBank1.Text,
+                                        ref code_flash_image, ref data_flash_image, ref rsu_header_data, userProgramKey))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+
+                if ((OUTPUT_FORMAT_TYPE_BANK0 != comboBoxInitialFirmwareOutputFormat.Text) &&
+                    ((comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_HASH_SHA256) ||
+                    (comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA)))
+                {
+                    // S3: Bank1 Header Information
+                    byte[] s3_header_byte = new byte[0];
+                    byte[] s3_header_byte_tmp = new byte[1];
+                    s3_header_byte = s3_header_byte.Concat(rsu_header_data.magic_code).ToArray();
+                    s3_header_byte_tmp[0] = (byte)IMAGE_FLAG_INITIAL_FIRM_INSTALLED;
+                    s3_header_byte = s3_header_byte.Concat(s3_header_byte_tmp).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(rsu_header_data.signature_type).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.signature_size)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(rsu_header_data.signature).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.dataflash_flag)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.dataflash_start_address)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.dataflash_end_address)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(rsu_header_data.reserved1).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.sequence_number)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.start_address)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.end_address)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.execution_address)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.hardware_id)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(rsu_header_data.reserved2).ToArray();
+
+                    sb.Append("S315");
+                    sb.Append(Convert.ToString(user_program_mirror_top_address, 16).ToUpper());
+                    string user_program_top_address_motolora_tmp = sb.ToString();
+                    sb.Clear();
+                    for (int i = 0; i < 0x300; i += 0x10)
+                    {
+                        string s3_header_line = user_program_top_address_motolora_tmp.Remove(9, 3);
+                        s3_header_line = String.Concat(s3_header_line, i.ToString("X3"));
+                        byte[] s3_header_line_tmp = new byte[16];
+                        Buffer.BlockCopy(s3_header_byte, i, s3_header_line_tmp, 0, 0x10);
+                        s3_header_line = String.Concat(s3_header_line, BitConverter.ToString(s3_header_line_tmp).Replace("-", string.Empty));
+                        check_sum = CalculateMotorolaChecksum(s3_header_line.Substring(2, 42));
+                        s3_header_line = String.Concat(s3_header_line, check_sum.PadLeft(2, '0'));
+                        s3_header_line = String.Concat(s3_header_line, "\r\n");
+                        motorola_user_program_header_mirror_buf = String.Concat(motorola_user_program_header_mirror_buf, s3_header_line);
+                    }
+
+                    // S3: Bank1 User Program
+                    string motorola_user_program_buf_tmp = "";
+                    uint user_program_size = (user_program_mirror_bottom_address + 1) - user_program_mirror_top_address;
+                    StringBuilder sb_app_tmp = new StringBuilder();
+                    for (uint i = 0; i < user_program_size; i += 16)
+                    {
+                        uint address = i + user_program_mirror_top_address;
+                        sb_app_tmp.Append("15");
+                        sb_app_tmp.Append(address.ToString("X2"));
+                        for (uint j = 0; j < 16; j++)
+                        {
+                            sb_app_tmp.Append(code_flash_image[i + j].ToString("X2"));
+                        }
+                        motorola_user_program_buf_tmp = sb_app_tmp.ToString();
+                        sb_app_tmp.Clear();
+                        check_sum = CalculateMotorolaChecksum(motorola_user_program_buf_tmp);
+                        sb.Append("S3");
+                        sb.Append(motorola_user_program_buf_tmp);
+                        sb.Append(check_sum.PadLeft(2, '0'));
+                        sb.Append("\r\n");
+                    }
+                    motorola_user_program_mirror_buf = sb.ToString();
+                    sb.Clear();
+                    sb_app_tmp.Clear();
+
+                    for (int i = 0; i < code_flash_image.Length; i++)
+                    {
+                        code_flash_image[i] = 0xff;
+                    }
+                    rsu_header_data = new rsu_header();
+
+                    if (true == GetUserProgram(mcuName, textBoxInitialUserProgramFilePathBank0.Text, ref code_flash_image, ref data_flash_image))
+                    {
+                        if (false == CreateCryptStream(mcuName, FIRMWARE_TYPE_INITIAL, comboBoxInitialFirmwareVerificationType.Text, textBoxInitialFirmwareSequenceNumberBank0.Text,
+                                            ref code_flash_image, ref data_flash_image, ref rsu_header_data, userProgramKey))
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                    // S3: Bank0 Header Information
+                    s3_header_byte = new byte[0];
+                    s3_header_byte_tmp = new byte[1];
+                    s3_header_byte = s3_header_byte.Concat(rsu_header_data.magic_code).ToArray();
+                    s3_header_byte_tmp[0] = (byte)IMAGE_FLAG_INITIAL_FIRM_INSTALLED;
+                    s3_header_byte = s3_header_byte.Concat(s3_header_byte_tmp).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(rsu_header_data.signature_type).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.signature_size)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(rsu_header_data.signature).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.dataflash_flag)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.dataflash_start_address)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.dataflash_end_address)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(rsu_header_data.reserved1).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.sequence_number)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.start_address)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.end_address)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.execution_address)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.hardware_id)).ToArray();
+                    s3_header_byte = s3_header_byte.Concat(rsu_header_data.reserved2).ToArray();
+
+                    sb.Append("S315");
+                    sb.Append(Convert.ToString(user_program_top_address, 16).ToUpper());
+                    user_program_top_address_motolora_tmp = sb.ToString();
+                    sb.Clear();
+                    for (int i = 0; i < 0x300; i += 0x10)
+                    {
+                        string s3_header_line = user_program_top_address_motolora_tmp.Remove(9, 3);
+                        s3_header_line = String.Concat(s3_header_line, i.ToString("X3"));
+                        byte[] s3_header_line_tmp = new byte[16];
+                        Buffer.BlockCopy(s3_header_byte, i, s3_header_line_tmp, 0, 0x10);
+                        s3_header_line = String.Concat(s3_header_line, BitConverter.ToString(s3_header_line_tmp).Replace("-", string.Empty));
+                        check_sum = CalculateMotorolaChecksum(s3_header_line.Substring(2, 42));
+                        s3_header_line = String.Concat(s3_header_line, check_sum.PadLeft(2, '0'));
+                        s3_header_line = String.Concat(s3_header_line, "\r\n");
+                        motorola_user_program_header_buf = String.Concat(motorola_user_program_header_buf, s3_header_line);
+                    }
+
+                    // S3: Bank0 User Program
+                    motorola_user_program_buf_tmp = "";
+                    user_program_size = (user_program_bottom_address + 1) - user_program_top_address;
+                    for (uint i = 0; i < user_program_size; i += 16)
+                    {
+                        uint address = i + user_program_top_address;
+                        sb_app_tmp.Append("15");
+                        sb_app_tmp.Append(address.ToString("X2"));
+                        for (uint j = 0; j < 16; j++)
+                        {
+                            sb_app_tmp.Append(code_flash_image[i + j].ToString("X2"));
+                        }
+                        motorola_user_program_buf_tmp = sb_app_tmp.ToString();
+                        sb_app_tmp.Clear();
+                        check_sum = CalculateMotorolaChecksum(motorola_user_program_buf_tmp);
+                        sb.Append("S3");
+                        sb.Append(motorola_user_program_buf_tmp);
+                        sb.Append(check_sum.PadLeft(2, '0'));
+                        sb.Append("\r\n");
+                    }
+                    motorola_user_program_buf = sb.ToString();
+                    sb.Clear();
+                    sb_app_tmp.Clear();
+
+                    // S2 or S3: Const Data
+                    string motorola_user_program_const_data_buf_tmp = "";
+                    uint user_program_const_data_size = (data_flash_bottom_address + 1) - user_program_const_data_top_address;
+                    for (uint i = 0; i < user_program_const_data_size; i += 16)
+                    {
+                        uint address = i + user_program_const_data_top_address;
+                        sb_app_tmp.Append("14");
+                        sb_app_tmp.Append(address.ToString("X2"));
+                        for (uint j = 0; j < 16; j++)
+                        {
+                            sb_app_tmp.Append(data_flash_image[i + j].ToString("X2"));
+                        }
+                        motorola_user_program_const_data_buf_tmp = sb_app_tmp.ToString();
+                        sb_app_tmp.Clear();
+                        check_sum = CalculateMotorolaChecksum(motorola_user_program_const_data_buf_tmp);
+                        sb.Append("S2");
+                        sb.Append(motorola_user_program_const_data_buf_tmp);
+                        sb.Append(check_sum.PadLeft(2, '0'));
+                        sb.Append("\r\n");
+                    }
+                    motorola_user_program_const_data_buf = sb.ToString();
+                    sb.Clear();
+                    sb_app_tmp.Clear();
+
+                    // S3: Boot Loader
+                    sb.Append("S315");
+                    sb.Append(Convert.ToString(bootloader_top_address, 16).ToUpper());
+                    string boot_loader_address_motorola = sb.ToString().Remove(10, 1);
+                    current_pointer = str_bootloader.IndexOf(boot_loader_address_motorola);
+                    next_pointer = str_bootloader.Length;
+                    motorola_bootloader_buf = str_bootloader.Substring(current_pointer, next_pointer - current_pointer);
+                    sb.Clear();
+
+                    // Output Motorola file
+                    string total_buf = "";
+                    sb.Append(motorola_top_buf);
+                    sb.Append(motorola_bootloader_const_data_buf);
+                    sb.Append(motorola_user_program_const_data_buf);
+                    sb.Append(motorola_user_program_header_mirror_buf);
+                    sb.Append(motorola_user_program_mirror_buf);
+                    sb.Append(motorola_user_program_header_buf);
+                    sb.Append(motorola_user_program_buf);
+                    sb.Append(motorola_bootloader_buf);
+                    total_buf = sb.ToString();
+                    File.WriteAllText(saveFileDialog.FileName, total_buf);
+                    sb.Clear();
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private void buttonGenerateInitialUserprog(object sender, EventArgs e)
+        {
+            try
+            {
+                //string UserBootLoaderFilePath;
+
+                // check MCU name selection
+                if (comboBox_Initial_Mcu_firmupdate.SelectedIndex < 0)
+                {
+                    print_log("please select MCU in settings.");
+                    return;
+                }
+                if (comboBoxInitialFirmwareVerificationType.Text == "mac-aes128-cmac-with-tsip")
+                {
+                    // check user program key length
+                    if (textBoxInitialUserProgramKey_Aes128.Text.Length != 32)
+                    {
+                        print_log("please specify the correct key size.");
+                        return;
+                    }
+                }
+                // check combination of Firmware Verification Type x Use Code signing for AWS IoT
+
+                // check user proguram file path
+                if (!File.Exists(textBoxInitialUserProgramFilePathBank0.Text))
+                {
+                    print_log("please specify the motorola file name.");
+                    return;
+                }
+
+                // check BootLoader user proguram file path
+                if (textBoxInitialBootLoaderFilePath.Enabled == true)
+                {
+                    if (!File.Exists(textBoxInitialBootLoaderFilePath.Text))
+                    {
+                        print_log("please specify the motorola file name.");
+                        return;
+                    }
+                }
+
+                if (comboBoxInitialFirmwareVerificationType.Text == "sig-sha256-ecdsa-standalone")
+                {
+                    // check user private key path
+                    if (!File.Exists(textBoxInitialUserPrivateKeyPath.Text))
+                    {
+                        print_log("please specify the user private key name.");
+                        return;
+                    }
+                }
+
+                if (OUTPUT_FORMAT_TYPE_BANK0 == comboBoxInitialFirmwareOutputFormat.Text)
+                {
+                    // Displays a SaveFileDialog so the user can save
+                    saveFileDialog.Filter = "Renesas Secure Update|*.rsu";
+                    saveFileDialog.Title = "Save an (Encrypted(option)) User Program File";
+                    saveFileDialog.FileName = "userprog.rsu";
+                }
+                else
+                {
+                    // Displays a SaveFileDialog so the user can save
+                    saveFileDialog.Filter = "Motrola S format |*.mot";
+                    saveFileDialog.Title = "Save an (Encrypted(option)) User Program File";
+                    saveFileDialog.FileName = "userprog.mot";
+                }
+
+                if (saveFileDialog.ShowDialog() != DialogResult.OK || saveFileDialog.FileName == "")
+                {
+                    print_log("please specify the output file name.");
+                    return;
+                }
+
+                string mcuName = comboBox_Initial_Mcu_firmupdate.Text;
+                if (false == GenerateInitialUserprog(mcuName))
+                {
+                    print_log("exception has occurred.");
+                    return;
+                }
+                print_log("generate succeeded.");
+            }
+            catch (Exception)
+            {
+                print_log("exception has occurred.");
+            }
+        }
+
         #endregion [Inital Firm] Tab
 
         #region [Firm Update] Tab
@@ -2112,844 +2952,5 @@ namespace Renesas_Secure_Flash_Programmer
 
         #endregion [Firm Update] Tab
 
-        private void buttonBrowseInitialUserprogBank0_Click(object sender, EventArgs e)
-        {
-            // Displays a OpenFileDialog so the user can save the Image
-            openFileDialog.Filter = "Motorola Format File|*.mot";
-            openFileDialog.Title = "Open the Motorola Format File";
-            openFileDialog.FileName = "";
-
-            if (openFileDialog.ShowDialog() != DialogResult.OK || openFileDialog.FileName == "")
-            {
-                print_log("please specify the motorola file name.");
-                return;
-            }
-
-            textBoxInitialUserProgramFilePathBank0.Text = openFileDialog.FileName;
-        }
-
-		private void buttonBrowseInitialUserprogBank1_Click(object sender, EventArgs e)
-		{
-			if (textBoxInitialUserProgramFilePathBank1.Enabled)
-			{
-				// Displays a OpenFileDialog so the user can save the Image
-				openFileDialog.Filter = "Motorola Format File|*.mot";
-				openFileDialog.Title = "Open the Motorola Format File";
-				openFileDialog.FileName = "";
-
-				if (openFileDialog.ShowDialog() != DialogResult.OK || openFileDialog.FileName == "")
-				{
-					print_log("please specify the motorola file name.");
-					return;
-				}
-
-				textBoxInitialUserProgramFilePathBank1.Text = openFileDialog.FileName;
-			}
-		}
-
-        private void comboBoxFirmwareVerificationType_SelectedIndexChanged_1(object sender, EventArgs e)
-        {
-            if (comboBoxFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP)
-            {
-                textBoxUserProgramKey_Aes128.Enabled = true;
-            }
-            else
-            {
-                textBoxUserProgramKey_Aes128.Enabled = false;
-            }
-        }
-
-        private void comboBoxInitialFirmwareVerificationType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP)
-            {
-                textBoxInitialUserProgramKey_Aes128.Enabled = true;
-            }
-            else
-            {
-                textBoxInitialUserProgramKey_Aes128.Enabled = false;
-            }
-
-            if ((comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA) ||
-                (comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA_WITH_TSIP))
-
-            {
-                textBoxInitialUserPrivateKeyPath.Enabled = true;
-                textBoxInitialUserPublicKeyPath.Enabled = true;
-            }
-            else
-            {
-                textBoxInitialUserPrivateKeyPath.Enabled = false;
-                textBoxInitialUserPublicKeyPath.Enabled = false;
-            }
-        }
-
-		private void comboBoxInitialFirmwareOutputFormatType_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (comboBoxInitialFirmwareOutputFormat.Text == OUTPUT_FORMAT_TYPE_BANK0)
-			{
-				textBoxInitialBootLoaderFilePath.Enabled = false;
-				textBoxInitialFirmwareSequenceNumberBank1.Enabled = false;
-				textBoxInitialUserProgramFilePathBank1.Enabled = false;
-			}
-			else if (comboBoxInitialFirmwareOutputFormat.Text == OUTPUT_FORMAT_TYPE_BANK0_BOOTLOADR)
-			{
-				textBoxInitialBootLoaderFilePath.Enabled = true;
-				textBoxInitialFirmwareSequenceNumberBank1.Enabled = false;
-				textBoxInitialUserProgramFilePathBank1.Enabled = false;
-			}
-			else if (comboBoxInitialFirmwareOutputFormat.Text == OUTPUT_FORMAT_TYPE_BANK0_BANK1_BOOTLOADR)
-			{
-				textBoxInitialBootLoaderFilePath.Enabled = true;
-				textBoxInitialFirmwareSequenceNumberBank1.Enabled = true;
-				textBoxInitialUserProgramFilePathBank1.Enabled = true;
-			}
-			else
-			{
-				textBoxInitialBootLoaderFilePath.Enabled = false;
-				textBoxInitialFirmwareSequenceNumberBank1.Enabled = false;
-				textBoxInitialUserProgramFilePathBank1.Enabled = false;
-			}
-		}
-
-		private bool GenerateInitialUserprog(string mcuName)
-		{
-			if (OUTPUT_FORMAT_TYPE_BANK0 == comboBoxInitialFirmwareOutputFormat.Text)
-			{
-				return GenerateInitialUserprogBank0(mcuName);
-			}
-			else if (OUTPUT_FORMAT_TYPE_BANK0_BOOTLOADR == comboBoxInitialFirmwareOutputFormat.Text)
-			{
-				return GenerateInitialUserprogBank0Bootloader(mcuName);
-			}
-			else if (OUTPUT_FORMAT_TYPE_BANK0_BANK1_BOOTLOADR == comboBoxInitialFirmwareOutputFormat.Text)
-			{
-				return GenerateInitialUserprogBank0Bank1Bootloader(mcuName);
-			}
-			else
-			{
-				return false;
-			}
-		}
-
-		private bool GenerateInitialUserprogBank0(string mcuName)
-        {
-			try
-			{
-				StreamReader sr_user_application = new StreamReader(textBoxInitialUserProgramFilePathBank0.Text, Encoding.GetEncoding("Shift_JIS"));
-				string str_user_application = sr_user_application.ReadToEnd();
-				sr_user_application.Close();
-
-				// Convert user userprogram key data string to binary
-				byte[] userProgramKey = convertStrDataToKeyData(textBoxInitialUserProgramKey_Aes128.Text, USER_PROGRAM_KEY_BYTE_SIZE);
-				byte[] code_flash_image = new byte[1024 * 1024 * 4];  // 4MB image
-				for (int i = 0; i < code_flash_image.Length; i++)
-				{
-					code_flash_image[i] = 0xff;
-				}
-				byte[] data_flash_image = new byte[1024 * 64];  // 64KB image
-				for (int i = 0; i < data_flash_image.Length; i++)
-				{
-					data_flash_image[i] = 0xff;
-				}
-				rsu_header rsu_header_data = new rsu_header();
-
-				if (true == GetUserProgram(mcuName, textBoxInitialUserProgramFilePathBank0.Text, ref code_flash_image, ref data_flash_image))
-				{
-					if (false == CreateCryptStream(mcuName, FIRMWARE_TYPE_INITIAL, comboBoxInitialFirmwareVerificationType.Text, textBoxInitialFirmwareSequenceNumberBank0.Text,
-										ref code_flash_image, ref data_flash_image, ref rsu_header_data, userProgramKey))
-					{
-						return false;
-					}
-				}
-				else
-				{
-					return false;
-				}
-			}
-			catch (Exception)
-			{
-				return false;
-			}
-			return true;
-        }
-
-		private bool GenerateInitialUserprogBank0Bootloader(string mcuName)
-		{
-			string check_sum;
-			int current_pointer;
-			int next_pointer;
-			int bootloader_const_data_one_line_length;
-			string motorola_top_buf = "";
-			string motorola_bootloader_const_data_buf = "";
-			string motorola_user_program_const_data_buf = "";
-			string motorola_bootloader_option_memory_buf = "";
-			string motorola_user_program_header_buf = "";
-			string motorola_user_program_buf = "";
-			string motorola_bootloader_buf = "";
-			uint user_program_top_address = McuSpecs[mcuName].userProgramTopAddress;
-			uint user_program_bottom_address = McuSpecs[mcuName].userProgramBottomAddress;
-			uint user_program_mirror_top_address = McuSpecs[mcuName].userProgramMirrorTopAddress;
-			uint user_program_mirror_bottom_address = McuSpecs[mcuName].userProgramMirrorBottomAddress;
-			uint bootloader_top_address = McuSpecs[mcuName].bootloaderTopAddress;
-			uint bootloader_bottom_address = McuSpecs[mcuName].bootloaderBottomAddress;
-			uint code_flash_top_address = McuSpecs[mcuName].codeFlashTopAddress;
-			uint code_flash_bottom_address = McuSpecs[mcuName].codeFlashBottomAddress;
-			uint bootloader_const_data_top_address = McuSpecs[mcuName].bootloaderConstDataTopAddress;
-			uint bootloader_const_data_bottom_address = McuSpecs[mcuName].bootloaderConstDataBottomAddress;
-			uint user_program_const_data_top_address = McuSpecs[mcuName].userProgramConstDataTopAddress;
-			uint user_program_const_data_bottom_address = McuSpecs[mcuName].userProgramConstDataBottomAddress;
-			uint data_flash_top_address = McuSpecs[mcuName].dataFlashTopAddress;
-			uint data_flash_bottom_address = McuSpecs[mcuName].dataFlashBottomAddress;
-			StringBuilder sb = new StringBuilder();
-
-			try
-			{
-				StreamReader sr_user_application = new StreamReader(textBoxInitialUserProgramFilePathBank0.Text, Encoding.GetEncoding("Shift_JIS"));
-				string str_user_application = sr_user_application.ReadToEnd();
-				sr_user_application.Close();
-
-				StreamReader sr_bootloader = new StreamReader(textBoxInitialBootLoaderFilePath.Text, Encoding.GetEncoding("Shift_JIS"));
-				string str_bootloader = sr_bootloader.ReadToEnd();
-				sr_bootloader.Close();
-
-				/* S0: userprog.mot */
-				current_pointer = 0;
-				next_pointer = 0;
-				check_sum = CalculateMotorolaChecksum(INITIAL_FIRM_MOT_S0_FORMAT);
-				sb.Append("S0");
-				sb.Append(INITIAL_FIRM_MOT_S0_FORMAT);
-				sb.Append(check_sum.PadLeft(2, '0'));
-				sb.Append("\r\n");
-				motorola_top_buf = sb.ToString();
-				sb.Clear();
-
-				// S2 or S3: Data Flash of Boot Loader
-				string bootloader_address_motorola_tmp = "";
-				if (0 < str_bootloader.IndexOf("S2"))
-				{
-					sb.Append("S214");
-					sb.Append(Convert.ToString(bootloader_const_data_top_address, 16).ToUpper());
-					bootloader_address_motorola_tmp = sb.ToString();
-					current_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp);
-					sb.Clear();
-					sb.Append("S214");
-					sb.Append(Convert.ToString(bootloader_const_data_bottom_address, 16).ToUpper());
-					bootloader_address_motorola_tmp = sb.ToString().Remove(9, 1);
-					bootloader_const_data_one_line_length = 44 + 2; // S2 format last line length + CRLF
-					next_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp) + bootloader_const_data_one_line_length;
-					sb.Clear();
-				}
-				else
-				{
-					sb.Append("S315");
-					sb.Append(Convert.ToString(bootloader_const_data_top_address, 16).ToUpper());
-					bootloader_address_motorola_tmp = sb.ToString();
-					current_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp);
-					sb.Clear();
-					sb.Append("S315");
-					sb.Append(Convert.ToString(bootloader_const_data_bottom_address, 16).ToUpper());
-					bootloader_address_motorola_tmp = sb.ToString().Remove(11, 1);
-					bootloader_const_data_one_line_length = 46 + 2; // S3 format last line length + CRLF
-					next_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp) + bootloader_const_data_one_line_length;
-					sb.Clear();
-				}
-				motorola_bootloader_const_data_buf = str_bootloader.Substring(current_pointer, next_pointer - current_pointer);
-
-				// S3: Option Setting Memory of Boot Loader
-				string bootloader_option_memory_address_motorola_tmp = "";
-				current_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp) + bootloader_const_data_one_line_length;
-				sb.Clear();
-				sb.Append("S315");
-				sb.Append(Convert.ToString(bootloader_top_address, 16).ToUpper());
-				bootloader_option_memory_address_motorola_tmp = sb.ToString();
-				next_pointer = str_bootloader.IndexOf(bootloader_option_memory_address_motorola_tmp);
-				sb.Clear();
-				motorola_bootloader_option_memory_buf = str_bootloader.Substring(current_pointer, next_pointer - current_pointer);
-
-				// Convert user userprogram key data string to binary
-				byte[] userProgramKey = convertStrDataToKeyData(textBoxInitialUserProgramKey_Aes128.Text, USER_PROGRAM_KEY_BYTE_SIZE);
-				byte[] code_flash_image = new byte[1024 * 1024 * 4];  // 4MB image
-				for (int i = 0; i < code_flash_image.Length; i++)
-				{
-					code_flash_image[i] = 0xff;
-				}
-				byte[] data_flash_image = new byte[1024 * 64];  // 64KB image
-				for (int i = 0; i < data_flash_image.Length; i++)
-				{
-					data_flash_image[i] = 0xff;
-				}
-				rsu_header rsu_header_data = new rsu_header();
-
-				if (true == GetUserProgram(mcuName, textBoxInitialUserProgramFilePathBank0.Text, ref code_flash_image, ref data_flash_image))
-				{
-					if (false == CreateCryptStream(mcuName, FIRMWARE_TYPE_INITIAL, comboBoxInitialFirmwareVerificationType.Text, textBoxInitialFirmwareSequenceNumberBank0.Text,
-										ref code_flash_image, ref data_flash_image, ref rsu_header_data, userProgramKey))
-					{
-						return false;
-					}
-				}
-				else
-				{
-					return false;
-				}
-
-				if (comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA)
-				{
-					// S3: Bank1 Header Information (Convert from Bank0 to Bank1)
-					byte[] s3_header_byte = new byte[0];
-					byte[] s3_header_byte_tmp = new byte[1];
-					s3_header_byte = s3_header_byte.Concat(rsu_header_data.magic_code).ToArray();
-					s3_header_byte_tmp[0] = (byte)IMAGE_FLAG_INITIAL_FIRM_INSTALLED;
-					s3_header_byte = s3_header_byte.Concat(s3_header_byte_tmp).ToArray();
-					s3_header_byte = s3_header_byte.Concat(rsu_header_data.signature_type).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.signature_size)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(rsu_header_data.signature).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.dataflash_flag)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.dataflash_start_address)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.dataflash_end_address)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(rsu_header_data.reserved1).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.sequence_number)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.start_address)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.end_address)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.execution_address)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.hardware_id)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(rsu_header_data.reserved2).ToArray();
-
-					sb.Append("S315");
-					sb.Append(Convert.ToString(user_program_top_address, 16).ToUpper());
-					string user_program_top_address_motolora = sb.ToString();
-					sb.Clear();
-					for (int i = 0; i < 0x300; i += 0x10)
-					{
-						string s3_header_line = user_program_top_address_motolora.Remove(9, 3);
-						s3_header_line = String.Concat(s3_header_line, i.ToString("X3"));
-						byte[] s3_header_line_tmp = new byte[16];
-						Buffer.BlockCopy(s3_header_byte, i, s3_header_line_tmp, 0, 0x10);
-						s3_header_line = String.Concat(s3_header_line, BitConverter.ToString(s3_header_line_tmp).Replace("-", string.Empty));
-						check_sum = CalculateMotorolaChecksum(s3_header_line.Substring(2, 42));
-						s3_header_line = String.Concat(s3_header_line, check_sum.PadLeft(2, '0'));
-						s3_header_line = String.Concat(s3_header_line, "\r\n");
-						motorola_user_program_header_buf = String.Concat(motorola_user_program_header_buf, s3_header_line);
-					}
-
-					// S3: Bank1 User Program (Convert from Bank0 to Bank1)
-					string motorola_user_program_buf_tmp = "";
-					uint user_program_size = (user_program_bottom_address + 1) - user_program_top_address;
-					StringBuilder sb_app_tmp = new StringBuilder();
-					for (uint i = 0; i < user_program_size; i += 16)
-					{
-						uint address = i + user_program_top_address;
-						sb_app_tmp.Append("15");
-						sb_app_tmp.Append(address.ToString("X2"));
-						for (uint j = 0; j < 16; j++)
-						{
-							sb_app_tmp.Append(code_flash_image[i + j].ToString("X2"));
-						}
-						motorola_user_program_buf_tmp = sb_app_tmp.ToString();
-						sb_app_tmp.Clear();
-						check_sum = CalculateMotorolaChecksum(motorola_user_program_buf_tmp);
-						sb.Append("S3");
-						sb.Append(motorola_user_program_buf_tmp);
-						sb.Append(check_sum.PadLeft(2, '0'));
-						sb.Append("\r\n");
-					}
-					motorola_user_program_buf = sb.ToString();
-					sb.Clear();
-					sb_app_tmp.Clear();
-
-					// S2 or S3: Const Data
-					string motorola_user_program_const_data_buf_tmp = "";
-					uint user_program_const_data_size = (data_flash_bottom_address + 1) - user_program_const_data_top_address;
-					for (uint i = 0; i < user_program_const_data_size; i += 16)
-					{
-						uint address = i + user_program_const_data_top_address;
-						sb_app_tmp.Append("14");
-						sb_app_tmp.Append(address.ToString("X2"));
-						for (uint j = 0; j < 16; j++)
-						{
-							sb_app_tmp.Append(data_flash_image[i + j].ToString("X2"));
-						}
-						motorola_user_program_const_data_buf_tmp = sb_app_tmp.ToString();
-						sb_app_tmp.Clear();
-						check_sum = CalculateMotorolaChecksum(motorola_user_program_const_data_buf_tmp);
-						sb.Append("S2");
-						sb.Append(motorola_user_program_const_data_buf_tmp);
-						sb.Append(check_sum.PadLeft(2, '0'));
-						sb.Append("\r\n");
-					}
-					motorola_user_program_const_data_buf = sb.ToString();
-					sb.Clear();
-					sb_app_tmp.Clear();
-
-					// S3: Boot Loader
-					sb.Append("S315");
-					sb.Append(Convert.ToString(bootloader_top_address, 16).ToUpper());
-					string boot_loader_address_motorola = sb.ToString().Remove(10, 1);
-					current_pointer = str_bootloader.IndexOf(boot_loader_address_motorola);
-					next_pointer = str_bootloader.Length;
-					motorola_bootloader_buf = str_bootloader.Substring(current_pointer, next_pointer - current_pointer);
-					sb.Clear();
-
-					// Output Motorola file
-					string total_buf = "";
-					sb.Append(motorola_top_buf);
-					sb.Append(motorola_bootloader_const_data_buf);
-					sb.Append(motorola_user_program_const_data_buf);
-					sb.Append(motorola_user_program_header_buf);
-					sb.Append(motorola_user_program_buf);
-					sb.Append(motorola_bootloader_buf);
-					total_buf = sb.ToString();
-					File.WriteAllText(saveFileDialog.FileName, total_buf);
-					sb.Clear();
-				}
-				else if (comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_HASH_SHA256)
-				{
-					print_log("This cipher suite is not yet supported\r\n");
-					return false;
-				}
-				else
-				{
-					print_log("This cipher suite is not supported\r\n");
-					return false;
-				}
-			}
-			catch (Exception)
-			{
-				return false;
-			}
-			return true;
-		}
-
-		private bool GenerateInitialUserprogBank0Bank1Bootloader(string mcuName)
-		{
-			string check_sum;
-			int current_pointer;
-			int next_pointer;
-			int bootloader_const_data_one_line_length;
-			string motorola_top_buf = "";
-			string motorola_bootloader_const_data_buf = "";
-			string motorola_user_program_const_data_buf = "";
-			string motorola_bootloader_option_memory_buf = "";
-			string motorola_user_program_header_buf = "";
-			string motorola_user_program_buf = "";
-			string motorola_user_program_header_mirror_buf = "";
-			string motorola_user_program_mirror_buf = "";
-			string motorola_bootloader_buf = "";
-			uint user_program_top_address = McuSpecs[mcuName].userProgramTopAddress;
-			uint user_program_bottom_address = McuSpecs[mcuName].userProgramBottomAddress;
-			uint user_program_mirror_top_address = McuSpecs[mcuName].userProgramMirrorTopAddress;
-			uint user_program_mirror_bottom_address = McuSpecs[mcuName].userProgramMirrorBottomAddress;
-			uint bootloader_top_address = McuSpecs[mcuName].bootloaderTopAddress;
-			uint bootloader_bottom_address = McuSpecs[mcuName].bootloaderBottomAddress;
-			uint code_flash_top_address = McuSpecs[mcuName].codeFlashTopAddress;
-			uint code_flash_bottom_address = McuSpecs[mcuName].codeFlashBottomAddress;
-			uint bootloader_const_data_top_address = McuSpecs[mcuName].bootloaderConstDataTopAddress;
-			uint bootloader_const_data_bottom_address = McuSpecs[mcuName].bootloaderConstDataBottomAddress;
-			uint user_program_const_data_top_address = McuSpecs[mcuName].userProgramConstDataTopAddress;
-			uint user_program_const_data_bottom_address = McuSpecs[mcuName].userProgramConstDataBottomAddress;
-			uint data_flash_top_address = McuSpecs[mcuName].dataFlashTopAddress;
-			uint data_flash_bottom_address = McuSpecs[mcuName].dataFlashBottomAddress;
-			StringBuilder sb = new StringBuilder();
-
-			try
-			{
-				StreamReader sr_user_application = new StreamReader(textBoxInitialUserProgramFilePathBank0.Text, Encoding.GetEncoding("Shift_JIS"));
-				string str_user_application = sr_user_application.ReadToEnd();
-				sr_user_application.Close();
-
-				StreamReader sr_user_application_mirror = new StreamReader(textBoxInitialUserProgramFilePathBank1.Text, Encoding.GetEncoding("Shift_JIS"));
-				string str_user_application_mirror = sr_user_application_mirror.ReadToEnd();
-				sr_user_application_mirror.Close();
-
-				StreamReader sr_bootloader = new StreamReader(textBoxInitialBootLoaderFilePath.Text, Encoding.GetEncoding("Shift_JIS"));
-				string str_bootloader = sr_bootloader.ReadToEnd();
-				sr_bootloader.Close();
-
-				// S0: userprog.mot
-				current_pointer = 0;
-				next_pointer = 0;
-				check_sum = CalculateMotorolaChecksum(INITIAL_FIRM_MOT_S0_FORMAT);
-				sb.Append("S0");
-				sb.Append(INITIAL_FIRM_MOT_S0_FORMAT);
-				sb.Append(check_sum.PadLeft(2, '0'));
-				sb.Append("\r\n");
-				motorola_top_buf = sb.ToString();
-				sb.Clear();
-
-				// S2 or S3: Data Flash of Boot Loader
-				string bootloader_address_motorola_tmp = "";
-				if (0 < str_bootloader.IndexOf("S2"))
-				{
-					sb.Append("S214");
-					sb.Append(Convert.ToString(bootloader_const_data_top_address, 16).ToUpper());
-					bootloader_address_motorola_tmp = sb.ToString();
-					current_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp);
-					sb.Clear();
-					sb.Append("S214");
-					sb.Append(Convert.ToString(bootloader_const_data_bottom_address, 16).ToUpper());
-					bootloader_address_motorola_tmp = sb.ToString().Remove(9, 1);
-					bootloader_const_data_one_line_length = 44 + 2; // S2 format last line length + CRLF
-					next_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp) + bootloader_const_data_one_line_length;
-					sb.Clear();
-				}
-				else
-				{
-					sb.Append("S315");
-					sb.Append(Convert.ToString(bootloader_const_data_top_address, 16).ToUpper());
-					bootloader_address_motorola_tmp = sb.ToString();
-					current_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp);
-					sb.Clear();
-					sb.Append("S315");
-					sb.Append(Convert.ToString(bootloader_const_data_bottom_address, 16).ToUpper());
-					bootloader_address_motorola_tmp = sb.ToString().Remove(11, 1);
-					bootloader_const_data_one_line_length = 46 + 2; // S3 format last line length + CRLF
-					next_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp) + bootloader_const_data_one_line_length;
-					sb.Clear();
-				}
-				motorola_bootloader_const_data_buf = str_bootloader.Substring(current_pointer, next_pointer - current_pointer);
-
-				// S3: Option Setting Memory of Boot Loader
-				string bootloader_option_memory_address_motorola_tmp = "";
-				current_pointer = str_bootloader.IndexOf(bootloader_address_motorola_tmp) + bootloader_const_data_one_line_length;
-				sb.Clear();
-				sb.Append("S315");
-				sb.Append(Convert.ToString(bootloader_top_address, 16).ToUpper());
-				bootloader_option_memory_address_motorola_tmp = sb.ToString();
-				next_pointer = str_bootloader.IndexOf(bootloader_option_memory_address_motorola_tmp);
-				sb.Clear();
-				motorola_bootloader_option_memory_buf = str_bootloader.Substring(current_pointer, next_pointer - current_pointer);
-
-				// Convert user userprogram key data string to binary
-				byte[] userProgramKey = convertStrDataToKeyData(textBoxInitialUserProgramKey_Aes128.Text, USER_PROGRAM_KEY_BYTE_SIZE);
-				byte[] code_flash_image = new byte[1024 * 1024 * 4];  // 4MB image
-				for (int i = 0; i < code_flash_image.Length; i++)
-				{
-					code_flash_image[i] = 0xff;
-				}
-				byte[] data_flash_image = new byte[1024 * 64];  // 64KB image
-				for (int i = 0; i < data_flash_image.Length; i++)
-				{
-					data_flash_image[i] = 0xff;
-				}
-				rsu_header rsu_header_data = new rsu_header();
-
-				if (true == GetUserProgram(mcuName, textBoxInitialUserProgramFilePathBank1.Text, ref code_flash_image, ref data_flash_image))
-				{
-					if (false == CreateCryptStream(mcuName, FIRMWARE_TYPE_INITIAL, comboBoxInitialFirmwareVerificationType.Text, textBoxInitialFirmwareSequenceNumberBank1.Text,
-										ref code_flash_image, ref data_flash_image, ref rsu_header_data, userProgramKey))
-					{
-						return false;
-					}
-				}
-				else
-				{
-					return false;
-				}
-
-				if ((OUTPUT_FORMAT_TYPE_BANK0 != comboBoxInitialFirmwareOutputFormat.Text) &&
-					((comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_HASH_SHA256) ||
-					(comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA)))
-				{
-					// S3: Bank1 Header Information
-					byte[] s3_header_byte = new byte[0];
-					byte[] s3_header_byte_tmp = new byte[1];
-					s3_header_byte = s3_header_byte.Concat(rsu_header_data.magic_code).ToArray();
-					s3_header_byte_tmp[0] = (byte)IMAGE_FLAG_INITIAL_FIRM_INSTALLED;
-					s3_header_byte = s3_header_byte.Concat(s3_header_byte_tmp).ToArray();
-					s3_header_byte = s3_header_byte.Concat(rsu_header_data.signature_type).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.signature_size)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(rsu_header_data.signature).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.dataflash_flag)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.dataflash_start_address)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.dataflash_end_address)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(rsu_header_data.reserved1).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.sequence_number)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.start_address)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.end_address)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.execution_address)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.hardware_id)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(rsu_header_data.reserved2).ToArray();
-
-					sb.Append("S315");
-					sb.Append(Convert.ToString(user_program_mirror_top_address, 16).ToUpper());
-					string user_program_top_address_motolora_tmp = sb.ToString();
-					sb.Clear();
-					for (int i = 0; i < 0x300; i += 0x10)
-					{
-						string s3_header_line = user_program_top_address_motolora_tmp.Remove(9, 3);
-						s3_header_line = String.Concat(s3_header_line, i.ToString("X3"));
-						byte[] s3_header_line_tmp = new byte[16];
-						Buffer.BlockCopy(s3_header_byte, i, s3_header_line_tmp, 0, 0x10);
-						s3_header_line = String.Concat(s3_header_line, BitConverter.ToString(s3_header_line_tmp).Replace("-", string.Empty));
-						check_sum = CalculateMotorolaChecksum(s3_header_line.Substring(2, 42));
-						s3_header_line = String.Concat(s3_header_line, check_sum.PadLeft(2, '0'));
-						s3_header_line = String.Concat(s3_header_line, "\r\n");
-						motorola_user_program_header_mirror_buf = String.Concat(motorola_user_program_header_mirror_buf, s3_header_line);
-					}
-
-					// S3: Bank1 User Program
-					string motorola_user_program_buf_tmp = "";
-					uint user_program_size = (user_program_mirror_bottom_address + 1) - user_program_mirror_top_address;
-					StringBuilder sb_app_tmp = new StringBuilder();
-					for (uint i = 0; i < user_program_size; i += 16)
-					{
-						uint address = i + user_program_mirror_top_address;
-						sb_app_tmp.Append("15");
-						sb_app_tmp.Append(address.ToString("X2"));
-						for (uint j = 0; j < 16; j++)
-						{
-							sb_app_tmp.Append(code_flash_image[i + j].ToString("X2"));
-						}
-						motorola_user_program_buf_tmp = sb_app_tmp.ToString();
-						sb_app_tmp.Clear();
-						check_sum = CalculateMotorolaChecksum(motorola_user_program_buf_tmp);
-						sb.Append("S3");
-						sb.Append(motorola_user_program_buf_tmp);
-						sb.Append(check_sum.PadLeft(2, '0'));
-						sb.Append("\r\n");
-					}
-					motorola_user_program_mirror_buf = sb.ToString();
-					sb.Clear();
-					sb_app_tmp.Clear();
-
-					for (int i = 0; i < code_flash_image.Length; i++)
-					{
-						code_flash_image[i] = 0xff;
-					}
-					rsu_header_data = new rsu_header();
-
-					if (true == GetUserProgram(mcuName, textBoxInitialUserProgramFilePathBank0.Text, ref code_flash_image, ref data_flash_image))
-					{
-						if (false == CreateCryptStream(mcuName, FIRMWARE_TYPE_INITIAL, comboBoxInitialFirmwareVerificationType.Text, textBoxInitialFirmwareSequenceNumberBank0.Text,
-											ref code_flash_image, ref data_flash_image, ref rsu_header_data, userProgramKey))
-						{
-							return false;
-						}
-					}
-					else
-					{
-						return false;
-					}
-
-					// S3: Bank0 Header Information
-					s3_header_byte = new byte[0];
-					s3_header_byte_tmp = new byte[1];
-					s3_header_byte = s3_header_byte.Concat(rsu_header_data.magic_code).ToArray();
-					s3_header_byte_tmp[0] = (byte)IMAGE_FLAG_INITIAL_FIRM_INSTALLED;
-					s3_header_byte = s3_header_byte.Concat(s3_header_byte_tmp).ToArray();
-					s3_header_byte = s3_header_byte.Concat(rsu_header_data.signature_type).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.signature_size)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(rsu_header_data.signature).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.dataflash_flag)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.dataflash_start_address)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.dataflash_end_address)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(rsu_header_data.reserved1).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.sequence_number)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.start_address)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.end_address)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.execution_address)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(BitConverter.GetBytes(rsu_header_data.hardware_id)).ToArray();
-					s3_header_byte = s3_header_byte.Concat(rsu_header_data.reserved2).ToArray();
-
-					sb.Append("S315");
-					sb.Append(Convert.ToString(user_program_top_address, 16).ToUpper());
-					user_program_top_address_motolora_tmp = sb.ToString();
-					sb.Clear();
-					for (int i = 0; i < 0x300; i += 0x10)
-					{
-						string s3_header_line = user_program_top_address_motolora_tmp.Remove(9, 3);
-						s3_header_line = String.Concat(s3_header_line, i.ToString("X3"));
-						byte[] s3_header_line_tmp = new byte[16];
-						Buffer.BlockCopy(s3_header_byte, i, s3_header_line_tmp, 0, 0x10);
-						s3_header_line = String.Concat(s3_header_line, BitConverter.ToString(s3_header_line_tmp).Replace("-", string.Empty));
-						check_sum = CalculateMotorolaChecksum(s3_header_line.Substring(2, 42));
-						s3_header_line = String.Concat(s3_header_line, check_sum.PadLeft(2, '0'));
-						s3_header_line = String.Concat(s3_header_line, "\r\n");
-						motorola_user_program_header_buf = String.Concat(motorola_user_program_header_buf, s3_header_line);
-					}
-
-					// S3: Bank0 User Program
-					motorola_user_program_buf_tmp = "";
-					user_program_size = (user_program_bottom_address + 1) - user_program_top_address;
-					for (uint i = 0; i < user_program_size; i += 16)
-					{
-						uint address = i + user_program_top_address;
-						sb_app_tmp.Append("15");
-						sb_app_tmp.Append(address.ToString("X2"));
-						for (uint j = 0; j < 16; j++)
-						{
-							sb_app_tmp.Append(code_flash_image[i + j].ToString("X2"));
-						}
-						motorola_user_program_buf_tmp = sb_app_tmp.ToString();
-						sb_app_tmp.Clear();
-						check_sum = CalculateMotorolaChecksum(motorola_user_program_buf_tmp);
-						sb.Append("S3");
-						sb.Append(motorola_user_program_buf_tmp);
-						sb.Append(check_sum.PadLeft(2, '0'));
-						sb.Append("\r\n");
-					}
-					motorola_user_program_buf = sb.ToString();
-					sb.Clear();
-					sb_app_tmp.Clear();
-
-					// S2 or S3: Const Data
-					string motorola_user_program_const_data_buf_tmp = "";
-					uint user_program_const_data_size = (data_flash_bottom_address + 1) - user_program_const_data_top_address;
-					for (uint i = 0; i < user_program_const_data_size; i += 16)
-					{
-						uint address = i + user_program_const_data_top_address;
-						sb_app_tmp.Append("14");
-						sb_app_tmp.Append(address.ToString("X2"));
-						for (uint j = 0; j < 16; j++)
-						{
-							sb_app_tmp.Append(data_flash_image[i + j].ToString("X2"));
-						}
-						motorola_user_program_const_data_buf_tmp = sb_app_tmp.ToString();
-						sb_app_tmp.Clear();
-						check_sum = CalculateMotorolaChecksum(motorola_user_program_const_data_buf_tmp);
-						sb.Append("S2");
-						sb.Append(motorola_user_program_const_data_buf_tmp);
-						sb.Append(check_sum.PadLeft(2, '0'));
-						sb.Append("\r\n");
-					}
-					motorola_user_program_const_data_buf = sb.ToString();
-					sb.Clear();
-					sb_app_tmp.Clear();
-
-					// S3: Boot Loader
-					sb.Append("S315");
-					sb.Append(Convert.ToString(bootloader_top_address, 16).ToUpper());
-					string boot_loader_address_motorola = sb.ToString().Remove(10, 1);
-					current_pointer = str_bootloader.IndexOf(boot_loader_address_motorola);
-					next_pointer = str_bootloader.Length;
-					motorola_bootloader_buf = str_bootloader.Substring(current_pointer, next_pointer - current_pointer);
-					sb.Clear();
-
-					// Output Motorola file
-					string total_buf = "";
-					sb.Append(motorola_top_buf);
-					sb.Append(motorola_bootloader_const_data_buf);
-					sb.Append(motorola_user_program_const_data_buf);
-					sb.Append(motorola_user_program_header_mirror_buf);
-					sb.Append(motorola_user_program_mirror_buf);
-					sb.Append(motorola_user_program_header_buf);
-					sb.Append(motorola_user_program_buf);
-					sb.Append(motorola_bootloader_buf);
-					total_buf = sb.ToString();
-					File.WriteAllText(saveFileDialog.FileName, total_buf);
-					sb.Clear();
-				}
-			}
-			catch (Exception)
-			{
-				return false;
-			}
-			return true;
-		}
-
-		private void buttonGenerateInitialUserprog(object sender, EventArgs e)
-        {
-            try
-            {
-                //string UserBootLoaderFilePath;
-
-                // check MCU name selection
-                if (comboBox_Initial_Mcu_firmupdate.SelectedIndex < 0)
-                {
-                    print_log("please select MCU in settings.");
-                    return;
-                }
-                if (comboBoxInitialFirmwareVerificationType.Text == "mac-aes128-cmac-with-tsip")
-                {
-                    // check user program key length
-                    if (textBoxInitialUserProgramKey_Aes128.Text.Length != 32)
-                    {
-                        print_log("please specify the correct key size.");
-                        return;
-                    }
-                }
-                // check combination of Firmware Verification Type x Use Code signing for AWS IoT
-
-                // check user proguram file path
-                if (!File.Exists(textBoxInitialUserProgramFilePathBank0.Text))
-                {
-                    print_log("please specify the motorola file name.");
-                    return;
-                }
-
-				// check BootLoader user proguram file path
-				if (textBoxInitialBootLoaderFilePath.Enabled == true)
-				{
-					if (!File.Exists(textBoxInitialBootLoaderFilePath.Text))
-					{
-						print_log("please specify the motorola file name.");
-						return;
-					}
-				}
-
-                if (comboBoxInitialFirmwareVerificationType.Text == "sig-sha256-ecdsa-standalone")
-                {
-                    // check user private key path
-                    if (!File.Exists(textBoxInitialUserPrivateKeyPath.Text))
-                    {
-                        print_log("please specify the user private key name.");
-                        return;
-                    }
-                }
-
-                if (OUTPUT_FORMAT_TYPE_BANK0 == comboBoxInitialFirmwareOutputFormat.Text)
-                {
-                    // Displays a SaveFileDialog so the user can save
-                    saveFileDialog.Filter = "Renesas Secure Update|*.rsu";
-                    saveFileDialog.Title = "Save an (Encrypted(option)) User Program File";
-                    saveFileDialog.FileName = "userprog.rsu";
-                }
-                else
-                {
-                    // Displays a SaveFileDialog so the user can save
-                    saveFileDialog.Filter = "Motrola S format |*.mot";
-                    saveFileDialog.Title = "Save an (Encrypted(option)) User Program File";
-                    saveFileDialog.FileName = "userprog.mot";
-                }
-
-                if (saveFileDialog.ShowDialog() != DialogResult.OK || saveFileDialog.FileName == "")
-                {
-                    print_log("please specify the output file name.");
-                    return;
-                }
-
-                string mcuName = comboBox_Initial_Mcu_firmupdate.Text;
-				if (false == GenerateInitialUserprog(mcuName))
-				{
-					print_log("exception has occurred.");
-					return;
-				}
-                print_log("generate succeeded.");
-            }
-            catch (Exception)
-            {
-                print_log("exception has occurred.");
-            }
-        }
-
-        private void buttonBrowseInitialBootLoaderUserprog_Click(object sender, EventArgs e)
-        {
-			if (textBoxInitialBootLoaderFilePath.Enabled)
-			{
-				// Displays a OpenFileDialog so the user can save the Image
-				openFileDialog.Filter = "Motorola Format File|*.mot";
-				openFileDialog.Title = "Open the Motorola Format File from Boot Loader";
-				openFileDialog.FileName = "";
-
-				if (openFileDialog.ShowDialog() != DialogResult.OK || openFileDialog.FileName == "")
-				{
-					print_log("please specify the motorola file name.");
-					return;
-				}
-
-				textBoxInitialBootLoaderFilePath.Text = openFileDialog.FileName;
-			}
-        }
     }
 }
