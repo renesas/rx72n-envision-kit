@@ -371,12 +371,13 @@ namespace Renesas_Secure_Flash_Programmer
 		const int ARGUMENT_INITIAL_INPUT_FIRMWARE_VERIFICATION_TYPE = 3;        // [Settings] Select Firmware Verification Type
 		const int ARGUMENT_INITIAL_INPUT_AES_MAC_KEY = 4;                       // [Settings] AES MAC Key (16 byte hex / 32 characters)
 		const int ARGUMENT_INITIAL_INPUT_PRIVATE_KEY_PATH = 5;                  // [Settings]Private Key Path (PEM Format)
-		const int ARGUMENT_INITIAL_INPUT_BOOTLOADER_FILE_PATH = 6;              // [Boot Loader] File Path (Motorala Format)
-		const int ARGUMENT_INITIAL_INPUT_FIRMWARE_SEQUENCE_NUMBER_BANK0 = 7;    // [Bank0 User Program] Firmware Sequence Number
-		const int ARGUMENT_INITIAL_INPUT_FIRMWARE_FILE_PATH_BANK0 = 6;          // [Bank0 User Program] File Path (Motorala Format)
-		const int ARGUMENT_INITIAL_INPUT_FIRMWARE_SEQUENCE_NUMBER_BANK1 = 8;    // [Bank1 User Program] Firmware Sequence Number
-		const int ARGUMENT_INITIAL_INPUT_FIRMWARE_FILE_PATH_BANK1 = 9;          // [Bank1 User Program] File Path (Motorala Format)
-		const int ARGUMENT_INITIAL_OUTPUT_FILE_PATH = 8;                        //
+        const int ARGUMENT_INITIAL_INPUT_PUBLIC_KEY_PATH = 6;                   // [Settings]Public Key Path (PEM Format)
+        const int ARGUMENT_INITIAL_INPUT_BOOTLOADER_FILE_PATH = 7;              // [Boot Loader] File Path (Motorala Format)
+		const int ARGUMENT_INITIAL_INPUT_FIRMWARE_SEQUENCE_NUMBER_BANK0 = 8;    // [Bank0 User Program] Firmware Sequence Number
+		const int ARGUMENT_INITIAL_INPUT_FIRMWARE_FILE_PATH_BANK0 = 9;          // [Bank0 User Program] File Path (Motorala Format)
+		const int ARGUMENT_INITIAL_INPUT_FIRMWARE_SEQUENCE_NUMBER_BANK1 = 10;   // [Bank1 User Program] Firmware Sequence Number
+		const int ARGUMENT_INITIAL_INPUT_FIRMWARE_FILE_PATH_BANK1 = 11;         // [Bank1 User Program] File Path (Motorala Format)
+		const int ARGUMENT_INITIAL_OUTPUT_FILE_PATH = 12;                       //
 		const int ARGUMENT_UPDATE_MCU = 2;                                      // Select MCU
 		const int ARGUMENT_UPDATE_INPUT_FIRMWARE_VERIFICATION_TYPE = 3;         // Select Firmware Verification Type
 		const int ARGUMENT_UPDATE_INPUT_FIRMWARE_SEQUENCE_NUMBER = 4;           // Firmware Sequence Number
@@ -422,6 +423,7 @@ namespace Renesas_Secure_Flash_Programmer
                     textBoxInitialBootLoaderFilePath.Text = args[ARGUMENT_INITIAL_INPUT_BOOTLOADER_FILE_PATH];
                     textBoxInitialUserProgramFilePathBank0.Text = args[ARGUMENT_INITIAL_INPUT_FIRMWARE_FILE_PATH_BANK0];
                     textBoxInitialUserPrivateKeyPath.Text = args[ARGUMENT_INITIAL_INPUT_PRIVATE_KEY_PATH];
+                    textBoxInitialUserPublicKeyPath.Text = args[ARGUMENT_INITIAL_INPUT_PUBLIC_KEY_PATH];
                     saveFileDialog.FileName = args[ARGUMENT_INITIAL_OUTPUT_FILE_PATH];
                     comboBox_Initial_Mcu_firmupdate.Text = mcuName;
                     GenerateInitialUserprog(mcuName);
@@ -447,6 +449,7 @@ namespace Renesas_Secure_Flash_Programmer
                 }
             }
         }
+
         /// <summary>
         /// Calculate motorola checksum
         /// </summary>
@@ -468,6 +471,7 @@ namespace Renesas_Secure_Flash_Programmer
             return checksum.ToString("X");
 
         }
+
 		/// <summary>
 		/// Get user program
 		/// </summary>
@@ -598,6 +602,7 @@ namespace Renesas_Secure_Flash_Programmer
 			}
 			return true;
 		}
+
 		/// <summary>
 		/// Create crypt stream
 		/// </summary>
@@ -880,6 +885,7 @@ namespace Renesas_Secure_Flash_Programmer
 			}
 			return true;
 		}
+
 		/// <summary>
 		/// Form loading
 		/// </summary>
@@ -1001,6 +1007,118 @@ namespace Renesas_Secure_Flash_Programmer
                 }
             }
         }
+
+        /// <summary>
+        /// convert hex string to byte array
+        /// </summary>
+        /// <param name="strByteData"></param>
+        /// <returns>byte array</returns>
+        private byte[] convertStrDataToKeyData(string strByteData, int keyLength)
+        {
+            Debug.Assert(strByteData.Length / 2 <= keyLength);
+
+            byte[] keyData = new byte[keyLength];
+            Array.Clear(keyData, 0, keyData.Length);
+
+            for (int i = 0; i < strByteData.Length; i += 2)
+            {
+                keyData[i / 2] = Convert.ToByte(strByteData.Substring(i, 2), 16);
+            }
+
+            return keyData;
+        }
+
+        /// <summary>
+        /// display log message
+        /// </summary>
+        /// <param name="str"></param>
+        private void print_log(string str)
+        {
+            info.Text += $"{log_count++}: {str}\r\n";
+
+            info.SelectionStart = info.Text.Length;
+            info.Focus();
+            info.ScrollToCaret();
+        }
+
+        /// <summary>
+        /// convert mcu to TSIP funciton level
+        /// </summary>
+        /// <param name="mcu"></param>
+        /// <returns></returns>
+        private TSIPLevel getTSIPFunctionLevel(Mcu mcu)
+        {
+            switch (mcu)
+            {
+                case Mcu.RX231:
+                case Mcu.RX66T:
+                case Mcu.RX72T:
+                    return TSIPLevel.Lite;
+                case Mcu.RX65N:
+                case Mcu.RX72N:
+                    return TSIPLevel.Full;
+                default:
+                    return TSIPLevel.Lite;
+            }
+        }
+		
+		/// <summary>
+		/// Signature
+		/// </summary>
+		static byte[] Sign(byte[] plain, string key)
+		{
+			// Read the key.
+			AsymmetricCipherKeyPair pair = null;
+			using (var stream = new StreamReader(key))
+			{
+				var reader = new PemReader(stream);
+				pair = reader.ReadObject() as AsymmetricCipherKeyPair;
+			}
+
+            // Generate signature instance and signature.
+            ECDsaSigner signer = new ECDsaSigner(new HMacDsaKCalculator(new Sha256Digest()));
+            signer.Init(true, pair.Private);
+            SHA256 sha256 = new SHA256CryptoServiceProvider();
+            var hash = sha256.ComputeHash(plain);
+			var sign = signer.GenerateSignature(hash);
+
+			// Convert signature value to byte [].
+            var sign1 = sign[0].ToByteArray().SkipWhile(b => b == 0x00);
+            var sign2 = sign[1].ToByteArray().SkipWhile(b => b == 0x00);
+            byte[] signature = sign1.Concat(sign2).ToArray();
+
+			return signature;
+		}
+
+		/// <summary>
+		/// Verify signature
+		/// </summary>
+		static bool Verify(byte[] plain, byte[] signature, string key)
+		{
+			// Read the key.
+			AsymmetricCipherKeyPair pair = null;
+			using (var stream = new StreamReader(key))
+			{
+				var reader = new PemReader(stream);
+				pair = reader.ReadObject() as AsymmetricCipherKeyPair;
+			}
+
+			// Convert signature value to BigInteger.
+            var sign1 = signature.Take(32).ToArray();
+            if ((sign1[0] & 0x80) == 0x80) sign1 = new byte[] { 0x00 }.Concat(sign1).ToArray();
+            var sign2 = signature.Skip(32).ToArray();
+            if ((sign2[0] & 0x80) == 0x80) sign2 = new byte[] { 0x00 }.Concat(sign2).ToArray();
+			var sign = new BigInteger[] { new BigInteger(sign1), new BigInteger(sign2) };
+
+            // Verify signature.
+            ECDsaSigner signer = new ECDsaSigner(new HMacDsaKCalculator(new Sha256Digest()));
+            signer.Init(false, pair.Public);
+            SHA256 sha256 = new SHA256CryptoServiceProvider();
+            var hash = sha256.ComputeHash(plain);
+            var result = signer.VerifySignature(hash, sign[0], sign[1]);
+
+			return result;
+		}
 
         #region [Session Key] Tab
 
@@ -1801,16 +1919,71 @@ namespace Renesas_Secure_Flash_Programmer
             return new Tuple<uint, uint>(blockTopAddress, blockMirrorTopAddress);
         }
 
-		#endregion [Key Wrap] Tab
+        #endregion [Key Wrap] Tab
 
-		#region [Firm Update] Tab
+        #region [Inital Firm] Tab
 
-		/// <summary>
-		/// [Firm Update] Tab - [Browse...] button of [User Program File Path]
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void buttonBrowseUserprog_Click(object sender, EventArgs e)
+        /// <summary>
+        /// [Firm Update] Tab - [Browse...] button of [User Private Key Path]
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
+
+
+
+
+        private void tabPage2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
+        private void buttonBrowseInitialUserPrivateKey_Click(object sender, EventArgs e)
+        {
+            if (textBoxInitialUserPrivateKeyPath.Enabled)
+            {
+                openFileDialog.Filter = "User Private Key File|*.privatekey";
+                openFileDialog.Title = "Specify the User Private Key File Name";
+                openFileDialog.FileName = "";
+
+                if (openFileDialog.ShowDialog() != DialogResult.OK || openFileDialog.FileName == "")
+                {
+                    print_log("please specify the user private key file name.");
+                    return;
+                }
+
+                textBoxInitialUserPrivateKeyPath.Text = openFileDialog.FileName;
+            }
+        }
+
+        private void buttonBrowseInitialUserPublicKey_Click(object sender, EventArgs e)
+        {
+            if (textBoxInitialUserPublicKeyPath.Enabled)
+            {
+                openFileDialog.Filter = "User Private Key File|*.publickey";
+                openFileDialog.Title = "Specify the User Public Key File Name";
+                openFileDialog.FileName = "";
+
+                if (openFileDialog.ShowDialog() != DialogResult.OK || openFileDialog.FileName == "")
+                {
+                    print_log("please specify the user private key file name.");
+                    return;
+                }
+
+                textBoxInitialUserPublicKeyPath.Text = openFileDialog.FileName;
+            }
+        }
+        #endregion [Inital Firm] Tab
+
+        #region [Firm Update] Tab
+
+        /// <summary>
+        /// [Firm Update] Tab - [Browse...] button of [User Program File Path]
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonBrowseUserprog_Click(object sender, EventArgs e)
         {
             // Displays a OpenFileDialog so the user can save the Image
             openFileDialog.Filter = "Motorola Format File|*.mot";
@@ -1849,28 +2022,28 @@ namespace Renesas_Secure_Flash_Programmer
                 data_flash_image[i] = 0xff;
             }
 
-			rsu_header rsu_header_data = new rsu_header();
-			if (true == GetUserProgram(mcuName, textBoxUserProgramFilePath.Text, ref code_flash_image, ref data_flash_image))
-			{
-				if (false == CreateCryptStream(mcuName, FIRMWARE_TYPE_UPDATE, comboBoxFirmwareVerificationType.Text, textBoxFirmwareSequenceNumber.Text,
-									ref code_flash_image, ref data_flash_image, ref rsu_header_data, userProgramKey))
-				{
-					return false;
-				}
-			}
-			else
-			{
-				return false;
-			}
-			return true;
-		}
+            rsu_header rsu_header_data = new rsu_header();
+            if (true == GetUserProgram(mcuName, textBoxUserProgramFilePath.Text, ref code_flash_image, ref data_flash_image))
+            {
+                if (false == CreateCryptStream(mcuName, FIRMWARE_TYPE_UPDATE, comboBoxFirmwareVerificationType.Text, textBoxFirmwareSequenceNumber.Text,
+                                    ref code_flash_image, ref data_flash_image, ref rsu_header_data, userProgramKey))
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+            return true;
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void buttonGenerateUserprog_Click(object sender, EventArgs e)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void buttonGenerateUserprog_Click(object sender, EventArgs e)
         {
             try
             {
@@ -1889,16 +2062,16 @@ namespace Renesas_Secure_Flash_Programmer
                         return;
                     }
                 }
-				// check combination of Firmware Verification Type x Use Code signing for AWS IoT
+                // check combination of Firmware Verification Type x Use Code signing for AWS IoT
 
-				// check user proguram file path
-				if (!File.Exists(textBoxUserProgramFilePath.Text))
-				{
-					print_log("please specify the motorola file name.");
-					return;
-				}
+                // check user proguram file path
+                if (!File.Exists(textBoxUserProgramFilePath.Text))
+                {
+                    print_log("please specify the motorola file name.");
+                    return;
+                }
 
-				/*if (comboBoxFirmwareVerificationType.Text == "sig-sha256-ecdsa-standalone")
+                /*if (comboBoxFirmwareVerificationType.Text == "sig-sha256-ecdsa-standalone")
 				{
 					// check user private key path
 					if (!File.Exists(textBoxUserPrivateKeyPath.Text))
@@ -1908,8 +2081,8 @@ namespace Renesas_Secure_Flash_Programmer
 					}
 				}*/
 
-				// Displays a SaveFileDialog so the user can save
-				saveFileDialog.Filter = "Renesas Secure Update|*.rsu";
+                // Displays a SaveFileDialog so the user can save
+                saveFileDialog.Filter = "Renesas Secure Update|*.rsu";
                 saveFileDialog.Title = "Save an (Encrypted(option)) User Program File";
                 saveFileDialog.FileName = "userprog.rsu";
 
@@ -1922,183 +2095,22 @@ namespace Renesas_Secure_Flash_Programmer
                 // Convert user userprogram key data string to binary
                 string mcuName = comboBoxMcu_firmupdate.Text;
 
-				if (true == GenerateUserprog(mcuName))
-				{
-					print_log("generate succeeded.");
-				}
-				else
-				{
-					print_log("exception has occurred.");
-				}
-			}
+                if (true == GenerateUserprog(mcuName))
+                {
+                    print_log("generate succeeded.");
+                }
+                else
+                {
+                    print_log("exception has occurred.");
+                }
+            }
             catch (Exception)
             {
                 print_log("exception has occurred.");
             }
         }
 
-#endregion [Firm Update] Tab
-
-        /// <summary>
-        /// convert hex string to byte array
-        /// </summary>
-        /// <param name="strByteData"></param>
-        /// <returns>byte array</returns>
-        private byte[] convertStrDataToKeyData(string strByteData, int keyLength)
-        {
-            Debug.Assert(strByteData.Length / 2 <= keyLength);
-
-            byte[] keyData = new byte[keyLength];
-            Array.Clear(keyData, 0, keyData.Length);
-
-            for (int i = 0; i < strByteData.Length; i += 2)
-            {
-                keyData[i / 2] = Convert.ToByte(strByteData.Substring(i, 2), 16);
-            }
-
-            return keyData;
-        }
-
-        /// <summary>
-        /// display log message
-        /// </summary>
-        /// <param name="str"></param>
-        private void print_log(string str)
-        {
-            info.Text += $"{log_count++}: {str}\r\n";
-
-            info.SelectionStart = info.Text.Length;
-            info.Focus();
-            info.ScrollToCaret();
-        }
-
-        /// <summary>
-        /// convert mcu to TSIP funciton level
-        /// </summary>
-        /// <param name="mcu"></param>
-        /// <returns></returns>
-        private TSIPLevel getTSIPFunctionLevel(Mcu mcu)
-        {
-            switch (mcu)
-            {
-                case Mcu.RX231:
-                case Mcu.RX66T:
-                case Mcu.RX72T:
-                    return TSIPLevel.Lite;
-                case Mcu.RX65N:
-                case Mcu.RX72N:
-                    return TSIPLevel.Full;
-                default:
-                    return TSIPLevel.Lite;
-            }
-        }
-
-		private void comboBoxFirmwareVerificationType_SelectedIndexChanged_1(object sender, EventArgs e)
-		{
-			if (comboBoxFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP)
-			{
-				textBoxUserProgramKey_Aes128.Enabled = true;
-			}
-			else
-			{
-				textBoxUserProgramKey_Aes128.Enabled = false;
-			}
-		}
-		
-		/// <summary>
-		/// Signature
-		/// </summary>
-		static byte[] Sign(byte[] plain, string key)
-		{
-			// Read the key.
-			AsymmetricCipherKeyPair pair = null;
-			using (var stream = new StreamReader(key))
-			{
-				var reader = new PemReader(stream);
-				pair = reader.ReadObject() as AsymmetricCipherKeyPair;
-			}
-
-            // Generate signature instance and signature.
-            ECDsaSigner signer = new ECDsaSigner(new HMacDsaKCalculator(new Sha256Digest()));
-            signer.Init(true, pair.Private);
-            SHA256 sha256 = new SHA256CryptoServiceProvider();
-            var hash = sha256.ComputeHash(plain);
-			var sign = signer.GenerateSignature(hash);
-
-			// Convert signature value to byte [].
-            var sign1 = sign[0].ToByteArray().SkipWhile(b => b == 0x00);
-            var sign2 = sign[1].ToByteArray().SkipWhile(b => b == 0x00);
-            byte[] signature = sign1.Concat(sign2).ToArray();
-
-			return signature;
-		}
-
-		/// <summary>
-		/// Verify signature
-		/// </summary>
-		static bool Verify(byte[] plain, byte[] signature, string key)
-		{
-			// Read the key.
-			AsymmetricCipherKeyPair pair = null;
-			using (var stream = new StreamReader(key))
-			{
-				var reader = new PemReader(stream);
-				pair = reader.ReadObject() as AsymmetricCipherKeyPair;
-			}
-
-			// Convert signature value to BigInteger.
-            var sign1 = signature.Take(32).ToArray();
-            if ((sign1[0] & 0x80) == 0x80) sign1 = new byte[] { 0x00 }.Concat(sign1).ToArray();
-            var sign2 = signature.Skip(32).ToArray();
-            if ((sign2[0] & 0x80) == 0x80) sign2 = new byte[] { 0x00 }.Concat(sign2).ToArray();
-			var sign = new BigInteger[] { new BigInteger(sign1), new BigInteger(sign2) };
-
-            // Verify signature.
-            ECDsaSigner signer = new ECDsaSigner(new HMacDsaKCalculator(new Sha256Digest()));
-            signer.Init(false, pair.Public);
-            SHA256 sha256 = new SHA256CryptoServiceProvider();
-            var hash = sha256.ComputeHash(plain);
-            var result = signer.VerifySignature(hash, sign[0], sign[1]);
-
-			return result;
-		}
-
-#region [Inital Firm] Tab
-
-        /// <summary>
-        /// [Firm Update] Tab - [Browse...] button of [User Private Key Path]
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        
-        
-
-        
-
-        private void tabPage2_Click(object sender, EventArgs e)
-        {
-
-        }
-        
-
-        private void buttonBrowseInitialUserPrivateKey_Click(object sender, EventArgs e)
-        {
-			if (textBoxInitialUserPrivateKeyPath.Enabled)
-			{
-				openFileDialog.Filter = "User Private Key File|*.privatekey";
-				openFileDialog.Title = "Specify the User Private Key File Name";
-				openFileDialog.FileName = "";
-
-				if (openFileDialog.ShowDialog() != DialogResult.OK || openFileDialog.FileName == "")
-				{
-					print_log("please specify the user private key file name.");
-					return;
-				}
-
-				textBoxInitialUserPrivateKeyPath.Text = openFileDialog.FileName;
-			}
-        }
-#endregion [Inital Firm] Tab
+        #endregion [Firm Update] Tab
 
         private void buttonBrowseInitialUserprogBank0_Click(object sender, EventArgs e)
         {
@@ -2135,7 +2147,19 @@ namespace Renesas_Secure_Flash_Programmer
 			}
 		}
 
-		private void comboBoxInitialFirmwareVerificationType_SelectedIndexChanged(object sender, EventArgs e)
+        private void comboBoxFirmwareVerificationType_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            if (comboBoxFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP)
+            {
+                textBoxUserProgramKey_Aes128.Enabled = true;
+            }
+            else
+            {
+                textBoxUserProgramKey_Aes128.Enabled = false;
+            }
+        }
+
+        private void comboBoxInitialFirmwareVerificationType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP)
             {
@@ -2151,10 +2175,12 @@ namespace Renesas_Secure_Flash_Programmer
 
             {
                 textBoxInitialUserPrivateKeyPath.Enabled = true;
+                textBoxInitialUserPublicKeyPath.Enabled = true;
             }
             else
             {
                 textBoxInitialUserPrivateKeyPath.Enabled = false;
+                textBoxInitialUserPublicKeyPath.Enabled = false;
             }
         }
 
@@ -2925,5 +2951,5 @@ namespace Renesas_Secure_Flash_Programmer
 				textBoxInitialBootLoaderFilePath.Text = openFileDialog.FileName;
 			}
         }
-	}
+    }
 }
