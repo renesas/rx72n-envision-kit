@@ -544,25 +544,41 @@ static int32_t secure_boot(void)
     	        	switch(secure_boot_state)
 					{
     	        		case BOOT_LOADER_STATE_BANK0_CHECK:
-							printf("start installing user program.\r\n");
-							if (firmware_update_control_block_bank1->image_flag != LIFECYCLE_STATE_INITIAL_FIRM_INSTALLED)
-							{
-								printf("erase bank1 secure boot mirror area...");
-								flash_api_error_code = R_FLASH_Erase(BOOT_LOADER_MIRROR_HIGH_ADDRESS, BOOT_LOADER_MIRROR_BLOCK_NUM_FOR_SMALL + BOOT_LOADER_MIRROR_BLOCK_NUM_FOR_MEDIUM);
-								if(FLASH_SUCCESS != flash_api_error_code)
+    	        			if(firmware_update_control_block_bank1->image_flag == LIFECYCLE_STATE_BLANK)
+    	        			{
+								printf("start installing user program.\r\n");
+								if (firmware_update_control_block_bank1->image_flag != LIFECYCLE_STATE_INITIAL_FIRM_INSTALLED)
 								{
-									printf("NG\r\n");
-									printf("R_FLASH_Erase() returns error code = %d.\r\n", flash_error_code);
-									secure_boot_state = BOOT_LOADER_STATE_FATAL_ERROR;
-									secure_boot_error_code = BOOT_LOADER_FAIL;
-									break;
+									printf("erase bank1 secure boot mirror area...");
+									flash_api_error_code = R_FLASH_Erase(BOOT_LOADER_MIRROR_HIGH_ADDRESS, BOOT_LOADER_MIRROR_BLOCK_NUM_FOR_SMALL + BOOT_LOADER_MIRROR_BLOCK_NUM_FOR_MEDIUM);
+									if(FLASH_SUCCESS != flash_api_error_code)
+									{
+										printf("NG\r\n");
+										printf("R_FLASH_Erase() returns error code = %d.\r\n", flash_error_code);
+										secure_boot_state = BOOT_LOADER_STATE_FATAL_ERROR;
+										secure_boot_error_code = BOOT_LOADER_FAIL;
+										break;
+									}
+									secure_boot_state = BOOT_LOADER_STATE_BANK0_INSTALL_SECURE_BOOT_ERASE_WAIT;
 								}
-								secure_boot_state = BOOT_LOADER_STATE_BANK0_INSTALL_SECURE_BOOT_ERASE_WAIT;
-							}
-							else
-							{
-								secure_boot_state = BOOT_LOADER_STATE_BANK0_INSTALL_SECURE_BOOT_ERASE_COMPLETE;
-							}
+								else
+								{
+									secure_boot_state = BOOT_LOADER_STATE_BANK0_INSTALL_SECURE_BOOT_ERASE_COMPLETE;
+								}
+    	        			}
+    	        			else if(firmware_update_control_block_bank1->image_flag == LIFECYCLE_STATE_VALID)
+    	        			{
+    	        	            printf("bank0(current) is blank, but bank1(previous) is still alive.\r\n");
+    	        	            printf("swap bank...");
+    	        	            R_BSP_SoftwareDelay(3000, BSP_DELAY_MILLISECS);
+    	        				bank_swap_with_software_reset();
+    	        				while(1);
+    	        			}
+    	        			else
+    	        			{
+    	        				secure_boot_state = BOOT_LOADER_STATE_FATAL_ERROR;
+								secure_boot_error_code = BOOT_LOADER_FAIL;
+    	        			}
 							break;
 
     	        		case BOOT_LOADER_STATE_BANK0_INSTALL_SECURE_BOOT_ERASE_WAIT:
