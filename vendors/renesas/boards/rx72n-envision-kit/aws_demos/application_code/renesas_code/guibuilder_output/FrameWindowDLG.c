@@ -33,14 +33,15 @@
 *
 **********************************************************************
 */
-#define ID_WINDOW_0     (GUI_ID_USER + 0x00)
-#define ID_TEXT_0     (GUI_ID_USER + 0x01)
-#define ID_TEXT_1     (GUI_ID_USER + 0x02)
-#define ID_TEXT_2     (GUI_ID_USER + 0x03)
-#define ID_TEXT_3     (GUI_ID_USER + 0x04)
-#define ID_TEXT_4     (GUI_ID_USER + 0x05)
-#define ID_BUTTON_0     (GUI_ID_USER + 0x06)
-#define ID_BUTTON_1     (GUI_ID_USER + 0x07)
+#define ID_WINDOW_0 (GUI_ID_USER + 0x00)
+#define ID_TEXT_0 (GUI_ID_USER + 0x01)
+#define ID_TEXT_1 (GUI_ID_USER + 0x02)
+#define ID_TEXT_2 (GUI_ID_USER + 0x03)
+#define ID_TEXT_3 (GUI_ID_USER + 0x04)
+#define ID_TEXT_4 (GUI_ID_USER + 0x05)
+#define ID_BUTTON_0 (GUI_ID_USER + 0x06)
+#define ID_BUTTON_1 (GUI_ID_USER + 0x07)
+#define ID_TEXT_5 (GUI_ID_USER + 0x08)
 
 
 // USER START (Optionally insert additional defines)
@@ -72,13 +73,14 @@ extern void callback_frame_window_to_main(int32_t id, int32_t event);
 */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { WINDOW_CreateIndirect, "FrameWindow", ID_WINDOW_0, 0, 0, 480, 272, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "System Log", ID_TEXT_0, 5, 2, 122, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "System Log", ID_TEXT_0, 5, 2, 204, 20, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "USB", ID_TEXT_1, 7, 250, 80, 20, 0, 0x64, 0 },
   { TEXT_CreateIndirect, "SD", ID_TEXT_2, 85, 250, 80, 20, 0, 0x64, 0 },
   { TEXT_CreateIndirect, "Time", ID_TEXT_3, 312, 250, 157, 20, 0, 0x64, 0 },
   { TEXT_CreateIndirect, "IP", ID_TEXT_4, 157, 250, 109, 20, 0, 0x64, 0 },
   { BUTTON_CreateIndirect, "Button", ID_BUTTON_0, 309, 0, 80, 20, 0, 0x0, 0 },
   { BUTTON_CreateIndirect, "Button", ID_BUTTON_1, 392, 0, 80, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "CPU Load    0 %", ID_TEXT_5, 220, 2, 84, 20, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -156,6 +158,11 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_1);
     BUTTON_SetText(hItem, "next");
     BUTTON_SetFont(hItem, GUI_FONT_13_1);
+    //
+    // Initialization of 'CPU Load    0 %'
+    //
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_5);
+    TEXT_SetTextColor(hItem, GUI_MAKE_COLOR(0x00FFFFFF));
     // USER START (Optionally insert additional code for further widget initialization)
     hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0);
     WM_HideWindow(hItem);

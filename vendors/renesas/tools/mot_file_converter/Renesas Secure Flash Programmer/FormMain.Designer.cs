@@ -84,11 +84,8 @@
             this.label22 = new System.Windows.Forms.Label();
             this.textBoxInitialUserProgramFilePathBank0 = new System.Windows.Forms.TextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.buttonBrowseInitialUserPublicKey = new System.Windows.Forms.Button();
             this.buttonBrowseInitialUserPrivateKey = new System.Windows.Forms.Button();
-            this.label24 = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
-            this.textBoxInitialUserPublicKeyPath = new System.Windows.Forms.TextBox();
             this.textBoxInitialUserPrivateKeyPath = new System.Windows.Forms.TextBox();
             this.label23 = new System.Windows.Forms.Label();
             this.textBoxInitialUserProgramKey_Aes128 = new System.Windows.Forms.TextBox();
@@ -144,7 +141,7 @@
             this.tabControl1.Location = new System.Drawing.Point(12, 10);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(805, 446);
+            this.tabControl1.Size = new System.Drawing.Size(805, 457);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -154,7 +151,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(797, 420);
+            this.tabPage1.Size = new System.Drawing.Size(797, 431);
             this.tabPage1.TabIndex = 4;
             this.tabPage1.Text = "session key";
             // 
@@ -254,7 +251,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(797, 420);
+            this.tabPage4.Size = new System.Drawing.Size(797, 383);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Key Wrap";
             // 
@@ -530,7 +527,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(797, 420);
+            this.tabPage2.Size = new System.Drawing.Size(797, 431);
             this.tabPage2.TabIndex = 5;
             this.tabPage2.Text = "Initial Firm";
             this.tabPage2.Click += new System.EventHandler(this.tabPage2_Click);
@@ -544,7 +541,7 @@
             this.groupBox10.Controls.Add(this.buttonBrowseInitialUserprogBank1);
             this.groupBox10.Controls.Add(this.label10);
             this.groupBox10.Controls.Add(this.textBoxInitialUserProgramFilePathBank1);
-            this.groupBox10.Location = new System.Drawing.Point(4, 315);
+            this.groupBox10.Location = new System.Drawing.Point(3, 283);
             this.groupBox10.Name = "groupBox10";
             this.groupBox10.Size = new System.Drawing.Size(787, 67);
             this.groupBox10.TabIndex = 11;
@@ -600,7 +597,7 @@
             // Generate_Init_Firm
             // 
             this.Generate_Init_Firm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Generate_Init_Firm.Location = new System.Drawing.Point(698, 391);
+            this.Generate_Init_Firm.Location = new System.Drawing.Point(696, 402);
             this.Generate_Init_Firm.Name = "Generate_Init_Firm";
             this.Generate_Init_Firm.Size = new System.Drawing.Size(94, 23);
             this.Generate_Init_Firm.TabIndex = 6;
@@ -615,7 +612,7 @@
             this.groupBox9.Controls.Add(this.buttonBrowseInitialBootLoaderUserprog);
             this.groupBox9.Controls.Add(this.label9);
             this.groupBox9.Controls.Add(this.textBoxInitialBootLoaderFilePath);
-            this.groupBox9.Location = new System.Drawing.Point(5, 188);
+            this.groupBox9.Location = new System.Drawing.Point(3, 160);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Size = new System.Drawing.Size(787, 44);
             this.groupBox9.TabIndex = 3;
@@ -661,7 +658,7 @@
             this.groupBox5.Controls.Add(this.buttonBrowseInitialUserprogBank0);
             this.groupBox5.Controls.Add(this.label22);
             this.groupBox5.Controls.Add(this.textBoxInitialUserProgramFilePathBank0);
-            this.groupBox5.Location = new System.Drawing.Point(4, 239);
+            this.groupBox5.Location = new System.Drawing.Point(3, 210);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(787, 67);
             this.groupBox5.TabIndex = 2;
@@ -719,11 +716,8 @@
             this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox4.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.groupBox4.Controls.Add(this.buttonBrowseInitialUserPublicKey);
             this.groupBox4.Controls.Add(this.buttonBrowseInitialUserPrivateKey);
-            this.groupBox4.Controls.Add(this.label24);
             this.groupBox4.Controls.Add(this.label21);
-            this.groupBox4.Controls.Add(this.textBoxInitialUserPublicKeyPath);
             this.groupBox4.Controls.Add(this.textBoxInitialUserPrivateKeyPath);
             this.groupBox4.Controls.Add(this.label23);
             this.groupBox4.Controls.Add(this.textBoxInitialUserProgramKey_Aes128);
@@ -735,21 +729,10 @@
             this.groupBox4.Controls.Add(this.comboBox_Initial_Mcu_firmupdate);
             this.groupBox4.Location = new System.Drawing.Point(3, 5);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(787, 177);
+            this.groupBox4.Size = new System.Drawing.Size(787, 149);
             this.groupBox4.TabIndex = 1;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Settings";
-            // 
-            // buttonBrowseInitialUserPublicKey
-            // 
-            this.buttonBrowseInitialUserPublicKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonBrowseInitialUserPublicKey.Location = new System.Drawing.Point(678, 120);
-            this.buttonBrowseInitialUserPublicKey.Name = "buttonBrowseInitialUserPublicKey";
-            this.buttonBrowseInitialUserPublicKey.Size = new System.Drawing.Size(75, 19);
-            this.buttonBrowseInitialUserPublicKey.TabIndex = 12;
-            this.buttonBrowseInitialUserPublicKey.Text = "Browse...";
-            this.buttonBrowseInitialUserPublicKey.UseVisualStyleBackColor = true;
-            this.buttonBrowseInitialUserPublicKey.Click += new System.EventHandler(this.buttonBrowseInitialUserPublicKey_Click);
             // 
             // buttonBrowseInitialUserPrivateKey
             // 
@@ -762,15 +745,6 @@
             this.buttonBrowseInitialUserPrivateKey.UseVisualStyleBackColor = true;
             this.buttonBrowseInitialUserPrivateKey.Click += new System.EventHandler(this.buttonBrowseInitialUserPrivateKey_Click);
             // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(26, 123);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(161, 12);
-            this.label24.TabIndex = 10;
-            this.label24.Text = "Public Key Path (PEM Format)";
-            // 
             // label21
             // 
             this.label21.AutoSize = true;
@@ -779,15 +753,6 @@
             this.label21.Size = new System.Drawing.Size(166, 12);
             this.label21.TabIndex = 10;
             this.label21.Text = "Private Key Path (PEM Format)";
-            // 
-            // textBoxInitialUserPublicKeyPath
-            // 
-            this.textBoxInitialUserPublicKeyPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxInitialUserPublicKeyPath.Location = new System.Drawing.Point(278, 120);
-            this.textBoxInitialUserPublicKeyPath.Name = "textBoxInitialUserPublicKeyPath";
-            this.textBoxInitialUserPublicKeyPath.Size = new System.Drawing.Size(393, 19);
-            this.textBoxInitialUserPublicKeyPath.TabIndex = 11;
             // 
             // textBoxInitialUserPrivateKeyPath
             // 
@@ -819,7 +784,7 @@
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(26, 148);
+            this.label17.Location = new System.Drawing.Point(26, 123);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(115, 12);
             this.label17.TabIndex = 6;
@@ -828,7 +793,7 @@
             // comboBoxInitialFirmwareOutputFormat
             // 
             this.comboBoxInitialFirmwareOutputFormat.FormattingEnabled = true;
-            this.comboBoxInitialFirmwareOutputFormat.Location = new System.Drawing.Point(278, 145);
+            this.comboBoxInitialFirmwareOutputFormat.Location = new System.Drawing.Point(278, 120);
             this.comboBoxInitialFirmwareOutputFormat.Name = "comboBoxInitialFirmwareOutputFormat";
             this.comboBoxInitialFirmwareOutputFormat.Size = new System.Drawing.Size(393, 20);
             this.comboBoxInitialFirmwareOutputFormat.TabIndex = 3;
@@ -880,7 +845,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(797, 420);
+            this.tabPage3.Size = new System.Drawing.Size(797, 383);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Update Firm";
             // 
@@ -1035,7 +1000,7 @@
             this.info.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.info.BackColor = System.Drawing.SystemColors.Info;
-            this.info.Location = new System.Drawing.Point(12, 470);
+            this.info.Location = new System.Drawing.Point(11, 473);
             this.info.Multiline = true;
             this.info.Name = "info";
             this.info.Size = new System.Drawing.Size(806, 74);
@@ -1166,8 +1131,5 @@
 		private System.Windows.Forms.Label label23;
 		private System.Windows.Forms.TextBox textBoxInitialUserProgramKey_Aes128;
 		private System.Windows.Forms.ComboBox comboBoxInitialFirmwareOutputFormat;
-        private System.Windows.Forms.Button buttonBrowseInitialUserPublicKey;
-        private System.Windows.Forms.TextBox textBoxInitialUserPublicKeyPath;
-        private System.Windows.Forms.Label label24;
     }
 }

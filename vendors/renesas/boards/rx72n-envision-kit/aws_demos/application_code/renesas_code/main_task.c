@@ -83,7 +83,7 @@ int32_t wait_first_display(void);
 void firmware_version_read(char **ver_str);
 void main_task(void);
 
-extern WM_HWIN hWinSerialTerminalindow;
+extern WM_HWIN hWinSerialTerminalWindow;
 
 /******************************************************************************
  Function Name   : main
@@ -112,7 +112,7 @@ void main_task(void)
     R_FLASH_Control(FLASH_CMD_BANK_GET, &bank_info);
 
     /* serial terminal task creation */
-    xTaskCreate(serial_terminal_task, "terminal", 4096, &hWinSerialTerminalindow, tskIDLE_PRIORITY, &serial_terminal_task_handle);
+    xTaskCreate(serial_terminal_task, "terminal", 4096, &hWinSerialTerminalWindow, tskIDLE_PRIORITY, &serial_terminal_task_handle);
 
     /* GUI task creation */
     xTaskCreate(gui_task, "gui", 4096, NULL, configMAX_PRIORITIES - 1, &gui_task_handle);

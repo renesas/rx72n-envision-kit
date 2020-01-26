@@ -34,7 +34,7 @@
 /**
  * @brief Special OTA Agent printing definition (moved from lib/include/aws_iot_ota_agent.h).
  */
-#define OTA_DEBUG_LOG_LEVEL                     1
+#define OTA_DEBUG_LOG_LEVEL                     0
 
 /**
  * @brief The number of words allocated to the stack for the OTA agent.

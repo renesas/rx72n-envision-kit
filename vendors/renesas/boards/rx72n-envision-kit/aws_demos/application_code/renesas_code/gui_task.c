@@ -49,12 +49,11 @@
 /**********************************************************************************************************************
 Typedef definitions
 **********************************************************************************************************************/
-#define DEMO_NAME_NETWORK_STAT "Network Statistics"
+#define DEMO_NAME_FIRMWARE_UPDATE_VIA_SD_CARD "Firmware Update via SD Card"
 #define DEMO_NAME_SYSTEM_LOG "Amazon FreeRTOS Log"
-#define DEMO_NAME_STORAGEBENCH  "Storage Benchmark"
-#define DEMO_NAME_FIRMWARE_UPDATE "Firmware Update"
 #define DEMO_NAME_TITLE_LOGO "Title Logo"
 #define DEMO_NAME_SERIAL_TERMINAL "Serial Terminal"
+#define DEMO_NAME_TASK_MANAGER "Task Manager"
 
 typedef struct _demo_window_list
 {
@@ -68,7 +67,6 @@ typedef struct _demo_window_list
 /******************************************************************************
  External variables
  ******************************************************************************/
-extern WM_HWIN hWinFrameWindow, hWinNetworkStatWindow, hWinSerialTerminalindow;
 
 /******************************************************************************
  Private global variables
@@ -90,8 +88,8 @@ static int32_t next_button_id, prev_button_id;
  ******************************************************************************/
 extern WM_HWIN CreateFrameWindow(void);
 extern WM_HWIN CreateSystemLogWindow(void);
-extern WM_HWIN CreateNetworkStatWindow(void);
-extern WM_HWIN CreateStorageBenchmark(void);
+extern WM_HWIN CreateTaskManager(void);
+extern WM_HWIN CreateFirmwareUpdateViaSDCard(void);
 extern WM_HWIN CreateTitleLogoWindow(void);
 extern WM_HWIN CreateFirmwareUpdateWindow(void);
 extern WM_HWIN CreateSerialTerminalWindow(void);
@@ -110,8 +108,8 @@ extern int frame_prev_button_enable(WM_HWIN hWin, uint8_t onoff);
 /*******************************************************************************
  global variables and functions
 ********************************************************************************/
-WM_HWIN hWinFirmwareUpdatewindow, hWinTitleLogoWindow, hWinStorageBenchmark, hWinCryptoBenchmark1, hWinCryptoBenchmark2, hWinSystemLogWindow;
-WM_HWIN hWinFrameWindow, hWinNetworkStatWindow, hWinSerialTerminalindow;
+WM_HWIN hWinTaskManagerWindow, hWinTitleLogoWindow, hWinStorageBenchmark, hWinCryptoBenchmark1, hWinCryptoBenchmark2, hWinSystemLogWindow;
+WM_HWIN hWinFrameWindow, hWinFirmwareUpdateViaSDCardWindow, hWinSerialTerminalWindow;
 
 volatile int32_t first_touch_wait_flag;
 volatile int32_t gui_initialize_complete_flag;
@@ -141,18 +139,14 @@ void gui_task( void * pvParameters )
 	hWinSystemLogWindow = CreateSystemLogWindow();
 	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinSystemLogWindow, DEMO_NAME_SYSTEM_LOG);
 
-#if 0
-	hWinNetworkStatWindow = CreateNetworkStatWindow();
-	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinNetworkStatWindow, DEMO_NAME_NETWORK_STAT);
+	hWinSerialTerminalWindow = CreateSerialTerminalWindow();
+	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinSerialTerminalWindow, DEMO_NAME_SERIAL_TERMINAL);
 
-	hWinStorageBenchmark = CreateStorageBenchmark();
-	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinStorageBenchmark, DEMO_NAME_STORAGEBENCH);
-#endif
-	hWinSerialTerminalindow = CreateSerialTerminalWindow();
-	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinSerialTerminalindow, DEMO_NAME_SERIAL_TERMINAL);
+	hWinFirmwareUpdateViaSDCardWindow = CreateFirmwareUpdateViaSDCard();
+	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinFirmwareUpdateViaSDCardWindow, DEMO_NAME_FIRMWARE_UPDATE_VIA_SD_CARD);
 
-	hWinFirmwareUpdatewindow = CreateFirmwareUpdateWindow();
-	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinFirmwareUpdatewindow, DEMO_NAME_FIRMWARE_UPDATE);
+	hWinTaskManagerWindow = CreateTaskManager();
+	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinTaskManagerWindow, DEMO_NAME_TASK_MANAGER);
 
 	hWinTitleLogoWindow = CreateTitleLogoWindow();
 	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinTitleLogoWindow, DEMO_NAME_TITLE_LOGO);

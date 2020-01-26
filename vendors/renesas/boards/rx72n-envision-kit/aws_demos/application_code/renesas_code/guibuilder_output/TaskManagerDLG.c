@@ -34,6 +34,8 @@
 */
 #define ID_WINDOW_0 (GUI_ID_USER + 0x00)
 #define ID_TEXT_0 (GUI_ID_USER + 0x01)
+#define ID_GRAPH_0 (GUI_ID_USER + 0x02)
+#define ID_LISTVIEW_0 (GUI_ID_USER + 0x03)
 
 
 // USER START (Optionally insert additional defines)
@@ -54,8 +56,10 @@
 *       _aDialogCreate
 */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
-  { WINDOW_CreateIndirect, "FirmwareUpdateWindow", ID_WINDOW_0, 0, 22, 480, 228, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "Firmware Update Demo", ID_TEXT_0, 5, 0, 140, 20, 0, 0x0, 0 },
+  { WINDOW_CreateIndirect, "TaskManager", ID_WINDOW_0, 0, 22, 480, 228, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "Task Manager", ID_TEXT_0, 5, 0, 140, 20, 0, 0x0, 0 },
+  { GRAPH_CreateIndirect, "Graph", ID_GRAPH_0, 277, 20, 200, 200, 0, 0x0, 0 },
+  { LISTVIEW_CreateIndirect, "Listview", ID_LISTVIEW_0, 3, 20, 271, 198, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -76,6 +80,8 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 */
 static void _cbDialog(WM_MESSAGE * pMsg) {
   WM_HWIN hItem;
+  int     NCode;
+  int     Id;
   // USER START (Optionally insert additional variables)
   int select_id;
   // USER END
@@ -83,12 +89,49 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
   switch (pMsg->MsgId) {
   case WM_INIT_DIALOG:
     //
-    // Initialization of 'FirmwareUpdateWindow'
+    // Initialization of 'TaskManager'
     //
     hItem = pMsg->hWin;
     WINDOW_SetBkColor(hItem, GUI_MAKE_COLOR(0x00FFFFFF));
+    //
+    // Initialization of 'Listview'
+    //
+    hItem = WM_GetDialogItem(pMsg->hWin, ID_LISTVIEW_0);
+    LISTVIEW_AddColumn(hItem, 30, "Task#", GUI_TA_HCENTER | GUI_TA_VCENTER);
+    LISTVIEW_AddColumn(hItem, 120, "Name", GUI_TA_HCENTER | GUI_TA_VCENTER);
+    LISTVIEW_AddColumn(hItem, 30, "Prio", GUI_TA_HCENTER | GUI_TA_VCENTER);
+    LISTVIEW_AddRow(hItem, NULL);
+    LISTVIEW_SetGridVis(hItem, 1);
+    LISTVIEW_AddColumn(hItem, 30, "Stat", GUI_TA_HCENTER | GUI_TA_VCENTER);
+    LISTVIEW_AddColumn(hItem, 60, "CPU Load", GUI_TA_HCENTER | GUI_TA_VCENTER);
     // USER START (Optionally insert additional code for further widget initialization)
     // USER END
+    break;
+  case WM_NOTIFY_PARENT:
+    Id    = WM_GetId(pMsg->hWinSrc);
+    NCode = pMsg->Data.v;
+    switch(Id) {
+    case ID_LISTVIEW_0: // Notifications sent by 'Listview'
+      switch(NCode) {
+      case WM_NOTIFICATION_CLICKED:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      case WM_NOTIFICATION_RELEASED:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      case WM_NOTIFICATION_SEL_CHANGED:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      // USER START (Optionally insert additional code for further notification handling)
+      // USER END
+      }
+      break;
+    // USER START (Optionally insert additional code for further Ids)
+    // USER END
+    }
     break;
   // USER START (Optionally insert additional message handling)
   // USER END
@@ -106,10 +149,10 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
 */
 /*********************************************************************
 *
-*       CreateFirmwareUpdateWindow
+*       CreateTaskManager
 */
-WM_HWIN CreateFirmwareUpdateWindow(void);
-WM_HWIN CreateFirmwareUpdateWindow(void) {
+WM_HWIN CreateTaskManager(void);
+WM_HWIN CreateTaskManager(void) {
   WM_HWIN hWin;
 
   hWin = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), _cbDialog, WM_HBKWIN, 0, 0);

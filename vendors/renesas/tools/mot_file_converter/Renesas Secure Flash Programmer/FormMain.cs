@@ -423,7 +423,6 @@ namespace Renesas_Secure_Flash_Programmer
                     textBoxInitialBootLoaderFilePath.Text = args[ARGUMENT_INITIAL_INPUT_BOOTLOADER_FILE_PATH];
                     textBoxInitialUserProgramFilePathBank0.Text = args[ARGUMENT_INITIAL_INPUT_FIRMWARE_FILE_PATH_BANK0];
                     textBoxInitialUserPrivateKeyPath.Text = args[ARGUMENT_INITIAL_INPUT_PRIVATE_KEY_PATH];
-                    textBoxInitialUserPublicKeyPath.Text = args[ARGUMENT_INITIAL_INPUT_PUBLIC_KEY_PATH];
                     saveFileDialog.FileName = args[ARGUMENT_INITIAL_OUTPUT_FILE_PATH];
                     comboBox_Initial_Mcu_firmupdate.Text = mcuName;
                     GenerateInitialUserprog(mcuName);
@@ -1956,24 +1955,6 @@ namespace Renesas_Secure_Flash_Programmer
             }
         }
 
-        private void buttonBrowseInitialUserPublicKey_Click(object sender, EventArgs e)
-        {
-            if (textBoxInitialUserPublicKeyPath.Enabled)
-            {
-                openFileDialog.Filter = "User Private Key File|*.publickey";
-                openFileDialog.Title = "Specify the User Public Key File Name";
-                openFileDialog.FileName = "";
-
-                if (openFileDialog.ShowDialog() != DialogResult.OK || openFileDialog.FileName == "")
-                {
-                    print_log("please specify the user private key file name.");
-                    return;
-                }
-
-                textBoxInitialUserPublicKeyPath.Text = openFileDialog.FileName;
-            }
-        }
-
         private void buttonBrowseInitialBootLoaderUserprog_Click(object sender, EventArgs e)
         {
             if (textBoxInitialBootLoaderFilePath.Enabled)
@@ -2056,12 +2037,10 @@ namespace Renesas_Secure_Flash_Programmer
 
             {
                 textBoxInitialUserPrivateKeyPath.Enabled = true;
-                textBoxInitialUserPublicKeyPath.Enabled = true;
             }
             else
             {
                 textBoxInitialUserPrivateKeyPath.Enabled = false;
-                textBoxInitialUserPublicKeyPath.Enabled = false;
             }
         }
 
