@@ -21,8 +21,6 @@
 #include "DIALOG.h"
 #include "Resource.h"
 
-#include "r_irq_rx_if.h"
-
 /*********************************************************************
 *
 *       Types
@@ -1568,9 +1566,10 @@ void MainTask(void) {
     _Count[3]++;
   }
 
-  /* SW2 Setting */
-  R_ICU_PinSet();
-  R_IRQ_Open(IRQ_NUM_15, IRQ_TRIG_FALLING, IRQ_PRI_3, &my_irq15_handle, my_irq15_callback);
+  /* Switch button setting */
+  in_main_menu_flag = 1;
+  _IsRunning = 0;
+  SwitchButtonInit();
 
   GUI_Init();
   WM_MOTION_Enable(1);
@@ -1580,6 +1579,7 @@ void MainTask(void) {
   while (1) {
     GUI_Delay(1);
     CheckPressedState();
+    CheckFirmUpdateState();
   }
 }
 /*************************** End of file ****************************/

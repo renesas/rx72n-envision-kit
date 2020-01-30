@@ -28,7 +28,9 @@
 #include <string.h>
 #include "base64_decode.h"
 
-
+#if SECURE_BOOT
+#pragma section SECURE_BOOT
+#endif
 
 /* base64 table */
 const static char base64[] =
@@ -52,6 +54,8 @@ uint32_t base64_decode(uint8_t *source, uint8_t *result, uint32_t size)
     uint8_t ind4;
     uint32_t i;
     uint32_t j;
+    uint8_t tmp[3];
+    uint8_t *ptr;
 
     for( i = 0, j = 0 ; i < size; i += 4 )
     {
@@ -61,25 +65,39 @@ uint32_t base64_decode(uint8_t *source, uint8_t *result, uint32_t size)
         ind3 = ('=' == (*((source + i) + 2))) ? 0 : (strchr(base64, *((source + i) + 2)) - base64);
         ind4 = ('=' == (*((source + i) + 3))) ? 0 : (strchr(base64, *((source + i) + 3)) - base64);
 
-        /* decode */
-        *((result + j) + 0) = (uint8_t)( ((ind1 & 0x3f) << 2) | ((ind2 & 0x30) >> 4) );
-        *((result + j) + 1) = (uint8_t)( ((ind2 & 0x0f) << 4) | ((ind3 & 0x3c) >> 2) );
-        *((result + j) + 2) = (uint8_t)( ((ind3 & 0x03) << 6) | ((ind4 & 0x3f) >> 0) );
-        j += 3;
-    }
-    if ('=' == (*((source + i) - 2)))
-    {
-        j -= 2;
-    }
-    else if ('=' == (*((source + i) - 1)))
-    {
-        j -= 1;
-    }
-    else
-    {
-        /* Do Nothing */
+		/* decode */
+		tmp[0] = (uint8_t)( ((ind1 & 0x3f) << 2) | ((ind2 & 0x30) >> 4) );
+		tmp[1] = (uint8_t)( ((ind2 & 0x0f) << 4) | ((ind3 & 0x3c) >> 2) );
+		tmp[2] = (uint8_t)( ((ind3 & 0x03) << 6) | ((ind4 & 0x3f) >> 0) );
+
+		ptr = strstr(source, "==");
+		if(ptr == (source + i))
+		{
+			/* nothing to do */
+		}
+		else if(ptr == (source + i) + 2)
+		{
+			result[j+0] = tmp[0];
+			j += 1;
+		}
+		else if(ptr == (source + i) + 3)
+		{
+			result[j+0] = tmp[0];
+			result[j+1] = tmp[1];
+			j += 2;
+		}
+		else
+		{
+			result[j+0] = tmp[0];
+			result[j+1] = tmp[1];
+			result[j+2] = tmp[2];
+			j += 3;
+		}
     }
 
     return j;
 }
 
+#if SECURE_BOOT
+#pragma section
+#endif

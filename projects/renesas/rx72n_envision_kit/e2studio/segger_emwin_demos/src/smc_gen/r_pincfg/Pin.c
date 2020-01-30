@@ -22,7 +22,7 @@
 * Version      : 1.0.2
 * Device(s)    : R5F572NNHxFB
 * Description  : This file implements SMC pin code generation.
-* Creation Date: 2020-01-24
+* Creation Date: 2020-01-30
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -144,6 +144,34 @@ void R_Pins_Create(void)
     /* Set LCD_TCON3 pin */
     MPC.PB1PFS.BYTE = 0x25U;
     PORTB.PMR.BYTE |= 0x02U;
+
+    /* Set SDHI_CD pin */
+    MPC.P25PFS.BYTE = 0x1AU;
+    PORT2.PMR.BYTE |= 0x20U;
+
+    /* Set SDHI_CLK pin */
+    MPC.P21PFS.BYTE = 0x1AU;
+    PORT2.PMR.BYTE |= 0x02U;
+
+    /* Set SDHI_CMD pin */
+    MPC.P20PFS.BYTE = 0x1AU;
+    PORT2.PMR.BYTE |= 0x01U;
+
+    /* Set SDHI_D0 pin */
+    MPC.P22PFS.BYTE = 0x1AU;
+    PORT2.PMR.BYTE |= 0x04U;
+
+    /* Set SDHI_D1 pin */
+    MPC.P23PFS.BYTE = 0x1AU;
+    PORT2.PMR.BYTE |= 0x08U;
+
+    /* Set SDHI_D2 pin */
+    MPC.P87PFS.BYTE = 0x1AU;
+    PORT8.PMR.BYTE |= 0x80U;
+
+    /* Set SDHI_D3 pin */
+    MPC.P17PFS.BYTE = 0x1AU;
+    PORT1.PMR.BYTE |= 0x80U;
 
     /* Set SSCL6 pin */
     MPC.P33PFS.BYTE = 0x0AU;
