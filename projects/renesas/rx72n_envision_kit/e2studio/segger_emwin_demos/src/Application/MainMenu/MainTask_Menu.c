@@ -1566,9 +1566,9 @@ void MainTask(void) {
     _Count[3]++;
   }
 
-  /* Switch button setting */
+  sdcard_init();
+
   in_main_menu_flag = 1;
-  _IsRunning = 0;
   SwitchButtonInit();
 
   GUI_Init();
@@ -1579,7 +1579,7 @@ void MainTask(void) {
   while (1) {
     GUI_Delay(1);
     CheckPressedState();
-    CheckFirmUpdateState();
+    sdcard_task(NULL);
   }
 }
 /*************************** End of file ****************************/

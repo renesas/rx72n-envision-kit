@@ -98,6 +98,7 @@ extern void firmware_update_request(char *string);
 //extern void bank_swap(void);
 extern bool is_firmupdating(void);
 extern void SetSwbankchangeRebootBotton(void);
+extern void firmware_update_request(char *string);
 
 void firmware_update_writing_color(U32 id, U8 num);
 void firmware_update_temporary_area_string(U32 prog, U32 kilobyte, U32 kilobyte2);
@@ -167,58 +168,11 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
       switch(NCode) {
       case WM_NOTIFICATION_CLICKED:
         // USER START (Optionally insert code for reacting on notification message)
-          //hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0);
-
-          //char text[16];
-          //BUTTON_GetText(hItem, text, sizeof(text)-1);
-          //if(0 == strcmp(text, reboot_string))
-          //{
-          //    SetSwbankchangeRebootBotton();
-          //}
-          //else
-          //{
-              WM_HWIN hItem;
-              WM_HWIN hWin;
-
-              hWin = hWinFirmwareUpdateViaSDCardWindow;
-              hItem = WM_GetDialogItem(hWin, ID_LISTBOX_0);
-
-              select_id = LISTBOX_GetSel(hItem);
-              if(select_id == -1)
-              {
-                  return;
-              }
-              LISTBOX_GetItemText(hItem, select_id, selected_file_name, 256);
-              if(true != is_firmupdating())
-              {
-                  firmware_update_request(selected_file_name);
-                  firmware_update_log_string("start firmware update.\r\n");
-              }
-              else
-              {
-                  firmware_update_log_string("cannot swap bank in this status.\r\n");
-              }
-          //}
         // USER END
         break;
       case WM_NOTIFICATION_RELEASED:
         // USER START (Optionally insert code for reacting on notification message)
-        // USER END
-        break;
-      case WM_NOTIFICATION_SEL_CHANGED:
-        // USER START (Optionally insert code for reacting on notification message)
-        // USER END
-        break;
-      // USER START (Optionally insert additional code for further notification handling)
-      // USER END
-      }
-      break;
-    case ID_MULTIEDIT_0: // Notifications sent by 'Multiedit'
-      switch(NCode) {
-      case WM_NOTIFICATION_CLICKED:
-        // USER START (Optionally insert code for reacting on notification message)
-#if 1 // debug
-//        firmware_update_request("userprog.rsu");
+        //firmware_update_request("userprog.rsu");
           WM_HWIN hItem;
           WM_HWIN hWin;
 
@@ -233,6 +187,8 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
           LISTBOX_GetItemText(hItem, select_id, selected_file_name, 256);
           if(true != is_firmupdating())
           {
+              hItem = WM_GetDialogItem(pMsg->hWin, ID_MULTIEDIT_0);
+              MULTIEDIT_SetText  (hItem, "");
               firmware_update_request(selected_file_name);
               firmware_update_log_string("start firmware update.\r\n");
           }
@@ -240,7 +196,20 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
           {
               firmware_update_log_string("cannot swap bank in this status.\r\n");
           }
-#endif
+        // USER END
+        break;
+      case WM_NOTIFICATION_SEL_CHANGED:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      // USER START (Optionally insert additional code for further notification handling)
+      // USER END
+      }
+      break;
+    case ID_MULTIEDIT_0: // Notifications sent by 'Multiedit'
+      switch(NCode) {
+      case WM_NOTIFICATION_CLICKED:
+        // USER START (Optionally insert code for reacting on notification message)
         // USER END
         break;
       case WM_NOTIFICATION_RELEASED:

@@ -131,7 +131,6 @@ extern GUI_CONST_STORAGE GUI_BITMAP bmKnob_150x150;
 extern const GUI_BITMAP * apbmBicycleRider_15F_134x122[15];
 
 extern int in_main_menu_flag;
-extern int _IsRunning;
 
 /*********************************************************************
 *
@@ -417,6 +416,7 @@ int RandomNumber(int min, int max);
 
 extern void SwitchButtonInit(void);
 extern void CheckPressedState(void);
-extern void CheckFirmUpdateState(void);
+extern void sdcard_init(void);
+extern void sdcard_task( void * pvParameters );
 
 #endif /* RESOURCE_H */

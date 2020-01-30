@@ -590,8 +590,8 @@ static void _cbWin(WM_MESSAGE * pMsg) {
   static ANIM_TITLE_DATA AnimData;
   static int             ButtonL;
   static int             ButtonR;
-  static int             ButtonCntL;
-  static int             ButtonCntR;
+  /* static int             ButtonCntL; */
+  /* static int             ButtonCntR; */
   
   switch (pMsg->MsgId) {
   case WM_CREATE:

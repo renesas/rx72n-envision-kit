@@ -56,18 +56,30 @@ extern DIR dir;
 /*******************************************************************************
 Private global variables and functions
 *******************************************************************************/
+void sdcard_init(void);
 void sdcard_task( void * pvParameters );
 sdc_sd_status_t r_sdc_sd_callback(int32_t channel);
 static void TFAT_sample(void);
 static void R_error(uint8_t err_code);
 static void trap(void);
 
-extern void firmware_update_list_add(char *pstring);
-extern void firmware_update_list_clear(void);
-extern void firmware_update_update_file_search(void);
+//extern void firmware_update_list_add(char *pstring);
+//extern void firmware_update_list_clear(void);
+//extern void firmware_update_update_file_search(void);
 extern void R_SDHI_PinSetTransfer(void);
 extern void R_SDHI_PinSetInit(void);
 extern void software_reset(void);
+
+void sdcard_init(void)
+{
+    R_SDHI_PinSetInit();
+
+    R_SYS_TIME_RegisterPeriodicCallback(R_SDC_SD_1msInterval, 1);
+
+    g_sdc_sd_card_no = 0;
+    r_sdc_sdmem_demo_power_init(g_sdc_sd_card_no);
+    R_SDC_SD_Open(g_sdc_sd_card_no, 0, &g_sdc_sd_work);
+}
 
 void sdcard_task( void * pvParameters )
 {
@@ -83,97 +95,86 @@ void sdcard_task( void * pvParameters )
     uint32_t firmware_update_status;
     uint32_t firmware_update_finish_status;
 
-    R_SDHI_PinSetInit();
+    sdc_sd_card_detection = R_SDC_SD_GetCardDetection(g_sdc_sd_card_no);
 
-    R_SYS_TIME_RegisterPeriodicCallback(R_SDC_SD_1msInterval, 1);
-
-    g_sdc_sd_card_no = 0;
-    r_sdc_sdmem_demo_power_init(g_sdc_sd_card_no);
-    sdc_sd_status = R_SDC_SD_Open(g_sdc_sd_card_no, 0, &g_sdc_sd_work);
-
-    while(1)
+    if(previous_sdc_sd_card_detection != sdc_sd_card_detection)
     {
-        sdc_sd_card_detection = R_SDC_SD_GetCardDetection(g_sdc_sd_card_no);
-
-        if(previous_sdc_sd_card_detection != sdc_sd_card_detection)
+        previous_sdc_sd_card_detection = sdc_sd_card_detection;
+        if(SDC_SD_SUCCESS == sdc_sd_card_detection)
         {
-            previous_sdc_sd_card_detection = sdc_sd_card_detection;
-            if(SDC_SD_SUCCESS == sdc_sd_card_detection)
+            printf("Detected attached SD card.\n");
+            r_sdc_sdmem_demo_power_on(g_sdc_sd_card_no);
+            R_SDHI_PinSetTransfer();
+            R_SDC_SD_IntCallback(g_sdc_sd_card_no, r_sdc_sd_callback);
+            sdc_sd_config.mode     = SDC_SD_CFG_DRIVER_MODE;
+            sdc_sd_config.voltage  = SDC_SD_VOLT_3_3;
+            sdc_sd_status = R_SDC_SD_Initialize(g_sdc_sd_card_no, &sdc_sd_config, SDC_SD_MODE_MEM);
+            if(SDC_SD_SUCCESS != sdc_sd_status)
             {
-                printf("Detected attached SD card.\n");
-                r_sdc_sdmem_demo_power_on(g_sdc_sd_card_no);
-                R_SDHI_PinSetTransfer();
-                R_SDC_SD_IntCallback(g_sdc_sd_card_no, r_sdc_sd_callback);
-                sdc_sd_config.mode     = SDC_SD_CFG_DRIVER_MODE;
-                sdc_sd_config.voltage  = SDC_SD_VOLT_3_3;
-                sdc_sd_status = R_SDC_SD_Initialize(g_sdc_sd_card_no, &sdc_sd_config, SDC_SD_MODE_MEM);
-                if(SDC_SD_SUCCESS != sdc_sd_status)
-                {
-                    trap();
-                }
-                R_tfat_f_mount(TFAT_DRIVE_NUM_0, &fatfs);
-                firmware_update_update_file_search();
+                trap();
             }
-            else
-            {
-                previous_sdc_sd_card_detection = sdc_sd_card_detection;
-                if(SDC_SD_SUCCESS != sdc_sd_card_detection)
-                {
-                    firmware_update_list_clear();
-                    r_sdc_sdmem_demo_power_off(g_sdc_sd_card_no);
-                }
-            }
-        }
-
-        //storage_benchmark_main();
-        progress = firmware_update();
-        load_firmware_status(&firmware_update_status, &firmware_update_finish_status);
-
-        if(true == is_firmupdating())
-        {
-            nop();
-            firmware_update_complete_flag = 0;
-            if(previous_progress != progress)
-            {
-                previous_progress = progress;
-                sprintf(buff, "installed %d %%\r\n", progress);
-                firmware_update_log_string(buff);
-                firmware_update_temporary_area_string(progress, (int)((((float)(progress)/100)*(float)(get_update_data_size()))/1024), (int)((float)(get_update_data_size()))/1024);
-            }
-        }
-        else if(true == is_firmupdatewaitstart())
-        {
-            firmware_update_complete_flag = 0;
+            R_tfat_f_mount(TFAT_DRIVE_NUM_0, &fatfs);
+            //firmware_update_update_file_search();
         }
         else
         {
-            if(firmware_update_status == firmware_update_finish_status)
+            previous_sdc_sd_card_detection = sdc_sd_card_detection;
+            if(SDC_SD_SUCCESS != sdc_sd_card_detection)
             {
-                if(0 == firmware_update_complete_flag)
-                {
-                    firmware_update_ok_after_message();
-                    firmware_update_complete_flag = 1;
-                    software_reset();
-                }
-            }
-            else
-            {
-                if(0 == firmware_update_complete_flag)
-                {
-                    firmware_update_ng_after_message();
-                    firmware_update_status_initialize();
-                    firmware_update_complete_flag = 1;
-                }
+                //firmware_update_list_clear();
+                r_sdc_sdmem_demo_power_off(g_sdc_sd_card_no);
             }
         }
-
-        if(!(gui_delay_counter++ % 1000))
-        {
-            GUI_Delay(1);
-        }
-
-        vTaskDelay(1);
     }
+
+    //storage_benchmark_main();
+    progress = firmware_update();
+    load_firmware_status(&firmware_update_status, &firmware_update_finish_status);
+
+    if(true == is_firmupdating())
+    {
+        nop();
+        firmware_update_complete_flag = 0;
+        if(previous_progress != progress)
+        {
+            previous_progress = progress;
+            sprintf(buff, "installed %d %%\r\n", progress);
+            firmware_update_log_string(buff);
+            firmware_update_temporary_area_string(progress, (int)((((float)(progress)/100)*(float)(get_update_data_size()))/1024), (int)((float)(get_update_data_size()))/1024);
+        }
+    }
+    else if(true == is_firmupdatewaitstart())
+    {
+        firmware_update_complete_flag = 0;
+    }
+    else
+    {
+        if(firmware_update_status == firmware_update_finish_status)
+        {
+            if(0 == firmware_update_complete_flag)
+            {
+                //firmware_update_ok_after_message();
+                firmware_update_complete_flag = 1;
+                software_reset();
+            }
+        }
+        else
+        {
+            if(0 == firmware_update_complete_flag)
+            {
+                //firmware_update_ng_after_message();
+                firmware_update_status_initialize();
+                firmware_update_complete_flag = 1;
+            }
+        }
+    }
+
+    if(!(gui_delay_counter++ % 1000))
+    {
+        GUI_Delay(1);
+    }
+
+    //vTaskDelay(1);
 }
 
 /* End of function r_sdc_sd_callback() */

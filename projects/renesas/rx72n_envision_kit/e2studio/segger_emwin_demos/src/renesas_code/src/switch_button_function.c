@@ -32,6 +32,7 @@
 #include "r_flash_rx_if.h"
 #include "r_irq_rx_if.h"
 #include "r_irq_rx_pinset.h"
+#include "r_tfat_lib.h"
 
 /***********************************************************************************************************************
  Macro definitions
@@ -51,7 +52,9 @@
  Exported global variables (to be accessed by other files)
  ***********************************************************************************************************************/
 int in_main_menu_flag;
-int _IsRunning;
+FATFS fatfs;
+FILINFO filinfo;
+DIR dir;
 
 void SwitchButtonInit(void);
 void CheckPressedState(void);
@@ -94,7 +97,6 @@ void CheckPressedState(void)
             else if ((LONG_PRESS_COUNT_VALUE <= long_press_count) && (0 == in_sw_rising_count))
             {
                 R_IRQ_InterruptEnable(my_irq_handle, false);
-                _IsRunning = 1;
                 long_press_count = 0;
                 in_sw_active = 0;
                 in_sw_rising_count = 0;
@@ -153,19 +155,6 @@ static void my_irq_callback(void *pdata)
                 in_sw_rising_count++;
             }
         }
-    }
-}
-
-void CheckFirmUpdateState(void)
-{
-    uint32_t now_status;
-    uint32_t finish_status;
-    uint32_t progress;
-
-    if (_IsRunning)
-    {
-        progress = firmware_update();
-        load_firmware_status(&now_status, &finish_status);
     }
 }
 

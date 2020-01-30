@@ -281,11 +281,6 @@ uint32_t firmware_update(void)
             load_firmware_control_block.status = FIRMWARE_UPDATE_STATE_COMPLETED;
             break;
         case FIRMWARE_UPDATE_STATE_COMPLETED:
-#if 1 // debug(本来は上位側でバンクスワップ)
-            /* Software reset issued (Not bank swap) */
-            software_reset();
-            while(1);   /* software reset */
-#endif
             break;
         case FIRMWARE_UPDATE_STATE_ERROR:
             load_firmware_control_block.progress = 100;
