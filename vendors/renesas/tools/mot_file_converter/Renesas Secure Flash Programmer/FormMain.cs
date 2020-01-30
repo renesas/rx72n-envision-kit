@@ -245,6 +245,7 @@ namespace Renesas_Secure_Flash_Programmer
         const string MCUROM_RX72T_512K_SB_64KB = "RX72T(ROM 512KB)/Secure Bootloader=64KB";
         const string MCUROM_RX72N_4M_SB_256KB = "RX72N(ROM 4MB)/Secure Bootloader=256KB";
 
+        const string FIRMWARE_VERIFICATION_TYPE_NOT_USED = "not used";
         const string FIRMWARE_VERIFICATION_TYPE_HASH_SHA256 = "hash-sha256";
         const string FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA = "sig-sha256-ecdsa";
         const string FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP = "mac-aes128-cmac-with-tsip";
@@ -271,12 +272,21 @@ namespace Renesas_Secure_Flash_Programmer
             { MCUROM_RX72N_4M_SB_256KB,                 new AddressMap(0x00000009, 0xffe00300, 0xfffbffff, 0xffc00300, 0xffdbffff, 0xfffc0000, 0xffffffff, 0xffc00000, 0xffffffff, 0x00100000, 0x001007ff, 0x00100800, 0x001057ff, 0x00100000, 0x00107fff) },
         };
 
-        public static readonly Dictionary<string, uint> FirmVerificationType = new Dictionary<string, uint>()
+        public static readonly Dictionary<string, uint> InitialFirmVerificationType = new Dictionary<string, uint>()
         {
             { FIRMWARE_VERIFICATION_TYPE_HASH_SHA256, 1 },
             { FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA, 2 },
             { FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP, 3 },
             { FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA_WITH_TSIP, 4 },
+        };
+
+        public static readonly Dictionary<string, uint> UpdateFirmVerificationType = new Dictionary<string, uint>()
+        {
+            { FIRMWARE_VERIFICATION_TYPE_NOT_USED, 1 },
+            { FIRMWARE_VERIFICATION_TYPE_HASH_SHA256, 2 },
+            { FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA, 3 },
+            { FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP, 4 },
+            { FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA_WITH_TSIP, 5 },
         };
 
         public static readonly Dictionary<string, uint> OutputFormatType = new Dictionary<string, uint>()
@@ -814,32 +824,43 @@ namespace Renesas_Secure_Flash_Programmer
                         }
                         else if (firm_verification_type == FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA)
                         {
+                            hash_value = "dummy"; // FIX ME. Necessary when entering a value in hash_string later. But unnecessary data for ECDSA signature.
+
+                            byte[] tmp = new byte[0];
+                            UInt32 Descriptor_address_size = 0x100;
+                            tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.sequence_number)).ToArray();
+                            tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.start_address)).ToArray();
+                            tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.end_address)).ToArray();
+                            tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.execution_address)).ToArray();
+                            tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.hardware_id)).ToArray();
+                            tmp = tmp.Concat(rsu_header_data.reserved2).ToArray();
+                            tmp = tmp.Concat(code_flash_image).ToArray();
+                            Array.Resize(ref tmp, (Int32)(Descriptor_address_size + (user_program_bottom_address + 1) - user_program_top_address));
+
+                            byte[] signature;
+                            bool result;
                             if (FIRMWARE_TYPE_INITIAL == firm_type)
                             {
-                                hash_value = "dummy"; // FIX ME. Necessary when entering a value in hash_string later. But unnecessary data for ECDSA signature.
-
-                                byte[] tmp = new byte[0];
-                                UInt32 Descriptor_address_size = 0x100;
-                                tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.sequence_number)).ToArray();
-                                tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.start_address)).ToArray();
-                                tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.end_address)).ToArray();
-                                tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.execution_address)).ToArray();
-                                tmp = tmp.Concat(BitConverter.GetBytes(rsu_header_data.hardware_id)).ToArray();
-                                tmp = tmp.Concat(rsu_header_data.reserved2).ToArray();
-                                tmp = tmp.Concat(code_flash_image).ToArray();
-                                Array.Resize(ref tmp, (Int32)(Descriptor_address_size + (user_program_bottom_address + 1) - user_program_top_address));
-
-                                byte[] signature = Sign(tmp, textBoxInitialUserPrivateKeyPath.Text);
-                                bool result = Verify(tmp, signature, textBoxInitialUserPrivateKeyPath.Text);
-                                if (false == result)
-                                {
-                                    print_log(String.Format("Failed to signature\r\n"));
-                                    return false;
-                                }
-                                Array.Copy(System.Text.Encoding.ASCII.GetBytes(firm_verification_type), rsu_header_data.signature_type, firm_verification_type.Length);
-                                rsu_header_data.signature_size = (uint)signature.Length;
-                                Array.Copy(signature, rsu_header_data.signature, rsu_header_data.signature_size);
+                                signature = Sign(tmp, textBoxInitialUserPrivateKeyPath.Text);
+                                result = Verify(tmp, signature, textBoxInitialUserPrivateKeyPath.Text);
                             }
+                            else if (FIRMWARE_TYPE_UPDATE == firm_type)
+                            {
+                                signature = Sign(tmp, textBoxUserPrivateKeyPath.Text);
+                                result = Verify(tmp, signature, textBoxUserPrivateKeyPath.Text);
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                            if (false == result)
+                            {
+                                print_log(String.Format("Failed to signature\r\n"));
+                                return false;
+                            }
+                            Array.Copy(System.Text.Encoding.ASCII.GetBytes(firm_verification_type), rsu_header_data.signature_type, firm_verification_type.Length);
+                            rsu_header_data.signature_size = (uint)signature.Length;
+                            Array.Copy(signature, rsu_header_data.signature, rsu_header_data.signature_size);
                         }
                         else
                         {
@@ -849,18 +870,15 @@ namespace Renesas_Secure_Flash_Programmer
 
                         if ((OUTPUT_FORMAT_TYPE_BANK0 == comboBoxInitialFirmwareOutputFormat.Text) || (FIRMWARE_TYPE_UPDATE == firm_type))
                         {
-                            if (FIRMWARE_TYPE_INITIAL == firm_type)
-                            {
-                                bw.Write(rsu_header_data.magic_code);
-                                bw.Write(rsu_header_data.image_flag);
-                                bw.Write(rsu_header_data.signature_type);
-                                bw.Write(rsu_header_data.signature_size);
-                                bw.Write(rsu_header_data.signature);
-                                bw.Write(rsu_header_data.dataflash_flag);
-                                bw.Write(rsu_header_data.dataflash_start_address);
-                                bw.Write(rsu_header_data.dataflash_end_address);
-                                bw.Write(rsu_header_data.reserved1);
-                            }
+                            bw.Write(rsu_header_data.magic_code);
+                            bw.Write(rsu_header_data.image_flag);
+                            bw.Write(rsu_header_data.signature_type);
+                            bw.Write(rsu_header_data.signature_size);
+                            bw.Write(rsu_header_data.signature);
+                            bw.Write(rsu_header_data.dataflash_flag);
+                            bw.Write(rsu_header_data.dataflash_start_address);
+                            bw.Write(rsu_header_data.dataflash_end_address);
+                            bw.Write(rsu_header_data.reserved1);
                             bw.Write(rsu_header_data.sequence_number);
                             bw.Write(rsu_header_data.start_address);
                             bw.Write(rsu_header_data.end_address);
@@ -873,6 +891,28 @@ namespace Renesas_Secure_Flash_Programmer
                                 bw.Write(data_flash_image, 0, (int)((data_flash_bottom_address + 1) - data_flash_top_address));
                             }
                         }
+                    }
+                    else if (firm_verification_type == FIRMWARE_VERIFICATION_TYPE_NOT_USED)
+                    {
+                        // prepair the rsu_header
+                        rsu_header_data.sequence_number = Convert.ToUInt32(sequence_number_text);
+                        rsu_header_data.start_address = McuSpecs[mcuName].userProgramTopAddress;
+                        rsu_header_data.end_address = McuSpecs[mcuName].userProgramBottomAddress;
+                        rsu_header_data.execution_address = McuSpecs[mcuName].userProgramBottomAddress - 3;
+                        rsu_header_data.hardware_id = McuSpecs[mcuName].hardwareId;
+
+                        bw.Write(rsu_header_data.sequence_number);
+                        bw.Write(rsu_header_data.start_address);
+                        bw.Write(rsu_header_data.end_address);
+                        bw.Write(rsu_header_data.execution_address);
+                        bw.Write(rsu_header_data.hardware_id);
+                        bw.Write(rsu_header_data.reserved2);
+                        bw.Write(code_flash_image, 0, (int)((user_program_bottom_address + 1) - user_program_top_address));
+                    }
+                    else
+                    {
+                        print_log(String.Format("This Firmware Verification Type is not implemented yet: [{0:s}]\r\n", firm_verification_type));
+                        return false;
                     }
 
                 }
@@ -935,7 +975,7 @@ namespace Renesas_Secure_Flash_Programmer
                 comboBoxMcu_firmupdate.Items.Add(mcu.Key);
             }
             // [Select Firmware Verification Type] combobox 
-            foreach (var mcu in FirmVerificationType)
+            foreach (var mcu in UpdateFirmVerificationType)
             {
                 comboBoxFirmwareVerificationType.Items.Add(mcu.Key);
             }
@@ -948,7 +988,7 @@ namespace Renesas_Secure_Flash_Programmer
                 comboBox_Initial_Mcu_firmupdate.Items.Add(mcu.Key);
             }
             // [Select Firmware Verification Type] combobox 
-            foreach (var mcu in FirmVerificationType)
+            foreach (var mcu in InitialFirmVerificationType)
             {
                 comboBoxInitialFirmwareVerificationType.Items.Add(mcu.Key);
             }
@@ -963,6 +1003,9 @@ namespace Renesas_Secure_Flash_Programmer
             textBoxInitialBootLoaderFilePath.Enabled = false;
             textBoxInitialFirmwareSequenceNumberBank1.Enabled = false;
             textBoxInitialUserProgramFilePathBank1.Enabled = false;
+
+            // Update tab
+            textBoxUserPrivateKeyPath.Enabled = false;
         }
 
         /// <summary>
@@ -2014,10 +2057,18 @@ namespace Renesas_Secure_Flash_Programmer
             if (comboBoxFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP)
             {
                 textBoxUserProgramKey_Aes128.Enabled = true;
+                textBoxUserPrivateKeyPath.Enabled = false;
+            }
+            else if ((comboBoxFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA) ||
+                     (comboBoxFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA_WITH_TSIP))
+            {
+                textBoxUserProgramKey_Aes128.Enabled = false;
+                textBoxUserPrivateKeyPath.Enabled = true;
             }
             else
             {
                 textBoxUserProgramKey_Aes128.Enabled = false;
+                textBoxUserPrivateKeyPath.Enabled = false;
             }
         }
 
@@ -2026,20 +2077,18 @@ namespace Renesas_Secure_Flash_Programmer
             if (comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP)
             {
                 textBoxInitialUserProgramKey_Aes128.Enabled = true;
+                textBoxInitialUserPrivateKeyPath.Enabled = false;
             }
-            else
-            {
-                textBoxInitialUserProgramKey_Aes128.Enabled = false;
-            }
-
-            if ((comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA) ||
+            else if ((comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA) ||
                 (comboBoxInitialFirmwareVerificationType.Text == FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA_WITH_TSIP))
 
             {
+                textBoxInitialUserProgramKey_Aes128.Enabled = false;
                 textBoxInitialUserPrivateKeyPath.Enabled = true;
             }
             else
             {
+                textBoxInitialUserProgramKey_Aes128.Enabled = false;
                 textBoxInitialUserPrivateKeyPath.Enabled = false;
             }
         }
@@ -2933,5 +2982,23 @@ namespace Renesas_Secure_Flash_Programmer
 
         #endregion [Firm Update] Tab
 
+        private void buttonBrowseUserPrivateKey_Click(object sender, EventArgs e)
+        {
+            if (textBoxUserPrivateKeyPath.Enabled)
+            {
+                openFileDialog.Filter = "User Private Key File|*.privatekey";
+                openFileDialog.Title = "Specify the User Private Key File Name";
+                openFileDialog.FileName = "";
+
+                if (openFileDialog.ShowDialog() != DialogResult.OK || openFileDialog.FileName == "")
+                {
+                    print_log("please specify the user private key file name.");
+                    return;
+                }
+
+                textBoxUserPrivateKeyPath.Text = openFileDialog.FileName;
+            }
+
+        }
     }
 }

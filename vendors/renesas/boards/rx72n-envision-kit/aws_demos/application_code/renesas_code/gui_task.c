@@ -118,7 +118,9 @@ void gui_task( void * pvParameters );
 void emWinCallback(WM_MESSAGE * pMsg);
 void callback_frame_window_to_main(int32_t id, int32_t event);
 
-
+#if 1 // debug
+extern void firmware_update_request(char *string);
+#endif
 
 /******************************************************************************
  Function Name   : serial_terminal_task
@@ -165,6 +167,10 @@ void gui_task( void * pvParameters )
 		GUI_Exec();
 		vTaskDelay(10);
 	}
+
+#if 1 // debug
+	firmware_update_request("userprog.rsu");
+#endif
 
 	uint32_t counter = 0;
 	while(1)

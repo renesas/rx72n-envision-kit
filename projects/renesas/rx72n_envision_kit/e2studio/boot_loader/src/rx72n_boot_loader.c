@@ -236,7 +236,7 @@ R_BSP_ATTRIB_SECTION_CHANGE_END
 static const uint8_t *pboot_loader_magic_code = (uint8_t *)BOOT_LOADER_MIRROR_LOW_ADDRESS;
 
 static int32_t firmware_verification_sha256_ecdsa(const uint8_t * pucData, uint32_t ulSize, const uint8_t * pucSignature, uint32_t ulSignatureSize, uint8_t *local_code_signer_public_key);
-const uint8_t code_signer_public_key[] = CODE_SIGNENR_PUBLIC_KEY_PEM;
+const uint8_t code_signer_public_key[] = CODE_SIGNER_PUBLIC_KEY_PEM;
 const uint32_t code_signer_public_key_length = sizeof(code_signer_public_key);
 const uint8_t code_signer_public_key_label[] = "code signer public key";
 

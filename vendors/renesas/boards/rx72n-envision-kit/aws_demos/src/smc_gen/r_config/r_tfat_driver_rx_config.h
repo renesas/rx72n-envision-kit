@@ -47,7 +47,7 @@ Configuration Options
               other : number of logical drives
    (USB and SD memory card can be used together.)
 */
-#define TFAT_USB_DRIVE_NUM         (1)
+#define TFAT_USB_DRIVE_NUM         (0)
 #define TFAT_SDMEM_DRIVE_NUM       (1)
 #define TFAT_USB_MINI_DRIVE_NUM    (0)
 
@@ -71,8 +71,8 @@ Configuration Options
   When you'd like to change the allocation.
   Please use R_tfat_drv_change_alloc().
 */
-#define TFAT_DRIVE_ALLOC_NUM_0    TFAT_CTRL_USB
-#define TFAT_DRIVE_ALLOC_NUM_1    TFAT_CTRL_SDMEM
+#define TFAT_DRIVE_ALLOC_NUM_0    TFAT_CTRL_SDMEM
+#define TFAT_DRIVE_ALLOC_NUM_1    NULL
 #define TFAT_DRIVE_ALLOC_NUM_2    NULL
 #define TFAT_DRIVE_ALLOC_NUM_3    NULL
 #define TFAT_DRIVE_ALLOC_NUM_4    NULL

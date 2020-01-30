@@ -65,6 +65,7 @@ Typedef definitions
  Private global variables
  ******************************************************************************/
 static TaskHandle_t serial_terminal_task_handle;
+static TaskHandle_t sdcard_task_handle;
 static TaskHandle_t gui_task_handle;
 
 /******************************************************************************
@@ -74,6 +75,7 @@ static TaskHandle_t gui_task_handle;
 extern void LCDCONF_EnableDave2D(void);
 
 extern void serial_terminal_task( void * pvParameters );
+extern void sdcard_task( void * pvParameters );
 extern void gui_task( void * pvParameters );
 
 /*******************************************************************************
@@ -84,6 +86,7 @@ void firmware_version_read(char **ver_str);
 void main_task(void);
 
 extern WM_HWIN hWinSerialTerminalWindow;
+extern WM_HWIN hWinFirmwareUpdateViaSDCardWindow;
 
 /******************************************************************************
  Function Name   : main
@@ -98,14 +101,14 @@ void main_task(void)
     /* enable MCU pins */
     R_Pins_Create();
 
+	/* system timer initialization */
+	R_SYS_TIME_Open();
+
 	/* GUI initialization */
     GUI_Exit();
 	GUI_Init();
 	LCDCONF_EnableDave2D();
 	WM_MULTIBUF_Enable(1);
-
-	/* system timer initialization */
-	R_SYS_TIME_Open();
 
 	/* flash initialization */
 	R_FLASH_Open();
@@ -116,6 +119,9 @@ void main_task(void)
 
     /* GUI task creation */
     xTaskCreate(gui_task, "gui", 4096, NULL, configMAX_PRIORITIES - 1, &gui_task_handle);
+
+    /* sdcard task creation */
+    xTaskCreate(sdcard_task, "sdcard", configMINIMAL_STACK_SIZE, &hWinFirmwareUpdateViaSDCardWindow, tskIDLE_PRIORITY, &sdcard_task_handle);
 
 	/* main loop */
 	while(1)

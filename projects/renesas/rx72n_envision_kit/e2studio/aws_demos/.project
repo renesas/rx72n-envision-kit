@@ -145,9 +145,19 @@
 			<locationURI>AFR_HOME/vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code/guibuilder_output</locationURI>
 		</link>
 		<link>
+			<name>application_code/renesas_code/key</name>
+			<type>2</type>
+			<locationURI>AFR_HOME/vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code/key</locationURI>
+		</link>
+		<link>
 			<name>application_code/renesas_code/main_task.c</name>
 			<type>1</type>
 			<locationURI>AFR_HOME/vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code/main_task.c</locationURI>
+		</link>
+		<link>
+			<name>application_code/renesas_code/sdcard_task.c</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code/sdcard_task.c</locationURI>
 		</link>
 		<link>
 			<name>application_code/renesas_code/serial_terminal_task.c</name>
@@ -473,6 +483,56 @@
 			<name>libraries/3rdparty/tinycbor/cborpretty.c</name>
 			<type>1</type>
 			<locationURI>AFR_HOME/libraries/3rdparty/tinycbor/cborpretty.c</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tinycrypt/lib/include/tinycrypt/constants.h</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tinycrypt/lib/include/tinycrypt/constants.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tinycrypt/lib/include/tinycrypt/ecc.h</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tinycrypt/lib/include/tinycrypt/ecc.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tinycrypt/lib/include/tinycrypt/ecc_dsa.h</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tinycrypt/lib/include/tinycrypt/ecc_dsa.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tinycrypt/lib/include/tinycrypt/ecc_platform_specific.h</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tinycrypt/lib/include/tinycrypt/ecc_platform_specific.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tinycrypt/lib/include/tinycrypt/sha256.h</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tinycrypt/lib/include/tinycrypt/sha256.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tinycrypt/lib/include/tinycrypt/utils.h</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tinycrypt/lib/include/tinycrypt/utils.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tinycrypt/lib/source/ecc.c</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tinycrypt/lib/source/ecc.c</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tinycrypt/lib/source/ecc_dsa.c</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tinycrypt/lib/source/ecc_dsa.c</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tinycrypt/lib/source/sha256.c</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tinycrypt/lib/source/sha256.c</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tinycrypt/lib/source/utils.c</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tinycrypt/lib/source/utils.c</locationURI>
 		</link>
 		<link>
 			<name>vendors/renesas/amazon_freertos_common/croutine.h</name>

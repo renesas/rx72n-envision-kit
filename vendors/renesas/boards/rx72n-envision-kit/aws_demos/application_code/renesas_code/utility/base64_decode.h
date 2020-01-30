@@ -14,31 +14,24 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2019 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2014-2017 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
-* File Name    : code_signer_public_key.h
-* Description  : Define public key information for code signer.
+* File Name    : base64_decode.h
+* Description  : BASE64 decode function
 ***********************************************************************************************************************/
 /**********************************************************************************************************************
 * History : DD.MM.YYYY Version Description
-*         : 11.10.2019 0.01    First Release
+*         : 01.09.2014 1.00    First Release
+*         : 01.06.2015 1.01    Added RX231.
+*         : 15.05.2017 1.02    Clean up source file
 ***********************************************************************************************************************/
 
-#ifndef CODE_SIGNER_PUBLIC_KEY_H_
-#define CODE_SIGNER_PUBLIC_KEY_H_
+#ifndef BASE64_DECODE_H_
+#define BASE64_DECODE_H_
 
-/*
- * PEM-encoded code signer public key.
- *
- * Must include the PEM header and footer:
- * "-----BEGIN CERTIFICATE-----\n"\
- * "...base64 data...\n"\
- * "-----END CERTIFICATE-----"
- */
-#define CODE_SIGNER_PUBLIC_KEY_PEM "Paste code signer public key here."
+#include "platform.h"
 
-extern const uint8_t code_signer_public_key[];
-extern const uint32_t code_signer_public_key_length;
+uint32_t base64_decode(uint8_t *source, uint8_t *result, uint32_t size);
 
-#endif /* CODE_SIGNER_PUBLIC_KEY_H_ */
+#endif /* BASE64_DECODE_H_ */

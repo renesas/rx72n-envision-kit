@@ -97,19 +97,22 @@
             this.comboBox_Initial_Mcu_firmupdate = new System.Windows.Forms.ComboBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.textBoxFirmwareSequenceNumber = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
+            this.buttonBrowseUserPrivateKey = new System.Windows.Forms.Button();
+            this.label24 = new System.Windows.Forms.Label();
+            this.textBoxUserPrivateKeyPath = new System.Windows.Forms.TextBox();
             this.comboBoxFirmwareVerificationType = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.textBoxUserProgramKey_Aes128 = new System.Windows.Forms.TextBox();
             this.comboBoxMcu_firmupdate = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.buttonGenerateUserprog = new System.Windows.Forms.Button();
+            this.textBoxFirmwareSequenceNumber = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
             this.buttonBrowseUserprog = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.textBoxUserProgramFilePath = new System.Windows.Forms.TextBox();
-            this.textBoxUserProgramKey_Aes128 = new System.Windows.Forms.TextBox();
+            this.buttonGenerateUserprog = new System.Windows.Forms.Button();
             this.info = new System.Windows.Forms.TextBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tabControl1.SuspendLayout();
@@ -251,7 +254,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(797, 383);
+            this.tabPage4.Size = new System.Drawing.Size(797, 431);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Key Wrap";
             // 
@@ -552,7 +555,7 @@
             // 
             this.textBoxInitialFirmwareSequenceNumberBank1.Location = new System.Drawing.Point(278, 16);
             this.textBoxInitialFirmwareSequenceNumberBank1.Name = "textBoxInitialFirmwareSequenceNumberBank1";
-            this.textBoxInitialFirmwareSequenceNumberBank1.Size = new System.Drawing.Size(393, 19);
+            this.textBoxInitialFirmwareSequenceNumberBank1.Size = new System.Drawing.Size(156, 19);
             this.textBoxInitialFirmwareSequenceNumberBank1.TabIndex = 25;
             this.textBoxInitialFirmwareSequenceNumberBank1.Text = "(1 - 4294967295)";
             // 
@@ -570,7 +573,7 @@
             this.buttonBrowseInitialUserprogBank1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonBrowseInitialUserprogBank1.Location = new System.Drawing.Point(676, 40);
             this.buttonBrowseInitialUserprogBank1.Name = "buttonBrowseInitialUserprogBank1";
-            this.buttonBrowseInitialUserprogBank1.Size = new System.Drawing.Size(75, 19);
+            this.buttonBrowseInitialUserprogBank1.Size = new System.Drawing.Size(75, 20);
             this.buttonBrowseInitialUserprogBank1.TabIndex = 23;
             this.buttonBrowseInitialUserprogBank1.Text = "Browse...";
             this.buttonBrowseInitialUserprogBank1.UseVisualStyleBackColor = true;
@@ -624,7 +627,7 @@
             this.buttonBrowseInitialBootLoaderUserprog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonBrowseInitialBootLoaderUserprog.Location = new System.Drawing.Point(677, 17);
             this.buttonBrowseInitialBootLoaderUserprog.Name = "buttonBrowseInitialBootLoaderUserprog";
-            this.buttonBrowseInitialBootLoaderUserprog.Size = new System.Drawing.Size(75, 19);
+            this.buttonBrowseInitialBootLoaderUserprog.Size = new System.Drawing.Size(75, 20);
             this.buttonBrowseInitialBootLoaderUserprog.TabIndex = 11;
             this.buttonBrowseInitialBootLoaderUserprog.Text = "Browse...";
             this.buttonBrowseInitialBootLoaderUserprog.UseVisualStyleBackColor = true;
@@ -669,7 +672,7 @@
             // 
             this.textBoxInitialFirmwareSequenceNumberBank0.Location = new System.Drawing.Point(278, 15);
             this.textBoxInitialFirmwareSequenceNumberBank0.Name = "textBoxInitialFirmwareSequenceNumberBank0";
-            this.textBoxInitialFirmwareSequenceNumberBank0.Size = new System.Drawing.Size(393, 19);
+            this.textBoxInitialFirmwareSequenceNumberBank0.Size = new System.Drawing.Size(156, 19);
             this.textBoxInitialFirmwareSequenceNumberBank0.TabIndex = 11;
             this.textBoxInitialFirmwareSequenceNumberBank0.Text = "(1 - 4294967295)";
             // 
@@ -687,7 +690,7 @@
             this.buttonBrowseInitialUserprogBank0.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonBrowseInitialUserprogBank0.Location = new System.Drawing.Point(678, 39);
             this.buttonBrowseInitialUserprogBank0.Name = "buttonBrowseInitialUserprogBank0";
-            this.buttonBrowseInitialUserprogBank0.Size = new System.Drawing.Size(75, 19);
+            this.buttonBrowseInitialUserprogBank0.Size = new System.Drawing.Size(75, 20);
             this.buttonBrowseInitialUserprogBank0.TabIndex = 4;
             this.buttonBrowseInitialUserprogBank0.Text = "Browse...";
             this.buttonBrowseInitialUserprogBank0.UseVisualStyleBackColor = true;
@@ -739,7 +742,7 @@
             this.buttonBrowseInitialUserPrivateKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonBrowseInitialUserPrivateKey.Location = new System.Drawing.Point(678, 95);
             this.buttonBrowseInitialUserPrivateKey.Name = "buttonBrowseInitialUserPrivateKey";
-            this.buttonBrowseInitialUserPrivateKey.Size = new System.Drawing.Size(75, 19);
+            this.buttonBrowseInitialUserPrivateKey.Size = new System.Drawing.Size(75, 20);
             this.buttonBrowseInitialUserPrivateKey.TabIndex = 12;
             this.buttonBrowseInitialUserPrivateKey.Text = "Browse...";
             this.buttonBrowseInitialUserPrivateKey.UseVisualStyleBackColor = true;
@@ -805,7 +808,7 @@
             this.comboBoxInitialFirmwareVerificationType.FormattingEnabled = true;
             this.comboBoxInitialFirmwareVerificationType.Location = new System.Drawing.Point(278, 43);
             this.comboBoxInitialFirmwareVerificationType.Name = "comboBoxInitialFirmwareVerificationType";
-            this.comboBoxInitialFirmwareVerificationType.Size = new System.Drawing.Size(393, 20);
+            this.comboBoxInitialFirmwareVerificationType.Size = new System.Drawing.Size(332, 20);
             this.comboBoxInitialFirmwareVerificationType.TabIndex = 3;
             this.comboBoxInitialFirmwareVerificationType.Text = "(select Firmware Verification Type)";
             this.comboBoxInitialFirmwareVerificationType.SelectedIndexChanged += new System.EventHandler(this.comboBoxInitialFirmwareVerificationType_SelectedIndexChanged);
@@ -833,7 +836,7 @@
             this.comboBox_Initial_Mcu_firmupdate.FormattingEnabled = true;
             this.comboBox_Initial_Mcu_firmupdate.Location = new System.Drawing.Point(278, 18);
             this.comboBox_Initial_Mcu_firmupdate.Name = "comboBox_Initial_Mcu_firmupdate";
-            this.comboBox_Initial_Mcu_firmupdate.Size = new System.Drawing.Size(393, 20);
+            this.comboBox_Initial_Mcu_firmupdate.Size = new System.Drawing.Size(332, 20);
             this.comboBox_Initial_Mcu_firmupdate.TabIndex = 1;
             this.comboBox_Initial_Mcu_firmupdate.Text = "(select MCU)";
             // 
@@ -842,10 +845,11 @@
             this.tabPage3.BackColor = System.Drawing.Color.WhiteSmoke;
             this.tabPage3.Controls.Add(this.groupBox3);
             this.tabPage3.Controls.Add(this.groupBox2);
+            this.tabPage3.Controls.Add(this.buttonGenerateUserprog);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(797, 383);
+            this.tabPage3.Size = new System.Drawing.Size(797, 431);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Update Firm";
             // 
@@ -853,50 +857,74 @@
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox3.Controls.Add(this.textBoxFirmwareSequenceNumber);
-            this.groupBox3.Controls.Add(this.label11);
+            this.groupBox3.Controls.Add(this.buttonBrowseUserPrivateKey);
+            this.groupBox3.Controls.Add(this.label24);
+            this.groupBox3.Controls.Add(this.textBoxUserPrivateKeyPath);
             this.groupBox3.Controls.Add(this.comboBoxFirmwareVerificationType);
+            this.groupBox3.Controls.Add(this.label3);
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.label5);
+            this.groupBox3.Controls.Add(this.textBoxUserProgramKey_Aes128);
             this.groupBox3.Controls.Add(this.comboBoxMcu_firmupdate);
-            this.groupBox3.Location = new System.Drawing.Point(6, 6);
+            this.groupBox3.Location = new System.Drawing.Point(3, 5);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(787, 153);
+            this.groupBox3.Size = new System.Drawing.Size(787, 149);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Settings";
             // 
-            // textBoxFirmwareSequenceNumber
+            // buttonBrowseUserPrivateKey
             // 
-            this.textBoxFirmwareSequenceNumber.Location = new System.Drawing.Point(224, 109);
-            this.textBoxFirmwareSequenceNumber.Name = "textBoxFirmwareSequenceNumber";
-            this.textBoxFirmwareSequenceNumber.Size = new System.Drawing.Size(156, 19);
-            this.textBoxFirmwareSequenceNumber.TabIndex = 9;
-            this.textBoxFirmwareSequenceNumber.Text = "(1 - 4294967295)";
+            this.buttonBrowseUserPrivateKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonBrowseUserPrivateKey.Location = new System.Drawing.Point(678, 95);
+            this.buttonBrowseUserPrivateKey.Name = "buttonBrowseUserPrivateKey";
+            this.buttonBrowseUserPrivateKey.Size = new System.Drawing.Size(75, 20);
+            this.buttonBrowseUserPrivateKey.TabIndex = 15;
+            this.buttonBrowseUserPrivateKey.Text = "Browse...";
+            this.buttonBrowseUserPrivateKey.UseVisualStyleBackColor = true;
+            this.buttonBrowseUserPrivateKey.Click += new System.EventHandler(this.buttonBrowseUserPrivateKey_Click);
             // 
-            // label11
+            // label24
             // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(6, 112);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(148, 12);
-            this.label11.TabIndex = 8;
-            this.label11.Text = "Firmware Sequence Number";
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(26, 98);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(166, 12);
+            this.label24.TabIndex = 13;
+            this.label24.Text = "Private Key Path (PEM Format)";
+            // 
+            // textBoxUserPrivateKeyPath
+            // 
+            this.textBoxUserPrivateKeyPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxUserPrivateKeyPath.Location = new System.Drawing.Point(278, 95);
+            this.textBoxUserPrivateKeyPath.Name = "textBoxUserPrivateKeyPath";
+            this.textBoxUserPrivateKeyPath.Size = new System.Drawing.Size(393, 19);
+            this.textBoxUserPrivateKeyPath.TabIndex = 14;
             // 
             // comboBoxFirmwareVerificationType
             // 
             this.comboBoxFirmwareVerificationType.FormattingEnabled = true;
-            this.comboBoxFirmwareVerificationType.Location = new System.Drawing.Point(224, 64);
+            this.comboBoxFirmwareVerificationType.Location = new System.Drawing.Point(278, 43);
             this.comboBoxFirmwareVerificationType.Name = "comboBoxFirmwareVerificationType";
-            this.comboBoxFirmwareVerificationType.Size = new System.Drawing.Size(303, 20);
+            this.comboBoxFirmwareVerificationType.Size = new System.Drawing.Size(332, 20);
             this.comboBoxFirmwareVerificationType.TabIndex = 3;
             this.comboBoxFirmwareVerificationType.Text = "(select Firmware Verification Type)";
             this.comboBoxFirmwareVerificationType.SelectedIndexChanged += new System.EventHandler(this.comboBoxFirmwareVerificationType_SelectedIndexChanged_1);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(26, 72);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(235, 12);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "AES MAC Key (16 byte hex / 32 characters)";
+            // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(6, 67);
+            this.label8.Location = new System.Drawing.Point(26, 46);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(180, 12);
             this.label8.TabIndex = 2;
@@ -905,18 +933,27 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 25);
+            this.label5.Location = new System.Drawing.Point(26, 21);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(66, 12);
             this.label5.TabIndex = 0;
             this.label5.Text = "Select MCU";
             // 
+            // textBoxUserProgramKey_Aes128
+            // 
+            this.textBoxUserProgramKey_Aes128.Enabled = false;
+            this.textBoxUserProgramKey_Aes128.Location = new System.Drawing.Point(278, 69);
+            this.textBoxUserProgramKey_Aes128.MaxLength = 32;
+            this.textBoxUserProgramKey_Aes128.Name = "textBoxUserProgramKey_Aes128";
+            this.textBoxUserProgramKey_Aes128.Size = new System.Drawing.Size(393, 19);
+            this.textBoxUserProgramKey_Aes128.TabIndex = 1;
+            // 
             // comboBoxMcu_firmupdate
             // 
             this.comboBoxMcu_firmupdate.FormattingEnabled = true;
-            this.comboBoxMcu_firmupdate.Location = new System.Drawing.Point(224, 22);
+            this.comboBoxMcu_firmupdate.Location = new System.Drawing.Point(278, 18);
             this.comboBoxMcu_firmupdate.Name = "comboBoxMcu_firmupdate";
-            this.comboBoxMcu_firmupdate.Size = new System.Drawing.Size(303, 20);
+            this.comboBoxMcu_firmupdate.Size = new System.Drawing.Size(332, 20);
             this.comboBoxMcu_firmupdate.TabIndex = 1;
             this.comboBoxMcu_firmupdate.Text = "(select MCU)";
             // 
@@ -924,36 +961,41 @@
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.buttonGenerateUserprog);
+            this.groupBox2.Controls.Add(this.textBoxFirmwareSequenceNumber);
+            this.groupBox2.Controls.Add(this.label11);
             this.groupBox2.Controls.Add(this.buttonBrowseUserprog);
             this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.textBoxUserProgramFilePath);
-            this.groupBox2.Controls.Add(this.textBoxUserProgramKey_Aes128);
-            this.groupBox2.Location = new System.Drawing.Point(6, 217);
+            this.groupBox2.Location = new System.Drawing.Point(3, 210);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(787, 166);
+            this.groupBox2.Size = new System.Drawing.Size(787, 67);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "User Program";
+            this.groupBox2.Text = "Bank0 User Program";
             // 
-            // buttonGenerateUserprog
+            // textBoxFirmwareSequenceNumber
             // 
-            this.buttonGenerateUserprog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonGenerateUserprog.Location = new System.Drawing.Point(668, 136);
-            this.buttonGenerateUserprog.Name = "buttonGenerateUserprog";
-            this.buttonGenerateUserprog.Size = new System.Drawing.Size(113, 23);
-            this.buttonGenerateUserprog.TabIndex = 5;
-            this.buttonGenerateUserprog.Text = "Generate...";
-            this.buttonGenerateUserprog.UseVisualStyleBackColor = true;
-            this.buttonGenerateUserprog.Click += new System.EventHandler(this.buttonGenerateUserprog_Click);
+            this.textBoxFirmwareSequenceNumber.Location = new System.Drawing.Point(278, 15);
+            this.textBoxFirmwareSequenceNumber.Name = "textBoxFirmwareSequenceNumber";
+            this.textBoxFirmwareSequenceNumber.Size = new System.Drawing.Size(156, 19);
+            this.textBoxFirmwareSequenceNumber.TabIndex = 11;
+            this.textBoxFirmwareSequenceNumber.Text = "(1 - 4294967295)";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(26, 19);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(148, 12);
+            this.label11.TabIndex = 10;
+            this.label11.Text = "Firmware Sequence Number";
             // 
             // buttonBrowseUserprog
             // 
             this.buttonBrowseUserprog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonBrowseUserprog.Location = new System.Drawing.Point(589, 107);
+            this.buttonBrowseUserprog.Location = new System.Drawing.Point(678, 39);
             this.buttonBrowseUserprog.Name = "buttonBrowseUserprog";
-            this.buttonBrowseUserprog.Size = new System.Drawing.Size(75, 23);
+            this.buttonBrowseUserprog.Size = new System.Drawing.Size(75, 20);
             this.buttonBrowseUserprog.TabIndex = 4;
             this.buttonBrowseUserprog.Text = "Browse...";
             this.buttonBrowseUserprog.UseVisualStyleBackColor = true;
@@ -962,38 +1004,31 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 112);
+            this.label4.Location = new System.Drawing.Point(26, 43);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(141, 12);
             this.label4.TabIndex = 2;
             this.label4.Text = "File Path (Motrola Format)";
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 25);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(157, 24);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "AES MAC Key \r\n(16 byte hex / 32 characters)";
-            // 
             // textBoxUserProgramFilePath
             // 
             this.textBoxUserProgramFilePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxUserProgramFilePath.Location = new System.Drawing.Point(224, 109);
+            this.textBoxUserProgramFilePath.Location = new System.Drawing.Point(278, 39);
             this.textBoxUserProgramFilePath.Name = "textBoxUserProgramFilePath";
-            this.textBoxUserProgramFilePath.Size = new System.Drawing.Size(359, 19);
+            this.textBoxUserProgramFilePath.Size = new System.Drawing.Size(393, 19);
             this.textBoxUserProgramFilePath.TabIndex = 3;
             // 
-            // textBoxUserProgramKey_Aes128
+            // buttonGenerateUserprog
             // 
-            this.textBoxUserProgramKey_Aes128.Enabled = false;
-            this.textBoxUserProgramKey_Aes128.Location = new System.Drawing.Point(224, 30);
-            this.textBoxUserProgramKey_Aes128.MaxLength = 32;
-            this.textBoxUserProgramKey_Aes128.Name = "textBoxUserProgramKey_Aes128";
-            this.textBoxUserProgramKey_Aes128.Size = new System.Drawing.Size(359, 19);
-            this.textBoxUserProgramKey_Aes128.TabIndex = 1;
+            this.buttonGenerateUserprog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonGenerateUserprog.Location = new System.Drawing.Point(696, 402);
+            this.buttonGenerateUserprog.Name = "buttonGenerateUserprog";
+            this.buttonGenerateUserprog.Size = new System.Drawing.Size(94, 23);
+            this.buttonGenerateUserprog.TabIndex = 5;
+            this.buttonGenerateUserprog.Text = "Generate...";
+            this.buttonGenerateUserprog.UseVisualStyleBackColor = true;
+            this.buttonGenerateUserprog.Click += new System.EventHandler(this.buttonGenerateUserprog_Click);
             // 
             // info
             // 
@@ -1052,10 +1087,10 @@
         private System.Windows.Forms.TextBox info;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button buttonGenerateUserprog;
-		private System.Windows.Forms.Button buttonBrowseUserprog;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.TextBox textBoxUserProgramFilePath;
-		private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.Button buttonBrowseUserprog;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox textBoxUserProgramFilePath;
+        private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TabControl tabControl1;
@@ -1098,8 +1133,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox comboBoxFirmwareVerificationType;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox textBoxFirmwareSequenceNumber;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.GroupBox groupBox4;
@@ -1112,24 +1145,29 @@
         private System.Windows.Forms.Button buttonBrowseInitialUserprogBank0;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.TextBox textBoxInitialUserProgramFilePathBank0;
-		private System.Windows.Forms.GroupBox groupBox9;
-		private System.Windows.Forms.Button Generate_Init_Firm;
-		private System.Windows.Forms.Button buttonBrowseInitialBootLoaderUserprog;
-		private System.Windows.Forms.Label label9;
-		private System.Windows.Forms.TextBox textBoxInitialBootLoaderFilePath;
-		private System.Windows.Forms.TextBox textBoxInitialFirmwareSequenceNumberBank0;
-		private System.Windows.Forms.Label label12;
-		private System.Windows.Forms.GroupBox groupBox10;
-		private System.Windows.Forms.TextBox textBoxInitialFirmwareSequenceNumberBank1;
-		private System.Windows.Forms.Label label18;
-		private System.Windows.Forms.Button buttonBrowseInitialUserprogBank1;
-		private System.Windows.Forms.Label label10;
-		private System.Windows.Forms.TextBox textBoxInitialUserProgramFilePathBank1;
-		private System.Windows.Forms.Button buttonBrowseInitialUserPrivateKey;
-		private System.Windows.Forms.Label label21;
-		private System.Windows.Forms.TextBox textBoxInitialUserPrivateKeyPath;
-		private System.Windows.Forms.Label label23;
-		private System.Windows.Forms.TextBox textBoxInitialUserProgramKey_Aes128;
-		private System.Windows.Forms.ComboBox comboBoxInitialFirmwareOutputFormat;
+        private System.Windows.Forms.GroupBox groupBox9;
+        private System.Windows.Forms.Button Generate_Init_Firm;
+        private System.Windows.Forms.Button buttonBrowseInitialBootLoaderUserprog;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox textBoxInitialBootLoaderFilePath;
+        private System.Windows.Forms.TextBox textBoxInitialFirmwareSequenceNumberBank0;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.GroupBox groupBox10;
+        private System.Windows.Forms.TextBox textBoxInitialFirmwareSequenceNumberBank1;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Button buttonBrowseInitialUserprogBank1;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox textBoxInitialUserProgramFilePathBank1;
+        private System.Windows.Forms.Button buttonBrowseInitialUserPrivateKey;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.TextBox textBoxInitialUserPrivateKeyPath;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.TextBox textBoxInitialUserProgramKey_Aes128;
+        private System.Windows.Forms.ComboBox comboBoxInitialFirmwareOutputFormat;
+        private System.Windows.Forms.Button buttonBrowseUserPrivateKey;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.TextBox textBoxUserPrivateKeyPath;
+        private System.Windows.Forms.TextBox textBoxFirmwareSequenceNumber;
+        private System.Windows.Forms.Label label11;
     }
 }

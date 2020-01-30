@@ -23,6 +23,7 @@
 #include <string.h>
 #include "platform.h"
 #include "r_flash_rx_if.h"
+#include "r_tfat_lib.h"
 // USER END
 
 #include "DIALOG.h"
@@ -55,6 +56,14 @@
 */
 
 // USER START (Optionally insert additional static data)
+char selected_file_name[256+1];
+static const char reboot_string[] = "Reboot";
+char buff[350];
+//WM_HWIN hItem;
+//WM_HWIN hWin;
+FATFS fatfs;
+FILINFO filinfo;
+DIR dir;
 // USER END
 
 /*********************************************************************
@@ -84,6 +93,16 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 
 // USER START (Optionally insert additional static code)
 static void bank_swap_with_software_reset(void);
+extern WM_HWIN hWinFirmwareUpdateViaSDCardWindow;
+extern void firmware_update_request(char *string);
+//extern void bank_swap(void);
+extern bool is_firmupdating(void);
+extern void SetSwbankchangeRebootBotton(void);
+
+void firmware_update_writing_color(U32 id, U8 num);
+void firmware_update_temporary_area_string(U32 prog, U32 kilobyte, U32 kilobyte2);
+void firmware_update_log_string(char *pstring);
+void firmware_update_update_file_search(void);
 // USER END
 
 /*********************************************************************
@@ -137,7 +156,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         break;
       case WM_NOTIFICATION_RELEASED:
         // USER START (Optionally insert code for reacting on notification message)
-    	  bank_swap_with_software_reset();
+          bank_swap_with_software_reset();
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)
@@ -148,6 +167,38 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
       switch(NCode) {
       case WM_NOTIFICATION_CLICKED:
         // USER START (Optionally insert code for reacting on notification message)
+          //hItem = WM_GetDialogItem(pMsg->hWin, ID_BUTTON_0);
+
+          //char text[16];
+          //BUTTON_GetText(hItem, text, sizeof(text)-1);
+          //if(0 == strcmp(text, reboot_string))
+          //{
+          //    SetSwbankchangeRebootBotton();
+          //}
+          //else
+          //{
+              WM_HWIN hItem;
+              WM_HWIN hWin;
+
+              hWin = hWinFirmwareUpdateViaSDCardWindow;
+              hItem = WM_GetDialogItem(hWin, ID_LISTBOX_0);
+
+              select_id = LISTBOX_GetSel(hItem);
+              if(select_id == -1)
+              {
+                  return;
+              }
+              LISTBOX_GetItemText(hItem, select_id, selected_file_name, 256);
+              if(true != is_firmupdating())
+              {
+                  firmware_update_request(selected_file_name);
+                  firmware_update_log_string("start firmware update.\r\n");
+              }
+              else
+              {
+                  firmware_update_log_string("cannot swap bank in this status.\r\n");
+              }
+          //}
         // USER END
         break;
       case WM_NOTIFICATION_RELEASED:
@@ -166,6 +217,30 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
       switch(NCode) {
       case WM_NOTIFICATION_CLICKED:
         // USER START (Optionally insert code for reacting on notification message)
+#if 1 // debug
+//        firmware_update_request("userprog.rsu");
+          WM_HWIN hItem;
+          WM_HWIN hWin;
+
+          hWin = hWinFirmwareUpdateViaSDCardWindow;
+          hItem = WM_GetDialogItem(hWin, ID_LISTBOX_0);
+
+          select_id = LISTBOX_GetSel(hItem);
+          if(select_id == -1)
+          {
+              return;
+          }
+          LISTBOX_GetItemText(hItem, select_id, selected_file_name, 256);
+          if(true != is_firmupdating())
+          {
+              firmware_update_request(selected_file_name);
+              firmware_update_log_string("start firmware update.\r\n");
+          }
+          else
+          {
+              firmware_update_log_string("cannot swap bank in this status.\r\n");
+          }
+#endif
         // USER END
         break;
       case WM_NOTIFICATION_RELEASED:
@@ -207,19 +282,283 @@ WM_HWIN CreateFirmwareUpdateViaSDCard(void) {
   WM_HWIN hWin;
 
   hWin = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), _cbDialog, WM_HBKWIN, 0, 0);
+
   return hWin;
 }
 
 // USER START (Optionally insert additional public code)
 static void bank_swap_with_software_reset(void)
 {
-	/* stop all interrupt completely */
+    /* stop all interrupt completely */
     set_psw(0);
     R_BSP_InterruptsDisable();
     R_FLASH_Control(FLASH_CMD_BANK_TOGGLE, NULL);
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_CGC_SWR);
     SYSTEM.SWRR = 0xa501;
     while(1);   /* software reset */
+}
+
+void firmware_update_log_string(char *pstring)
+{
+    WM_HWIN hItem;
+    WM_HWIN hWin;
+
+    hWin = hWinFirmwareUpdateViaSDCardWindow;
+    hItem = WM_GetDialogItem(hWin, ID_MULTIEDIT_0);
+    MULTIEDIT_AddText(hItem, pstring);
+    MULTIEDIT_SetCursorOffset(hItem, MULTIEDIT_GetTextSize(hItem));
+}
+
+void firmware_update_list_add(char *pstring)
+{
+    WM_HWIN hItem;
+    WM_HWIN hWin;
+
+    hWin = hWinFirmwareUpdateViaSDCardWindow;
+    hItem = WM_GetDialogItem(hWin, ID_LISTBOX_0);
+
+    LISTBOX_AddString(hItem, pstring);
+}
+
+void firmware_update_list_clear(void)
+{
+    WM_HWIN hItem;
+    WM_HWIN hWin;
+    U32 list_num;
+    I32 i;
+
+    hWin = hWinFirmwareUpdateViaSDCardWindow;
+    hItem = WM_GetDialogItem(hWin, ID_LISTBOX_0);
+
+    list_num = LISTBOX_GetNumItems(hItem);
+    for(i = list_num-1;i>=0;i--)
+    {
+        LISTBOX_DeleteItem(hItem, i);
+    }
+}
+
+void firmware_update_writing_color(U32 id, U8 num)
+{
+#if 0
+    WM_HWIN hItem;
+    WM_HWIN hWin;
+    U32 color;
+      hWin = hWinFirmwareUpdateViaSDCardWindow;
+      switch(id)
+      {
+      case 3:
+          hItem = WM_GetDialogItem(hWin, ID_MULTIEDIT_2);
+          break;
+      case 4:
+          hItem = WM_GetDialogItem(hWin, ID_MULTIEDIT_3);
+          break;
+      }
+    color = ((U32)num << 16) | (U32)0xffff;
+    MULTIEDIT_SetBkColor  (hItem, EDIT_CI_ENABLED, GUI_MAKE_COLOR(color));
+    MULTIEDIT_SetText  (hItem, "Writing...");
+#endif
+}
+
+void firmware_update_writing_color_clear(void)
+{
+#if 0
+    WM_HWIN hItem;
+    WM_HWIN hWin;
+    hWin = hWinFirmwareUpdateViaSDCardWindow;
+    hItem = WM_GetDialogItem(hWin, ID_MULTIEDIT_2);
+    MULTIEDIT_SetBkColor  (hItem, EDIT_CI_ENABLED, GUI_MAKE_COLOR(0x00FFFFFF));
+    MULTIEDIT_SetText  (hItem, "");
+    hItem = WM_GetDialogItem(hWin, ID_MULTIEDIT_3);
+    MULTIEDIT_SetBkColor  (hItem, EDIT_CI_ENABLED, GUI_MAKE_COLOR(0x00FFFFFF));
+#endif
+}
+
+#define MOVE_WINDOW_COUNT 78
+
+#define AREA_CURVE_X 10
+#define AREA_CURVE_Y 3
+#define AREA_CURVE_DELAY 3
+
+void firmware_update_editor_move(void)
+{
+#if 0
+    WM_HWIN hItem;
+    WM_HWIN hWin;
+    int xsize,ysize,xpos,ypos;
+
+      int cnt = 0;
+      while(cnt < MOVE_WINDOW_COUNT)
+      {
+          /* 上から下へ降りる方 */
+          /* Temporary Area */
+        hWin = hWinFirmwareUpdateViaSDCardWindow;
+        hItem = WM_GetDialogItem(hWin, ID_MULTIEDIT_2);
+        xpos = WM_GetWindowOrgX(hItem);
+        ypos = WM_GetWindowOrgY(hItem);
+        xsize = WM_GetWindowSizeX(hItem);
+        ysize = WM_GetWindowSizeY(hItem);
+        if(cnt < AREA_CURVE_X)
+        {
+            xpos+=AREA_CURVE_Y;
+        }
+        else if(cnt >= (MOVE_WINDOW_COUNT - AREA_CURVE_X))
+        {
+            xpos-=AREA_CURVE_Y;
+        }
+        ypos++;
+        WM_SetWindowPos(hItem, xpos, ypos, xsize, ysize);
+
+          /* Secureboot(mirror) */
+        hItem = WM_GetDialogItem(hWin, ID_EDIT_1);
+        xpos = WM_GetWindowOrgX(hItem);
+        ypos = WM_GetWindowOrgY(hItem);
+        xsize = WM_GetWindowSizeX(hItem);
+        ysize = WM_GetWindowSizeY(hItem);
+        if(cnt < AREA_CURVE_X)
+        {
+            xpos+=AREA_CURVE_Y;
+        }
+        else if(cnt >= (MOVE_WINDOW_COUNT - AREA_CURVE_X))
+        {
+            xpos-=AREA_CURVE_Y;
+        }
+        ypos++;
+        WM_SetWindowPos(hItem, xpos, ypos, xsize, ysize);
+
+        /* 下から上へ上る方 */
+          /* Frimware Area */
+        hWin = hWinFirmwareUpdateViaSDCardWindow;
+        hItem = WM_GetDialogItem(hWin, ID_MULTIEDIT_1);
+        xpos = WM_GetWindowOrgX(hItem);
+        ypos = WM_GetWindowOrgY(hItem);
+        xsize = WM_GetWindowSizeX(hItem);
+        ysize = WM_GetWindowSizeY(hItem);
+        if(cnt < AREA_CURVE_X)
+        {
+            xpos-=AREA_CURVE_Y;
+        }
+        else if(cnt >= (MOVE_WINDOW_COUNT - AREA_CURVE_X))
+        {
+            xpos+=AREA_CURVE_Y;
+        }
+        ypos--;
+        WM_SetWindowPos(hItem, xpos, ypos, xsize, ysize);
+
+          /* Secureboot(mirror) */
+        hItem = WM_GetDialogItem(hWin, ID_EDIT_0);
+        xpos = WM_GetWindowOrgX(hItem);
+        ypos = WM_GetWindowOrgY(hItem);
+        xsize = WM_GetWindowSizeX(hItem);
+        ysize = WM_GetWindowSizeY(hItem);
+        if(cnt < AREA_CURVE_X)
+        {
+            xpos-=AREA_CURVE_Y;
+        }
+        else if(cnt >= (MOVE_WINDOW_COUNT - AREA_CURVE_X))
+        {
+            xpos+=AREA_CURVE_Y;
+        }
+        ypos--;
+        WM_SetWindowPos(hItem, xpos, ypos, xsize, ysize);
+        GUI_Delay(AREA_CURVE_DELAY);
+        cnt++;
+      }
+#endif
+}
+
+void firmware_update_temporary_area_string(U32 prog, U32 kilobyte, U32 kilobyte2)
+{
+#if 0
+    WM_HWIN hItem;
+    WM_HWIN hWin;
+    sprintf(buff, "%s\r\n%d\% (%3dKB/%3dKB)",selected_file_name, prog, kilobyte, kilobyte2);
+      /* Temporary Area */
+    hWin = hWinFirmwareUpdateViaSDCardWindow;
+    hItem = WM_GetDialogItem(hWin, ID_MULTIEDIT_2);
+    MULTIEDIT_SetText(hItem, buff);
+#endif
+}
+
+void firmware_update_ok_after_message(void)
+{
+#if 0
+    WM_HWIN hItem;
+    WM_HWIN hWin;
+    sprintf(buff,
+            "\r\nNew Firmware install succeeded.\r\n\r\n");
+        firmware_update_log_string(buff);
+//      GUI_Delay(1);
+        sprintf(buff,
+            " After \"Reboot\" button pushed,\r\n"
+            " the followings will be executed.\r\n"
+            " 1. Swap the Flash memory bank.\r\n"
+            "    (Firmware and Temporary area)\r\n"
+            " 2. Reboot the MCU.\r\n"
+            " 3. Re-start secure boot to\r\n"
+            "    verify new firmware.\r\n"
+            " 4. Jump to new firmware.\r\n");
+
+          /* Temporary Area */
+        firmware_update_log_string(buff);
+        hWin = hWinFirmwareUpdateViaSDCardWindow;
+        hItem = WM_GetDialogItem(hWin, ID_BUTTON_0);
+        BUTTON_SetText(hItem, reboot_string);
+        BUTTON_SetFont(hItem, GUI_FONT_16B_1);
+//      GUI_Delay(1);
+#endif
+}
+
+void firmware_update_update_file_search(void)
+{
+    FRESULT tfat_ret;
+    int32_t i;
+
+    firmware_update_list_clear();
+    tfat_ret = R_tfat_f_opendir (&dir,"0:");
+    if(tfat_ret == TFAT_FR_OK)
+    {
+        while(1)
+        {
+            tfat_ret = R_tfat_f_readdir (&dir,  &filinfo );
+            if(tfat_ret == TFAT_FR_OK)
+            {
+                if(filinfo.fname[0] == '\0')
+                {
+                    break;
+                }
+                if(TFAT_AM_DIR == (filinfo.fattrib & TFAT_AM_DIR) )
+                {
+                    continue;
+                }
+                for(i= 0;i<sizeof(filinfo.fname);i++)
+                {
+                    if('A' <=  filinfo.fname[i] && filinfo.fname[i] <= 'Z' )
+                    {
+                        filinfo.fname[i] += 0x20;
+                    }
+                }
+                if(0 != strstr(filinfo.fname,".rsu"))
+                {
+                    firmware_update_list_add(filinfo.fname);
+                }
+            }
+            else
+            {
+                break;
+            }
+            vTaskDelay(1);
+        }
+    }
+}
+
+void firmware_update_ng_after_message(void)
+{
+#if 0
+    sprintf(buff,
+            "\r\nNew Firmware install failed.\r\n\r\n");
+        firmware_update_log_string(buff);
+        GUI_Delay(1);
+#endif
 }
 // USER END
 

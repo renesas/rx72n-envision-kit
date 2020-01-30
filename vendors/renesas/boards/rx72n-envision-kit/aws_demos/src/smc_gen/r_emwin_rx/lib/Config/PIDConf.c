@@ -25,7 +25,7 @@ Purpose     : Touch panel configuration
 
 #include "platform.h"
 #include "r_sci_iic_rx_if.h"
-#include "r_cmt_rx_if.h"
+#include "r_sys_time_rx_if.h"
 #include "r_gpio_rx_if.h"
 
 /*********************************************************************
@@ -500,7 +500,10 @@ void PID_X_Init(void) {
   //
   // Create timer for executing touch
   //
-  R_CMT_CreatePeriodic(50, _cbTimer, &Channel);
+  //R_CMT_CreatePeriodic(50, _cbTimer, &Channel);
+  R_SYS_TIME_Open();
+  R_SYS_TIME_RegisterPeriodicCallback(_cbTimer, 2);
+
 #if (USE_MULTITOUCH == 1)
   GUI_MTOUCH_Enable(1);
 #endif
