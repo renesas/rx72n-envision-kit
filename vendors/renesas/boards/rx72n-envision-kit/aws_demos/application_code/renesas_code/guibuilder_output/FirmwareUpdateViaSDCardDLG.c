@@ -34,15 +34,16 @@
 *
 **********************************************************************
 */
-#define ID_WINDOW_0  (GUI_ID_USER + 0x00)
-#define ID_TEXT_0  (GUI_ID_USER + 0x01)
-#define ID_BUTTON_0  (GUI_ID_USER + 0x02)
-#define ID_LISTBOX_0  (GUI_ID_USER + 0x03)
-#define ID_TEXT_1  (GUI_ID_USER + 0x04)
-#define ID_MULTIEDIT_0  (GUI_ID_USER + 0x05)
-#define ID_PROGBAR_0  (GUI_ID_USER + 0x06)
-#define ID_TEXT_2  (GUI_ID_USER + 0x07)
-#define ID_TEXT_3  (GUI_ID_USER + 0x08)
+#define ID_WINDOW_0   (GUI_ID_USER + 0x00)
+#define ID_TEXT_0   (GUI_ID_USER + 0x01)
+#define ID_BUTTON_0   (GUI_ID_USER + 0x02)
+#define ID_LISTBOX_0   (GUI_ID_USER + 0x03)
+#define ID_TEXT_1   (GUI_ID_USER + 0x04)
+#define ID_MULTIEDIT_0   (GUI_ID_USER + 0x05)
+#define ID_PROGBAR_0   (GUI_ID_USER + 0x06)
+#define ID_TEXT_2   (GUI_ID_USER + 0x07)
+#define ID_TEXT_3   (GUI_ID_USER + 0x08)
+#define ID_BUTTON_1   (GUI_ID_USER + 0x09)
 
 
 // USER START (Optionally insert additional defines)
@@ -59,8 +60,9 @@
 char selected_file_name[256+1];
 static const char reboot_string[] = "Reboot";
 char buff[350];
-//WM_HWIN hItem;
-//WM_HWIN hWin;
+char text[13];
+PROGBAR_Handle hProg;
+TEXT_Handle hText;
 FATFS fatfs;
 FILINFO filinfo;
 DIR dir;
@@ -73,13 +75,14 @@ DIR dir;
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { WINDOW_CreateIndirect, "FirmwareUpdateViaSDCard", ID_WINDOW_0, 0, 22, 480, 228, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "Firmware Update via SD Card", ID_TEXT_0, 6, 0, 158, 20, 0, 0x0, 0 },
-  { BUTTON_CreateIndirect, "Bank Swap", ID_BUTTON_0, 393, 202, 80, 20, 0, 0x0, 0 },
+  { BUTTON_CreateIndirect, "Bank Swap", ID_BUTTON_0, 396, 201, 80, 20, 0, 0x0, 0 },
   { LISTBOX_CreateIndirect, "Listbox", ID_LISTBOX_0, 7, 33, 129, 162, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "SD Card File List", ID_TEXT_1, 7, 18, 105, 20, 0, 0x0, 0 },
   { MULTIEDIT_CreateIndirect, "Multiedit", ID_MULTIEDIT_0, 142, 33, 334, 162, 0, 0x0, 0 },
-  { PROGBAR_CreateIndirect, "Progbar", ID_PROGBAR_0, 142, 201, 245, 20, 0, 0x0, 0 },
+  { PROGBAR_CreateIndirect, "Progbar", ID_PROGBAR_0, 142, 201, 165, 20, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "File Size", ID_TEXT_2, 8, 204, 51, 20, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "xxxx Bytes", ID_TEXT_3, 52, 204, 84, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "", ID_TEXT_3, 52, 204, 84, 20, 0, 0x0, 0 },
+  { BUTTON_CreateIndirect, "Update", ID_BUTTON_1, 312, 201, 80, 20, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -92,7 +95,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 */
 
 // USER START (Optionally insert additional static code)
-static void bank_swap_with_software_reset(void);
+extern void bank_swap_with_software_reset(void);
 extern WM_HWIN hWinFirmwareUpdateViaSDCardWindow;
 extern void firmware_update_request(char *string);
 //extern void bank_swap(void);
@@ -115,6 +118,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
   int     NCode;
   int     Id;
   // USER START (Optionally insert additional variables)
+  WM_HWIN hWin;
   int select_id;
   // USER END
 
@@ -132,17 +136,10 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     LISTBOX_AddString(hItem, "Item 0");
     LISTBOX_AddString(hItem, "Item 1");
     LISTBOX_AddString(hItem, "Item 2");
-    //
-    // Initialization of 'Multiedit'
-    //
-    hItem = WM_GetDialogItem(pMsg->hWin, ID_MULTIEDIT_0);
-    MULTIEDIT_SetText(hItem, "Multiedit");
-    //
-    // Initialization of 'xxxx Bytes'
-    //
-    hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_3);
-    TEXT_SetTextAlign(hItem, GUI_TA_RIGHT | GUI_TA_TOP);
     // USER START (Optionally insert additional code for further widget initialization)
+    hProg = PROGBAR_CreateEx(142, 201, 165, 20, pMsg->hWin, WM_CF_SHOW, PROGBAR_CF_HORIZONTAL, ID_PROGBAR_0);
+    PROGBAR_SetMinMax(hProg, 0, 100);
+    hText = TEXT_CreateEx(52, 204, 84, 20, pMsg->hWin, WM_CF_SHOW, TEXT_CF_LEFT, ID_TEXT_3, text);
     // USER END
     break;
   case WM_NOTIFY_PARENT:
@@ -172,30 +169,6 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         break;
       case WM_NOTIFICATION_RELEASED:
         // USER START (Optionally insert code for reacting on notification message)
-        //firmware_update_request("userprog.rsu");
-          WM_HWIN hItem;
-          WM_HWIN hWin;
-
-          hWin = hWinFirmwareUpdateViaSDCardWindow;
-          hItem = WM_GetDialogItem(hWin, ID_LISTBOX_0);
-
-          select_id = LISTBOX_GetSel(hItem);
-          if(select_id == -1)
-          {
-              return;
-          }
-          LISTBOX_GetItemText(hItem, select_id, selected_file_name, 256);
-          if(true != is_firmupdating())
-          {
-              hItem = WM_GetDialogItem(pMsg->hWin, ID_MULTIEDIT_0);
-              MULTIEDIT_SetText  (hItem, "");
-              firmware_update_request(selected_file_name);
-              firmware_update_log_string("start firmware update.\r\n");
-          }
-          else
-          {
-              firmware_update_log_string("cannot swap bank in this status.\r\n");
-          }
         // USER END
         break;
       case WM_NOTIFICATION_SEL_CHANGED:
@@ -218,6 +191,40 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         break;
       case WM_NOTIFICATION_VALUE_CHANGED:
         // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      // USER START (Optionally insert additional code for further notification handling)
+      // USER END
+      }
+      break;
+    case ID_BUTTON_1: // Notifications sent by 'Update'
+      switch(NCode) {
+      case WM_NOTIFICATION_CLICKED:
+        // USER START (Optionally insert code for reacting on notification message)
+        // USER END
+        break;
+      case WM_NOTIFICATION_RELEASED:
+        // USER START (Optionally insert code for reacting on notification message)
+          hWin = hWinFirmwareUpdateViaSDCardWindow;
+          hItem = WM_GetDialogItem(hWin, ID_LISTBOX_0);
+
+          select_id = LISTBOX_GetSel(hItem);
+          if(select_id == -1)
+          {
+              firmware_update_log_string("No file selected.\r\n");
+              return;
+          }
+          LISTBOX_GetItemText(hItem, select_id, selected_file_name, 256);
+          if(true != is_firmupdating())
+          {
+              hItem = WM_GetDialogItem(pMsg->hWin, ID_MULTIEDIT_0);
+              firmware_update_request(selected_file_name);
+              firmware_update_log_string("start firmware update.\r\n");
+          }
+          else
+          {
+              firmware_update_log_string("cannot swap bank in this status.\r\n");
+          }
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)
@@ -251,22 +258,10 @@ WM_HWIN CreateFirmwareUpdateViaSDCard(void) {
   WM_HWIN hWin;
 
   hWin = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), _cbDialog, WM_HBKWIN, 0, 0);
-
   return hWin;
 }
 
 // USER START (Optionally insert additional public code)
-static void bank_swap_with_software_reset(void)
-{
-    /* stop all interrupt completely */
-    set_psw(0);
-    R_BSP_InterruptsDisable();
-    R_FLASH_Control(FLASH_CMD_BANK_TOGGLE, NULL);
-    R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_CGC_SWR);
-    SYSTEM.SWRR = 0xa501;
-    while(1);   /* software reset */
-}
-
 void firmware_update_log_string(char *pstring)
 {
     WM_HWIN hItem;
@@ -358,7 +353,7 @@ void firmware_update_editor_move(void)
       int cnt = 0;
       while(cnt < MOVE_WINDOW_COUNT)
       {
-          /* ä¸Šã‹ã‚‰ä¸‹ã¸é™ã‚Šã‚‹æ–¹ */
+          /* ã‚©‚ç‰º‚Ö~‚è‚é•û */
           /* Temporary Area */
         hWin = hWinFirmwareUpdateViaSDCardWindow;
         hItem = WM_GetDialogItem(hWin, ID_MULTIEDIT_2);
@@ -394,7 +389,7 @@ void firmware_update_editor_move(void)
         ypos++;
         WM_SetWindowPos(hItem, xpos, ypos, xsize, ysize);
 
-        /* ä¸‹ã‹ã‚‰ä¸Šã¸ä¸Šã‚‹æ–¹ */
+        /* ‰º‚©‚çã‚Öã‚é•û */
           /* Frimware Area */
         hWin = hWinFirmwareUpdateViaSDCardWindow;
         hItem = WM_GetDialogItem(hWin, ID_MULTIEDIT_1);
@@ -437,20 +432,20 @@ void firmware_update_editor_move(void)
 
 void firmware_update_temporary_area_string(U32 prog, U32 kilobyte, U32 kilobyte2)
 {
-#if 0
     WM_HWIN hItem;
     WM_HWIN hWin;
-    sprintf(buff, "%s\r\n%d\% (%3dKB/%3dKB)",selected_file_name, prog, kilobyte, kilobyte2);
-      /* Temporary Area */
-    hWin = hWinFirmwareUpdateViaSDCardWindow;
-    hItem = WM_GetDialogItem(hWin, ID_MULTIEDIT_2);
-    MULTIEDIT_SetText(hItem, buff);
-#endif
+
+    sprintf(text, "%5d KBytes", kilobyte);
+    TEXT_SetText(hText, text);
+    PROGBAR_SetValue(hProg, prog);
 }
 
 void firmware_update_ok_after_message(void)
 {
-#if 0
+#if 1
+    PROGBAR_SetValue(hProg, 100);
+    firmware_update_log_string("New Firmware install succeeded.\r\n");
+#else
     WM_HWIN hItem;
     WM_HWIN hWin;
     sprintf(buff,
@@ -522,7 +517,10 @@ void firmware_update_update_file_search(void)
 
 void firmware_update_ng_after_message(void)
 {
-#if 0
+#if 1
+    firmware_update_log_string("New Firmware install failed.\r\n");
+    GUI_Delay(1);
+#else
     sprintf(buff,
             "\r\nNew Firmware install failed.\r\n\r\n");
         firmware_update_log_string(buff);

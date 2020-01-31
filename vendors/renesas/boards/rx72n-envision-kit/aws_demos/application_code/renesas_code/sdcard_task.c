@@ -50,8 +50,6 @@ uint32_t g_sdc_sd_work[200];
 uint32_t g_sdc_sd_card_no;
 
 extern FATFS fatfs;
-extern FILINFO filinfo;
-extern DIR dir;
 
 /*******************************************************************************
 Private global variables and functions
@@ -79,7 +77,7 @@ void sdcard_task( void * pvParameters )
     volatile uint32_t gui_delay_counter;
     uint32_t progress, previous_progress;
     char buff[256];
-    uint32_t firmware_update_complete_flag = 0;
+    static uint32_t firmware_update_complete_flag = 0;
     uint32_t firmware_update_status;
     uint32_t firmware_update_finish_status;
 
@@ -93,6 +91,12 @@ void sdcard_task( void * pvParameters )
 
     while(1)
     {
+        if(1 == firmware_update_complete_flag)
+        {
+            vTaskDelay(5000);
+            software_reset();
+        }
+
         sdc_sd_card_detection = R_SDC_SD_GetCardDetection(g_sdc_sd_card_no);
 
         if(previous_sdc_sd_card_detection != sdc_sd_card_detection)
@@ -131,13 +135,10 @@ void sdcard_task( void * pvParameters )
 
         if(true == is_firmupdating())
         {
-            nop();
             firmware_update_complete_flag = 0;
             if(previous_progress != progress)
             {
                 previous_progress = progress;
-                sprintf(buff, "installed %d %%\r\n", progress);
-                firmware_update_log_string(buff);
                 firmware_update_temporary_area_string(progress, (int)((((float)(progress)/100)*(float)(get_update_data_size()))/1024), (int)((float)(get_update_data_size()))/1024);
             }
         }
@@ -151,9 +152,9 @@ void sdcard_task( void * pvParameters )
             {
                 if(0 == firmware_update_complete_flag)
                 {
+                    firmware_update_temporary_area_string(100, (int)((((float)(progress)/100)*(float)(get_update_data_size()))/1024), (int)((float)(get_update_data_size()))/1024);
                     firmware_update_ok_after_message();
                     firmware_update_complete_flag = 1;
-                    software_reset();
                 }
             }
             else
