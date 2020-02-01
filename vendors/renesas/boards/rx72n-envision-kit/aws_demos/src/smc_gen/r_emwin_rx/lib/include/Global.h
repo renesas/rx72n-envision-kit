@@ -1,19 +1,31 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                    SEGGER Microcontroller GmbH                     *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.42 - Graphical user interface for embedded applications **
+** emWin V5.50 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only  be used  in accordance  with  a license  and should  not be  re-
 distributed in any way. We appreciate your understanding and fairness.
+----------------------------------------------------------------------
+Licensing information
+Licensor:                 SEGGER Software GmbH
+Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
+Licensed SEGGER software: emWin
+License number:           GUI-00678
+License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
+License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2016-12-22 - 2019-12-31
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File    : Global.h
 Purpose : Global types
@@ -21,7 +33,7 @@ Purpose : Global types
           merge the files. In order to use Segger code, the types
           U8, U16, U32, I8, I16, I32 need to be defined in Global.h;
           additional definitions do not hurt.
-Revision: $Rev: 6050 $
+Revision: $Rev: 9374 $
 ---------------------------END-OF-HEADER------------------------------
 */
 
@@ -40,23 +52,18 @@ Revision: $Rev: 6050 $
 #define I32   signed long
 #endif
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__clang__) && !defined(__MINGW32__)
   //
   // Microsoft VC6 compiler related
   //
-  #ifdef __MINGW32__
-    #define U64   unsigned long long
-    #define I64   long long
+  #define U64   unsigned __int64
+  #define U128  unsigned __int128
+  #define I64   __int64
+  #define I128  __int128
+  #if _MSC_VER <= 1200
+    #define U64_C(x) x##UI64
   #else
-    #define U64   unsigned __int64
-    #define U128  unsigned __int128
-    #define I64   __int64
-    #define I128  __int128
-    #if _MSC_VER <= 1200
-      #define U64_C(x) x##UI64
-    #else
-      #define U64_C(x) x##ULL
-    #endif
+    #define U64_C(x) x##ULL
   #endif
 #else
   //
@@ -65,6 +72,14 @@ Revision: $Rev: 6050 $
   #define U64   unsigned long long
   #define I64   signed long long
   #define U64_C(x) x##ULL
+#endif
+
+#ifndef PTR_ADDR
+  #if (defined(_WIN64) || defined(__LP64__))  // 64-bit symbols used by Visual Studio and GCC, maybe others as well.
+    #define PTR_ADDR  U64
+  #else
+    #define PTR_ADDR  U32
+  #endif
 #endif
 
 #endif                      // Avoid multiple inclusion

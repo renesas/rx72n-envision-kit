@@ -1,19 +1,31 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                    SEGGER Microcontroller GmbH                     *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.42 - Graphical user interface for embedded applications **
+** emWin V5.50 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only  be used  in accordance  with  a license  and should  not be  re-
 distributed in any way. We appreciate your understanding and fairness.
+----------------------------------------------------------------------
+Licensing information
+Licensor:                 SEGGER Software GmbH
+Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
+Licensed SEGGER software: emWin
+License number:           GUI-00678
+License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
+License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2016-12-22 - 2019-12-31
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUI_ConfDefaults.h
 Purpose     : Defaults for GUI config switches.
@@ -29,8 +41,8 @@ Attention : Do not modify this file ! If you do, you will not
 
 #include "GUIConf.h"
 
-#ifndef   GUI_USE_MIXCOLORS
-  #define GUI_USE_MIXCOLORS 1
+#ifndef   GUI_SUPPORT_BIDI
+  #define GUI_SUPPORT_BIDI 0
 #endif
 
 #ifndef   GUI_USE_BIDI2
@@ -54,6 +66,10 @@ Attention : Do not modify this file ! If you do, you will not
   #define LCD_XMAG 1
 #endif
 
+#ifndef   GUI_SIM_SUPPORT_EMBOS
+  #define GUI_SIM_SUPPORT_EMBOS 1
+#endif
+
 /**********************************************************************
 *
 *       Defaults for config switches
@@ -65,11 +81,11 @@ Attention : Do not modify this file ! If you do, you will not
    ABGR to ARGB.
    
    It further swaps the meaning of a transparent pixel:
-   ABGR: 0x00 means opaque, 0xFF means transparent (default)
-   ARGB: 0x00 means transparent, 0xFF means opaque
+   ABGR: 0x00 means opaque, 0xFF means transparent
+   ARGB: 0x00 means transparent, 0xFF means opaque (default)
 */
 #ifndef GUI_USE_ARGB
-  #define GUI_USE_ARGB 0
+  #define GUI_USE_ARGB 1
 #endif
 
 /* Define "universal pointer". Normally, this is not needed (define will expand to nothing)

@@ -22,7 +22,7 @@ Purpose     : Config / System dependent externals for GUI
 */
 
 #include "GUI.h"
-
+#include "FreeRTOS.h"
 #include "r_cmt_rx_if.h"
 
 /*********************************************************************
@@ -30,6 +30,8 @@ Purpose     : Config / System dependent externals for GUI
 *       Global data
 */
 volatile GUI_TIMER_TIME OS_TimeMS;
+static xSemaphoreHandle xQueueMutex;
+static xSemaphoreHandle xSemaTxDone;
 
 /*********************************************************************
 *
@@ -126,10 +128,35 @@ void GUI_X_ErrorOut(const char *s) { GUI_USE_PARA(s); }
 *  needs to be in GUIConf.h
 */
 
-void GUI_X_InitOS(void)    {  }
-void GUI_X_Unlock(void)    {  }
-void GUI_X_Lock(void)      {  }
-U32  GUI_X_GetTaskId(void) { return 1; }
+void GUI_X_InitOS(void)
+{
+	  /* Create Mutex lock */
+	  xQueueMutex = xSemaphoreCreateMutex();
+	  configASSERT (xQueueMutex != NULL);
+
+	  /* Queue Semaphore */
+	  vSemaphoreCreateBinary( xSemaTxDone );
+	  configASSERT ( xSemaTxDone != NULL );
+}
+
+void GUI_X_Unlock(void)
+{
+	xSemaphoreGive( xQueueMutex );
+}
+
+void GUI_X_Lock(void)
+{
+	  if(xQueueMutex == NULL)
+	  {
+	    GUI_X_InitOS();
+	  }
+	  xSemaphoreTake( xQueueMutex, portMAX_DELAY );
+}
+
+U32  GUI_X_GetTaskId(void)
+{
+	return ((U32) xTaskGetCurrentTaskHandle());
+}
 
 
 /*********************************************************************
@@ -141,8 +168,16 @@ U32  GUI_X_GetTaskId(void) { return 1; }
 *                 GUI_X_SignalEvent()
 */
 
-void GUI_X_WaitEvent(void)            {  }
-void GUI_X_SignalEvent(void)          {  }
+void GUI_X_WaitEvent(void)
+{
+	while( xSemaphoreTake(xSemaTxDone, portMAX_DELAY ) != pdTRUE );
+}
+
+void GUI_X_SignalEvent(void)
+{
+	xSemaphoreGive( xSemaTxDone );
+}
+
 void GUI_X_WaitEventTimed(int Period) {  }
 
 /*************************** End of file ****************************/

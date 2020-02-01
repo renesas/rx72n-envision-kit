@@ -49,6 +49,9 @@ Purpose     : Touch panel configuration
 #define MAX_NUM_IDS          10
 #define NUM_CALIB_POINTS     5
 
+#define XSIZE  480
+#define YSIZE  272
+
 /*********************************************************************
 *
 *       Types
@@ -126,6 +129,7 @@ static U8 _Busy;
 static void _cb_SCI_IIC_ch6(void) {
   sci_iic_mcu_status_t      iic_status;
   volatile sci_iic_return_t ret;
+  int Temp;
 
   ret = R_SCI_IIC_GetStatus(&_Info, &iic_status);
   if ((ret == SCI_IIC_SUCCESS) && (iic_status.BIT.NACK == 1)) {
@@ -163,6 +167,19 @@ static void _cb_SCI_IIC_ch6(void) {
       //
       StatePID.x       = ((TouchPoint.xHigh & 0x0F) << 8 | TouchPoint.xLow);
       StatePID.y       = ((TouchPoint.yHigh & 0x0F) << 8 | TouchPoint.yLow);
+
+      if (LCD_GetMirrorX()) {
+        StatePID.x = XSIZE - 1 - StatePID.x;
+      }
+      if (LCD_GetMirrorY()) {
+        StatePID.y = YSIZE - 1 - StatePID.y;
+      }
+      if (LCD_GetSwapXY()) {
+        Temp = StatePID.x;
+        StatePID.x = StatePID.y;
+        StatePID.y = Temp;
+      }
+
       //
       // Pass touch data to emWin
       //
@@ -484,7 +501,7 @@ void PID_X_Init(void) {
   //
   R_GPIO_PinDirectionSet(GPIO_PORT_6_PIN_6, GPIO_DIRECTION_OUTPUT);
   R_GPIO_PinWrite(GPIO_PORT_6_PIN_6, GPIO_LEVEL_LOW);
-  R_BSP_SoftwareDelay(1, BSP_DELAY_MILLISECS);
+  R_BSP_SoftwareDelay(10, BSP_DELAY_MILLISECS);
   R_GPIO_PinWrite(GPIO_PORT_6_PIN_6, GPIO_LEVEL_HIGH);
   R_BSP_SoftwareDelay(300, BSP_DELAY_MILLISECS);
   //
@@ -503,7 +520,6 @@ void PID_X_Init(void) {
   //R_CMT_CreatePeriodic(50, _cbTimer, &Channel);
   R_SYS_TIME_Open();
   R_SYS_TIME_RegisterPeriodicCallback(_cbTimer, 2);
-
 #if (USE_MULTITOUCH == 1)
   GUI_MTOUCH_Enable(1);
 #endif

@@ -1,19 +1,31 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                    SEGGER Microcontroller GmbH                     *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.42 - Graphical user interface for embedded applications **
+** emWin V5.50 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only  be used  in accordance  with  a license  and should  not be  re-
 distributed in any way. We appreciate your understanding and fairness.
+----------------------------------------------------------------------
+Licensing information
+Licensor:                 SEGGER Software GmbH
+Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
+Licensed SEGGER software: emWin
+License number:           GUI-00678
+License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
+License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2016-12-22 - 2019-12-31
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : LISTBOX_Private.h
 Purpose     : Private LISTBOX include
@@ -23,8 +35,9 @@ Purpose     : Private LISTBOX include
 #ifndef LISTBOX_PRIVATE_H
 #define LISTBOX_PRIVATE_H
 
+#include "GUI_Private.h"
+#include "WM_Intern.h"
 #include "LISTBOX.h"
-#include "WM.h"
 #include "GUI_ARRAY.h"
 #include "WIDGET.h"
 
@@ -60,7 +73,6 @@ typedef struct {
   GUI_COLOR aTextColor[4];
   GUI_COLOR aScrollbarColor[3];
   I16 Align;
-  U8  FixedScrollMode;
 } LISTBOX_PROPS;
 
 typedef struct {
@@ -76,7 +88,7 @@ typedef struct {
   U8  ScrollbarWidth;
   U16 ItemSpacing;
   U16 ContentSizeX;
-  U8  FixedScrollPos;
+  U16 FixedScrollPos;
 } LISTBOX_Obj;
 
 /*********************************************************************

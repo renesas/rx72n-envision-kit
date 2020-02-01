@@ -1,19 +1,31 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                    SEGGER Microcontroller GmbH                     *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.42 - Graphical user interface for embedded applications **
+** emWin V5.50 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only  be used  in accordance  with  a license  and should  not be  re-
 distributed in any way. We appreciate your understanding and fairness.
+----------------------------------------------------------------------
+Licensing information
+Licensor:                 SEGGER Software GmbH
+Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
+Licensed SEGGER software: emWin
+License number:           GUI-00678
+License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
+License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2016-12-22 - 2019-12-31
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUIDRV_Lin_Private.h
 Purpose     : Common definitions and common code for all LIN-drivers
@@ -126,9 +138,9 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 // Definition of default members for DRIVER_CONTEXT structure
 //
 #define DEFAULT_CONTEXT_MEMBERS                               \
-  U32 VRAMAddr;                                               \
-  U32 BaseAddr;                                               \
-  U32 * aBufferPTR;                                           \
+  void * VRAMAddr;                                            \
+  void * BaseAddr;                                            \
+  void ** aBufferPTR;                                         \
   int BufferIndex;                                            \
   int xSize, ySize;                                           \
   int vxSize, vySize;                                         \
@@ -225,6 +237,26 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
     return (void (*)(void))((DRIVER_CONTEXT *)(*ppDevice)->u.pContext)->pfCopyRect;
 
 //
+// Definition of default function management for _GetDevProp()
+//
+#define DEFAULT_MANAGEMENT_GETDEVPROP() \
+  case LCD_DEVCAP_XSIZE:                \
+    return pContext->xSize;             \
+  case LCD_DEVCAP_YSIZE:                \
+    return pContext->ySize;             \
+  case LCD_DEVCAP_VXSIZE:               \
+    return pContext->vxSize;            \
+  case LCD_DEVCAP_VYSIZE:               \
+    return pContext->vySize;
+
+//
+// Definition of default function management for _GetDevData()
+//
+#define DEFAULT_MANAGEMENT_GETDEVDATA() \
+  case LCD_DEVDATA_VRAMADDR:            \
+    return (void *)pContext->VRAMAddr;
+
+//
 // Definition of private function management for _GetDevFunc()
 //
 #ifndef   PRIVATE_MANAGEMENT_GETDEVFUNC
@@ -300,6 +332,8 @@ typedef struct {
 *
 **********************************************************************
 */
+static I32 _GetDevProp(GUI_DEVICE * pDevice, int Index);
+
 /*********************************************************************
 *
 *       _InitOnce
@@ -561,7 +595,9 @@ static void _SetChroma(GUI_DEVICE * pDevice, LCD_COLOR ChromaMin, LCD_COLOR Chro
 static void _CopyBuffer(GUI_DEVICE * pDevice, int IndexSrc, int IndexDst) {
   DRIVER_CONTEXT * pContext;
   #if (!defined(WIN32))
-    U32 AddrSrc, AddrDst;
+    //U32 AddrSrc, AddrDst;
+    void * pSrc;
+    void * pDst;
     I32 BufferSize;
     int BitsPerPixel;
   #endif
@@ -576,11 +612,15 @@ static void _CopyBuffer(GUI_DEVICE * pDevice, int IndexSrc, int IndexDst) {
         BitsPerPixel = pDevice->pDeviceAPI->pfGetDevProp(pDevice, LCD_DEVCAP_BITSPERPIXEL);
         BufferSize = (((U32)pContext->vxSize * pContext->ySize * BitsPerPixel) >> 3);
         if (pContext->aBufferPTR) {
-          AddrSrc = *(pContext->aBufferPTR + IndexSrc);
-          AddrDst = *(pContext->aBufferPTR + IndexDst);
+          //AddrSrc = *(pContext->aBufferPTR + IndexSrc);
+          //AddrDst = *(pContext->aBufferPTR + IndexDst);
+          pSrc = pContext->aBufferPTR[IndexSrc];
+          pDst = pContext->aBufferPTR[IndexDst];
         } else {
-          AddrSrc = pContext->BaseAddr + BufferSize * IndexSrc;
-          AddrDst = pContext->BaseAddr + BufferSize * IndexDst;
+          //AddrSrc = pContext->BaseAddr + BufferSize * IndexSrc;
+          //AddrDst = pContext->BaseAddr + BufferSize * IndexDst;
+          pSrc = (U8 *)pContext->BaseAddr + BufferSize * IndexSrc;
+          pDst = (U8 *)pContext->BaseAddr + BufferSize * IndexDst;
         }
         if (pContext->pfCopyBuffer) {
           //
@@ -591,12 +631,12 @@ static void _CopyBuffer(GUI_DEVICE * pDevice, int IndexSrc, int IndexDst) {
           //
           // Calculate pointers for copy operation
           //
-          GUI__MEMCPY((void *)AddrDst, (void *)AddrSrc, BufferSize);
+          GUI__MEMCPY(pDst, pSrc, BufferSize);
         }
         //
         // Set destination buffer as target for further drawing operations
         //
-        pContext->VRAMAddr = AddrDst;
+        pContext->VRAMAddr = pDst;
       #endif
     }
   }
@@ -695,7 +735,7 @@ static void _SetVRAMAddr(GUI_DEVICE * pDevice, void * pVRAM) {
   _InitOnce(pDevice);
   if (pDevice->u.pContext) {
     pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;
-    pContext->VRAMAddr = pContext->BaseAddr = (U32)pVRAM;
+    pContext->VRAMAddr = pContext->BaseAddr = (void *)pVRAM;
     Data.pVRAM = pVRAM;
     LCD_X_DisplayDriver(pDevice->LayerIndex, LCD_X_SETVRAMADDR, (void *)&Data);
   }
@@ -708,7 +748,7 @@ static void _SetVRAMAddr(GUI_DEVICE * pDevice, void * pVRAM) {
 *
 *       _SetVRAM_BufferPTR
 */
-static void _SetVRAM_BufferPTR(GUI_DEVICE * pDevice, U32 * pBufferPTR) {
+static void _SetVRAM_BufferPTR(GUI_DEVICE * pDevice, void ** pBufferPTR) {
   DRIVER_CONTEXT * pContext;
 
   _InitOnce(pDevice);
@@ -735,7 +775,7 @@ static void _SetVSize(GUI_DEVICE * pDevice, int xSize, int ySize) {
       NumBuffers = GUI_MULTIBUF_GetNumBuffers();
     #endif
     pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;
-    if (LCD_GetSwapXYEx(pDevice->LayerIndex)) {
+    if (_GetDevProp(pDevice, LCD_DEVCAP_SWAP_XY)) {
       #if defined(WIN32)
         pContext->vxSize = xSize * NumBuffers;
       #else
@@ -770,7 +810,7 @@ static void _SetSize(GUI_DEVICE * pDevice, int xSize, int ySize) {
   if (pDevice->u.pContext) {
     pContext = (DRIVER_CONTEXT *)pDevice->u.pContext;
     if (pContext->vxSizePhys == 0) {
-      if (LCD_GetSwapXYEx(pDevice->LayerIndex)) {
+      if (_GetDevProp(pDevice, LCD_DEVCAP_SWAP_XY)) {
         pContext->vxSizePhys = ySize;
       } else {
         pContext->vxSizePhys = xSize;

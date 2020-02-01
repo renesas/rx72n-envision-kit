@@ -39,7 +39,7 @@
 
 
 // USER START (Optionally insert additional defines)
-#define MULTIEDIT_MAX_NUM_CHARS 1024 * 4
+#define MULTIEDIT_MAX_NUM_CHARS 1024 * 2
 
 typedef struct _packet_block_for_queue
 {
@@ -107,7 +107,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     MULTIEDIT_SetFont(hItem, GUI_FONT_6X8_ASCII);
 	MULTIEDIT_SetTextColor(hItem, MULTIEDIT_CI_READONLY, GUI_MAKE_COLOR(0x0000FF00));
     MULTIEDIT_SetBkColor(hItem, MULTIEDIT_CI_READONLY, GUI_MAKE_COLOR(0x00000000));
-    MULTIEDIT_SetMaxNumChars(hItem, MULTIEDIT_MAX_NUM_CHARS);
+//    MULTIEDIT_SetMaxNumChars(hItem, MULTIEDIT_MAX_NUM_CHARS);
     // USER END
     break;
   case WM_NOTIFY_PARENT:

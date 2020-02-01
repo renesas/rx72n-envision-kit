@@ -154,13 +154,13 @@ void gui_task( void * pvParameters )
 	next_button_id = get_next_button_id();
 
 	/* wait until first touch screen */
-	GUI_Exec();
+	GUI_Delay(10);
 	vTaskDelay(1000);	/* this wait needs for ignoring touch event at WM_TOUCH_CHILD in TitleLogoWindowDLG.c when initializing. */
 
 	first_touch_wait_flag = 1;
 	while(first_touch_wait_flag)
 	{
-		GUI_Exec();
+		GUI_Delay(10);
 		vTaskDelay(10);
 	}
 
@@ -170,7 +170,7 @@ void gui_task( void * pvParameters )
 		main_10ms_emWin_update();
 		vTaskDelay(10);
 		counter++;
-		if(counter == 10)
+		if(counter > 10)
 		{
 			counter = 0;
 			main_100ms_display_update();
@@ -180,7 +180,8 @@ void gui_task( void * pvParameters )
 
 void main_10ms_emWin_update(void)
 {
-	GUI_Exec();
+	GUI_Exec(); /* Do the background work ... Update windows etc.) */
+	GUI_X_ExecIdle(); /* Nothing left to do for the moment ... Idle processing */
 }
 
 void main_100ms_display_update(void)

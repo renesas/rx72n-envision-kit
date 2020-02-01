@@ -1,19 +1,31 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                    SEGGER Microcontroller GmbH                     *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.42 - Graphical user interface for embedded applications **
+** emWin V5.50 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only  be used  in accordance  with  a license  and should  not be  re-
 distributed in any way. We appreciate your understanding and fairness.
+----------------------------------------------------------------------
+Licensing information
+Licensor:                 SEGGER Software GmbH
+Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
+Licensed SEGGER software: emWin
+License number:           GUI-00678
+License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
+License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2016-12-22 - 2019-12-31
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : LCD_SIM.h
 Purpose     : Declares LCD interface functions
@@ -93,28 +105,31 @@ void LCDSIM_Invalidate(int LayerIndex);
 *
 *********************************************************************
 */
-void SIM_GUI_SetCompositeSize(int xSize, int ySize);
-void SIM_GUI_SetCompositeColor(U32 Color);
-U32  SIM_GUI_GetCompositeColor(void);
-void SIM_GUI_SetLCDPos(int xPos, int yPos);
-int  SIM_GUI_SaveBMP(const char * sFileName);
-int  SIM_GUI_SaveBMPEx(const char * sFileName, int x0, int y0, int xSize, int ySize);
-int  SIM_GUI_SaveCompositeBMP(const char * sFileName);
-int  SIM_GUI_SetTransColor(int Color);
-int  SIM_GUI_SetLCDColorBlack (unsigned int Index, int Color);
-int  SIM_GUI_SetLCDColorWhite (unsigned int Index, int Color);
-void SIM_GUI_SetMag(int MagX, int MagY);
-int  SIM_GUI_GetMagX(void);
-int  SIM_GUI_GetMagY(void);
-int  SIM_GUI_GetForwardRButton(void);
-void SIM_GUI_SetForwardRButton(int OnOff);
-void SIM_GUI_SetTransMode(int LayerIndex, int TransMode);
-void SIM_GUI_SetChroma(int LayerIndex, unsigned long ChromaMin, unsigned long ChromaMax);
-void SIM_GUI_UseCustomBitmaps(void);
-void SIM_GUI_SetAccellerator(int Accellerator);
-void SIM_GUI_SetMainScreenOffset(int x, int y);
-void SIM_GUI_SetCompositeTouch(int LayerIndex);
-int  SIM_GUI_GetCompositeTouch(void);
+void         SIM_GUI_SetCompositeSize(int xSize, int ySize);
+void         SIM_GUI_SetCompositeColor(U32 Color);
+U32          SIM_GUI_GetCompositeColor(void);
+void         SIM_GUI_SetLCDPos(int xPos, int yPos);
+int          SIM_GUI_SaveBMP(const char * sFileName);
+int          SIM_GUI_SaveBMPEx(const char * sFileName, int x0, int y0, int xSize, int ySize);
+int          SIM_GUI_SaveCompositeBMP(const char * sFileName);
+int          SIM_GUI_SetTransColor(int Color);
+int          SIM_GUI_SetLCDColorBlack (unsigned int Index, int Color);
+int          SIM_GUI_SetLCDColorWhite (unsigned int Index, int Color);
+void         SIM_GUI_SetMag(int MagX, int MagY);
+int          SIM_GUI_GetMagX(void);
+int          SIM_GUI_GetMagY(void);
+int          SIM_GUI_GetForwardRButton(void);
+void         SIM_GUI_SetForwardRButton(int OnOff);
+void         SIM_GUI_SetTransMode(int LayerIndex, int TransMode);
+void         SIM_GUI_SetChroma(int LayerIndex, unsigned long ChromaMin, unsigned long ChromaMax);
+void         SIM_GUI_UseCustomBitmaps(void);
+void         SIM_GUI_SetAccellerator(int Accellerator);
+void         SIM_GUI_SetMainScreenOffset(int x, int y);
+void         SIM_GUI_SetCompositeTouch(int LayerIndex);
+int          SIM_GUI_GetCompositeTouch(void);
+const char * SIM_GUI_SetCmdLine(char * pCmdLine);
+void         SIM_GUI_SetAppName(const char * pAppName);
+void         SIM_GUI_SetStartTime(int TimeStart);
 
 /********************************************************************
 *

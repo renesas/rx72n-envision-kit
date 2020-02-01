@@ -1,19 +1,31 @@
 /*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
+*                    SEGGER Microcontroller GmbH                     *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
+*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.42 - Graphical user interface for embedded applications **
+** emWin V5.50 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only  be used  in accordance  with  a license  and should  not be  re-
 distributed in any way. We appreciate your understanding and fairness.
+----------------------------------------------------------------------
+Licensing information
+Licensor:                 SEGGER Software GmbH
+Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
+Licensed SEGGER software: emWin
+License number:           GUI-00678
+License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
+License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
+----------------------------------------------------------------------
+Support and Update Agreement (SUA)
+SUA period:               2016-12-22 - 2019-12-31
+Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : LCD.h
 Purpose     : Declares LCD interface functions
@@ -388,10 +400,26 @@ tLCDDEV_Color2Index * LCD_GetpfColor2Index(void);
 
 int LCD_GetNumLayers(void);
 
-LCD_COLOR * LCD_GetPalette  (void);
-LCD_COLOR * LCD_GetPaletteEx(int LayerIndex);
+LCD_COLOR * LCD_GetPalette   (void);
+LCD_COLOR * LCD_GetPaletteEx (int LayerIndex);
+void      * LCD_GetVRAMAddr  (void);
+void      * LCD_GetVRAMAddrEx(int LayerIndex);
 
 void (* LCD_GetDevFunc(int LayerIndex, int Item))(void);
+
+/*********************************************************************
+*
+*       Runtime rotation of drivers
+*/
+int LCD_ROTATE_AddDriver  (const GUI_DEVICE_API * pDriver);
+int LCD_ROTATE_AddDriverEx(const GUI_DEVICE_API * pDeviceAPI, int LayerIndex);
+int LCD_ROTATE_DecSel     (void);
+int LCD_ROTATE_DecSelEx   (int LayerIndex);
+int LCD_ROTATE_IncSel     (void);
+int LCD_ROTATE_IncSelEx   (int LayerIndex);
+int LCD_ROTATE_SetCallback(void (* pCbOnConfig)(GUI_DEVICE *, int, int), int LayerIndex);
+int LCD_ROTATE_SetSel     (int Index);
+int LCD_ROTATE_SetSelEx   (int Index, int LayerIndex);
 
 /*********************************************************************
 *
@@ -405,7 +433,6 @@ void (* LCD_GetDevFunc(int LayerIndex, int Item))(void);
 #define LCD_DEVFUNC_SETSIZE       0x05 /* ...setting the layer size */
 #define LCD_DEVFUNC_SETVIS        0x06 /* ...setting the visibility of a layer */
 #define LCD_DEVFUNC_24BPP         0x07 /* ...drawing 24bpp bitmaps */
-#define LCD_DEVFUNC_NEXT_PIXEL    0x08 /* ...drawing a bitmap pixel by pixel */
 #define LCD_DEVFUNC_SET_VRAM_ADDR 0x09 /* ...setting the VRAM address */
 #define LCD_DEVFUNC_SET_VSIZE     0x0A /* ...setting the VRAM size */
 #define LCD_DEVFUNC_SET_SIZE      0x0B /* ...setting the display size */
@@ -434,6 +461,7 @@ void (* LCD_GetDevFunc(int LayerIndex, int Item))(void);
 #define LCD_DEVFUNC_READMPIXELS   0x27 /* ...reading multiple pixel indices */
 #define LCD_DEVFUNC_DRAWBMP_32BPP 0x28 /* ...drawing a 32bpp bitmap */
 #define LCD_DEVFUNC_SET_BUFFERPTR 0x29 /* ...setting an array of buffer pointers */
+#define LCD_DEVFUNC_EXIT          0x30 /* ...free memory and shut down controller */
 
 /*********************************************************************
 *
@@ -449,6 +477,8 @@ void (* LCD_GetDevFunc(int LayerIndex, int Item))(void);
                                        /* Request pointer to... */
 #define LCD_DEVDATA_MEMDEV        0x01 /* ...default memory device API */
 #define LCD_DEVDATA_PHYSPAL       0x02 /* ...physical palette */
+#define LCD_DEVDATA_VRAMADDR      0x03 /* ...VRAM address */
+#define LCD_DEVDATA_NEXT_PIXEL    0x04 /* ...drawing a bitmap pixel by pixel */
 
 /*********************************************************************
 *
@@ -535,7 +565,7 @@ int  LCD_OnEx           (int LayerIndex);
 int  LCD_RefreshEx      (int LayerIndex);
 int  LCD_SetAlphaEx     (int LayerIndex, int Alpha);
 int  LCD_SetAlphaModeEx (int LayerIndex, int AlphaMode);
-int  LCD_SetBufferPtrEx (int LayerIndex, const U32 * pBufferPTR);
+int  LCD_SetBufferPtrEx (int LayerIndex, void ** pBufferPTR);
 int  LCD_SetChromaEx    (int LayerIndex, LCD_COLOR ChromaMin, LCD_COLOR ChromaMax);
 int  LCD_SetChromaModeEx(int LayerIndex, int ChromaMode);
 int  LCD_SetDevFunc     (int LayerIndex, int IdFunc, void (* pDriverFunc)(void));
@@ -552,7 +582,7 @@ int  LCD_On             (void);
 int  LCD_Refresh        (void);
 int  LCD_SetAlpha       (int Alpha);
 int  LCD_SetAlphaMode   (int AlphaMode);
-int  LCD_SetBufferPtr   (const U32 * pBufferPTR);
+int  LCD_SetBufferPtr   (void ** pBufferPTR);
 int  LCD_SetChroma      (LCD_COLOR ChromaMin, LCD_COLOR ChromaMax);
 int  LCD_SetChromaMode  (int ChromaMode);
 int  LCD_SetLUTEntry    (U8 Pos, LCD_COLOR Color);
@@ -607,6 +637,8 @@ I32  LCD_GetDevCapEx(int LayerIndex, int Index);
 /* Initialize LCD using config-parameters */
 int LCD_Init(void);
 int LCD_InitColors(void);
+int LCD_InitEx(GUI_DEVICE * pDevice, int ClearScreen);
+int LCD_ExitEx(int LayerIndex);
 
 void LCD_SetBkColor   (LCD_COLOR Color); /* Set background color */
 void LCD_SetColor     (LCD_COLOR Color); /* Set foreground color */
