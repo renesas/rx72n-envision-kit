@@ -91,12 +91,6 @@ void sdcard_task( void * pvParameters )
 
     while(1)
     {
-        if(1 == firmware_update_complete_flag)
-        {
-            vTaskDelay(5000);
-            software_reset();
-        }
-
         sdc_sd_card_detection = R_SDC_SD_GetCardDetection(g_sdc_sd_card_no);
 
         if(previous_sdc_sd_card_detection != sdc_sd_card_detection)
@@ -166,6 +160,12 @@ void sdcard_task( void * pvParameters )
                     firmware_update_complete_flag = 1;
                 }
             }
+        }
+
+        if(1 == firmware_update_complete_flag)
+        {
+            vTaskDelay(5000);
+            software_reset();
         }
 
         if(!(gui_delay_counter++ % 1000))

@@ -180,6 +180,8 @@ typedef struct _firmware_update_control_block
     uint8_t reserved2[236];
 }FIRMWARE_UPDATE_CONTROL_BLOCK;
 
+extern xSemaphoreHandle xSemaphoreFlashAccess;
+
 static int32_t ota_context_validate( OTA_FileContext_t * C );
 static int32_t ota_context_update_user_firmware_header( OTA_FileContext_t * C );
 static void ota_context_close( OTA_FileContext_t * C );
@@ -233,36 +235,27 @@ OTA_Err_t prvPAL_CreateFileForRx( OTA_FileContext_t * const C )
 			xSemaphoreGive(xSemaphoreWriteBlock);
 			fragmented_flash_block_list = NULL;
 
-			R_FLASH_Close();
-			if(R_FLASH_Open() == FLASH_SUCCESS)
-			{
-				cb_func_info.pcallback = ota_header_flashing_callback;
-				cb_func_info.int_priority = FLASH_INTERRUPT_PRIORITY;
-				R_FLASH_Control(FLASH_CMD_SET_BGO_CALLBACK, (void *)&cb_func_info);
-				gs_header_flashing_task = OTA_FLASHING_IN_PROGRESS;
-				if (R_FLASH_Erase((flash_block_address_t)BOOT_LOADER_UPDATE_TEMPORARY_AREA_HIGH_ADDRESS, BOOT_LOADER_UPDATE_TARGET_BLOCK_NUMBER) != FLASH_SUCCESS)
-				{
-					eResult = kOTA_Err_RxFileCreateFailed;
-					OTA_LOG_L1( "[%s] ERROR - R_FLASH_Erase() returns error.\r\n", OTA_METHOD_NAME );
-				}
-				while(OTA_FLASHING_IN_PROGRESS == gs_header_flashing_task);
-				R_FLASH_Close();
-				R_FLASH_Open();
-				cb_func_info.pcallback = ota_flashing_callback;
-				cb_func_info.int_priority = FLASH_INTERRUPT_PRIORITY;
-				R_FLASH_Control(FLASH_CMD_SET_BGO_CALLBACK, (void *)&cb_func_info);
-				load_firmware_control_block.OTA_FileContext = C;
-				load_firmware_control_block.total_image_length = 0;
-				load_firmware_control_block.eSavedAgentState = eOTA_ImageState_Unknown;
-				OTA_LOG_L1( "[%s] Receive file created.\r\n", OTA_METHOD_NAME );
-				C->pucFile = (uint8_t *)&load_firmware_control_block;
-				eResult = kOTA_Err_None;
-			}
-			else
+			xSemaphoreTake(xSemaphoreFlashAccess, portMAX_DELAY);
+
+			cb_func_info.pcallback = ota_header_flashing_callback;
+			cb_func_info.int_priority = FLASH_INTERRUPT_PRIORITY;
+			R_FLASH_Control(FLASH_CMD_SET_BGO_CALLBACK, (void *)&cb_func_info);
+			gs_header_flashing_task = OTA_FLASHING_IN_PROGRESS;
+			if (R_FLASH_Erase((flash_block_address_t)BOOT_LOADER_UPDATE_TEMPORARY_AREA_HIGH_ADDRESS, BOOT_LOADER_UPDATE_TARGET_BLOCK_NUMBER) != FLASH_SUCCESS)
 			{
 				eResult = kOTA_Err_RxFileCreateFailed;
-				OTA_LOG_L1( "[%s] ERROR - R_FLASH_Open() returns error.\r\n", OTA_METHOD_NAME );
+				OTA_LOG_L1( "[%s] ERROR - R_FLASH_Erase() returns error.\r\n", OTA_METHOD_NAME );
 			}
+			while(OTA_FLASHING_IN_PROGRESS == gs_header_flashing_task);
+			cb_func_info.pcallback = ota_flashing_callback;
+			cb_func_info.int_priority = FLASH_INTERRUPT_PRIORITY;
+			R_FLASH_Control(FLASH_CMD_SET_BGO_CALLBACK, (void *)&cb_func_info);
+			load_firmware_control_block.OTA_FileContext = C;
+			load_firmware_control_block.total_image_length = 0;
+			load_firmware_control_block.eSavedAgentState = eOTA_ImageState_Unknown;
+			OTA_LOG_L1( "[%s] Receive file created.\r\n", OTA_METHOD_NAME );
+			C->pucFile = (uint8_t *)&load_firmware_control_block;
+			eResult = kOTA_Err_None;
 		}
         else
         {
@@ -315,8 +308,6 @@ OTA_Err_t prvPAL_Abort( OTA_FileContext_t * const C )
 			vSemaphoreDelete(xSemaphoreWriteBlock);
 			xSemaphoreWriteBlock = NULL;
 		}
-
-		R_FLASH_Close();
 	}
 
 	ota_context_close(C);
@@ -470,8 +461,6 @@ OTA_Err_t prvPAL_CloseFile( OTA_FileContext_t * const C )
 			vSemaphoreDelete(xSemaphoreWriteBlock);
 			xSemaphoreWriteBlock = NULL;
 		}
-
-		R_FLASH_Close();
 	}
 	else
 	{
@@ -508,8 +497,6 @@ static OTA_Err_t prvPAL_CheckFileSignature( OTA_FileContext_t * const C )
 			memcpy(&assembled_flash_buffer[tmp->content.offset], tmp->content.binary, tmp->content.length);
 			/* Flashing memory. */
 			xSemaphoreTake(xSemaphoreFlashig, portMAX_DELAY);
-			R_FLASH_Close();
-			R_FLASH_Open();
 			cb_func_info.pcallback = ota_header_flashing_callback;
 			cb_func_info.int_priority = FLASH_INTERRUPT_PRIORITY;
 			R_FLASH_Control(FLASH_CMD_SET_BGO_CALLBACK, (void *)&cb_func_info);
@@ -682,8 +669,6 @@ OTA_Err_t prvPAL_SetPlatformImageState( OTA_ImageState_t eState )
 		switch (eState)
 		{
 			case eOTA_ImageState_Accepted:
-				R_FLASH_Close();
-				R_FLASH_Open();
 				cb_func_info.pcallback = ota_header_flashing_callback;
 				cb_func_info.int_priority = FLASH_INTERRUPT_PRIORITY;
 				R_FLASH_Control(FLASH_CMD_SET_BGO_CALLBACK, (void *)&cb_func_info);
@@ -976,8 +961,6 @@ static int32_t ota_context_update_user_firmware_header( OTA_FileContext_t * C )
 
 	if (R_OTA_ERR_NONE == ret)
 	{
-		R_FLASH_Close();
-		R_FLASH_Open();
 		cb_func_info.pcallback = ota_header_flashing_callback;
 		cb_func_info.int_priority = FLASH_INTERRUPT_PRIORITY;
 		R_FLASH_Control(FLASH_CMD_SET_BGO_CALLBACK, (void *)&cb_func_info);
@@ -990,6 +973,8 @@ static int32_t ota_context_update_user_firmware_header( OTA_FileContext_t * C )
 		}
 		while (OTA_FLASHING_IN_PROGRESS == gs_header_flashing_task);
 	}
+
+	xSemaphoreGive(xSemaphoreFlashAccess);
 
 	return ret;
 }

@@ -43,6 +43,7 @@
  Exported global variables (to be accessed by other files)
  ***********************************************************************************************************************/
 void bank_swap_with_software_reset(void);
+extern xSemaphoreHandle xSemaphoreFlashAccess;
 
 /***********************************************************************************************************************
  Private global variables and functions
@@ -53,9 +54,9 @@ void bank_swap_with_software_reset(void)
     /* stop all interrupt completely */
     set_psw(0);
     R_BSP_InterruptsDisable();
-    R_FLASH_Open();
+    xSemaphoreTake(xSemaphoreFlashAccess, portMAX_DELAY);
     R_FLASH_Control(FLASH_CMD_BANK_TOGGLE, NULL);
-    R_FLASH_Close();
+    xSemaphoreGive(xSemaphoreFlashAccess);
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_CGC_SWR);
     SYSTEM.SWRR = 0xa501;
     while(1);   /* software reset */

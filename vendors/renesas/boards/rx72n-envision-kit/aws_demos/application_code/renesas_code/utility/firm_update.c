@@ -139,6 +139,8 @@ void software_reset(void);
 const uint8_t code_signer_public_key[] = CODE_SIGNER_PUBLIC_KEY_PEM;
 const uint32_t code_signer_public_key_length = sizeof(code_signer_public_key);
 
+extern xSemaphoreHandle xSemaphoreFlashAccess;
+
 /***********************************************************************************************************************
  Private global variables and functions
  ***********************************************************************************************************************/
@@ -168,6 +170,13 @@ uint32_t firmware_update(void)
         case FIRMWARE_UPDATE_STATE_INITIALIZE: /* initialize */
             load_firmware_control_block.progress = 0;
             load_firmware_control_block.offset = 0;
+            load_firmware_control_block.status = FIRMWARE_UPDATE_STATE_WAIT_START;
+            break;
+        case FIRMWARE_UPDATE_STATE_WAIT_START: /* wait start */
+            /* this state will be changed by other process request using load_firmware_control_block.status */
+            break;
+        case FIRMWARE_UPDATE_STATE_ERASE: /* erase bank1 user program area */
+            xSemaphoreTake(xSemaphoreFlashAccess, portMAX_DELAY);
             cb_func_info.pcallback = flash_load_firmware_callback_function;
             cb_func_info.int_priority = FLASH_INTERRUPT_PRIORITY;
             flash_error_code = R_FLASH_Control(FLASH_CMD_SET_BGO_CALLBACK, (void *)&cb_func_info);
@@ -178,12 +187,16 @@ uint32_t firmware_update(void)
                 load_firmware_control_block.status = FIRMWARE_UPDATE_STATE_ERROR;
                 break;
             }
-            load_firmware_control_block.status = FIRMWARE_UPDATE_STATE_WAIT_START;
-            break;
-        case FIRMWARE_UPDATE_STATE_WAIT_START: /* wait start */
-            /* this state will be changed by other process request using load_firmware_control_block.status */
-            break;
-        case FIRMWARE_UPDATE_STATE_ERASE: /* erase bank1 user program area */
+            cb_func_info.pcallback = flash_load_firmware_callback_function;
+            cb_func_info.int_priority = FLASH_INTERRUPT_PRIORITY;
+            flash_error_code = R_FLASH_Control(FLASH_CMD_SET_BGO_CALLBACK, (void *)&cb_func_info);
+            if (FLASH_SUCCESS != flash_error_code)
+            {
+                printf("R_FLASH_Control() returns error. %d.\r\n", flash_error_code);
+                printf("system error.\r\n");
+                load_firmware_control_block.status = FIRMWARE_UPDATE_STATE_ERROR;
+                break;
+            }
             extract_update_file_parameters(load_firmware_control_block.file_name, p_block_header->signature_type, &p_block_header->signature_size, p_block_header->signature);
             load_firmware_control_block.status = FIRMWARE_UPDATE_STATE_ERASE_WAIT_COMPLETE;
             flash_error_code = R_FLASH_Erase((flash_block_address_t)FIRMWARE_TEMPORARY_AREA_HIGH_ADDRESS, FIRMWARE_TARGET_BLOCK_NUMBER);
@@ -237,6 +250,7 @@ uint32_t firmware_update(void)
             /* this state will be changed by callback routine */
             break;
         case FIRMWARE_UPDATE_STATE_FINALIZE: /* finalize */
+            xSemaphoreGive(xSemaphoreFlashAccess);
             firmware_update_control_block_bank1 = (FIRMWARE_UPDATE_CONTROL_BLOCK*)FIRMWARE_TEMPORARY_AREA_LOW_ADDRESS;
             if (!strcmp((const char *)p_block_header->signature_type, INTEGRITY_CHECK_SCHEME_HASH_SHA256_STANDALONE))
             {

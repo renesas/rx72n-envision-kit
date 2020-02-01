@@ -120,12 +120,10 @@ sfd_err_t R_SFD_Open(void)
 
 	if(FLASH_CFG_DATA_FLASH_BGO == 1)
 	{
-		R_FLASH_Open();
 		/* check the hash */
 		check_dataflash_area(0);
 		/* copy data from storage to ram */
 		memcpy(&sfd_control_block_data_image, (void *)&sfd_control_block_data, sizeof(sfd_control_block_data_image));
-		R_FLASH_Close();
 		sfd_err = SFD_SUCCESS;
 	}
 	else
@@ -144,7 +142,6 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
     mbedtls_sha256_context ctx;
 
     mbedtls_sha256_init(&ctx);
-    R_FLASH_Open();
 
     /* check the hash */
     check_dataflash_area(0);
@@ -274,7 +271,6 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
 		SFD_DEBUG_PRINT(("ERROR: Update data flash data mirror from image\r\n"));
 		while(1);
 	}
-    R_FLASH_Close();
 
     return xHandle;
 

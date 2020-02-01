@@ -60,6 +60,7 @@ Typedef definitions
 /******************************************************************************
  External variables
  ******************************************************************************/
+xSemaphoreHandle xSemaphoreFlashAccess;
 
 /******************************************************************************
  Private global variables
@@ -96,23 +97,27 @@ extern WM_HWIN hWinFirmwareUpdateViaSDCardWindow;
  ******************************************************************************/
 void main_task(void)
 {
-	uint32_t bank_info;
+    uint32_t bank_info;
 
     /* enable MCU pins */
     R_Pins_Create();
 
-	/* system timer initialization */
-	R_SYS_TIME_Open();
+    /* system timer initialization */
+    R_SYS_TIME_Open();
 
-	/* GUI initialization */
+    /* GUI initialization */
     GUI_Exit();
-	GUI_Init();
-	LCDCONF_EnableDave2D();
-	WM_MULTIBUF_Enable(1);
+    GUI_Init();
+    LCDCONF_EnableDave2D();
+    WM_MULTIBUF_Enable(1);
 
-	/* flash initialization */
-	R_FLASH_Open();
+    /* flash initialization */
+    R_FLASH_Open();
     R_FLASH_Control(FLASH_CMD_BANK_GET, &bank_info);
+
+    /* flash access semaphore creation */
+    xSemaphoreFlashAccess = xSemaphoreCreateMutex();
+    xSemaphoreGive(xSemaphoreFlashAccess);
 
     /* serial terminal task creation */
     xTaskCreate(serial_terminal_task, "terminal", 4096, &hWinSerialTerminalWindow, tskIDLE_PRIORITY, &serial_terminal_task_handle);
@@ -123,11 +128,11 @@ void main_task(void)
     /* sdcard task creation */
     xTaskCreate(sdcard_task, "sdcard", configMINIMAL_STACK_SIZE, &hWinFirmwareUpdateViaSDCardWindow, tskIDLE_PRIORITY, &sdcard_task_handle);
 
-	/* main loop */
-	while(1)
-	{
-    	vTaskDelay(1000);
-	}
+    /* main loop */
+    while(1)
+    {
+        vTaskDelay(1000);
+    }
 }
 /******************************************************************************
  End of function main_task()
@@ -135,9 +140,9 @@ void main_task(void)
 
 void firmware_version_read(char **ver_str)
 {
-	static char firmware_version[16];
-	sprintf(firmware_version, "v%d.%d.%d", APP_VERSION_MAJOR, APP_VERSION_MINOR, APP_VERSION_BUILD);
-	*ver_str = (char*)firmware_version;
+    static char firmware_version[16];
+    sprintf(firmware_version, "v%d.%d.%d", APP_VERSION_MAJOR, APP_VERSION_MINOR, APP_VERSION_BUILD);
+    *ver_str = (char*)firmware_version;
 }
 
 /******************************************************************************
