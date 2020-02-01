@@ -245,11 +245,11 @@ namespace Renesas_Secure_Flash_Programmer
         const string MCUROM_RX72T_512K_SB_64KB = "RX72T(ROM 512KB)/Secure Bootloader=64KB";
         const string MCUROM_RX72N_4M_SB_256KB = "RX72N(ROM 4MB)/Secure Bootloader=256KB";
 
-        const string FIRMWARE_VERIFICATION_TYPE_NOT_USED = "not used";
         const string FIRMWARE_VERIFICATION_TYPE_HASH_SHA256 = "hash-sha256";
         const string FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA = "sig-sha256-ecdsa";
         const string FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP = "mac-aes128-cmac-with-tsip";
         const string FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA_WITH_TSIP = "sig-sha256-ecdsa-with-tsip";
+        const string FIRMWARE_VERIFICATION_TYPE_USER_SPECIFIED = "user-specified";
 
         const string OUTPUT_FORMAT_TYPE_BANK0 = "Bank0 User Program (Binary Format)";
         const string OUTPUT_FORMAT_TYPE_BANK0_BOOTLOADR = "Bank0 User Program + Boot Loader (Motorola S Format)";
@@ -282,11 +282,11 @@ namespace Renesas_Secure_Flash_Programmer
 
         public static readonly Dictionary<string, uint> UpdateFirmVerificationType = new Dictionary<string, uint>()
         {
-            { FIRMWARE_VERIFICATION_TYPE_NOT_USED, 1 },
-            { FIRMWARE_VERIFICATION_TYPE_HASH_SHA256, 2 },
-            { FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA, 3 },
-            { FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP, 4 },
-            { FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA_WITH_TSIP, 5 },
+            { FIRMWARE_VERIFICATION_TYPE_HASH_SHA256, 1 },
+            { FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA, 2 },
+            { FIRMWARE_VERIFICATION_TYPE_MAC_AES128_CMAC_WITH_TSIP, 3 },
+            { FIRMWARE_VERIFICATION_TYPE_SIG_SHA256_ECDSA_WITH_TSIP, 4 },
+            { FIRMWARE_VERIFICATION_TYPE_USER_SPECIFIED, 5 },
         };
 
         public static readonly Dictionary<string, uint> OutputFormatType = new Dictionary<string, uint>()
@@ -892,7 +892,7 @@ namespace Renesas_Secure_Flash_Programmer
                             }
                         }
                     }
-                    else if (firm_verification_type == FIRMWARE_VERIFICATION_TYPE_NOT_USED)
+                    else if (firm_verification_type == FIRMWARE_VERIFICATION_TYPE_USER_SPECIFIED)
                     {
                         // prepair the rsu_header
                         rsu_header_data.sequence_number = Convert.ToUInt32(sequence_number_text);
