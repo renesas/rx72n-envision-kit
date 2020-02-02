@@ -69,10 +69,6 @@ xSemaphoreHandle xSemaphoreFlashAccess;
 /******************************************************************************
  Private global variables
  ******************************************************************************/
-static TaskHandle_t serial_terminal_task_handle;
-static TaskHandle_t sdcard_task_handle;
-static TaskHandle_t gui_task_handle;
-static TaskHandle_t task_manager_task_handle;
 
 static TASK_INFO task_info;
 
@@ -144,9 +140,9 @@ void main_task(void)
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
     /* notify completing GUI initialization and first touch to each tasks */
-	xTaskNotifyGive(serial_terminal_task_handle);
-	xTaskNotifyGive(sdcard_task_handle);
-	xTaskNotifyGive(task_manager_task_handle);
+	xTaskNotifyGive(task_info.serial_terminal_task_handle);
+	xTaskNotifyGive(task_info.sdcard_task_handle);
+	xTaskNotifyGive(task_info.task_manager_task_handle);
 
 
     /* main loop */
