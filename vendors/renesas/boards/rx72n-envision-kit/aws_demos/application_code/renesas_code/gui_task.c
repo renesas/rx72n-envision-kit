@@ -109,7 +109,7 @@ extern int frame_prev_button_enable(WM_HWIN hWin, uint8_t onoff);
  global variables and functions
 ********************************************************************************/
 WM_HWIN hWinTaskManagerWindow, hWinTitleLogoWindow, hWinStorageBenchmark, hWinCryptoBenchmark1, hWinCryptoBenchmark2, hWinSystemLogWindow;
-WM_HWIN hWinFrameWindow, hWinFirmwareUpdateViaSDCardWindow, hWinSerialTerminalWindow;
+WM_HWIN hWinFrameWindow, hWinFirmwareUpdateViaSDCardWindow, hWinSerialTerminalWindow, hWinTaskManagerWindow;
 
 volatile int32_t first_touch_wait_flag;
 volatile int32_t gui_initialize_complete_flag;
@@ -119,8 +119,8 @@ void emWinCallback(WM_MESSAGE * pMsg);
 void callback_frame_window_to_main(int32_t id, int32_t event);
 
 /******************************************************************************
- Function Name   : serial_terminal_task
- Description     : serial_terminal_task
+ Function Name   : gui_task
+ Description     : gui_task
  Arguments       : none
  Return value    : none
  ******************************************************************************/

@@ -1,4 +1,4 @@
-  
+
 /**********************************************************************************************************************
  * DISCLAIMER
  * This software is supplied by Renesas Electronics Corporation and is only intended for use with Renesas products. No
@@ -15,11 +15,11 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2014(2016) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2014(2020) Renesas Electronics Corporation. All rights reserved.
  *********************************************************************************************************************/
 /**********************************************************************************************************************
- * File Name    : main_task.c
- * Description  : main task
+ * File Name    : task_manager_task.c
+ * Description  : task_manager_task
  *********************************************************************************************************************/
 /**********************************************************************************************************************
  * History : DD.MM.YYYY Version Description
@@ -29,7 +29,6 @@
 /******************************************************************************
  Includes   <System Includes> , "Project Includes"
  ******************************************************************************/
-
 /* for using C standard library */
 #include <stdio.h>
 #include <string.h>
@@ -37,13 +36,7 @@
 
 /* for using FIT Module */
 #include "platform.h"
-#include "r_pinset.h"
 #include "r_sys_time_rx_if.h"
-#include "r_gpio_rx_if.h"
-#include "r_flash_rx_if.h"
-#include "r_usb_basic_if.h"
-#include "r_tfat_lib.h"
-#include "Pin.h"
 
 /* for using Segger emWin */
 #include "GUI.h"
@@ -60,97 +53,27 @@ Typedef definitions
 /******************************************************************************
  External variables
  ******************************************************************************/
-xSemaphoreHandle xSemaphoreFlashAccess;
 
 /******************************************************************************
  Private global variables
  ******************************************************************************/
-static TaskHandle_t serial_terminal_task_handle;
-static TaskHandle_t sdcard_task_handle;
-static TaskHandle_t gui_task_handle;
-static TaskHandle_t task_manager_task_handle;
 
 /******************************************************************************
-
  External functions
  ******************************************************************************/
-extern void LCDCONF_EnableDave2D(void);
-
-extern void serial_terminal_task( void * pvParameters );
-extern void sdcard_task( void * pvParameters );
-extern void gui_task( void * pvParameters );
 
 /*******************************************************************************
  global variables and functions
 ********************************************************************************/
-int32_t wait_first_display(void);
-void firmware_version_read(char **ver_str);
-void main_task(void);
-
-extern WM_HWIN hWinSerialTerminalWindow;
-extern WM_HWIN hWinFirmwareUpdateViaSDCardWindow;
-extern WM_HWIN hWinTaskManagerWindow;
+void task_manager_task_handle( void * pvParameters );
 
 /******************************************************************************
- Function Name   : main
- Description     : Main task
+ Function Name   : serial_terminal_task
+ Description     : serial_terminal_task
  Arguments       : none
  Return value    : none
  ******************************************************************************/
-void main_task(void)
+void task_manager_task_handle( void * pvParameters )
 {
-    uint32_t bank_info;
-
-    /* enable MCU pins */
-    R_Pins_Create();
-
-    /* system timer initialization */
-    R_SYS_TIME_Open();
-
-    /* GUI initialization */
-    GUI_Exit();
-    GUI_Init();
-    LCDCONF_EnableDave2D();
-    WM_MULTIBUF_Enable(1);
-
-    /* flash initialization */
-    R_FLASH_Open();
-    R_FLASH_Control(FLASH_CMD_BANK_GET, &bank_info);
-
-    /* flash access semaphore creation */
-    xSemaphoreFlashAccess = xSemaphoreCreateMutex();
-    xSemaphoreGive(xSemaphoreFlashAccess);
-
-    /* serial terminal task creation */
-    xTaskCreate(serial_terminal_task, "terminal", 4096, &hWinSerialTerminalWindow, tskIDLE_PRIORITY, &serial_terminal_task_handle);
-
-    /* GUI task creation */
-    xTaskCreate(gui_task, "gui", 4096, NULL, configMAX_PRIORITIES - 1, &gui_task_handle);
-
-    /* sdcard task creation */
-    xTaskCreate(sdcard_task, "sdcard", configMINIMAL_STACK_SIZE, &hWinFirmwareUpdateViaSDCardWindow, tskIDLE_PRIORITY, &sdcard_task_handle);
-
-    /* task manager task creation */
-    xTaskCreate(sdcard_task, "sdcard", configMINIMAL_STACK_SIZE, &hWinTaskManagerWindow, tskIDLE_PRIORITY, &task_manager_task_handle);
-
-    /* main loop */
-    while(1)
-    {
-        vTaskDelay(1000);
-    }
+	
 }
-/******************************************************************************
- End of function main_task()
- ******************************************************************************/
-
-void firmware_version_read(char **ver_str)
-{
-    static char firmware_version[16];
-    sprintf(firmware_version, "v%d.%d.%d", APP_VERSION_MAJOR, APP_VERSION_MINOR, APP_VERSION_BUILD);
-    *ver_str = (char*)firmware_version;
-}
-
-/******************************************************************************
- End  Of File
- ******************************************************************************/
-
