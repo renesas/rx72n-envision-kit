@@ -1,31 +1,19 @@
 /*********************************************************************
-*                    SEGGER Microcontroller GmbH                     *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.50 - Graphical user interface for embedded applications **
+** emWin V5.42 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only  be used  in accordance  with  a license  and should  not be  re-
 distributed in any way. We appreciate your understanding and fairness.
-----------------------------------------------------------------------
-Licensing information
-Licensor:                 SEGGER Software GmbH
-Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
-Licensed SEGGER software: emWin
-License number:           GUI-00678
-License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
-License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
-----------------------------------------------------------------------
-Support and Update Agreement (SUA)
-SUA period:               2016-12-22 - 2019-12-31
-Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUI_Type.h
 Purpose     : Include file define the types used for GUI
@@ -117,11 +105,6 @@ typedef struct {
 typedef void * (* GUI_BITMAPSTREAM_CALLBACK)(GUI_BITMAPSTREAM_PARAM * pParam);
 
 typedef struct {
-  U16       Pos;
-  GUI_COLOR Color;
-} GUI_GRADIENT_INFO;
-
-typedef struct {
   int x,y;
   U8  Pressed;
   U8  Layer;
@@ -146,14 +129,13 @@ typedef struct {
   int NumImages;
 } GUI_GIF_INFO;
 
-#define GUI_REGISTER_INIT GUI_REGISTER_HOOK
-#define GUI_REGISTER_EXIT GUI_REGISTER_HOOK
+#define GUI_REGISTER_INIT GUI_REGISTER_EXIT
 
-typedef struct GUI_REGISTER_HOOK GUI_REGISTER_HOOK;
+typedef struct GUI_REGISTER_EXIT GUI_REGISTER_EXIT;
 
-struct GUI_REGISTER_HOOK {
+struct GUI_REGISTER_EXIT {
   void (* pfVoid)(void);
-  GUI_REGISTER_HOOK * pNext;
+  GUI_REGISTER_EXIT * pNext;
 };
 
 typedef struct {
@@ -596,7 +578,7 @@ typedef struct {
   int            LayerIndex;
   unsigned       NumPoints;
   GUI_TIMER_TIME TimeStamp;
-  PTR_ADDR       hInput;
+  GUI_HMEM       hInput;
 } GUI_MTOUCH_EVENT;
 
 //

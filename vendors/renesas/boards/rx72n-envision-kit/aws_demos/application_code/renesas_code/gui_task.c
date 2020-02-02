@@ -126,6 +126,8 @@ void callback_frame_window_to_main(int32_t id, int32_t event);
  ******************************************************************************/
 void gui_task( void * pvParameters )
 {
+	static uint32_t counter = 0;
+
 	/* GUI initialize complete */
 	gui_initialize_complete_flag = 1;
 
@@ -164,7 +166,6 @@ void gui_task( void * pvParameters )
 		vTaskDelay(10);
 	}
 
-	uint32_t counter = 0;
 	while(1)
 	{
 		main_10ms_emWin_update();

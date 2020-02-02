@@ -151,9 +151,16 @@ void serial_terminal_task( void * pvParameters )
     sci_cfg_t   sci_config;
     char tmp[2];
     tmp[1] = 0;
-    char sci_buffer[2048];
+    char *sci_buffer;
     uint32_t current_buffer_pointer = 0;
-    uint8_t command[16], arg1[256], arg2[256], arg3[256], arg4[256];
+    uint8_t *command, *arg1, *arg2, *arg3, *arg4;
+
+    sci_buffer = pvPortMalloc(2048);
+    command = pvPortMalloc(16);
+    arg1 = pvPortMalloc(256);
+    arg2 = pvPortMalloc(256);
+    arg3 = pvPortMalloc(256);
+    arg4 = pvPortMalloc(256);
 
     memset(sci_buffer, 0, sizeof(sci_buffer));
 

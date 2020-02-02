@@ -1,31 +1,19 @@
 /*********************************************************************
-*                    SEGGER Microcontroller GmbH                     *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.50 - Graphical user interface for embedded applications **
+** emWin V5.42 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only  be used  in accordance  with  a license  and should  not be  re-
 distributed in any way. We appreciate your understanding and fairness.
-----------------------------------------------------------------------
-Licensing information
-Licensor:                 SEGGER Software GmbH
-Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
-Licensed SEGGER software: emWin
-License number:           GUI-00678
-License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
-License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
-----------------------------------------------------------------------
-Support and Update Agreement (SUA)
-SUA period:               2016-12-22 - 2019-12-31
-Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUI_Private.h
 Purpose     : GUI internal declarations
@@ -185,13 +173,6 @@ typedef struct {
   GUI_HMEM               hUsage;
 } GUI_MEMDEV;
 
-typedef struct {
-  GUI_USAGE Public;
-  struct {
-    int BytesPerLine;
-  } Private;
-} GUI_USAGE_BM;
-
 #define      GUI_MEMDEV_LOCK_H(h) ((GUI_MEMDEV *)GUI_LOCK_H(h))
 
 void         GUI_MEMDEV__CopyFromLCD (GUI_MEMDEV_Handle hMem);
@@ -254,7 +235,6 @@ int  GUI_AA_Init_HiRes (int x0, int x1);
 void GUI_AA_Exit       (void);
 I16  GUI_AA_HiRes2Pixel(int HiRes);
 
-void GL_DrawCircleAA_HiRes(int x0, int y0, int r);
 void GL_FillCircleAA_HiRes (int x0, int y0, int r);
 void GL_FillEllipseAA_HiRes(int x0, int y0, int rx, int ry);
 
@@ -318,9 +298,6 @@ void GUI__DispLine         (const char * s, int Len, const GUI_RECT * pr);
 void GUI__AddSpaceHex      (U32 v, U8 Len, char ** ps);
 void GUI__CalcTextRect     (const char * pText, const GUI_RECT * pTextRectIn, GUI_RECT * pTextRectOut, int TextAlign);
 
-void GUI__DrawNonExistingCharacter(LCD_DRAWMODE DrawMode);
-int  GUI__GetNonExistingCharWidth (void);
-
 void GUI__ClearTextBackground(int xDist, int yDist);
 
 int  GUI__WrapGetNumCharsDisp       (const char * pText, int xSize, GUI_WRAPMODE WrapMode);
@@ -351,13 +328,6 @@ int  GUI__BIDI_IsNSM             (U16 Char);
 U16  GUI__BIDI_GetCursorCharacter(const char * s, int Index, int MaxNumChars, int * pIsRTL);
 int  GUI__BIDI_GetWordWrap       (const char * s, int xSize, int * pxDist);
 int  GUI__BIDI_GetCharWrap       (const char * s, int xSize);
-
-const char * GUI__NOBIDI_Log2VisBuffered   (const char * s, int * pMaxNumChars, int Mode);
-int          GUI__NOBIDI_GetCursorPosX     (const char * s, int MaxNumChars, int Index);
-int          GUI__NOBIDI_GetCursorPosChar  (const char * s, int MaxNumChars, int x);
-U16          GUI__NOBIDI_GetCursorCharacter(const char * s, int Index, int MaxNumChars, int * pIsRTL);
-int          GUI__NOBIDI_GetWordWrap       (const char * s, int xSize, int * pxDist);
-int          GUI__NOBIDI_GetCharWrap       (const char * s, int xSize);
 
 #if (GUI_USE_BIDI2)
 
@@ -392,7 +362,7 @@ int  GUI__BIDI_GetBaseDir        (void);
 
 #endif
 
-const char * GUI__BIDI_Log2VisBuffered(const char * s, int * pMaxNumChars, int Mode);
+const char * GUI__BIDI_Log2VisBuffered(const char * s, int * pMaxNumChars);
 
 extern int GUI__BIDI_Enabled;
 
@@ -404,7 +374,7 @@ extern int (* _pfGUI__BIDI_GetCharDir      )(const char * s, int NumChars, int I
 extern int (* _pfGUI__BIDI_IsNSM           )(U16 Char);
 
 /* BiDi-related function pointers */
-extern const char * (* GUI_CharLine_pfLog2Vis)(const char * s, int * pMaxNumChars, int Mode);
+extern const char * (* GUI_CharLine_pfLog2Vis)(const char * s, int * pMaxNumChars);
 
 extern int (* GUI__GetCursorPos_pfGetPosX)     (const char * s, int MaxNumChars, int Index);
 extern int (* GUI__GetCursorPos_pfGetPosChar)  (const char * s, int MaxNumChars, int x);
@@ -428,18 +398,27 @@ U32 GUI__Read32(const U8 ** ppData);
 
 /* Virtual screen support */
 void GUI__GetOrg(int * px, int * py);
+void GUI__SetOrgHook(void(* pfHook)(int x, int y));
 
 /* Timer support */
 int              GUI_TIMER__IsActive       (void);
 GUI_TIMER_TIME   GUI_TIMER__GetPeriod      (void);
-GUI_TIMER_HANDLE GUI_TIMER__GetFirstTimer  (PTR_ADDR * pContext);
-GUI_TIMER_HANDLE GUI_TIMER__GetNextTimerLin(GUI_TIMER_HANDLE hTimer, PTR_ADDR * pContext);
+GUI_TIMER_HANDLE GUI_TIMER__GetNextTimer   (GUI_TIMER_HANDLE hTimer, U32 * pContext);
+GUI_TIMER_HANDLE GUI_TIMER__GetFirstTimer  (U32 * pContext);
+GUI_TIMER_HANDLE GUI_TIMER__GetNextTimerLin(GUI_TIMER_HANDLE hTimer, U32 * pContext);
 
 /* Get function pointers for color conversion */
 tLCDDEV_Index2Color * GUI_GetpfIndex2ColorEx(int LayerIndex);
 tLCDDEV_Color2Index * GUI_GetpfColor2IndexEx(int LayerIndex);
 
 int GUI_GetBitsPerPixelEx(int LayerIndex);
+
+LCD_PIXELINDEX * LCD_GetpPalConvTable        (const LCD_LOGPALETTE * pLogPal);
+LCD_PIXELINDEX * LCD_GetpPalConvTableUncached(const LCD_LOGPALETTE * pLogPal);
+LCD_PIXELINDEX * LCD_GetpPalConvTableBM      (const LCD_LOGPALETTE * pLogPal, const GUI_BITMAP * pBitmap, int LayerIndex);
+
+/* Setting a function for converting a color palette to an array of index values */
+void GUI_SetFuncGetpPalConvTable(LCD_PIXELINDEX * (* pFunc)(const LCD_LOGPALETTE * pLogPal, const GUI_BITMAP * pBitmap, int LayerIndex));
 
 /*********************************************************************
 *
@@ -495,6 +474,7 @@ void GL_DrawHLine        (int y0, int x0, int x1);
 void GL_DrawPolygon      (const GUI_POINT * pPoints, int NumPoints, int x0, int y0);
 void GL_DrawPoint        (int x,  int y);
 void GL_DrawLine1        (int x0, int y0, int x1, int y1);
+void GL_DrawLine1Ex      (int x0, int y0, int x1, int y1, unsigned * pPixelCnt);
 void GL_DrawLineRel      (int dx, int dy);
 void GL_DrawLineTo       (int x,  int y);
 void GL_DrawLineToEx     (int x,  int y, unsigned * pPixelCnt);
@@ -518,10 +498,8 @@ void GL_SetDefault       (void);
 //
 extern void * (* GUI__pfMemset)(void * pDest, int Fill, size_t Cnt);
 extern void * (* GUI__pfMemcpy)(void * pDest, const void * pSrc, size_t Cnt);
-
-extern int    (* GUI__pfStrcmp)(const char *, const char *);
-extern size_t (* GUI__pfStrlen)(const char *);
-extern char * (* GUI__pfStrcpy)(char *, const char *);
+//extern void * (* GUI__pfMemset)(void * pDest, int Fill, unsigned Cnt);
+//extern void * (* GUI__pfMemcpy)(void * pDest, const void * pSrc, unsigned Cnt);
 //
 // Macros for typesave use of function pointers
 //
@@ -676,8 +654,6 @@ extern GUI_DRAWMEMDEV_FUNC   * GUI__pfDrawM565MemdevFunc;
 //
 extern GUI_DRAWBITMAP_FUNC * GUI__pfDrawAlphaBitmapFunc;
 extern GUI_DRAWBITMAP_FUNC * GUI__pfDrawM565BitmapFunc;
-
-extern U8 GUI__DrawStreamedBitmap;
 
 //
 // API list to be used for MultiBuffering

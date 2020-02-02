@@ -1,31 +1,19 @@
 /*********************************************************************
-*                    SEGGER Microcontroller GmbH                     *
+*                SEGGER Microcontroller GmbH & Co. KG                *
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2011  SEGGER Microcontroller GmbH & Co. KG       *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.50 - Graphical user interface for embedded applications **
+** emWin V5.12 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
-only  be used  in accordance  with  a license  and should  not be  re-
+only be used in accordance with a license and should not be re-
 distributed in any way. We appreciate your understanding and fairness.
-----------------------------------------------------------------------
-Licensing information
-Licensor:                 SEGGER Software GmbH
-Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
-Licensed SEGGER software: emWin
-License number:           GUI-00678
-License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
-License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
-----------------------------------------------------------------------
-Support and Update Agreement (SUA)
-SUA period:               2016-12-22 - 2019-12-31
-Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : GUI.h
 Purpose     : GUI API include file
@@ -62,7 +50,7 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #define GUI_COUNTOF(a)          (sizeof(a) / sizeof(a[0]))
 #define GUI_MIN(a,b)            (((a) < (b)) ? (a) : (b))
 #define GUI_MAX(a,b)            (((a) > (b)) ? (a) : (b))
-#define GUI_ZEROFILL(p, Size)   (memset(p, 0, Size))
+#define GUI_ZEROFILL(p, Size)   (memset(p, 0, Size)) /**/
 
 /*********************************************************************
 *
@@ -234,6 +222,7 @@ struct GUI_CONTEXT {
   //
   LCD_PIXELINDEX * LCD_pBkColorIndex;
   LCD_PIXELINDEX * LCD_pColorIndex;
+  LCD_PIXELINDEX * LCD_pAColorIndex;
   //
   // Variables in WM module
   //
@@ -345,7 +334,6 @@ int  GUI_SOFTLAYER_MULTIBUF_Enable  (int OnOff);
 *       General routines
 */
 void             GUI_Exit                 (void);
-const GUI_RECT * GUI_GetClipRect          (void);
 GUI_COLOR        GUI_GetDefaultBkColor    (void);
 GUI_COLOR        GUI_GetDefaultColor      (void);
 const GUI_FONT * GUI_GetDefaultFont       (void);
@@ -355,7 +343,6 @@ const char *     GUI_GetVersionString     (void);
 int              GUI_Init                 (void);
 int              GUI_IsInitialized        (void);
 void             GUI_SetAfterInitHook     (void (* pFunc)(void));
-void             GUI_SetPreInitHook       (void (* pFunc)(void));
 void             GUI_RegisterAfterInitHook(void (* pFunc)(void), GUI_REGISTER_INIT * pRegisterInit);
 void             GUI_RestoreContext       (const GUI_CONTEXT * pContext);
 void             GUI_SaveContext          (GUI_CONTEXT * pContext);
@@ -379,16 +366,13 @@ void             MainTask                 (void);
 */
 void GUI_SetpfMemset(void * (* pFunc)(void * pDest, int c, size_t Cnt));
 void GUI_SetpfMemcpy(void * (* pFunc)(void * pDest, const void * pSrc, size_t Cnt));
-void GUI_SetpfStrcmp(int    (* pFunc)(const char *, const char *));
-void GUI_SetpfStrlen(size_t (* pFunc)(const char *));
-void GUI_SetpfStrcpy(char * (* pFunc)(char *, const char *));
 
 /*********************************************************************
 *
 *       Rectangle helper functions
 */
 void GUI_AddRect        (GUI_RECT * pDest, const GUI_RECT * pRect, int Dist);
-int  GUI_RectsIntersect (const GUI_RECT * pr0, const GUI_RECT * pr1);
+int  GUI_RectsIntersect(const GUI_RECT * pr0, const GUI_RECT * pr1);
 void GUI_MoveRect       (GUI_RECT * pRect, int x, int y);
 void GUI_MergeRect      (GUI_RECT * pDest, const GUI_RECT * pr0, const GUI_RECT * pr1);
 int  GUI__IntersectRects(GUI_RECT * pDest, const GUI_RECT * pr0, const GUI_RECT * pr1);
@@ -399,26 +383,25 @@ void GUI__ReduceRect    (GUI_RECT * pDest, const GUI_RECT * pRect, int Dist);
 *
 *       Misc helper functions
 */
-I32              GUI__ATan2                (I32 x, I32 y, I32 * ph);
-I32              GUI__ASinHQ               (I32 SinHQ);
-int              GUI__CompactPixelIndices  (LCD_PIXELINDEX * pBuffer, int NumPixels, int BitsPerPixel);
-int              GUI__CompactPixelIndicesEx(LCD_PIXELINDEX * pBuffer, int NumPixels, int BitsPerPixel, const LCD_API_COLOR_CONV * pColorConvAPI);
-int              GUI__ConvertColor2Index   (LCD_PIXELINDEX * pBuffer, int NumPixels, int BitsPerPixel, const LCD_API_COLOR_CONV * pColorConvAPI, void * pResult);
-void             GUI__Config               (void);
-I32              GUI__CosHQ                (I32 Ang1000);
-int              GUI__DivideRound          (int a, int b);
-I32              GUI__DivideRound32        (I32 a, I32 b);
-void             GUI__DrawTwinArc2         (int xl, int xr, int y0,         int r, GUI_COLOR ColorR0, GUI_COLOR ColorR1, GUI_COLOR ColorFill);
-void             GUI__DrawTwinArc4         (int x0, int y0, int x1, int y1, int r, GUI_COLOR ColorR0, GUI_COLOR ColorR1, GUI_COLOR ColorFill);
-void             GUI__ExpandPixelIndices   (void * pBuffer, int NumPixels, int BitsPerPixel);
-void             GUI__ExpandPixelIndicesEx (void * pBuffer, int NumPixels, int BitsPerPixel, const LCD_API_COLOR_CONV * pColorConvAPI);
-void             GUI__FillTrippleArc       (int x0, int y0, int Size, GUI_COLOR ColorR0, GUI_COLOR ColorR1, GUI_COLOR ColorR2, GUI_COLOR ColorFill);
-const GUI_RECT * GUI__GetClipRect          (void);
-void             GUI__RegisterExit         (GUI_REGISTER_EXIT * pRegisterExit);
-void             GUI__RegisterInit         (GUI_REGISTER_INIT * pRegisterInit);
-int              GUI__SetText              (GUI_HMEM * phText, const char * s);
-I32              GUI__SinHQ                (I32 Ang1000);
-I32              GUI__sqrt32               (I32 Square);
+I32  GUI__ATan2(I32 x, I32 y, I32 * ph);
+I32  GUI__ASinHQ(I32 SinHQ);
+int  GUI__CompactPixelIndices  (LCD_PIXELINDEX * pBuffer, int NumPixels, int BitsPerPixel);
+int  GUI__CompactPixelIndicesEx(LCD_PIXELINDEX * pBuffer, int NumPixels, int BitsPerPixel, const LCD_API_COLOR_CONV * pColorConvAPI);
+int  GUI__ConvertColor2Index   (LCD_PIXELINDEX * pBuffer, int NumPixels, int BitsPerPixel, const LCD_API_COLOR_CONV * pColorConvAPI, void * pResult);
+void GUI__Config(void);
+I32  GUI__CosHQ(I32 Ang1000);
+int  GUI__DivideRound     (int a, int b);
+I32  GUI__DivideRound32   (I32 a, I32 b);
+void GUI__ExpandPixelIndices   (void * pBuffer, int NumPixels, int BitsPerPixel);
+void GUI__ExpandPixelIndicesEx (void * pBuffer, int NumPixels, int BitsPerPixel, const LCD_API_COLOR_CONV * pColorConvAPI);
+int  GUI__SetText(GUI_HMEM * phText, const char * s);
+I32  GUI__SinHQ(I32 Ang1000);
+I32  GUI__sqrt32(I32 Square);
+void GUI__DrawTwinArc2(int xl, int xr, int y0,         int r, GUI_COLOR ColorR0, GUI_COLOR ColorR1, GUI_COLOR ColorFill);
+void GUI__DrawTwinArc4(int x0, int y0, int x1, int y1, int r, GUI_COLOR ColorR0, GUI_COLOR ColorR1, GUI_COLOR ColorFill);
+void GUI__FillTrippleArc(int x0, int y0, int Size, GUI_COLOR ColorR0, GUI_COLOR ColorR1, GUI_COLOR ColorR2, GUI_COLOR ColorFill);
+void GUI__RegisterExit(GUI_REGISTER_EXIT * pRegisterExit);
+void GUI__RegisterInit(GUI_REGISTER_INIT * pRegisterInit);
 
 /*********************************************************************
 *
@@ -442,8 +425,8 @@ unsigned  GUI_GetPixelIndex  (int x, int y);
 
 void      GUI_SetBkColor   (GUI_COLOR);
 void      GUI_SetColor     (GUI_COLOR);
-void      GUI_SetBkColorIndex(LCD_PIXELINDEX Index);
-void      GUI_SetColorIndex  (LCD_PIXELINDEX Index);
+void      GUI_SetBkColorIndex(int Index);
+void      GUI_SetColorIndex(int Index);
 
 U8        GUI_SetPenSize   (U8 Size);
 U8        GUI_SetPenShape  (U8 Shape);
@@ -494,55 +477,53 @@ void GUI_ErrorOut4(const char * s, I32 p0, I32 p1, I32 p2, I32 p3);
 *
 *       2d - GL
 */
-void GUI_Clear               (void);
-void GUI_ClearRect           (int x0, int y0, int x1, int y1);
-void GUI_ClearRectEx         (const GUI_RECT * pRect);
-void GUI_CopyRect            (int x0, int y0, int x1, int y1, int dx, int dy);
-void GUI_DrawArc             (int x0, int y0, int rx, int ry, int a0, int a1);
-void GUI_DrawBitmap          (const GUI_BITMAP * pBM, int x0, int y0);
-void GUI_DrawBitmapMag       (const GUI_BITMAP * pBM, int x0, int y0, int XMul, int YMul);
-void GUI_DrawBitmapEx        (const GUI_BITMAP * pBM, int x0, int y0, int xCenter, int yCenter, int xMag, int yMag);
-void GUI_DrawBitmapExp       (int x0, int y0, int XSize, int YSize, int XMul,  int YMul, int BitsPerPixel, int BytesPerLine, const U8 * pData, const GUI_LOGPALETTE * pPal);
-void GUI_DrawBitmapHWAlpha   (const GUI_BITMAP * pBM, int x0, int y0);
-void GUI_DrawCircle          (int x0, int y0, int r);
-void GUI_DrawEllipse         (int x0, int y0, int rx, int ry);
-void GUI_DrawGradientH       (int x0, int y0, int x1, int y1, GUI_COLOR Color0, GUI_COLOR Color1);
-void GUI_DrawGradientMH      (int x0, int y0, int y1, GUI_GRADIENT_INFO * pGradientInfo, int NumColors);
-void GUI_DrawGradientV       (int x0, int y0, int x1, int y1, GUI_COLOR Color0, GUI_COLOR Color1);
-void GUI_DrawGradientMV      (int x0, int y0, int x1, GUI_GRADIENT_INFO * pGradientInfo, int NumColors);
+void GUI_Clear            (void);
+void GUI_ClearRect        (int x0, int y0, int x1, int y1);
+void GUI_ClearRectEx      (const GUI_RECT * pRect);
+void GUI_CopyRect         (int x0, int y0, int x1, int y1, int dx, int dy);
+void GUI_DrawArc          (int x0, int y0, int rx, int ry, int a0, int a1);
+void GUI_DrawBitmap       (const GUI_BITMAP * pBM, int x0, int y0);
+void GUI_DrawBitmapMag    (const GUI_BITMAP * pBM, int x0, int y0, int XMul, int YMul);
+void GUI_DrawBitmapEx     (const GUI_BITMAP * pBM, int x0, int y0, int xCenter, int yCenter, int xMag, int yMag);
+void GUI_DrawBitmapExp    (int x0, int y0, int XSize, int YSize, int XMul,  int YMul, int BitsPerPixel, int BytesPerLine, const U8 * pData, const GUI_LOGPALETTE * pPal);
+void GUI_DrawBitmapHWAlpha(const GUI_BITMAP * pBM, int x0, int y0);
+void GUI_DrawCircle       (int x0, int y0, int r);
+void GUI_DrawEllipse      (int x0, int y0, int rx, int ry);
+void GUI_DrawGradientH    (int x0, int y0, int x1, int y1, GUI_COLOR Color0, GUI_COLOR Color1);
+void GUI_DrawGradientV    (int x0, int y0, int x1, int y1, GUI_COLOR Color0, GUI_COLOR Color1);
 void GUI_DrawGradientRoundedH(int x0, int y0, int x1, int y1, int rd, GUI_COLOR Color0, GUI_COLOR Color1);
 void GUI_DrawGradientRoundedV(int x0, int y0, int x1, int y1, int rd, GUI_COLOR Color0, GUI_COLOR Color1);
-void GUI_DrawGraph           (I16 * pay, int NumPoints, int x0, int y0);
-void GUI_DrawGraphEx         (I16 * pay, int NumPoints, int x0, int y0, int Numerator, int Denominator, int MirrorX);
-void GUI_DrawHLine           (int y0, int x0, int x1);
-void GUI_DrawLine            (int x0, int y0, int x1, int y1);
-void GUI_DrawLineRel         (int dx, int dy);
-void GUI_DrawLineTo          (int x, int y);
-void GUI_DrawPie             (int x0, int y0, int r, int a0, int a1, int Type);
-void GUI_DrawPixel           (int x, int y);
-void GUI_DrawPoint           (int x, int y);
-void GUI_DrawPolygon         (const GUI_POINT * pPoints, int NumPoints, int x0, int y0);
-void GUI_DrawPolyLine        (const GUI_POINT * pPoints, int NumPoints, int x0, int y0);
-void GUI_DrawFocusRect       (const GUI_RECT  * pRect, int Dist);
-void GUI_DrawRect            (int x0, int y0, int x1, int y1);
-void GUI_DrawRectEx          (const GUI_RECT * pRect);
-void GUI_DrawRoundedFrame    (int x0, int y0, int x1, int y1, int r, int w);
-void GUI_DrawRoundedRect     (int x0, int y0, int x1, int y1, int r);
-void GUI_DrawVLine           (int x0, int y0, int y1);
-void GUI_FillCircle          (int x0, int y0, int r);
-void GUI_FillEllipse         (int x0, int y0, int rx, int ry);
-void GUI_FillPolygon         (const GUI_POINT * pPoints, int NumPoints, int x0, int y0);
-void GUI_FillRect            (int x0, int y0, int x1, int y1);
-void GUI_FillRectEx          (const GUI_RECT * pRect);
-void GUI_FillRoundedFrame    (int x0, int y0, int x1, int y1, int r, int w);
-void GUI_FillRoundedRect     (int x0, int y0, int x1, int y1, int r);
-void GUI_FillRoundedRectB    (int x0, int y0, int x1, int y1, int r);
-void GUI_FillRoundedRectT    (int x0, int y0, int x1, int y1, int r);
-void GUI_GetClientRect       (GUI_RECT * pRect);
-void GUI_InvertRect          (int x0, int y0, int x1, int y1);
-void GUI_MoveRel             (int dx, int dy);
-void GUI_MoveTo              (int x, int y);
-void GUI_SetAlphaMask8888    (U32 OrMask, U32 AndMask);
+void GUI_DrawGraph        (I16 * pay, int NumPoints, int x0, int y0);
+void GUI_DrawGraphEx      (I16 * pay, int NumPoints, int x0, int y0, int Numerator, int Denominator, int MirrorX);
+void GUI_DrawHLine        (int y0, int x0, int x1);
+void GUI_DrawLine         (int x0, int y0, int x1, int y1);
+void GUI_DrawLineRel      (int dx, int dy);
+void GUI_DrawLineTo       (int x, int y);
+void GUI_DrawPie          (int x0, int y0, int r, int a0, int a1, int Type);
+void GUI_DrawPixel        (int x, int y);
+void GUI_DrawPoint        (int x, int y);
+void GUI_DrawPolygon      (const GUI_POINT * pPoints, int NumPoints, int x0, int y0);
+void GUI_DrawPolyLine     (const GUI_POINT * pPoints, int NumPoints, int x0, int y0);
+void GUI_DrawFocusRect    (const GUI_RECT  * pRect, int Dist);
+void GUI_DrawRect         (int x0, int y0, int x1, int y1);
+void GUI_DrawRectEx       (const GUI_RECT * pRect);
+void GUI_DrawRoundedFrame (int x0, int y0, int x1, int y1, int r, int w);
+void GUI_DrawRoundedRect  (int x0, int y0, int x1, int y1, int r);
+void GUI_DrawVLine        (int x0, int y0, int y1);
+void GUI_FillCircle       (int x0, int y0, int r);
+void GUI_FillEllipse      (int x0, int y0, int rx, int ry);
+void GUI_FillPolygon      (const GUI_POINT * pPoints, int NumPoints, int x0, int y0);
+void GUI_FillRect         (int x0, int y0, int x1, int y1);
+void GUI_FillRectEx       (const GUI_RECT * pRect);
+void GUI_FillRoundedFrame (int x0, int y0, int x1, int y1, int r, int w);
+void GUI_FillRoundedRect  (int x0, int y0, int x1, int y1, int r);
+void GUI_FillRoundedRectB (int x0, int y0, int x1, int y1, int r);
+void GUI_FillRoundedRectT (int x0, int y0, int x1, int y1, int r);
+void GUI_GetClientRect    (GUI_RECT * pRect);
+void GUI_InvertRect       (int x0, int y0, int x1, int y1);
+void GUI_MoveRel          (int dx, int dy);
+void GUI_MoveTo           (int x, int y);
+void GUI_SetAlphaMask8888 (U32 OrMask, U32 AndMask);
 
 /*********************************************************************
 *
@@ -799,7 +780,6 @@ int   GUI_GetYDistOfFont        (const GUI_FONT * pFont);
 int   GUI_GetTextAlign          (void);
 int   GUI_GetTextMode           (void);
 char  GUI_IsInFont              (const GUI_FONT * pFont, U16 c);
-U8    GUI_SetClearTextRectMode  (unsigned OnOff);
 int   GUI_SetTextAlign          (int Align);
 int   GUI_SetTextMode           (int Mode);
 char  GUI_SetTextStyle          (char Style);
@@ -809,7 +789,6 @@ const GUI_FONT * GUI_SetFont    (const GUI_FONT * pNewFont);
 char  GUI_GotoXY                (int x, int y);
 char  GUI_GotoX                 (int x);
 char  GUI_GotoY                 (int y);
-void  GUI_ShowMissingCharacters (int OnOff);
 int   GUI_WrapGetNumLines       (const char * pText, int xSize, GUI_WRAPMODE WrapMode);
 int   GUI_WrapGetPositions      (const char * pText, int xSize, GUI_WRAPMODE WrapMode, int * aPos, int NumItems);
 void  GUI_WrapSetSeparators     (const U16 * pSep, int NumSeps);
@@ -848,7 +827,6 @@ void GUI_TTF_SetCacheSize (unsigned MaxFaces, unsigned MaxSizes, U32 MaxBytes);
 *
 *       Resource file support
 */
-void         GUI_LANG_Clear            (void);
 int          GUI_LANG_GetLang          (void);
 int          GUI_LANG_GetNumItems      (int IndexLang);
 const char * GUI_LANG_GetText          (int IndexText);
@@ -867,17 +845,16 @@ U16          GUI_LANG_SetSep           (U16 Sep);
 *
 *       Unicode support
 */
-int  GUI_UC_ConvertUC2UTF8(const U16 * s, int Len, char * pBuffer, int BufferSize);
-int  GUI_UC_ConvertUTF82UC(const char * s, int Len, U16 * pBuffer, int BufferSize);
-int  GUI_UC_EnableBIDI    (int OnOff);
-int  GUI_UC_Encode        (char * s, U16 Char);
-int  GUI_UC_GetCharSize   (const char * s);
-U16  GUI_UC_GetCharCode   (const char * s);
-void GUI_UC_SetEncodeNone (void);
-void GUI_UC_SetEncodeSJIS (void);
-void GUI_UC_SetEncodeUTF8 (void);
-void GUI_UC_SetBaseDir    (int Dir);  // Only available with new version of BIDI algorithm (GUI_USE_BIDI2 == 1)
-int  GUI_UC_GetBaseDir    (void);     // Only available with new version of BIDI algorithm (GUI_USE_BIDI2 == 1)
+int   GUI_UC_ConvertUC2UTF8(const U16 * s, int Len, char * pBuffer, int BufferSize);
+int   GUI_UC_ConvertUTF82UC(const char * s, int Len, U16 * pBuffer, int BufferSize);
+int   GUI_UC_EnableBIDI    (int OnOff);
+int   GUI_UC_Encode        (char * s, U16 Char);
+int   GUI_UC_GetCharSize   (const char * s);
+U16   GUI_UC_GetCharCode   (const char * s);
+void  GUI_UC_SetEncodeNone (void);
+void  GUI_UC_SetEncodeUTF8 (void);
+void  GUI_UC_SetBaseDir    (int Dir);  // Only available with new version of BIDI algorithm
+int   GUI_UC_GetBaseDir    (void);     // Only available with new version of BIDI algorithm
 
 void GUI_UC_DispString(const U16 * s);
 void GUI_UC2DB (U16 Code, U8 * pOut);
@@ -890,9 +867,6 @@ U16  GUI_DB2UC (U8 Byte0, U8 Byte1);
 #define GUI_BIDI_BASEDIR_LTR  0
 #define GUI_BIDI_BASEDIR_RTL  1
 #define GUI_BIDI_BASEDIR_AUTO 2
-
-#define GUI_BIDI_LOG2VIS_CALC     0
-#define GUI_BIDI_LOG2VIS_GETCACHE 1
 
 /*********************************************************************
 *
@@ -1007,7 +981,6 @@ int  GUI_MEMDEV_DrawAuto  (GUI_AUTODEV * pAutoDev, GUI_AUTODEV_INFO * pAutoDevIn
 
 /* Create a memory device which is compatible to the selected LCD */
 GUI_MEMDEV_Handle GUI_MEMDEV_Create       (int x0, int y0, int xSize, int ySize);
-GUI_MEMDEV_Handle GUI_MEMDEV_CreateCopy   (GUI_MEMDEV_Handle hMemSrc);
 GUI_MEMDEV_Handle GUI_MEMDEV_CreateEx     (int x0, int y0, int xSize, int ySize, int Flags);
 GUI_MEMDEV_Handle GUI_MEMDEV_CreateFixed  (int x0, int y0, int xSize, int ySize, int Flags,
                                            const GUI_DEVICE_API     * pDeviceAPI,
@@ -1023,9 +996,7 @@ void GUI_MEMDEV_CopyToLCDAA          (GUI_MEMDEV_Handle hMem);
 void GUI_MEMDEV_CopyToLCDAt          (GUI_MEMDEV_Handle hMem, int x, int y);
 int  GUI_MEMDEV_CompareWithLCD       (GUI_MEMDEV_Handle hMem, int * px, int * py, int * pExp, int * pAct);
 void GUI_MEMDEV_Delete               (GUI_MEMDEV_Handle MemDev);
-void GUI_MEMDEV_DrawBitmap32HQHR     (const GUI_BITMAP * pBm, int x0HR, int y0HR);
 void GUI_MEMDEV_DrawPerspectiveX     (GUI_MEMDEV_Handle hMem, int x, int y, int h0, int h1, int dx, int dy);
-void GUI_MEMDEV_DrawDevice32HQHR     (GUI_MEMDEV_Handle hMemSrc, I32 x0HR, int y0HR);
 int  GUI_MEMDEV_GetXPos              (GUI_MEMDEV_Handle hMem);
 int  GUI_MEMDEV_GetXSize             (GUI_MEMDEV_Handle hMem);
 int  GUI_MEMDEV_GetYPos              (GUI_MEMDEV_Handle hMem);
@@ -1089,23 +1060,19 @@ typedef struct {
   U32 UserAlpha;
 } GUI_ALPHA_STATE;
 
-#define GUI_MAKE_ALPHA(Alpha, Color)  ((U32)(((U32)Alpha << 24) | (Color & 0xFFFFFF)))
+#define GUI_MAKE_ALPHA(Alpha, Color) ((U32)(((U32)Alpha << 24) | (Color & 0xFFFFFF)))
 
-unsigned     GUI_EnableAlpha          (unsigned OnOff);
-U32          GUI_RestoreUserAlpha     (GUI_ALPHA_STATE * pAlphaState);
-U8           GUI_GetAlphaEx           (int LayerIndex);
-U8           GUI_GetAlpha             (void);
-unsigned     GUI_SetAlpha             (U8 Alpha);
-U32          GUI_SetUserAlpha         (GUI_ALPHA_STATE * pAlphaState, U32 UserAlpha);
-void      (* GUI_SetFuncAlphaBlending (void (* pfAlphaBlending)(LCD_COLOR *, LCD_COLOR *, LCD_COLOR *, U32)))
-                                                               (LCD_COLOR *, LCD_COLOR *, LCD_COLOR *, U32);
-LCD_COLOR (* GUI_SetFuncMixColors     (LCD_COLOR (* pFunc)(LCD_COLOR Color, LCD_COLOR BkColor, U8 Intens)))
-                                                          (LCD_COLOR Color, LCD_COLOR BkColor, U8 Intens);
-void      (* GUI_SetFuncMixColorsBulk (void (* pFunc)(U32 * pFG, U32 * pBG, U32 * pDst, unsigned OffFG, unsigned OffBG, unsigned OffDest, unsigned xSize, unsigned ySize, U8 Intens)))
-                                                     (U32 * pFG, U32 * pBG, U32 * pDst, unsigned OffFG, unsigned OffBG, unsigned OffDest, unsigned xSize, unsigned ySize, U8 Intens);
-unsigned     GUI_PreserveTrans        (unsigned OnOff);
-void         GUI_AlphaEnableFillRectHW(int OnOff);
-
+unsigned     GUI_EnableAlpha         (unsigned OnOff);
+U32          GUI_RestoreUserAlpha    (GUI_ALPHA_STATE * pAlphaState);
+unsigned     GUI_SetAlpha            (U8 Alpha);
+U32          GUI_SetUserAlpha        (GUI_ALPHA_STATE * pAlphaState, U32 UserAlpha);
+void      (* GUI_SetFuncAlphaBlending(void (* pfAlphaBlending)(LCD_COLOR *, LCD_COLOR *, LCD_COLOR *, U32)))
+                                                              (LCD_COLOR *, LCD_COLOR *, LCD_COLOR *, U32);
+LCD_COLOR (* GUI_SetFuncMixColors    (LCD_COLOR (* pFunc)(LCD_COLOR Color, LCD_COLOR BkColor, U8 Intens)))
+                                                         (LCD_COLOR Color, LCD_COLOR BkColor, U8 Intens);
+void      (* GUI_SetFuncMixColorsBulk(void (* pFunc)(U32 * pFG, U32 * pBG, U32 * pDst, unsigned OffFG, unsigned OffBG, unsigned OffDest, unsigned xSize, unsigned ySize, U8 Intens)))
+                                                    (U32 * pFG, U32 * pBG, U32 * pDst, unsigned OffFG, unsigned OffBG, unsigned OffDest, unsigned xSize, unsigned ySize, U8 Intens);
+unsigned     GUI_PreserveTrans       (unsigned OnOff);
 
 /*********************************************************************
 *
@@ -1214,19 +1181,6 @@ int             GUI_ANIM_Exec   (GUI_ANIM_HANDLE hAnim);
 void            GUI_ANIM_Start  (GUI_ANIM_HANDLE hAnim);
 void            GUI_ANIM_StartEx(GUI_ANIM_HANDLE hAnim, int NumLoops, void (* pfOnDelete)(void * pVoid));
 void            GUI_ANIM_Stop   (GUI_ANIM_HANDLE hAnim);
-/*********************************************************************
-*
-*       YUV device
-*/
-int   GUI_YUV_Create        (void);
-int   GUI_YUV_CreateEx      (int LayerIndex, unsigned Period);
-int   GUI_YUV_Delete        (void);
-int   GUI_YUV_DeleteEx      (int LayerIndex);
-U32 * GUI_YUV_GetpData      (U32 * pSize);
-U32 * GUI_YUV_GetpDataEx    (int LayerIndex, U32 * pSize);
-void  GUI_YUV_InvalidateArea(int x, int y, int xSize, int ySize);
-int   GUI_YUV_SetPeriodEx   (int LayerIndex, unsigned Period);
-int   GUI_YUV_SetPeriod     (unsigned Period);
 
 /*********************************************************************
 *
@@ -1382,13 +1336,13 @@ typedef GUI_HMEM GUI_TIMER_HANDLE;
 
 typedef struct {
   GUI_TIMER_TIME   Time;
-  PTR_ADDR         Context;
+  U32              Context;
   GUI_TIMER_HANDLE hTimer;
 } GUI_TIMER_MESSAGE;
 
 typedef void GUI_TIMER_CALLBACK(/*const*/ GUI_TIMER_MESSAGE* pTM);
 
-GUI_TIMER_HANDLE GUI_TIMER_Create   (GUI_TIMER_CALLBACK * cb, GUI_TIMER_TIME Time, PTR_ADDR Context, U16 Flags);
+GUI_TIMER_HANDLE GUI_TIMER_Create   (GUI_TIMER_CALLBACK * cb, GUI_TIMER_TIME Time, U32 Context, U16 Flags);
 void             GUI_TIMER_Delete   (GUI_TIMER_HANDLE hObj);
 
 /* Methods changing properties */
@@ -1468,6 +1422,12 @@ void GUI_SetWaitEventTimedFunc(GUI_WAIT_EVENT_TIMED_FUNC pfWaitEventTimed);
 
 /*********************************************************************
 *
+*       Joystick, generic
+*/
+void GUI_JOYSTICK_StoreState(const GUI_PID_STATE * pState);
+
+/*********************************************************************
+*
 *       PID  (Pointer input device ... mouse/touch)
 */
 void GUI_PID_StoreState     (const GUI_PID_STATE * pState);
@@ -1475,7 +1435,6 @@ int  GUI_PID_GetState       (      GUI_PID_STATE * pState);
 void GUI_PID_GetCurrentState(      GUI_PID_STATE * pState);
 int  GUI_PID_IsEmpty        (void);
 int  GUI_PID_IsPressed      (void);
-void GUI_PID_RegisterHook   (GUI_REGISTER_HOOK * pRegisterHook);
 void GUI_PID_SetHook        (void (* pfHook)(      GUI_PID_STATE *));  // Public
 void GUI_PID__SetHook       (void (* pfHook)(const GUI_PID_STATE *));  // Private
 
@@ -1533,20 +1492,6 @@ void GUI_TOUCH_X_ActivateY(void);
 void GUI_TOUCH_X_Disable  (void);
 int  GUI_TOUCH_X_MeasureX (void);
 int  GUI_TOUCH_X_MeasureY (void);
-
-/*********************************************************************
-*
-*       LCD: Palette conversion table
-*
-* Please note: These functions were originally in GUI_Private.h but
-* were also used in several LCDConf.c. Since GUI_Private.h is not
-* shipped any more with object code we moved these functions here.
-*/
-LCD_PIXELINDEX * LCD_GetpPalConvTable        (const LCD_LOGPALETTE * pLogPal);
-LCD_PIXELINDEX * LCD_GetpPalConvTableUncached(const LCD_LOGPALETTE * pLogPal);
-LCD_PIXELINDEX * LCD_GetpPalConvTableBM      (const LCD_LOGPALETTE * pLogPal, const GUI_BITMAP * pBitmap, int LayerIndex);
-// Setting a function for converting a color palette to an array of index values
-void GUI_SetFuncGetpPalConvTable(LCD_PIXELINDEX * (* pFunc)(const LCD_LOGPALETTE * pLogPal, const GUI_BITMAP * pBitmap, int LayerIndex));
 
 /*********************************************************************
 *
@@ -1694,8 +1639,6 @@ extern const tGUI_XBF_APIList GUI_XBF_APIList_Prop_AA4_Ext;
 #define GUI_KEY_UP                17
 #define GUI_KEY_RIGHT             18
 #define GUI_KEY_DOWN              19
-#define GUI_KEY_PGUP              20
-#define GUI_KEY_PGDOWN            21
 #define GUI_KEY_HOME              23
 #define GUI_KEY_END               24
 #define GUI_KEY_SHIFT             25
@@ -1704,6 +1647,8 @@ extern const tGUI_XBF_APIList GUI_XBF_APIList_Prop_AA4_Ext;
 #define GUI_KEY_INSERT            29
 #define GUI_KEY_DELETE            30
 #define GUI_KEY_SPACE             32
+#define GUI_KEY_PGUP              33
+#define GUI_KEY_PGDOWN            34
 
 #define GUI_KEY_F1                40
 #define GUI_KEY_F2                41
@@ -1889,17 +1834,6 @@ extern const tGUI_XBF_APIList GUI_XBF_APIList_Prop_AA4_Ext;
 #define GUI_ID_KNOB8      0x308
 #define GUI_ID_KNOB9      0x309
 
-#define GUI_ID_ROTARY0    0x310
-#define GUI_ID_ROTARY1    0x311
-#define GUI_ID_ROTARY2    0x312
-#define GUI_ID_ROTARY3    0x313
-#define GUI_ID_ROTARY4    0x314
-#define GUI_ID_ROTARY5    0x315
-#define GUI_ID_ROTARY6    0x316
-#define GUI_ID_ROTARY7    0x317
-#define GUI_ID_ROTARY8    0x318
-#define GUI_ID_ROTARY9    0x319
-
 #define GUI_ID_SWIPELIST0 0x320
 #define GUI_ID_SWIPELIST1 0x321
 #define GUI_ID_SWIPELIST2 0x322
@@ -1946,7 +1880,89 @@ extern const tGUI_XBF_APIList GUI_XBF_APIList_Prop_AA4_Ext;
 *
 *       Standard colors
 */
-#define GUI_INVALID_COLOR ((((U32)GUI_TRANS_BYTE) << 24) | 0x00ABCDEFul)  /* Invalid color (transparency + determined color) */
+#if (GUI_USE_ARGB)
+  #define GUI_BLUE          0xFF0000FF
+  #define GUI_GREEN         0xFF00FF00
+  #define GUI_RED           0xFFFF0000
+  #define GUI_CYAN          0xFF00FFFF
+  #define GUI_MAGENTA       0xFFFF00FF
+  #define GUI_YELLOW        0xFFFFFF00
+  #define GUI_LIGHTBLUE     0xFF8080FF
+  #define GUI_LIGHTGREEN    0xFF80FF80
+  #define GUI_LIGHTRED      0xFFFF8080
+  #define GUI_LIGHTCYAN     0xFF80FFFF
+  #define GUI_LIGHTMAGENTA  0xFFFF80FF
+  #define GUI_LIGHTYELLOW   0xFFFFFF80
+  #define GUI_DARKBLUE      0xFF000080
+  #define GUI_DARKGREEN     0xFF008000
+  #define GUI_DARKRED       0xFF800000
+  #define GUI_DARKCYAN      0xFF008080
+  #define GUI_DARKMAGENTA   0xFF800080
+  #define GUI_DARKYELLOW    0xFF808000
+  #define GUI_WHITE         0xFFFFFFFF
+  #define GUI_LIGHTGRAY     0xFFD3D3D3
+  #define GUI_GRAY          0xFF808080
+  #define GUI_DARKGRAY      0xFF404040
+  #define GUI_BLACK         0xFF000000
+  #define GUI_BROWN         0xFFA52A2A
+  #define GUI_ORANGE        0xFFFFA500
+  #define GUI_TRANSPARENT   0x00000000
+
+  #define GUI_GRAY_3F       0xFF3F3F3F
+  #define GUI_GRAY_50       0xFF505050
+  #define GUI_GRAY_55       0xFF555555
+  #define GUI_GRAY_60       0xFF606060
+  #define GUI_GRAY_7C       0xFF7C7C7C
+  #define GUI_GRAY_9A       0xFF9A9A9A
+  #define GUI_GRAY_AA       0xFFAAAAAA
+  #define GUI_GRAY_C0       0xFFC0C0C0
+  #define GUI_GRAY_C8       0xFFC8C8C8
+  #define GUI_GRAY_D0       0xFFD0D0D0
+  #define GUI_GRAY_E7       0xFFE7E7E7
+  #define GUI_BLUE_98       0xFF000098
+#else
+  #define GUI_BLUE          0x00FF0000
+  #define GUI_GREEN         0x0000FF00
+  #define GUI_RED           0x000000FF
+  #define GUI_CYAN          0x00FFFF00
+  #define GUI_MAGENTA       0x00FF00FF
+  #define GUI_YELLOW        0x0000FFFF
+  #define GUI_LIGHTBLUE     0x00FF8080
+  #define GUI_LIGHTGREEN    0x0080FF80
+  #define GUI_LIGHTRED      0x008080FF
+  #define GUI_LIGHTCYAN     0x00FFFF80
+  #define GUI_LIGHTMAGENTA  0x00FF80FF
+  #define GUI_LIGHTYELLOW   0x0080FFFF
+  #define GUI_DARKBLUE      0x00800000
+  #define GUI_DARKGREEN     0x00008000
+  #define GUI_DARKRED       0x00000080
+  #define GUI_DARKCYAN      0x00808000
+  #define GUI_DARKMAGENTA   0x00800080
+  #define GUI_DARKYELLOW    0x00008080
+  #define GUI_WHITE         0x00FFFFFF
+  #define GUI_LIGHTGRAY     0x00D3D3D3
+  #define GUI_GRAY          0x00808080
+  #define GUI_DARKGRAY      0x00404040
+  #define GUI_BLACK         0x00000000
+  #define GUI_BROWN         0x002A2AA5
+  #define GUI_ORANGE        0x0000A5FF
+  #define GUI_TRANSPARENT   0xFF000000
+
+  #define GUI_GRAY_3F       0x003F3F3F
+  #define GUI_GRAY_50       0x00505050
+  #define GUI_GRAY_55       0x00555555
+  #define GUI_GRAY_60       0x00606060
+  #define GUI_GRAY_7C       0x007C7C7C
+  #define GUI_GRAY_9A       0x009A9A9A
+  #define GUI_GRAY_AA       0x00AAAAAA
+  #define GUI_GRAY_C0       0x00C0C0C0
+  #define GUI_GRAY_C8       0x00C8C8C8
+  #define GUI_GRAY_D0       0x00D0D0D0
+  #define GUI_GRAY_E7       0x00E7E7E7
+  #define GUI_BLUE_98       0x00980000
+#endif
+
+#define GUI_INVALID_COLOR 0xFFFFFFF      /* Invalid color - more than 24 bits */
 
 #if (GUI_USE_ARGB)
   #define GUI_MAKE_COLOR(ABGR)  (((((U32)ABGR) & 0xFF000000ul) ^ 0xFF000000ul) | ((((U32)ABGR) & 0x00FF0000ul) >> 16) | (((U32)ABGR) & 0x0000FF00ul) | ((((U32)ABGR) & 0x000000FFul) << 16))
@@ -1962,45 +1978,6 @@ extern const tGUI_XBF_APIList GUI_XBF_APIList_Prop_AA4_Ext;
   #define GUI_TRANS_BYTE 0xFF
 #endif
 
-#define GUI_BLUE          GUI_MAKE_COLOR(0x00FF0000)
-#define GUI_GREEN         GUI_MAKE_COLOR(0x0000FF00)
-#define GUI_RED           GUI_MAKE_COLOR(0x000000FF)
-#define GUI_CYAN          GUI_MAKE_COLOR(0x00FFFF00)
-#define GUI_MAGENTA       GUI_MAKE_COLOR(0x00FF00FF)
-#define GUI_YELLOW        GUI_MAKE_COLOR(0x0000FFFF)
-#define GUI_LIGHTBLUE     GUI_MAKE_COLOR(0x00FF8080)
-#define GUI_LIGHTGREEN    GUI_MAKE_COLOR(0x0080FF80)
-#define GUI_LIGHTRED      GUI_MAKE_COLOR(0x008080FF)
-#define GUI_LIGHTCYAN     GUI_MAKE_COLOR(0x00FFFF80)
-#define GUI_LIGHTMAGENTA  GUI_MAKE_COLOR(0x00FF80FF)
-#define GUI_LIGHTYELLOW   GUI_MAKE_COLOR(0x0080FFFF)
-#define GUI_DARKBLUE      GUI_MAKE_COLOR(0x00800000)
-#define GUI_DARKGREEN     GUI_MAKE_COLOR(0x00008000)
-#define GUI_DARKRED       GUI_MAKE_COLOR(0x00000080)
-#define GUI_DARKCYAN      GUI_MAKE_COLOR(0x00808000)
-#define GUI_DARKMAGENTA   GUI_MAKE_COLOR(0x00800080)
-#define GUI_DARKYELLOW    GUI_MAKE_COLOR(0x00008080)
-#define GUI_WHITE         GUI_MAKE_COLOR(0x00FFFFFF)
-#define GUI_LIGHTGRAY     GUI_MAKE_COLOR(0x00D3D3D3)
-#define GUI_GRAY          GUI_MAKE_COLOR(0x00808080)
-#define GUI_DARKGRAY      GUI_MAKE_COLOR(0x00404040)
-#define GUI_BLACK         GUI_MAKE_COLOR(0x00000000)
-#define GUI_BROWN         GUI_MAKE_COLOR(0x002A2AA5)
-#define GUI_ORANGE        GUI_MAKE_COLOR(0x0000A5FF)
-#define GUI_TRANSPARENT   GUI_MAKE_COLOR(0xFF000000)
-
-#define GUI_GRAY_3F       GUI_MAKE_COLOR(0x003F3F3F)
-#define GUI_GRAY_50       GUI_MAKE_COLOR(0x00505050)
-#define GUI_GRAY_55       GUI_MAKE_COLOR(0x00555555)
-#define GUI_GRAY_60       GUI_MAKE_COLOR(0x00606060)
-#define GUI_GRAY_7C       GUI_MAKE_COLOR(0x007C7C7C)
-#define GUI_GRAY_9A       GUI_MAKE_COLOR(0x009A9A9A)
-#define GUI_GRAY_AA       GUI_MAKE_COLOR(0x00AAAAAA)
-#define GUI_GRAY_C0       GUI_MAKE_COLOR(0x00C0C0C0)
-#define GUI_GRAY_C8       GUI_MAKE_COLOR(0x00C8C8C8)
-#define GUI_GRAY_D0       GUI_MAKE_COLOR(0x00D0D0D0)
-#define GUI_GRAY_E7       GUI_MAKE_COLOR(0x00E7E7E7)
-#define GUI_BLUE_98       GUI_MAKE_COLOR(0x00980000)
 
 /*********************************************************************
 *
@@ -2217,28 +2194,18 @@ extern GUI_CONST_STORAGE GUI_FONT GUI_FontComic24B_ASCII, GUI_FontComic24B_1;
 #define GUI_TM_REV           LCD_DRAWMODE_REV
 
 /* Text alignment flags, horizontal */
-#define GUI_TA_LEFT       (0)
-#define GUI_TA_HORIZONTAL (3 << 0)
-#define GUI_TA_RIGHT      (1 << 0)
-#define GUI_TA_CENTER     (2 << 0)
-#define GUI_TA_HCENTER    GUI_TA_CENTER  /* easier to remember :-)  */
+#define GUI_TA_LEFT        (0)
+#define GUI_TA_HORIZONTAL  (3<<0)
+#define GUI_TA_RIGHT       (1<<0)
+#define GUI_TA_CENTER      (2<<0)
+#define GUI_TA_HCENTER     GUI_TA_CENTER  /* easier to remember :-)  */
 
 /* Text alignment flags, vertical */
 #define GUI_TA_TOP        (0)
-#define GUI_TA_VERTICAL   (3 << 2)
-#define GUI_TA_BOTTOM     (1 << 2)
-#define GUI_TA_BASELINE   (2 << 2)
-#define GUI_TA_VCENTER    (3 << 2)
-
-/* General alignment flags */
-#define GUI_ALIGN_LEFT       GUI_TA_LEFT
-#define GUI_ALIGN_HCENTER    GUI_TA_HCENTER
-#define GUI_ALIGN_RIGHT      GUI_TA_RIGHT
-#define GUI_ALIGN_TOP        GUI_TA_TOP
-#define GUI_ALIGN_VCENTER    GUI_TA_VCENTER
-#define GUI_ALIGN_BOTTOM     GUI_TA_BOTTOM
-#define GUI_ALIGN_HORIZONTAL GUI_TA_HORIZONTAL
-#define GUI_ALIGN_VERTICAL   GUI_TA_VERTICAL
+#define GUI_TA_VERTICAL   (3<<2)
+#define GUI_TA_BOTTOM     (1<<2)
+#define GUI_TA_BASELINE   (2<<2)
+#define GUI_TA_VCENTER    (3<<2)
 
 /* General orientation flags */
 #define GUI_MIRROR_X (1 << 0)
@@ -2265,262 +2232,262 @@ extern GUI_CONST_STORAGE GUI_FONT GUI_FontComic24B_ASCII, GUI_FontComic24B_1;
 *
 *       Defines for constants
 */
-#define	________	0x0
-#define	_______X	0x1
-#define	______X_	0x2
-#define	______XX	0x3
-#define	_____X__	0x4
-#define	_____X_X	0x5
-#define	_____XX_	0x6
-#define	_____XXX	0x7
-#define	____X___	0x8
-#define	____X__X	0x9
-#define	____X_X_	0xa
-#define	____X_XX	0xb
-#define	____XX__	0xc
-#define	____XX_X	0xd
-#define	____XXX_	0xe
-#define	____XXXX	0xf
-#define	___X____	0x10
-#define	___X___X	0x11
-#define	___X__X_	0x12
-#define	___X__XX	0x13
-#define	___X_X__	0x14
-#define	___X_X_X	0x15
-#define	___X_XX_	0x16
-#define	___X_XXX	0x17
-#define	___XX___	0x18
-#define	___XX__X	0x19
-#define	___XX_X_	0x1a
-#define	___XX_XX	0x1b
-#define	___XXX__	0x1c
-#define	___XXX_X	0x1d
-#define	___XXXX_	0x1e
-#define	___XXXXX	0x1f
-#define	__X_____	0x20
-#define	__X____X	0x21
-#define	__X___X_	0x22
-#define	__X___XX	0x23
-#define	__X__X__	0x24
-#define	__X__X_X	0x25
-#define	__X__XX_	0x26
-#define	__X__XXX	0x27
-#define	__X_X___	0x28
-#define	__X_X__X	0x29
-#define	__X_X_X_	0x2a
-#define	__X_X_XX	0x2b
-#define	__X_XX__	0x2c
-#define	__X_XX_X	0x2d
-#define	__X_XXX_	0x2e
-#define	__X_XXXX	0x2f
-#define	__XX____	0x30
-#define	__XX___X	0x31
-#define	__XX__X_	0x32
-#define	__XX__XX	0x33
-#define	__XX_X__	0x34
-#define	__XX_X_X	0x35
-#define	__XX_XX_	0x36
-#define	__XX_XXX	0x37
-#define	__XXX___	0x38
-#define	__XXX__X	0x39
-#define	__XXX_X_	0x3a
-#define	__XXX_XX	0x3b
-#define	__XXXX__	0x3c
-#define	__XXXX_X	0x3d
-#define	__XXXXX_	0x3e
-#define	__XXXXXX	0x3f
-#define	_X______	0x40
-#define	_X_____X	0x41
-#define	_X____X_	0x42
-#define	_X____XX	0x43
-#define	_X___X__	0x44
-#define	_X___X_X	0x45
-#define	_X___XX_	0x46
-#define	_X___XXX	0x47
-#define	_X__X___	0x48
-#define	_X__X__X	0x49
-#define	_X__X_X_	0x4a
-#define	_X__X_XX	0x4b
-#define	_X__XX__	0x4c
-#define	_X__XX_X	0x4d
-#define	_X__XXX_	0x4e
-#define	_X__XXXX	0x4f
-#define	_X_X____	0x50
-#define	_X_X___X	0x51
-#define	_X_X__X_	0x52
-#define	_X_X__XX	0x53
-#define	_X_X_X__	0x54
-#define	_X_X_X_X	0x55
-#define	_X_X_XX_	0x56
-#define	_X_X_XXX	0x57
-#define	_X_XX___	0x58
-#define	_X_XX__X	0x59
-#define	_X_XX_X_	0x5a
-#define	_X_XX_XX	0x5b
-#define	_X_XXX__	0x5c
-#define	_X_XXX_X	0x5d
-#define	_X_XXXX_	0x5e
-#define	_X_XXXXX	0x5f
-#define	_XX_____	0x60
-#define	_XX____X	0x61
-#define	_XX___X_	0x62
-#define	_XX___XX	0x63
-#define	_XX__X__	0x64
-#define	_XX__X_X	0x65
-#define	_XX__XX_	0x66
-#define	_XX__XXX	0x67
-#define	_XX_X___	0x68
-#define	_XX_X__X	0x69
-#define	_XX_X_X_	0x6a
-#define	_XX_X_XX	0x6b
-#define	_XX_XX__	0x6c
-#define	_XX_XX_X	0x6d
-#define	_XX_XXX_	0x6e
-#define	_XX_XXXX	0x6f
-#define	_XXX____	0x70
-#define	_XXX___X	0x71
-#define	_XXX__X_	0x72
-#define	_XXX__XX	0x73
-#define	_XXX_X__	0x74
-#define	_XXX_X_X	0x75
-#define	_XXX_XX_	0x76
-#define	_XXX_XXX	0x77
-#define	_XXXX___	0x78
-#define	_XXXX__X	0x79
-#define	_XXXX_X_	0x7a
-#define	_XXXX_XX	0x7b
-#define	_XXXXX__	0x7c
-#define	_XXXXX_X	0x7d
-#define	_XXXXXX_	0x7e
-#define	_XXXXXXX	0x7f
-#define	X_______	0x80
-#define	X______X	0x81
-#define	X_____X_	0x82
-#define	X_____XX	0x83
-#define	X____X__	0x84
-#define	X____X_X	0x85
-#define	X____XX_	0x86
-#define	X____XXX	0x87
-#define	X___X___	0x88
-#define	X___X__X	0x89
-#define	X___X_X_	0x8a
-#define	X___X_XX	0x8b
-#define	X___XX__	0x8c
-#define	X___XX_X	0x8d
-#define	X___XXX_	0x8e
-#define	X___XXXX	0x8f
-#define	X__X____	0x90
-#define	X__X___X	0x91
-#define	X__X__X_	0x92
-#define	X__X__XX	0x93
-#define	X__X_X__	0x94
-#define	X__X_X_X	0x95
-#define	X__X_XX_	0x96
-#define	X__X_XXX	0x97
-#define	X__XX___	0x98
-#define	X__XX__X	0x99
-#define	X__XX_X_	0x9a
-#define X__XX_XX	0x9b
-#define X__XXX__	0x9c
-#define X__XXX_X	0x9d
-#define	X__XXXX_	0x9e
-#define	X__XXXXX	0x9f
-#define	X_X_____	0xa0
-#define	X_X____X	0xa1
-#define	X_X___X_	0xa2
-#define	X_X___XX	0xa3
-#define	X_X__X__	0xa4
-#define	X_X__X_X	0xa5
-#define	X_X__XX_	0xa6
-#define	X_X__XXX	0xa7
-#define	X_X_X___	0xa8
-#define	X_X_X__X	0xa9
-#define	X_X_X_X_	0xaa
-#define	X_X_X_XX	0xab
-#define	X_X_XX__	0xac
-#define	X_X_XX_X	0xad
-#define	X_X_XXX_	0xae
-#define	X_X_XXXX	0xaf
-#define	X_XX____	0xb0
-#define X_XX___X	0xb1
-#define	X_XX__X_	0xb2
-#define	X_XX__XX	0xb3
-#define	X_XX_X__	0xb4
-#define	X_XX_X_X	0xb5
-#define	X_XX_XX_	0xb6
-#define	X_XX_XXX	0xb7
-#define	X_XXX___	0xb8
-#define	X_XXX__X	0xb9
-#define	X_XXX_X_	0xba
-#define	X_XXX_XX	0xbb
-#define	X_XXXX__	0xbc
-#define	X_XXXX_X	0xbd
-#define	X_XXXXX_	0xbe
-#define	X_XXXXXX	0xbf
-#define	XX______	0xc0
-#define	XX_____X	0xc1
-#define	XX____X_	0xc2
-#define	XX____XX	0xc3
-#define	XX___X__	0xc4
-#define	XX___X_X	0xc5
-#define	XX___XX_	0xc6
-#define	XX___XXX	0xc7
-#define	XX__X___	0xc8
-#define	XX__X__X	0xc9
-#define	XX__X_X_	0xca
-#define	XX__X_XX	0xcb
-#define	XX__XX__	0xcc
-#define	XX__XX_X	0xcd
-#define	XX__XXX_	0xce
-#define XX__XXXX	0xcf
-#define	XX_X____	0xd0
-#define	XX_X___X	0xd1
-#define	XX_X__X_	0xd2
-#define	XX_X__XX	0xd3
-#define	XX_X_X__	0xd4
-#define	XX_X_X_X	0xd5
-#define	XX_X_XX_	0xd6
-#define	XX_X_XXX	0xd7
-#define	XX_XX___	0xd8
-#define	XX_XX__X	0xd9
-#define	XX_XX_X_	0xda
-#define	XX_XX_XX	0xdb
-#define	XX_XXX__	0xdc
-#define	XX_XXX_X	0xdd
-#define	XX_XXXX_	0xde
-#define	XX_XXXXX	0xdf
-#define	XXX_____	0xe0
-#define	XXX____X	0xe1
-#define	XXX___X_	0xe2
-#define	XXX___XX	0xe3
-#define	XXX__X__	0xe4
-#define	XXX__X_X	0xe5
-#define	XXX__XX_	0xe6
-#define	XXX__XXX	0xe7
-#define	XXX_X___	0xe8
-#define	XXX_X__X	0xe9
-#define	XXX_X_X_	0xea
-#define	XXX_X_XX	0xeb
-#define	XXX_XX__	0xec
-#define	XXX_XX_X	0xed
-#define	XXX_XXX_	0xee
-#define	XXX_XXXX	0xef
-#define	XXXX____	0xf0
-#define	XXXX___X	0xf1
-#define	XXXX__X_	0xf2
-#define	XXXX__XX	0xf3
-#define	XXXX_X__	0xf4
-#define	XXXX_X_X	0xf5
-#define	XXXX_XX_	0xf6
-#define	XXXX_XXX	0xf7
-#define	XXXXX___	0xf8
-#define	XXXXX__X	0xf9
-#define	XXXXX_X_	0xfa
-#define	XXXXX_XX	0xfb
-#define	XXXXXX__	0xfc
-#define	XXXXXX_X	0xfd
-#define	XXXXXXX_	0xfe
-#define	XXXXXXXX	0xff
+#define ________  0x0
+#define _______X  0x1
+#define ______X_  0x2
+#define ______XX  0x3
+#define _____X__  0x4
+#define _____X_X  0x5
+#define _____XX_  0x6
+#define _____XXX  0x7
+#define ____X___  0x8
+#define ____X__X  0x9
+#define ____X_X_  0xa
+#define ____X_XX  0xb
+#define ____XX__  0xc
+#define ____XX_X  0xd
+#define ____XXX_  0xe
+#define ____XXXX  0xf
+#define ___X____  0x10
+#define ___X___X  0x11
+#define ___X__X_  0x12
+#define ___X__XX  0x13
+#define ___X_X__  0x14
+#define ___X_X_X  0x15
+#define ___X_XX_  0x16
+#define ___X_XXX  0x17
+#define ___XX___  0x18
+#define ___XX__X  0x19
+#define ___XX_X_  0x1a
+#define ___XX_XX  0x1b
+#define ___XXX__  0x1c
+#define ___XXX_X  0x1d
+#define ___XXXX_  0x1e
+#define ___XXXXX  0x1f
+#define __X_____  0x20
+#define __X____X  0x21
+#define __X___X_  0x22
+#define __X___XX  0x23
+#define __X__X__  0x24
+#define __X__X_X  0x25
+#define __X__XX_  0x26
+#define __X__XXX  0x27
+#define __X_X___  0x28
+#define __X_X__X  0x29
+#define __X_X_X_  0x2a
+#define __X_X_XX  0x2b
+#define __X_XX__  0x2c
+#define __X_XX_X  0x2d
+#define __X_XXX_  0x2e
+#define __X_XXXX  0x2f
+#define __XX____  0x30
+#define __XX___X  0x31
+#define __XX__X_  0x32
+#define __XX__XX  0x33
+#define __XX_X__  0x34
+#define __XX_X_X  0x35
+#define __XX_XX_  0x36
+#define __XX_XXX  0x37
+#define __XXX___  0x38
+#define __XXX__X  0x39
+#define __XXX_X_  0x3a
+#define __XXX_XX  0x3b
+#define __XXXX__  0x3c
+#define __XXXX_X  0x3d
+#define __XXXXX_  0x3e
+#define __XXXXXX  0x3f
+#define _X______  0x40
+#define _X_____X  0x41
+#define _X____X_  0x42
+#define _X____XX  0x43
+#define _X___X__  0x44
+#define _X___X_X  0x45
+#define _X___XX_  0x46
+#define _X___XXX  0x47
+#define _X__X___  0x48
+#define _X__X__X  0x49
+#define _X__X_X_  0x4a
+#define _X__X_XX  0x4b
+#define _X__XX__  0x4c
+#define _X__XX_X  0x4d
+#define _X__XXX_  0x4e
+#define _X__XXXX  0x4f
+#define _X_X____  0x50
+#define _X_X___X  0x51
+#define _X_X__X_  0x52
+#define _X_X__XX  0x53
+#define _X_X_X__  0x54
+#define _X_X_X_X  0x55
+#define _X_X_XX_  0x56
+#define _X_X_XXX  0x57
+#define _X_XX___  0x58
+#define _X_XX__X  0x59
+#define _X_XX_X_  0x5a
+#define _X_XX_XX  0x5b
+#define _X_XXX__  0x5c
+#define _X_XXX_X  0x5d
+#define _X_XXXX_  0x5e
+#define _X_XXXXX  0x5f
+#define _XX_____  0x60
+#define _XX____X  0x61
+#define _XX___X_  0x62
+#define _XX___XX  0x63
+#define _XX__X__  0x64
+#define _XX__X_X  0x65
+#define _XX__XX_  0x66
+#define _XX__XXX  0x67
+#define _XX_X___  0x68
+#define _XX_X__X  0x69
+#define _XX_X_X_  0x6a
+#define _XX_X_XX  0x6b
+#define _XX_XX__  0x6c
+#define _XX_XX_X  0x6d
+#define _XX_XXX_  0x6e
+#define _XX_XXXX  0x6f
+#define _XXX____  0x70
+#define _XXX___X  0x71
+#define _XXX__X_  0x72
+#define _XXX__XX  0x73
+#define _XXX_X__  0x74
+#define _XXX_X_X  0x75
+#define _XXX_XX_  0x76
+#define _XXX_XXX  0x77
+#define _XXXX___  0x78
+#define _XXXX__X  0x79
+#define _XXXX_X_  0x7a
+#define _XXXX_XX  0x7b
+#define _XXXXX__  0x7c
+#define _XXXXX_X  0x7d
+#define _XXXXXX_  0x7e
+#define _XXXXXXX  0x7f
+#define X_______  0x80
+#define X______X  0x81
+#define X_____X_  0x82
+#define X_____XX  0x83
+#define X____X__  0x84
+#define X____X_X  0x85
+#define X____XX_  0x86
+#define X____XXX  0x87
+#define X___X___  0x88
+#define X___X__X  0x89
+#define X___X_X_  0x8a
+#define X___X_XX  0x8b
+#define X___XX__  0x8c
+#define X___XX_X  0x8d
+#define X___XXX_  0x8e
+#define X___XXXX  0x8f
+#define X__X____  0x90
+#define X__X___X  0x91
+#define X__X__X_  0x92
+#define X__X__XX  0x93
+#define X__X_X__  0x94
+#define X__X_X_X  0x95
+#define X__X_XX_  0x96
+#define X__X_XXX  0x97
+#define X__XX___  0x98
+#define X__XX__X  0x99
+#define X__XX_X_  0x9a
+#define X__XX_XX  0x9b
+#define X__XXX__  0x9c
+#define X__XXX_X  0x9d
+#define X__XXXX_  0x9e
+#define X__XXXXX  0x9f
+#define X_X_____  0xa0
+#define X_X____X  0xa1
+#define X_X___X_  0xa2
+#define X_X___XX  0xa3
+#define X_X__X__  0xa4
+#define X_X__X_X  0xa5
+#define X_X__XX_  0xa6
+#define X_X__XXX  0xa7
+#define X_X_X___  0xa8
+#define X_X_X__X  0xa9
+#define X_X_X_X_  0xaa
+#define X_X_X_XX  0xab
+#define X_X_XX__  0xac
+#define X_X_XX_X  0xad
+#define X_X_XXX_  0xae
+#define X_X_XXXX  0xaf
+#define X_XX____  0xb0
+#define X_XX___X  0xb1
+#define X_XX__X_  0xb2
+#define X_XX__XX  0xb3
+#define X_XX_X__  0xb4
+#define X_XX_X_X  0xb5
+#define X_XX_XX_  0xb6
+#define X_XX_XXX  0xb7
+#define X_XXX___  0xb8
+#define X_XXX__X  0xb9
+#define X_XXX_X_  0xba
+#define X_XXX_XX  0xbb
+#define X_XXXX__  0xbc
+#define X_XXXX_X  0xbd
+#define X_XXXXX_  0xbe
+#define X_XXXXXX  0xbf
+#define XX______  0xc0
+#define XX_____X  0xc1
+#define XX____X_  0xc2
+#define XX____XX  0xc3
+#define XX___X__  0xc4
+#define XX___X_X  0xc5
+#define XX___XX_  0xc6
+#define XX___XXX  0xc7
+#define XX__X___  0xc8
+#define XX__X__X  0xc9
+#define XX__X_X_  0xca
+#define XX__X_XX  0xcb
+#define XX__XX__  0xcc
+#define XX__XX_X  0xcd
+#define XX__XXX_  0xce
+#define XX__XXXX  0xcf
+#define XX_X____  0xd0
+#define XX_X___X  0xd1
+#define XX_X__X_  0xd2
+#define XX_X__XX  0xd3
+#define XX_X_X__  0xd4
+#define XX_X_X_X  0xd5
+#define XX_X_XX_  0xd6
+#define XX_X_XXX  0xd7
+#define XX_XX___  0xd8
+#define XX_XX__X  0xd9
+#define XX_XX_X_  0xda
+#define XX_XX_XX  0xdb
+#define XX_XXX__  0xdc
+#define XX_XXX_X  0xdd
+#define XX_XXXX_  0xde
+#define XX_XXXXX  0xdf
+#define XXX_____  0xe0
+#define XXX____X  0xe1
+#define XXX___X_  0xe2
+#define XXX___XX  0xe3
+#define XXX__X__  0xe4
+#define XXX__X_X  0xe5
+#define XXX__XX_  0xe6
+#define XXX__XXX  0xe7
+#define XXX_X___  0xe8
+#define XXX_X__X  0xe9
+#define XXX_X_X_  0xea
+#define XXX_X_XX  0xeb
+#define XXX_XX__  0xec
+#define XXX_XX_X  0xed
+#define XXX_XXX_  0xee
+#define XXX_XXXX  0xef
+#define XXXX____  0xf0
+#define XXXX___X  0xf1
+#define XXXX__X_  0xf2
+#define XXXX__XX  0xf3
+#define XXXX_X__  0xf4
+#define XXXX_X_X  0xf5
+#define XXXX_XX_  0xf6
+#define XXXX_XXX  0xf7
+#define XXXXX___  0xf8
+#define XXXXX__X  0xf9
+#define XXXXX_X_  0xfa
+#define XXXXX_XX  0xfb
+#define XXXXXX__  0xfc
+#define XXXXXX_X  0xfd
+#define XXXXXXX_  0xfe
+#define XXXXXXXX  0xff
 
 /*********************************************************************
 *
