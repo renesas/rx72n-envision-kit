@@ -39,6 +39,22 @@
 #include "r_tfat_driver_rx_if.h"
 #include "r_sys_time_rx_if.h"
 
+/* for using C standard library */
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+/* for using Segger emWin */
+#include "GUI.h"
+#include "DIALOG.h"
+
+/* for using Amazon FreeRTOS */
+#include "FreeRTOS.h"
+#include "aws_application_version.h"
+
+/* for RX72N Envision Kit system common header */
+#include "rx72n_envision_kit_system.h"
+
 /*******************************************************************************
 Imported global variables and functions (from other files)
 *******************************************************************************/
@@ -66,9 +82,15 @@ extern void firmware_update_update_file_search(void);
 extern void R_SDHI_PinSetTransfer(void);
 extern void R_SDHI_PinSetInit(void);
 extern void software_reset(void);
+extern void display_update_sd_stat(WM_HWIN hWin, int8_t sd_stat);
 
 void sdcard_task( void * pvParameters )
 {
+	TASK_INFO *task_info = (WM_HWIN *)pvParameters;
+
+    /* wait completing gui initializing */
+    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+
     sdc_sd_status_t sdc_sd_status = SDC_SD_SUCCESS;
     static sdc_sd_status_t sdc_sd_card_detection = SDC_SD_ERR;
     static sdc_sd_status_t previous_sdc_sd_card_detection = SDC_SD_ERR;
@@ -98,7 +120,7 @@ void sdcard_task( void * pvParameters )
             previous_sdc_sd_card_detection = sdc_sd_card_detection;
             if(SDC_SD_SUCCESS == sdc_sd_card_detection)
             {
-                printf("Detected attached SD card.\n");
+//                display_update_sd_stat(task_argument->hWin_firmware_update_via_sd_card, 0);	/* 0 means attach */
                 r_sdc_sdmem_demo_power_on(g_sdc_sd_card_no);
                 R_SDHI_PinSetTransfer();
                 R_SDC_SD_IntCallback(g_sdc_sd_card_no, r_sdc_sd_callback);
@@ -114,6 +136,7 @@ void sdcard_task( void * pvParameters )
             }
             else
             {
+//                display_update_sd_stat(task_argument->hWin_firmware_update_via_sd_card, 1);	/* 1 means detach */
                 previous_sdc_sd_card_detection = sdc_sd_card_detection;
                 if(SDC_SD_SUCCESS != sdc_sd_card_detection)
                 {
@@ -208,7 +231,7 @@ sdc_sd_status_t r_sdc_sd_callback(int32_t channel)
 static void R_error(uint8_t err_code)
 {
     uint8_t    i= 1;
-    printf("!!!!! TFAT Error. !!!!!\n");
+	/* TFAT error, nothing to do */
     switch (err_code)
     {
         case 1:

@@ -56,8 +56,6 @@ typedef struct _packet_block_for_queue
 */
 
 // USER START (Optionally insert additional static data)
-static TaskHandle_t xTask;
-static QueueHandle_t xQueue;
 // USER END
 
 /*********************************************************************

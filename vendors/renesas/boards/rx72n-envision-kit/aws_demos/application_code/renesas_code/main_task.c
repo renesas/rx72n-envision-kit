@@ -53,9 +53,13 @@
 #include "FreeRTOS.h"
 #include "aws_application_version.h"
 
+/* for RX72N Envision Kit system common header */
+#include "rx72n_envision_kit_system.h"
+
 /**********************************************************************************************************************
 Typedef definitions
 **********************************************************************************************************************/
+#define RX72N_ENVISION_KIT_TASKS_STACK	4096
 
 /******************************************************************************
  External variables
@@ -70,6 +74,8 @@ static TaskHandle_t sdcard_task_handle;
 static TaskHandle_t gui_task_handle;
 static TaskHandle_t task_manager_task_handle;
 
+static TASK_INFO task_info;
+
 /******************************************************************************
 
  External functions
@@ -79,17 +85,16 @@ extern void LCDCONF_EnableDave2D(void);
 extern void serial_terminal_task( void * pvParameters );
 extern void sdcard_task( void * pvParameters );
 extern void gui_task( void * pvParameters );
+extern void task_manager_task( void * pvParameters );
+extern void display_syslog_putstring(WM_HWIN hWin_handle, char *string);
 
 /*******************************************************************************
  global variables and functions
 ********************************************************************************/
 int32_t wait_first_display(void);
 void firmware_version_read(char **ver_str);
+void amazon_freertos_syslog_putstring(char *string);
 void main_task(void);
-
-extern WM_HWIN hWinSerialTerminalWindow;
-extern WM_HWIN hWinFirmwareUpdateViaSDCardWindow;
-extern WM_HWIN hWinTaskManagerWindow;
 
 /******************************************************************************
  Function Name   : main
@@ -121,17 +126,28 @@ void main_task(void)
     xSemaphoreFlashAccess = xSemaphoreCreateMutex();
     xSemaphoreGive(xSemaphoreFlashAccess);
 
+    task_info.main_task_handle = xTaskGetCurrentTaskHandle();
+
     /* serial terminal task creation */
-    xTaskCreate(serial_terminal_task, "terminal", 4096, &hWinSerialTerminalWindow, tskIDLE_PRIORITY, &serial_terminal_task_handle);
+    xTaskCreate(serial_terminal_task, "terminal", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.serial_terminal_task_handle);
 
     /* GUI task creation */
-    xTaskCreate(gui_task, "gui", 4096, NULL, configMAX_PRIORITIES - 1, &gui_task_handle);
+    xTaskCreate(gui_task, "gui", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, configMAX_PRIORITIES, &task_info.gui_task_handle);
 
     /* sdcard task creation */
-    xTaskCreate(sdcard_task, "sdcard", configMINIMAL_STACK_SIZE, &hWinFirmwareUpdateViaSDCardWindow, tskIDLE_PRIORITY, &sdcard_task_handle);
+    xTaskCreate(sdcard_task, "sdcard", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.sdcard_task_handle);
 
     /* task manager task creation */
-    xTaskCreate(sdcard_task, "sdcard", configMINIMAL_STACK_SIZE, &hWinTaskManagerWindow, tskIDLE_PRIORITY, &task_manager_task_handle);
+    xTaskCreate(task_manager_task, "task_manager", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.task_manager_task_handle);
+
+    /* wait completing gui initializing */
+    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+
+    /* notify completing GUI initialization and first touch to each tasks */
+	xTaskNotifyGive(serial_terminal_task_handle);
+	xTaskNotifyGive(sdcard_task_handle);
+	xTaskNotifyGive(task_manager_task_handle);
+
 
     /* main loop */
     while(1)
@@ -148,6 +164,11 @@ void firmware_version_read(char **ver_str)
     static char firmware_version[16];
     sprintf(firmware_version, "v%d.%d.%d", APP_VERSION_MAJOR, APP_VERSION_MINOR, APP_VERSION_BUILD);
     *ver_str = (char*)firmware_version;
+}
+
+void amazon_freertos_syslog_putstring(char *string)
+{
+	display_syslog_putstring(task_info.hWin_system_log, string);
 }
 
 /******************************************************************************

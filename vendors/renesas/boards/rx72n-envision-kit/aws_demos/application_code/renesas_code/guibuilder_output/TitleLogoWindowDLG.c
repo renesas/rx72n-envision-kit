@@ -539,7 +539,6 @@ static const U8 _acImage_1[13480] = {
 
 // USER START (Optionally insert additional static data)
 extern void firmware_version_read(char **versionstr);
-extern void goto_user_program_screen(void);
 extern void delete_window_to_main(WM_HWIN delete_handle);
 
 extern volatile int32_t first_touch_wait_flag;

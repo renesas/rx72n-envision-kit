@@ -15,11 +15,11 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2014(2020) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2014(2016) Renesas Electronics Corporation. All rights reserved.
  *********************************************************************************************************************/
 /**********************************************************************************************************************
- * File Name    : task_manager_task.c
- * Description  : task_manager_task
+ * File Name    : rx72n_envision_kit_system.h
+ * Description  : rx72n_envision_kit_system header
  *********************************************************************************************************************/
 /**********************************************************************************************************************
  * History : DD.MM.YYYY Version Description
@@ -29,14 +29,6 @@
 /******************************************************************************
  Includes   <System Includes> , "Project Includes"
  ******************************************************************************/
-/* for using C standard library */
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
-/* for using FIT Module */
-#include "platform.h"
-#include "r_sys_time_rx_if.h"
 
 /* for using Segger emWin */
 #include "GUI.h"
@@ -46,45 +38,30 @@
 #include "FreeRTOS.h"
 #include "aws_application_version.h"
 
-/* for RX72N Envision Kit system common header */
-#include "rx72n_envision_kit_system.h"
+/* for using C standard library */
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 /**********************************************************************************************************************
 Typedef definitions
 **********************************************************************************************************************/
 
-/******************************************************************************
- External variables
- ******************************************************************************/
-
-/******************************************************************************
- Private global variables
- ******************************************************************************/
-
-/******************************************************************************
- External functions
- ******************************************************************************/
-
-/*******************************************************************************
- global variables and functions
-********************************************************************************/
-void task_manager_task( void * pvParameters );
-
-/******************************************************************************
- Function Name   : serial_terminal_task
- Description     : serial_terminal_task
- Arguments       : none
- Return value    : none
- ******************************************************************************/
-void task_manager_task( void * pvParameters )
+typedef struct _task_info
 {
-	TASK_INFO *task_info = (WM_HWIN *)pvParameters;
+	/* for FreeRTOS */
+	TaskHandle_t main_task_handle;
+	TaskHandle_t serial_terminal_task_handle;
+	TaskHandle_t gui_task_handle;
+	TaskHandle_t sdcard_task_handle;
+	TaskHandle_t task_manager_task_handle;
 
-    /* wait completing gui initializing */
-    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+	/* for emWin */
+	WM_HWIN hWin_serial_terminal;
+	WM_HWIN hWin_firmware_update_via_sd_card;
+	WM_HWIN hWin_task_manager;
+	WM_HWIN hWin_system_log;
+	WM_HWIN hWin_frame;
+	WM_HWIN hWin_title_logo;
 
-    while(1)
-    {
-    	vTaskDelay(1);
-    }
-}
+}TASK_INFO;

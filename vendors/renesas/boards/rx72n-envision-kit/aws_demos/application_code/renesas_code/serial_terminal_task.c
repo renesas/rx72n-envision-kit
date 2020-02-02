@@ -48,6 +48,9 @@
 #include "FreeRTOS.h"
 #include "aws_application_version.h"
 
+/* for RX72N Envision Kit system common header */
+#include "rx72n_envision_kit_system.h"
+
 /**********************************************************************************************************************
 Typedef definitions
 **********************************************************************************************************************/
@@ -56,6 +59,10 @@ Typedef definitions
 
 #define SERIAL_BUFFER_QUEUE_NUMBER 1024
 #define SERIAL_BUFFER_SIZE 1
+#define SCI_BUFFER_SIZE 2048
+#define COMMAND_SIZE 16
+#define ARGUMENT_SIZE 256
+#define STATS_BUFFER_SIZE 1024 * 8
 
 #define COMMAND_UNKNOWN -1
 #define COMMAND_FREERTOS 1
@@ -120,7 +127,7 @@ static int32_t get_command_code(uint8_t *command);
 
 static sci_hdl_t sci_handle;
 static QueueHandle_t xQueue;
-static char stats_buffer[1024 * 8];
+static char *stats_buffer;
 static uint32_t _1us_timer_count;
 
 /******************************************************************************
@@ -148,6 +155,8 @@ uint32_t ulGetRunTimeCounterValue(void);
  ******************************************************************************/
 void serial_terminal_task( void * pvParameters )
 {
+	TASK_INFO *task_info = (WM_HWIN *)pvParameters;
+
     sci_cfg_t   sci_config;
     char tmp[2];
     tmp[1] = 0;
@@ -155,16 +164,24 @@ void serial_terminal_task( void * pvParameters )
     uint32_t current_buffer_pointer = 0;
     uint8_t *command, *arg1, *arg2, *arg3, *arg4;
 
-    sci_buffer = pvPortMalloc(2048);
-    command = pvPortMalloc(16);
-    arg1 = pvPortMalloc(256);
-    arg2 = pvPortMalloc(256);
-    arg3 = pvPortMalloc(256);
-    arg4 = pvPortMalloc(256);
+    /* wait completing gui initializing */
+    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
-    memset(sci_buffer, 0, sizeof(sci_buffer));
+    sci_buffer = pvPortMalloc(SCI_BUFFER_SIZE);
+    command = pvPortMalloc(COMMAND_SIZE);
+    arg1 = pvPortMalloc(ARGUMENT_SIZE);
+    arg2 = pvPortMalloc(ARGUMENT_SIZE);
+    arg3 = pvPortMalloc(ARGUMENT_SIZE);
+    arg4 = pvPortMalloc(ARGUMENT_SIZE);
+    stats_buffer = pvPortMalloc(STATS_BUFFER_SIZE);
 
-    WM_HWIN hWinSerialTerminalindow = (*(WM_HWIN *)pvParameters);
+    memset(sci_buffer, 0, SCI_BUFFER_SIZE);
+    memset(command, 0, COMMAND_SIZE);
+    memset(arg1, 0, ARGUMENT_SIZE);
+    memset(arg2, 0, ARGUMENT_SIZE);
+    memset(arg3, 0, ARGUMENT_SIZE);
+    memset(arg4, 0, ARGUMENT_SIZE);
+    memset(stats_buffer, 0, STATS_BUFFER_SIZE);
 
     R_SCI_PinSet_serial_term();
 
@@ -181,15 +198,15 @@ void serial_terminal_task( void * pvParameters )
     /* create queue */
 	xQueue = xQueueCreate(SERIAL_BUFFER_QUEUE_NUMBER, SERIAL_BUFFER_SIZE);
 
-	display_serial_terminal_putstring_with_uart(hWinSerialTerminalindow, sci_handle, PROMPT);
+	display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, PROMPT);
 	while(1)
 	{
 		xQueueReceive(xQueue, &tmp, portMAX_DELAY);
-		display_serial_terminal_putstring_with_uart(hWinSerialTerminalindow, sci_handle, tmp);
+		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, tmp);
 		sci_buffer[current_buffer_pointer++] = tmp[0];
 		if((tmp[0] == 0x0a) && (sci_buffer[current_buffer_pointer - 2] == 0x0d))
 		{
-			display_serial_terminal_putstring_with_uart(hWinSerialTerminalindow, sci_handle, PROMPT);
+			display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, PROMPT);
 		    /* command execution */
 		    if ( 0 != sscanf((char*)sci_buffer, "%16s %256s %256s %256s %256s", command, arg1, arg2, arg3, arg4))
 		    {
@@ -201,20 +218,20 @@ void serial_terminal_task( void * pvParameters )
 		        			if(!strcmp(arg2, "read"))
 		        			{
 		        				vTaskGetCombinedRunTimeStats(stats_buffer, 0);	/* 0 means read */
-				        		display_serial_terminal_putstring_with_uart(hWinSerialTerminalindow, sci_handle, stats_buffer);
+				        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, stats_buffer);
 		        			}
 		        			if(!strcmp(arg2, "reset"))
 		        			{
 		        				vTaskGetCombinedRunTimeStats(stats_buffer, 1);	/* 1 means read->reset */
 		        				vTaskGetCombinedRunTimeStats(stats_buffer, 0);	/* 0 means read */
-				        		display_serial_terminal_putstring_with_uart(hWinSerialTerminalindow, sci_handle, stats_buffer);
+				        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, stats_buffer);
 		        			}
 		        		}
 		        		break;
 		        	case COMMAND_VERSION:
 		        		break;
 		        	default:
-		        		display_serial_terminal_putstring_with_uart(hWinSerialTerminalindow, sci_handle, COMMAND_NOT_FOUND);
+		        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, COMMAND_NOT_FOUND);
 		        		break;
 		        }
 		    }
@@ -222,17 +239,18 @@ void serial_terminal_task( void * pvParameters )
 		    {
 
 		    }
-		    memset(sci_buffer, 0, sizeof(sci_buffer));
 		    current_buffer_pointer = 0;
-		    command[0] = 0;
-		    arg1[0] = 0;
-		    arg2[0] = 0;
-		    arg3[0] = 0;
-		    arg4[0] = 0;
+		    memset(sci_buffer, 0, SCI_BUFFER_SIZE);
+		    memset(command, 0, COMMAND_SIZE);
+		    memset(arg1, 0, ARGUMENT_SIZE);
+		    memset(arg2, 0, ARGUMENT_SIZE);
+		    memset(arg3, 0, ARGUMENT_SIZE);
+		    memset(arg4, 0, ARGUMENT_SIZE);
+		    memset(stats_buffer, 0, STATS_BUFFER_SIZE);
 		}
-		else if(current_buffer_pointer == sizeof(sci_buffer))
+		else if(current_buffer_pointer == SCI_BUFFER_SIZE)
 		{
-		    memset(sci_buffer, 0, sizeof(sci_buffer));
+		    memset(sci_buffer, 0, SCI_BUFFER_SIZE);
 		    current_buffer_pointer = 0;
 		}
 	}
