@@ -318,11 +318,11 @@
 <pinItem allocation="50" comments="" direction="None" id="CLKOUT25M" locked="false" status="0"/>
 <pinItem allocation="" comments="" direction="None" id="PMGI0_MDIO" locked="false" status="0"/>
 <pinItem allocation="" comments="" direction="None" id="PMGI0_MDC" locked="false" status="0"/>
-<pinItem allocation="28" comments="" direction="None" id="CTS1#" locked="false" status="0"/>
+<pinItem allocation="" comments="" direction="None" id="CTS1#" locked="false" status="0"/>
 <pinItem allocation="45" comments="" direction="None" id="RXD2" locked="false" status="0"/>
-<pinItem allocation="29" comments="" direction="None" id="RXD1" locked="false" status="0"/>
+<pinItem allocation="" comments="" direction="None" id="RXD1" locked="false" status="0"/>
 <pinItem allocation="44" comments="" direction="None" id="TXD2" locked="false" status="0"/>
-<pinItem allocation="31" comments="" direction="None" id="TXD1" locked="false" status="0"/>
+<pinItem allocation="" comments="" direction="None" id="TXD1" locked="false" status="0"/>
 <pinItem allocation="128" comments="" direction="None" id="RXD7" locked="false" status="0"/>
 <pinItem allocation="131" comments="" direction="None" id="TXD7" locked="false" status="0"/>
 <pinItem allocation="27" comments="" direction="None" id="SSDA6" locked="false" status="0"/>
@@ -827,7 +827,7 @@
 <gridItem id="SCI_CFG_SSPI_INCLUDED" selectedIndex="0"/>
 <gridItem id="SCI_CFG_DUMMY_TX_BYTE" selectedIndex="0xFF"/>
 <gridItem id="SCI_CFG_CH0_INCLUDED" selectedIndex="0"/>
-<gridItem id="SCI_CFG_CH1_INCLUDED" selectedIndex="1"/>
+<gridItem id="SCI_CFG_CH1_INCLUDED" selectedIndex="0"/>
 <gridItem id="SCI_CFG_CH2_INCLUDED" selectedIndex="1"/>
 <gridItem id="SCI_CFG_CH3_INCLUDED" selectedIndex="0"/>
 <gridItem id="SCI_CFG_CH4_INCLUDED" selectedIndex="0"/>
@@ -840,7 +840,7 @@
 <gridItem id="SCI_CFG_CH11_INCLUDED" selectedIndex="0"/>
 <gridItem id="SCI_CFG_CH12_INCLUDED" selectedIndex="0"/>
 <gridItem id="SCI_CFG_CH0_TX_BUFSIZ" selectedIndex="80"/>
-<gridItem id="SCI_CFG_CH1_TX_BUFSIZ" selectedIndex="2304"/>
+<gridItem id="SCI_CFG_CH1_TX_BUFSIZ" selectedIndex="80"/>
 <gridItem id="SCI_CFG_CH2_TX_BUFSIZ" selectedIndex="80"/>
 <gridItem id="SCI_CFG_CH3_TX_BUFSIZ" selectedIndex="80"/>
 <gridItem id="SCI_CFG_CH4_TX_BUFSIZ" selectedIndex="80"/>
@@ -853,7 +853,7 @@
 <gridItem id="SCI_CFG_CH11_TX_BUFSIZ" selectedIndex="80"/>
 <gridItem id="SCI_CFG_CH12_TX_BUFSIZ" selectedIndex="80"/>
 <gridItem id="SCI_CFG_CH0_RX_BUFSIZ" selectedIndex="80"/>
-<gridItem id="SCI_CFG_CH1_RX_BUFSIZ" selectedIndex="4096"/>
+<gridItem id="SCI_CFG_CH1_RX_BUFSIZ" selectedIndex="80"/>
 <gridItem id="SCI_CFG_CH2_RX_BUFSIZ" selectedIndex="80"/>
 <gridItem id="SCI_CFG_CH3_RX_BUFSIZ" selectedIndex="80"/>
 <gridItem id="SCI_CFG_CH4_RX_BUFSIZ" selectedIndex="80"/>
@@ -994,22 +994,6 @@
 <gridItem id="ADST2" selectedIndex="0"/>
 <gridItem id="S12AD2" selectedIndex="0"/>
 <gridItem id="ADC_CFG_PARAM_CHECKING_ENABLE" selectedIndex="0"/>
-</component>
-<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-</configuration>
-<configuration inuse="true" name="r_wifi_esp32">
-<component description="依存モジュール: r_bsp バージョン 5.20&#10;依存モジュール: r_byteq バージョン 1.80&#10;依存モジュール: r_sci_rx バージョン 3.20&#10;Use UART to control ESP32 and connect to the Internet." detailDescription="WI-FI Module control functions for Renesas MCUs." display="r_wifi_esp32" id="r_wifi_esp321.00" version="1.00">
-<gridItem id="WIFI_CFG_SCI_CHANNEL" selectedIndex="1"/>
-<gridItem id="WIFI_CFG_SCI_INTERRUPT_LEVEL" selectedIndex="14"/>
-<gridItem id="WIFI_CFG_SCI_BAUDRATE" selectedIndex="937500"/>
-<gridItem id="WIFI_CFG_SCI_USE_FLOW_CONTROL" selectedIndex="1"/>
-<gridItem id="WIFI_CFG_RESET_PORT" selectedIndex="4"/>
-<gridItem id="WIFI_CFG_RESET_PIN" selectedIndex="3"/>
-<gridItem id="WIFI_CFG_CREATABLE_SOCKETS" selectedIndex="5"/>
-<gridItem id="WIFI_CFG_SOCKETS_RECEIVE_BUFFER_SIZE" selectedIndex="4096"/>
-<gridItem id="WIFI_CFG_USE_CALLBACK_FUNCTION" selectedIndex="0"/>
-<gridItem id="WIFI_CFG_CALLBACK_FUNCTION_NAME" selectedIndex="NULL"/>
 </component>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
@@ -1162,7 +1146,7 @@
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 </configuration>
 <configuration inuse="true" name="r_glcdc_rx">
-<component description="依存モジュール: r_bsp バージョン 5.50&#10;The GLCDC FIT module provides the method to output image data read from memory to the LCD panel. " detailDescription="Graphics LCD Controller Module." display="r_glcdc_rx" id="r_glcdc_rx1.20" version="1.20">
+<component description="依存モジュール: r_bsp バージョン 5.20&#10;The GLCDC FIT module provides the method to output image data read from memory to the LCD panel. " detailDescription="Graphics LCD Controller Module." display="r_glcdc_rx" id="r_glcdc_rx1.20" version="1.20">
 <gridItem id="LCD_CLK" selectedIndex="1"/>
 <gridItem id="LCD_TCON0" selectedIndex="1"/>
 <gridItem id="LCD_TCON1" selectedIndex="0"/>
@@ -1194,7 +1178,7 @@
 <gridItem id="LCD_DATA23" selectedIndex="0"/>
 <gridItem id="LCD_EXTCLK" selectedIndex="0"/>
 <gridItem id="GLCDC_CFG_PARAM_CHECKING_ENABLE" selectedIndex="1"/>
-<gridItem id="GLCDC_CFG_INTERRUPT_PRIORITY_LEVEL" selectedIndex="14"/>
+<gridItem id="GLCDC_CFG_INTERRUPT_PRIORITY_LEVEL" selectedIndex="1"/>
 </component>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>

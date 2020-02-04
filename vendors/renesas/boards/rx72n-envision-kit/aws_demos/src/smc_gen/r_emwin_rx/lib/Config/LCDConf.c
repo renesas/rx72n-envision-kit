@@ -38,7 +38,8 @@ MultiBuffering:
 */
 
 #include <stdlib.h>
-#include "GUI.h"
+
+#include "GUI_Private.h"
 #include "GUIDRV_Lin.h"
 #include "LCDConf.h"
 
@@ -93,93 +94,41 @@ extern void drw_int_isr(void);
 #define FORMAT_CLUT_4    (GLCDC_IN_FORMAT_CLUT4)
 #define FORMAT_CLUT_1    (GLCDC_IN_FORMAT_CLUT1)
 
-#define ORIENTATION_0    0
-#define ORIENTATION_CW   1
-#define ORIENTATION_180  2
-#define ORIENTATION_CCW  3
-
-#define DISPLAY_ORIENTATION  ORIENTATION_0
-//#define DISPLAY_ORIENTATION  ORIENTATION_CW
-//#define DISPLAY_ORIENTATION  ORIENTATION_180
-//#define DISPLAY_ORIENTATION  ORIENTATION_CCW
-
 //
 // Color conversion, display driver and multiple buffers
 //
 #if   (BITS_PER_PIXEL == 32)
   #define COLOR_CONVERSION GUICC_M8888I
-#if (DISPLAY_ORIENTATION == ORIENTATION_0)
-  #define DISPLAY_DRIVER   GUIDRV_LIN_32      // Default
-#elif (DISPLAY_ORIENTATION == ORIENTATION_CW)
-  #define DISPLAY_DRIVER   GUIDRV_LIN_OSX_32  // CW
-#elif (DISPLAY_ORIENTATION == ORIENTATION_CCW)
-  #define DISPLAY_DRIVER   GUIDRV_LIN_OSY_32  // CCW
-#else
-  #define DISPLAY_DRIVER   GUIDRV_LIN_OXY_32  // 180
-#endif
+  #define DISPLAY_DRIVER   GUIDRV_LIN_32
+  //#define DISPLAY_DRIVER   GUIDRV_LIN_OSX_32
+  //#define DISPLAY_DRIVER   GUIDRV_LIN_OSY_32
+  //#define DISPLAY_DRIVER   GUIDRV_LIN_OXY_32
+  #define COLOR_FORMAT     FORMAT_RGB_888
   #define NUM_BUFFERS      1
-#define COLOR_FORMAT     FORMAT_RGB_ARGB8888
 #elif (BITS_PER_PIXEL == 16)
   #define COLOR_CONVERSION GUICC_M565
-#if (DISPLAY_ORIENTATION == ORIENTATION_0)
   #define DISPLAY_DRIVER   GUIDRV_LIN_16      // Default
-#elif (DISPLAY_ORIENTATION == ORIENTATION_CW)
-  #define DISPLAY_DRIVER   GUIDRV_LIN_OSX_16  // CW
-#elif (DISPLAY_ORIENTATION == ORIENTATION_CCW)
-  #define DISPLAY_DRIVER   GUIDRV_LIN_OSY_16  // CCW
-#else
-  #define DISPLAY_DRIVER   GUIDRV_LIN_OXY_16  // 180
-#endif
-  #define NUM_BUFFERS      2
+  //#define DISPLAY_DRIVER   GUIDRV_LIN_OSX_16  // CW
+  //#define DISPLAY_DRIVER   GUIDRV_LIN_OSY_16  // CCW
+  //#define DISPLAY_DRIVER   GUIDRV_LIN_OXY_16  // 180
   #define COLOR_FORMAT     FORMAT_RGB_565
+  #define NUM_BUFFERS      2
 #elif (BITS_PER_PIXEL == 8)
   #define COLOR_CONVERSION GUICC_8666
-#if (DISPLAY_ORIENTATION == ORIENTATION_0)
-  #define DISPLAY_DRIVER   GUIDRV_LIN_8      // Default
-#elif (DISPLAY_ORIENTATION == ORIENTATION_CW)
-  #define DISPLAY_DRIVER   GUIDRV_LIN_OSX_8  // CW
-#elif (DISPLAY_ORIENTATION == ORIENTATION_CCW)
-  #define DISPLAY_DRIVER   GUIDRV_LIN_OSY_8  // CCW
-#else
-  #define DISPLAY_DRIVER   GUIDRV_LIN_OXY_8  // 180
-#endif
+  #define DISPLAY_DRIVER   GUIDRV_LIN_8
+  //#define DISPLAY_DRIVER   GUIDRV_LIN_OXY_8
+  #define COLOR_FORMAT     FORMAT_CLUT_8
   #define NUM_BUFFERS      2
-#define COLOR_FORMAT     FORMAT_CLUT_8
 #elif (BITS_PER_PIXEL == 4)
   #define COLOR_CONVERSION GUICC_16
-#if (DISPLAY_ORIENTATION == ORIENTATION_0)
-  #define DISPLAY_DRIVER   GUIDRV_LIN_4      // Default
-#elif (DISPLAY_ORIENTATION == ORIENTATION_CW)
-  #define DISPLAY_DRIVER   GUIDRV_LIN_OSX_4  // CW
-#elif (DISPLAY_ORIENTATION == ORIENTATION_CCW)
-  #define DISPLAY_DRIVER   GUIDRV_LIN_OSY_4  // CCW
-#else
-  #define DISPLAY_DRIVER   GUIDRV_LIN_OXY_4  // 180
-#endif
-  #define NUM_BUFFERS      2
-#define COLOR_FORMAT     FORMAT_CLUT_4
+  #define DISPLAY_DRIVER   GUIDRV_LIN_4
+  #define COLOR_FORMAT     FORMAT_CLUT_4
+  #define NUM_BUFFERS      3
 #elif (BITS_PER_PIXEL == 1)
   #define COLOR_CONVERSION GUICC_1
-#if (DISPLAY_ORIENTATION == ORIENTATION_0)
-  #define DISPLAY_DRIVER   GUIDRV_LIN_1      // Default
-#elif (DISPLAY_ORIENTATION == ORIENTATION_CW)
-  #define DISPLAY_DRIVER   GUIDRV_LIN_OSX_1  // CW
-#elif (DISPLAY_ORIENTATION == ORIENTATION_CCW)
-  #define DISPLAY_DRIVER   GUIDRV_LIN_OSY_1  // CCW
-#else
-  #define DISPLAY_DRIVER   GUIDRV_LIN_OXY_1  // 180
-#endif
-  #define NUM_BUFFERS      2
+  #define DISPLAY_DRIVER   GUIDRV_LIN_1
   #define COLOR_FORMAT     FORMAT_CLUT_1
-#endif
-
-//
-// Check if the Dave2D engine can be used
-//
-#if ((BITS_PER_PIXEL > 8)) // && (DISPLAY_ORIENTATION == 0))
-  #define USE_DAVE2D  1
-#else
-  #define USE_DAVE2D  0
+  #define NUM_BUFFERS      3
 #endif
 
 //
@@ -231,10 +180,6 @@ static unsigned _DaveActive;
 //
 static d2_device       * d2_handle;
 static d2_renderbuffer * renderbuffer;
-#if (USE_DAVE2D == 0)
-  #define NUM_COLORS (1 << BITS_PER_PIXEL)
-  static U32 _aClut[NUM_COLORS];
-#endif
 
 /*********************************************************************
 *
@@ -247,16 +192,41 @@ static d2_renderbuffer * renderbuffer;
 *       _VSYNC_ISR
 */
 static void _VSYNC_ISR(void * p) {
+#if (NUM_BUFFERS == 3)
+  U32 Addr;
+  glcdc_err_t ret;
+#endif
+
+ 											    // Clears the STMON.VPOS flag (GLCDC FIT module clears STMON.VPOS flag)
+#if (NUM_BUFFERS == 3)
+  //
+  // Makes the pending buffer visible
+  //
+  if (_PendingBuffer >= 0) {
+    Addr = FRAMEBUFFER_START
+         + BYTES_PER_BUFFER * _PendingBuffer;   // Calculate address of buffer to be used  as visible frame buffer
+    runtime_cfg.input.p_base = (uint32_t *)Addr; // Specify the start address of the frame buffer
+    ret = R_GLCDC_LayerChange(GLCDC_FRAME_LAYER_2, &runtime_cfg);	// Graphic 2 Register Value Reflection Enable
+    if (ret != GLCDC_SUCCESS) {
+    	while(1);
+    }
+    GUI_MULTIBUF_ConfirmEx(0, _PendingBuffer);  // Tell emWin that buffer is used
+    _PendingBuffer = -1;                        // Clear pending buffer flag
+  }
+#elif (NUM_BUFFERS == 2)
   //
   // Sets a flag to be able to notice the interrupt
   //
   _PendingBuffer = 0;
+#endif
 }
 
 /*********************************************************************
 *
 *       _SwitchBuffersOnVSYNC
 */
+#if (NUM_BUFFERS == 2)
+
 static void _SwitchBuffersOnVSYNC(int Index) {
   U32 Addr;
   glcdc_err_t ret;
@@ -273,7 +243,9 @@ static void _SwitchBuffersOnVSYNC(int Index) {
     // or add code to debug the issue.
     //
   }
+  GUI_MULTIBUF_ConfirmEx(0, Index);  // Tell emWin that buffer is used
 }
+#endif
 
 /*********************************************************************
 *
@@ -425,7 +397,7 @@ static void _InitController(void) {
   //
   // Set function to be called on VSYNC
   //
-  glcdc_cfg.p_callback = (void (*)(void *))_VSYNC_ISR;
+  glcdc_cfg.p_callback = (void (*)(glcdc_callback_args_t *))_VSYNC_ISR;
 
   runtime_cfg.blend = glcdc_cfg.blend[GLCDC_FRAME_LAYER_2];
   runtime_cfg.input = glcdc_cfg.input[GLCDC_FRAME_LAYER_2];
@@ -463,27 +435,14 @@ static void _InitController(void) {
 *   Should set the desired LUT entry
 */
 static void _SetLUTEntry(LCD_COLOR Color, U8 Pos) {
-#if (BITS_PER_PIXEL < 16)
-glcdc_clut_cfg_t p_clut_cfg;
-  int err;
+  glcdc_clut_cfg_t p_clut_cfg;
 
-  _aClut[Pos] = Color;
-  if (Pos == NUM_COLORS - 1) {
-    p_clut_cfg.enable = true;
-    p_clut_cfg.p_base = _aClut;
-    p_clut_cfg.size = NUM_COLORS;
-    p_clut_cfg.start = 0;
-    R_GLCDC_Control(GLCDC_CMD_START_DISPLAY, FIT_NO_FUNC);  // Enable background generation block
-    GUI_Delay(100);
-    err = R_GLCDC_ClutUpdate(GLCDC_FRAME_LAYER_2, &p_clut_cfg);
-    if (err != GLCDC_SUCCESS) {
-      while(1);
-    }
-  }
-#else
-  GUI_USE_PARA(Color);
-  GUI_USE_PARA(Pos);
-#endif
+  p_clut_cfg.enable = true;
+  p_clut_cfg.p_base = &Color;
+  p_clut_cfg.size = 1;
+  p_clut_cfg.start = Pos;
+
+  R_GLCDC_ClutUpdate(GLCDC_FRAME_LAYER_2, &p_clut_cfg);
 }
 
 /*********************************************************************
@@ -500,7 +459,6 @@ static void _DisplayOnOff(int OnOff) {
   }
 }
 
-#if (USE_DAVE2D)
 /*********************************************************************
 *
 *       _GetD2Mode
@@ -521,157 +479,6 @@ static U32 _GetD2Mode(void) {
   return r;
 }
 
-/*********************************************************************
-*
-*       _ModifyRect
-*/
-static void _ModifyCoord(int * pX, int * pY) {
-#if (DISPLAY_ORIENTATION == ORIENTATION_CW)
-  int xTemp;
-
-  xTemp = *pX;
-  *pX   = XSIZE_PHYS - 1 - *pY;
-  *pY   = xTemp;
-#elif (DISPLAY_ORIENTATION == ORIENTATION_180)
-  *pX   = XSIZE_PHYS - 1 - *pX;
-  *pY   = YSIZE_PHYS - 1 - *pY;
-#elif (DISPLAY_ORIENTATION == ORIENTATION_CCW)
-  int yTemp;
-
-  yTemp = *pY;
-  *pY   = YSIZE_PHYS - 1 - *pX;
-  *pX   = yTemp;
-#endif
-}
-
-/*********************************************************************
-*
-*       _ModifyRect
-*/
-static void _ModifyRect(const GUI_RECT * pRectOrg, GUI_RECT * pRect) {
-#if (DISPLAY_ORIENTATION == ORIENTATION_CW)
-  int Temp;
-  pRect->x0 = XSIZE_PHYS - 1 - pRectOrg->y0;
-  pRect->y0 = pRectOrg->x0;
-  pRect->x1 = XSIZE_PHYS - 1 - pRectOrg->y1;
-  pRect->y1 = pRectOrg->x1;
-  if (pRect->x0 > pRect->x1) {
-    Temp = pRect->x0;
-    pRect->x0 = pRect->x1;
-    pRect->x1 = Temp;
-  }
-#elif (DISPLAY_ORIENTATION == ORIENTATION_180)
-  int Temp;
-  pRect->x0 = XSIZE_PHYS - 1 - pRectOrg->x0;
-  pRect->y0 = YSIZE_PHYS - 1 - pRectOrg->y0;
-  pRect->x1 = XSIZE_PHYS - 1 - pRectOrg->x1;
-  pRect->y1 = YSIZE_PHYS - 1 - pRectOrg->y1;
-  if (pRect->x0 > pRect->x1) {
-    Temp = pRect->x0;
-    pRect->x0 = pRect->x1;
-    pRect->x1 = Temp;
-  }
-  if (pRect->y0 > pRect->y1) {
-    Temp = pRect->y0;
-    pRect->y0 = pRect->y1;
-    pRect->y1 = Temp;
-  }
-#elif (DISPLAY_ORIENTATION == ORIENTATION_CCW)
-  int Temp;
-  pRect->x0 = pRectOrg->y0;
-  pRect->y0 = YSIZE_PHYS - 1 - pRectOrg->x0;
-  pRect->x1 = pRectOrg->y1;
-  pRect->y1 = YSIZE_PHYS - 1 - pRectOrg->x1;
-  if (pRect->y0 > pRect->y1) {
-    Temp = pRect->y0;
-    pRect->y0 = pRect->y1;
-    pRect->y1 = Temp;
-  }
-#else
-  *pRect = *pRectOrg;
-#endif
-}
-
-/*********************************************************************
-*
-*       _LCD_FillRect
-*/
-static void _LCD_FillRect(int LayerIndex, int x0, int y0, int x1, int y1, U32 PixelIndex) {
-  U32              Mode;
-  d2_color         Color;
-  GUI_RECT         Rect;
-  int              xSize;
-  int              ySize;
-#if (DISPLAY_ORIENTATION != ORIENTATION_0)
-  int              Temp;
-#endif
-
-  if (GUI_GetDrawMode() == GUI_DM_XOR) {
-    LCD_SetDevFunc(LayerIndex, LCD_DEVFUNC_FILLRECT, NULL);
-  //
-  // The following is required because emWin already mirrors/swaps the coordinates.
-  // Since we call the default function we have to revert the mirroring/swapping.
-  //
-#if (DISPLAY_ORIENTATION == ORIENTATION_0)
-    LCD_FillRect(x0, y0, x1, y1);
-#elif (DISPLAY_ORIENTATION == ORIENTATION_CW)
-    Temp = x0;
-    x0 = XSIZE_PHYS - 1 - x1;
-    x1 = XSIZE_PHYS - 1 - Temp;
-    Temp = y0;
-    y0 = x0;
-    x0 = Temp;
-    Temp = y1;
-    y1 = x1;
-    x1 = Temp;
-    LCD_FillRect(x0, y0, x1, y1);
-#elif (DISPLAY_ORIENTATION == ORIENTATION_180)
-    x0 = XSIZE_PHYS - 1 - x0;
-    x1 = XSIZE_PHYS - 1 - x1;
-    y0 = YSIZE_PHYS - 1 - y0;
-    y1 = YSIZE_PHYS - 1 - y1;
-    if (x0 > x1) {
-      Temp = x0;
-      x0 = x1;
-      x1 = Temp;
-    }
-    if (y0 > y1) {
-      Temp = y0;
-      y0 = y1;
-      y1 = Temp;
-    }
-    LCD_FillRect(x0, y0, x1, y1);
-#else
-    Temp = y1;
-    y1   = (YSIZE_PHYS - 1 - y0);
-    y0   = (YSIZE_PHYS - 1 - Temp);
-    LCD_FillRect(y0, x0, y1, x1);
-#endif
-    LCD_SetDevFunc(LayerIndex, LCD_DEVFUNC_FILLRECT, (void(*)(void))_LCD_FillRect);
-  } else {
-    GUI_USE_PARA(LayerIndex);
-    Mode = _GetD2Mode();
-    //
-    // Generate render operations
-    //
-    d2_framebuffer(d2_handle, (void *)_aBufferPTR[_WriteBufferIndex], XSIZE_PHYS, XSIZE_PHYS, YSIZE_PHYS, Mode);
-    d2_selectrenderbuffer(d2_handle, renderbuffer);
-    Color = GUI_Index2Color(PixelIndex);
-    d2_setcolor(d2_handle, 0, Color);
-    _ModifyRect(GUI_GetClipRect(), &Rect);
-    d2_cliprect(d2_handle, Rect.x0, Rect.y0, Rect.x1, Rect.y1);
-    xSize = (x1 - x0) + 1;
-    ySize = (y1 - y0) + 1;
-    d2_renderbox(d2_handle, x0 * 16, y0 * 16, xSize * 16, ySize * 16);
-    //
-    // Execute render operations
-    //
-    d2_executerenderbuffer(d2_handle, renderbuffer, 0);
-    d2_flushframe(d2_handle);
-  }
-}
-
-#if (DISPLAY_ORIENTATION == ORIENTATION_0)
 /*********************************************************************
 *
 *       _DrawMemdevAlpha
@@ -725,7 +532,6 @@ static void _DrawBitmapAlpha(int LayerIndex, int x, int y, const void * p, int x
   d2_executerenderbuffer(d2_handle, renderbuffer, 0);
   d2_flushframe(d2_handle);
 }
-#endif
 
 /*********************************************************************
 *
@@ -734,8 +540,6 @@ static void _DrawBitmapAlpha(int LayerIndex, int x, int y, const void * p, int x
 static int _CircleAA(int x0, int y0, int r, int w) {
   U32 Mode;
   int ret;
-  GUI_RECT Rect;
-  U32 Color;
 
   Mode = _GetD2Mode();
   //
@@ -743,10 +547,11 @@ static int _CircleAA(int x0, int y0, int r, int w) {
   //
   d2_framebuffer(d2_handle, (void *)_aBufferPTR[_WriteBufferIndex], XSIZE_PHYS, XSIZE_PHYS, YSIZE_PHYS, Mode);
   d2_selectrenderbuffer(d2_handle, renderbuffer);
-  Color = GUI_Index2Color(GUI_GetColorIndex());
-  d2_setcolor(d2_handle, 0, Color);
-  _ModifyRect(GUI__GetClipRect(), &Rect);
-  d2_cliprect(d2_handle, Rect.x0, Rect.y0, Rect.x1, Rect.y1);
+  d2_setcolor(d2_handle, 0, GUI_pContext->Color);
+  d2_cliprect(d2_handle, GUI_pContext->ClipRect.x0,
+                         GUI_pContext->ClipRect.y0,
+                         GUI_pContext->ClipRect.x1,
+                         GUI_pContext->ClipRect.y1);
   ret = d2_rendercircle(d2_handle, x0 * 16, y0 * 16, r * 16, w * 16);
   //
   // Execute render operations
@@ -761,7 +566,6 @@ static int _CircleAA(int x0, int y0, int r, int w) {
 *       _FillCircleAA
 */
 static int _FillCircleAA(int x0, int y0, int r) {
-  _ModifyCoord(&x0, &y0);
   return _CircleAA(x0, y0, r, 0);
 }
 
@@ -770,11 +574,9 @@ static int _FillCircleAA(int x0, int y0, int r) {
 *       _DrawCircleAA
 */
 static int _DrawCircleAA(int x0, int y0, int r) {
-  _ModifyCoord(&x0, &y0);
-  return _CircleAA(x0, y0, r, GUI_GetPenSize());
+  return _CircleAA(x0, y0, r, GUI_pContext->PenSize);
 }
 
-#if (DISPLAY_ORIENTATION == ORIENTATION_0)
 /*********************************************************************
 *
 *       _FillPolygonAA
@@ -784,17 +586,13 @@ static int _FillPolygonAA(const GUI_POINT * pPoints, int NumPoints, int x0, int 
   d2_point * pData;
   d2_point * pDataI;
   int i, ret;
-  GUI_RECT Rect;
-  U32 Color;
 
   Mode = _GetD2Mode();
   pData = malloc(sizeof(d2_point) * NumPoints * 2);
   ret = 1;
-  _ModifyCoord(&x0, &y0);
   if (pData) {
     pDataI = pData;
     for (i = 0; i < NumPoints; i++) {
-      _ModifyCoord((int *)&pPoints->x, (int *)&pPoints->y);
       *pDataI++ = (d2_point)(pPoints->x + x0) * 16;
       *pDataI++ = (d2_point)(pPoints->y + y0) * 16;
       pPoints++;
@@ -804,10 +602,11 @@ static int _FillPolygonAA(const GUI_POINT * pPoints, int NumPoints, int x0, int 
     //
     d2_framebuffer(d2_handle, (void *)_aBufferPTR[_WriteBufferIndex], XSIZE_PHYS, XSIZE_PHYS, YSIZE_PHYS, Mode);
     d2_selectrenderbuffer(d2_handle, renderbuffer);
-    Color = GUI_Index2Color(GUI_GetColorIndex());
-    d2_setcolor(d2_handle, 0, Color);
-    _ModifyRect(GUI__GetClipRect(), &Rect);
-    d2_cliprect(d2_handle, Rect.x0, Rect.y0, Rect.x1, Rect.y1);
+    d2_setcolor(d2_handle, 0, GUI_pContext->Color);
+    d2_cliprect(d2_handle, GUI_pContext->ClipRect.x0,
+                           GUI_pContext->ClipRect.y0,
+                           GUI_pContext->ClipRect.x1,
+                           GUI_pContext->ClipRect.y1);
     ret = d2_renderpolygon(d2_handle, pData, NumPoints, d2_le_closed);
     //
     // Execute render operations
@@ -828,17 +627,13 @@ static int _DrawPolyOutlineAA(const GUI_POINT * pPoints, int NumPoints, int Thic
   d2_point * pData;
   d2_point * pDataI;
   int i, ret;
-  GUI_RECT Rect;
-  U32 Color;
 
   Mode = _GetD2Mode();
   pData = malloc(sizeof(d2_point) * NumPoints * 2);
   ret = 1;
-  _ModifyCoord(&x, &y);
   if (pData) {
     pDataI = pData;
     for (i = 0; i < NumPoints; i++) {
-      _ModifyCoord((int *)&pPoints->x, (int *)&pPoints->y);
       *pDataI++ = (d2_point)(pPoints->x + x) * 16;
       *pDataI++ = (d2_point)(pPoints->y + y) * 16;
       pPoints++;
@@ -848,10 +643,11 @@ static int _DrawPolyOutlineAA(const GUI_POINT * pPoints, int NumPoints, int Thic
     //
     d2_framebuffer(d2_handle, (void *)_aBufferPTR[_WriteBufferIndex], XSIZE_PHYS, XSIZE_PHYS, YSIZE_PHYS, Mode);
     d2_selectrenderbuffer(d2_handle, renderbuffer);
-    Color = GUI_Index2Color(GUI_GetColorIndex());
-    d2_setcolor(d2_handle, 0, Color);
-    _ModifyRect(GUI__GetClipRect(), &Rect);
-    d2_cliprect(d2_handle, Rect.x0, Rect.y0, Rect.x1, Rect.y1);
+    d2_setcolor(d2_handle, 0, GUI_pContext->Color);
+    d2_cliprect(d2_handle, GUI_pContext->ClipRect.x0,
+                           GUI_pContext->ClipRect.y0,
+                           GUI_pContext->ClipRect.x1,
+                           GUI_pContext->ClipRect.y1);
     d2_selectrendermode(d2_handle, d2_rm_outline);
     ret = d2_renderpolyline(d2_handle, pData, NumPoints, Thickness * 16, d2_le_closed);
     d2_selectrendermode(d2_handle, d2_rm_solid);
@@ -864,7 +660,7 @@ static int _DrawPolyOutlineAA(const GUI_POINT * pPoints, int NumPoints, int Thic
   }
   return ret;
 }
-#endif
+
 /*********************************************************************
 *
 *       _DrawLineAA
@@ -872,22 +668,19 @@ static int _DrawPolyOutlineAA(const GUI_POINT * pPoints, int NumPoints, int Thic
 static int _DrawLineAA(int x0, int y0, int x1, int y1) {
   U32 Mode;
   int ret;
-  U32 Color;
-  GUI_RECT Rect;
 
   Mode = _GetD2Mode();
-  _ModifyCoord(&x0, &y0);
-  _ModifyCoord(&x1, &y1);
   //
   // Generate render operations
   //
   d2_framebuffer(d2_handle, (void *)_aBufferPTR[_WriteBufferIndex], XSIZE_PHYS, XSIZE_PHYS, YSIZE_PHYS, Mode);
   d2_selectrenderbuffer(d2_handle, renderbuffer);
-  Color = GUI_Index2Color(GUI_GetColorIndex());
-  d2_setcolor(d2_handle, 0, Color);
-  _ModifyRect(GUI__GetClipRect(), &Rect);
-  d2_cliprect(d2_handle, Rect.x0, Rect.y0, Rect.x1, Rect.y1);
-  ret = d2_renderline(d2_handle, x0 * 16, y0 * 16, x1 * 16, y1 * 16, GUI_GetPenSize() * 16, d2_le_exclude_none);
+  d2_setcolor(d2_handle, 0, GUI_pContext->Color);
+  d2_cliprect(d2_handle, GUI_pContext->ClipRect.x0,
+                         GUI_pContext->ClipRect.y0,
+                         GUI_pContext->ClipRect.x1,
+                         GUI_pContext->ClipRect.y1);
+  ret = d2_renderline(d2_handle, x0 * 16, y0 * 16, x1 * 16, y1 * 16, GUI_pContext->PenSize * 16, d2_le_exclude_none);
   //
   // Execute render operations
   //
@@ -895,7 +688,7 @@ static int _DrawLineAA(int x0, int y0, int x1, int y1) {
   d2_flushframe(d2_handle);
   return ret;
 }
-#if (DISPLAY_ORIENTATION == ORIENTATION_0)
+
 /*********************************************************************
 *
 *       _DrawArcAA
@@ -904,12 +697,9 @@ int _DrawArcAA(int x0, int y0, int rx, int ry, int a0, int a1) {
   U32 Mode;
   int ret;
   I32 nx0, ny0, nx1, ny1;
-  GUI_RECT Rect;
-  U32 Color;
 
   GUI_USE_PARA(ry);
   Mode = _GetD2Mode();
-  _ModifyCoord(&x0, &y0);
   while (a1 < a0) {
     a1 += 360;
   }
@@ -928,11 +718,12 @@ int _DrawArcAA(int x0, int y0, int rx, int ry, int a0, int a1) {
   //
   d2_framebuffer(d2_handle, (void *)_aBufferPTR[_WriteBufferIndex], XSIZE_PHYS, XSIZE_PHYS, YSIZE_PHYS, Mode);
   d2_selectrenderbuffer(d2_handle, renderbuffer);
-  Color = GUI_Index2Color(GUI_GetColorIndex());
-  d2_setcolor(d2_handle, 0, Color);
-  _ModifyRect(GUI__GetClipRect(), &Rect);
-  d2_cliprect(d2_handle, Rect.x0, Rect.y0, Rect.x1, Rect.y1);
-  d2_renderwedge(d2_handle, x0 * 16, y0 * 16, rx * 16, GUI_GetPenSize() * 16, nx0, ny0, nx1, ny1, 0);
+  d2_setcolor(d2_handle, 0, GUI_pContext->Color);
+  d2_cliprect(d2_handle, GUI_pContext->ClipRect.x0,
+                         GUI_pContext->ClipRect.y0,
+                         GUI_pContext->ClipRect.x1,
+                         GUI_pContext->ClipRect.y1);
+  d2_renderwedge(d2_handle, x0 * 16, y0 * 16, rx * 16, GUI_pContext->PenSize * 16, nx0, ny0, nx1, ny1, 0);
   //
   // Execute render operations
   //
@@ -940,8 +731,6 @@ int _DrawArcAA(int x0, int y0, int rx, int ry, int a0, int a1) {
   d2_flushframe(d2_handle);
   return ret;
 }
-#endif
-#endif
 
 /*********************************************************************
 *
@@ -976,7 +765,7 @@ static void _CopyBuffer(int LayerIndex, int IndexSrc, int IndexDst) {
   td_cfg.p_src_addr           = (void *)_aBufferPTR[IndexSrc];
   td_cfg.p_des_addr           = (void *)_aBufferPTR[IndexDst];
   td_cfg.transfer_count       = YSIZE_PHYS;
-  td_cfg.block_size           = XSIZE_PHYS >> 1;
+  td_cfg.block_size           = BYTES_PER_LINE >> 2;
   ret = R_DMACA_Create(DMACA_CH0, &td_cfg);
   if (ret != DMACA_SUCCESS) {
     while (1);  // Error
@@ -1013,7 +802,7 @@ static void _CopyBuffer(int LayerIndex, int IndexSrc, int IndexDst) {
 *       LCDCONF_GetBufferAddr
 */
 void * LCDCONF_GetBufferAddr(void) {
-  return (void *)_aBufferPTR[_WriteBufferIndex];
+  return _aBufferPTR[_WriteBufferIndex];
 }
 
 /*********************************************************************
@@ -1029,20 +818,14 @@ d2_device * LCDCONF_GetD2(void) {
 *       LCDCONF_EnableDave2D
 */
 void LCDCONF_EnableDave2D(void) {
-#if (USE_DAVE2D)
-  #if (ORIENTATION_0 == DISPLAY_ORIENTATION)
   GUI_SetFuncDrawAlpha         (_DrawMemdevAlpha, _DrawBitmapAlpha);
-  GUI_SetFuncDrawM565          (_DrawMemdevAlpha, _DrawBitmapAlpha);
-  GUI_AA_SetFuncDrawPolyOutline(_DrawPolyOutlineAA);
-  GUI_AA_SetFuncDrawArc        (_DrawArcAA);
-  GUI_AA_SetFuncFillPolygon    (_FillPolygonAA);
-#endif
   GUI_AA_SetFuncFillCircle     (_FillCircleAA);
+  GUI_AA_SetFuncFillPolygon    (_FillPolygonAA);
   GUI_AA_SetFuncDrawCircle     (_DrawCircleAA);
   GUI_AA_SetFuncDrawLine       (_DrawLineAA);
-  LCD_SetDevFunc(0, LCD_DEVFUNC_FILLRECT, (void(*)(void))_LCD_FillRect);
+  GUI_AA_SetFuncDrawPolyOutline(_DrawPolyOutlineAA);
+  GUI_AA_SetFuncDrawArc        (_DrawArcAA);
   _DaveActive = 1;
-#endif
 }
 
 /*********************************************************************
@@ -1050,20 +833,14 @@ void LCDCONF_EnableDave2D(void) {
 *       LCDCONF_DisableDave2D
 */
 void LCDCONF_DisableDave2D(void) {
-#if (USE_DAVE2D)
-#if (ORIENTATION_0 == DISPLAY_ORIENTATION)
   GUI_SetFuncDrawAlpha         (NULL, NULL);
-  GUI_SetFuncDrawAlpha         (NULL, NULL);
-  GUI_AA_SetFuncDrawPolyOutline(NULL);
-  GUI_AA_SetFuncDrawArc        (NULL);
-  GUI_AA_SetFuncFillPolygon    (NULL);
-#endif
   GUI_AA_SetFuncFillCircle     (NULL);
+  GUI_AA_SetFuncFillPolygon    (NULL);
   GUI_AA_SetFuncDrawCircle     (NULL);
   GUI_AA_SetFuncDrawLine       (NULL);
-  LCD_SetDevFunc(0, LCD_DEVFUNC_FILLRECT, (void(*)(void))NULL);
+  GUI_AA_SetFuncDrawPolyOutline(NULL);
+  GUI_AA_SetFuncDrawArc        (NULL);
   _DaveActive = 0;
-#endif
 }
 
 /*********************************************************************
@@ -1099,9 +876,9 @@ void LCD_X_Config(void) {
     LCD_SetVSizeEx(0, YSIZE_PHYS, XSIZE_PHYS);
   } else {
     LCD_SetSizeEx (0, XSIZE_PHYS, YSIZE_PHYS);
-    LCD_SetVSizeEx(0, VXSIZE_PHYS, YSIZE_PHYS);
+    LCD_SetVSizeEx(0, XSIZE_PHYS, YSIZE_PHYS);
   }
-  LCD_SetBufferPtrEx(0, (void **)_aBufferPTR);
+  LCD_SetBufferPtrEx(0, _aBufferPTR);
   //
   // Initialize Dave2D
   //
@@ -1151,9 +928,6 @@ int LCD_X_DisplayDriver(unsigned LayerIndex, unsigned Cmd, void * pData) {
     // to be adapted by the customer...
     //
     _InitController();
-#if (USE_DAVE2D)
-      LCDCONF_EnableDave2D();
-#endif
     return 0;
   }
   case LCD_X_SETLUTENTRY: {
@@ -1173,7 +947,11 @@ int LCD_X_DisplayDriver(unsigned LayerIndex, unsigned Cmd, void * pData) {
     LCD_X_SHOWBUFFER_INFO * p;
 
     p = (LCD_X_SHOWBUFFER_INFO *)pData;
+#if (NUM_BUFFERS == 2)
     _SwitchBuffersOnVSYNC(p->Index);
+#else
+    _PendingBuffer = p->Index;
+#endif
     break;
   }
   case LCD_X_ON: {

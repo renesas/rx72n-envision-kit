@@ -99,8 +99,7 @@ Includes   <System Includes> , "Project Includes"
 /*******************************************************************************
  Private variables and functions
  *******************************************************************************/
-extern void display_syslog_putstring(WM_HWIN hWin_handle, char *string);
-extern WM_HWIN hWinSystemLogWindow;
+extern void amazon_freertos_syslog_putstring(char *string);
 extern volatile int32_t gui_initialize_complete_flag;
 
 /*****************************************************************************
@@ -213,7 +212,7 @@ void uart_string_printf(char *pString)
     }
 
     str_length = (uint16_t)strlen(pString);
-    display_syslog_putstring(hWinSystemLogWindow, pString);
+    amazon_freertos_syslog_putstring(pString);
 
     while ((retry > 0) && (str_length > 0))
     {

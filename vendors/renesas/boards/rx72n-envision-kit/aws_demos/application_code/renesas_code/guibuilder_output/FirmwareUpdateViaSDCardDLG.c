@@ -96,9 +96,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 
 // USER START (Optionally insert additional static code)
 extern void bank_swap_with_software_reset(void);
-extern WM_HWIN hWinFirmwareUpdateViaSDCardWindow;
 extern void firmware_update_request(char *string);
-//extern void bank_swap(void);
 extern bool is_firmupdating(void);
 extern void SetSwbankchangeRebootBotton(void);
 extern void firmware_update_request(char *string);
@@ -107,6 +105,8 @@ void firmware_update_writing_color(U32 id, U8 num);
 void firmware_update_temporary_area_string(U32 prog, U32 kilobyte, U32 kilobyte2);
 void firmware_update_log_string(char *pstring);
 void firmware_update_update_file_search(void);
+
+WM_HWIN hWinFirmwareUpdateViaSDCardWindow;
 // USER END
 
 /*********************************************************************
@@ -258,6 +258,7 @@ WM_HWIN CreateFirmwareUpdateViaSDCard(void) {
   WM_HWIN hWin;
 
   hWin = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), _cbDialog, WM_HBKWIN, 0, 0);
+  hWinFirmwareUpdateViaSDCardWindow = hWin;
   return hWin;
 }
 
@@ -353,7 +354,7 @@ void firmware_update_editor_move(void)
       int cnt = 0;
       while(cnt < MOVE_WINDOW_COUNT)
       {
-          /* ã‚©‚ç‰º‚Ö~‚è‚é•û */
+          /* ï¿½ã‚©ï¿½ç‰ºï¿½Ö~ï¿½ï¿½ï¿½ï¿½ */
           /* Temporary Area */
         hWin = hWinFirmwareUpdateViaSDCardWindow;
         hItem = WM_GetDialogItem(hWin, ID_MULTIEDIT_2);
@@ -389,7 +390,7 @@ void firmware_update_editor_move(void)
         ypos++;
         WM_SetWindowPos(hItem, xpos, ypos, xsize, ysize);
 
-        /* ‰º‚©‚çã‚Öã‚é•û */
+        /* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öï¿½ï¿½ï¿½ */
           /* Frimware Area */
         hWin = hWinFirmwareUpdateViaSDCardWindow;
         hItem = WM_GetDialogItem(hWin, ID_MULTIEDIT_1);

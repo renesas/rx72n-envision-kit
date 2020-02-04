@@ -46,6 +46,9 @@
 #include "FreeRTOS.h"
 #include "aws_application_version.h"
 
+/* for RX72N Envision Kit system common header */
+#include "rx72n_envision_kit_system.h"
+
 /**********************************************************************************************************************
 Typedef definitions
 **********************************************************************************************************************/
@@ -58,6 +61,7 @@ Typedef definitions
 typedef struct _demo_window_list
 {
 	WM_HWIN demo_window_handle;
+	WM_HWIN frame_window_handle;
 	uint32_t current_displayed;
 	char demo_name[32];
 	struct  _demo_window_list *next;
@@ -73,13 +77,13 @@ typedef struct _demo_window_list
  ******************************************************************************/
 static SYS_TIME sys_time;
 static DEMO_WINDOW_LIST *demo_window_list_head;
-static DEMO_WINDOW_LIST* demo_window_add_list(DEMO_WINDOW_LIST *pdemo_window_list_head, WM_HWIN new_handle, char *demo_name);
+static DEMO_WINDOW_LIST* demo_window_add_list(DEMO_WINDOW_LIST *pdemo_window_list_head, WM_HWIN new_handle, WM_HWIN frame_handle, char *demo_name);
 static void demo_window_free_list(DEMO_WINDOW_LIST *pdemo_window_list);
 static void demo_window_display_previous(DEMO_WINDOW_LIST *pdemo_window_list_head);
 static void demo_window_display_next(DEMO_WINDOW_LIST *pdemo_window_list_head);
 
-static void main_10ms_emWin_update(void);
-static void main_100ms_display_update(void);
+static void main_10ms_emWin_update(TASK_INFO *task_info);
+static void main_100ms_display_update(TASK_INFO *task_info);
 
 static int32_t next_button_id, prev_button_id;
 
@@ -108,8 +112,6 @@ extern int frame_prev_button_enable(WM_HWIN hWin, uint8_t onoff);
 /*******************************************************************************
  global variables and functions
 ********************************************************************************/
-WM_HWIN hWinTaskManagerWindow, hWinTitleLogoWindow, hWinStorageBenchmark, hWinCryptoBenchmark1, hWinCryptoBenchmark2, hWinSystemLogWindow;
-WM_HWIN hWinFrameWindow, hWinFirmwareUpdateViaSDCardWindow, hWinSerialTerminalWindow;
 
 volatile int32_t first_touch_wait_flag;
 volatile int32_t gui_initialize_complete_flag;
@@ -119,35 +121,38 @@ void emWinCallback(WM_MESSAGE * pMsg);
 void callback_frame_window_to_main(int32_t id, int32_t event);
 
 /******************************************************************************
- Function Name   : serial_terminal_task
- Description     : serial_terminal_task
+ Function Name   : gui_task
+ Description     : gui_task
  Arguments       : none
  Return value    : none
  ******************************************************************************/
 void gui_task( void * pvParameters )
 {
+	static uint32_t counter = 0;
+	TASK_INFO *task_info = (TASK_INFO *)pvParameters;
+
 	/* GUI initialize complete */
 	gui_initialize_complete_flag = 1;
 
 	/* generate frame window */
 	demo_window_free_list(demo_window_list_head);
-	hWinFrameWindow = CreateFrameWindow();
+	task_info->hWin_frame = CreateFrameWindow();
 
 	/* generate sub windows */
-	hWinSystemLogWindow = CreateSystemLogWindow();
-	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinSystemLogWindow, DEMO_NAME_SYSTEM_LOG);
+	task_info->hWin_system_log = CreateSystemLogWindow();
+	demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_system_log, task_info->hWin_frame, DEMO_NAME_SYSTEM_LOG);
 
-	hWinSerialTerminalWindow = CreateSerialTerminalWindow();
-	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinSerialTerminalWindow, DEMO_NAME_SERIAL_TERMINAL);
+	task_info->hWin_serial_terminal = CreateSerialTerminalWindow();
+	demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_serial_terminal, task_info->hWin_frame, DEMO_NAME_SERIAL_TERMINAL);
 
-	hWinFirmwareUpdateViaSDCardWindow = CreateFirmwareUpdateViaSDCard();
-	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinFirmwareUpdateViaSDCardWindow, DEMO_NAME_FIRMWARE_UPDATE_VIA_SD_CARD);
+	task_info->hWin_firmware_update_via_sd_card = CreateFirmwareUpdateViaSDCard();
+	demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_firmware_update_via_sd_card, task_info->hWin_frame, DEMO_NAME_FIRMWARE_UPDATE_VIA_SD_CARD);
 
-	hWinTaskManagerWindow = CreateTaskManager();
-	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinTaskManagerWindow, DEMO_NAME_TASK_MANAGER);
+	task_info->hWin_task_manager = CreateTaskManager();
+	demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_task_manager, task_info->hWin_frame, DEMO_NAME_TASK_MANAGER);
 
-	hWinTitleLogoWindow = CreateTitleLogoWindow();
-	demo_window_list_head = demo_window_add_list(demo_window_list_head, hWinTitleLogoWindow, DEMO_NAME_TITLE_LOGO);
+	task_info->hWin_title_logo = CreateTitleLogoWindow();
+	demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_title_logo, task_info->hWin_frame, DEMO_NAME_TITLE_LOGO);
 
 	/* get each GUI IDs */
 	prev_button_id = get_prev_button_id();
@@ -164,34 +169,36 @@ void gui_task( void * pvParameters )
 		vTaskDelay(10);
 	}
 
-	uint32_t counter = 0;
+    /* notify completing GUI initialization and first touch to main task */
+	xTaskNotifyGive(task_info->main_task_handle);
+
 	while(1)
 	{
-		main_10ms_emWin_update();
+		main_10ms_emWin_update(task_info);
 		vTaskDelay(10);
 		counter++;
 		if(counter > 10)
 		{
 			counter = 0;
-			main_100ms_display_update();
+			main_100ms_display_update(task_info);
 		}
 	}
 }
 
-void main_10ms_emWin_update(void)
+void main_10ms_emWin_update(TASK_INFO *task_info)
 {
 	GUI_Exec(); /* Do the background work ... Update windows etc.) */
 	GUI_X_ExecIdle(); /* Nothing left to do for the moment ... Idle processing */
 }
 
-void main_100ms_display_update(void)
+void main_100ms_display_update(TASK_INFO *task_info)
 {
 	DEMO_WINDOW_LIST *p;
 	static DEMO_WINDOW_LIST *prev_p;
 
 	R_SYS_TIME_GetCurrentTime(&sys_time);
 
-	display_update_time(hWinFrameWindow, &sys_time);
+	display_update_time(task_info->hWin_frame, &sys_time);
 
 	p = demo_window_list_head;
 	while(1)
@@ -201,11 +208,11 @@ void main_100ms_display_update(void)
 			if(prev_p != p)
 			{
 				prev_p = p;
-				display_update_demo_name(hWinFrameWindow, p->demo_name);
+				display_update_demo_name(task_info->hWin_frame, p->demo_name);
 				WM_BringToTop(p->demo_window_handle);
-				if(p->demo_window_handle != hWinTitleLogoWindow)
+				if(p->demo_window_handle != task_info->hWin_title_logo)
 				{
-		    		WM_DeleteWindow(hWinTitleLogoWindow);
+		    		WM_DeleteWindow(task_info->hWin_title_logo);
 				}
 			}
 			break;
@@ -245,11 +252,6 @@ void callback_frame_window_to_main(int32_t id, int32_t event)
 			demo_window_display_previous(demo_window_list_head);
 		}
 	}
-}
-
-void goto_user_program_screen(void)
-{
-	demo_window_display_next(demo_window_list_head);
 }
 
 void delete_window_to_main(WM_HWIN delete_handle)
@@ -302,18 +304,19 @@ void delete_window_to_main(WM_HWIN delete_handle)
 }
 
 
-static DEMO_WINDOW_LIST* demo_window_add_list(DEMO_WINDOW_LIST *pdemo_window_list_head, WM_HWIN new_handle, char *demo_name)
+static DEMO_WINDOW_LIST* demo_window_add_list(DEMO_WINDOW_LIST *pdemo_window_list_head, WM_HWIN new_handle, WM_HWIN frame_handle, char *demo_name)
 {
 	DEMO_WINDOW_LIST *p;
 
 	p = malloc(sizeof(DEMO_WINDOW_LIST));
 	if(p == 0)
 	{
-		printf("malloc error occurred at demo_window_add_list()\n");
+		/* malloc error, nothing to do */
 	}
 	else
 	{
 		p->demo_window_handle = new_handle;
+		p->frame_window_handle = frame_handle;
 		strcpy(p->demo_name, demo_name);
 		if(pdemo_window_list_head == NULL)
 		{
@@ -373,7 +376,7 @@ static void demo_window_display_previous(DEMO_WINDOW_LIST *pdemo_window_list_hea
 		p->current_displayed = 0;
 		if(p_prev->demo_window_handle == pdemo_window_list_head->demo_window_handle)
 		{
-			frame_prev_button_enable(hWinFrameWindow, 0);
+			frame_prev_button_enable(p->frame_window_handle, 0);
 		}
 	}
 }
@@ -403,8 +406,7 @@ static void demo_window_display_next(DEMO_WINDOW_LIST *pdemo_window_list_head)
 		p->current_displayed = 0;
 		if((p->next)->next == NULL)
 		{
-			frame_next_button_enable(hWinFrameWindow, 0);
+			frame_next_button_enable(p->frame_window_handle, 0);
 		}
-
 	}
 }

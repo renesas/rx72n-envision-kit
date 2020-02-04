@@ -258,8 +258,6 @@ void display_update_usb_stat(WM_HWIN hWin, int8_t usb_stat)
 		  return;
 	  }
 	  TEXT_SetText(hItem, string);
-	  printf("%s", string);
-	  printf("\n");
 }
 
 void display_update_sd_stat(WM_HWIN hWin, int8_t sd_stat)
@@ -279,8 +277,6 @@ void display_update_sd_stat(WM_HWIN hWin, int8_t sd_stat)
 
 	  }
 	  TEXT_SetText(hItem, string);
-	  printf("%s", string);
-	  printf("\n");
 }
 
 void display_update_time(WM_HWIN hWin, SYS_TIME *sys_time)
