@@ -418,5 +418,7 @@ extern void SwitchButtonInit(void);
 extern void CheckPressedState(void);
 extern void sdcard_init(void);
 extern void sdcard_task( void * pvParameters );
+extern void progbar_init(void);
+extern void progbar_print(U32 prog);
 
 #endif /* RESOURCE_H */

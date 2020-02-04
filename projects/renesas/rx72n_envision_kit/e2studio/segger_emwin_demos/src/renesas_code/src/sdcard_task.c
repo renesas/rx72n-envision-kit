@@ -50,8 +50,6 @@ uint32_t g_sdc_sd_work[200];
 uint32_t g_sdc_sd_card_no;
 
 extern FATFS fatfs;
-extern FILINFO filinfo;
-extern DIR dir;
 
 /*******************************************************************************
 Private global variables and functions
@@ -89,11 +87,12 @@ void sdcard_task( void * pvParameters )
     sdc_sd_cfg_t sdc_sd_config;
 
     volatile uint32_t gui_delay_counter;
-    uint32_t progress, previous_progress;
+    static uint32_t progress, previous_progress;
     char buff[256];
-    uint32_t firmware_update_complete_flag = 0;
+    static uint32_t firmware_update_complete_flag = 0;
     uint32_t firmware_update_status;
     uint32_t firmware_update_finish_status;
+    static uint32_t firmware_update_start_flag = 0;
 
     sdc_sd_card_detection = R_SDC_SD_GetCardDetection(g_sdc_sd_card_no);
 
@@ -133,14 +132,18 @@ void sdcard_task( void * pvParameters )
 
     if(true == is_firmupdating())
     {
-        nop();
+        if (!firmware_update_start_flag)
+        {
+            firmware_update_start_flag  = 1;
+            progbar_init();
+        }
         firmware_update_complete_flag = 0;
         if(previous_progress != progress)
         {
             previous_progress = progress;
-            sprintf(buff, "installed %d %%\r\n", progress);
-            firmware_update_log_string(buff);
-            firmware_update_temporary_area_string(progress, (int)((((float)(progress)/100)*(float)(get_update_data_size()))/1024), (int)((float)(get_update_data_size()))/1024);
+            //sprintf(buff, "installed %d %%\r\n", progress);
+            //firmware_update_log_string(buff);
+            progbar_print(progress);
         }
     }
     else if(true == is_firmupdatewaitstart())
