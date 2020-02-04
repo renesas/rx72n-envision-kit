@@ -38,7 +38,6 @@
 #include "r_flash_rx_if.h"
 #include "r_cryptogram.h"
 #include "code_signer_public_key.h"
-#include "base64_decode.h"
 
 /***********************************************************************************************************************
  Macro definitions
@@ -418,6 +417,7 @@ void flash_load_firmware_callback_function(void *event)
             {
                 load_firmware_control_block.offset += FIRMWARE_UPDATE_BLOCK_LENGTH;
                 load_firmware_control_block.progress = (uint32_t)(((float)(load_firmware_control_block.offset)/(float)((FLASH_CF_MEDIUM_BLOCK_SIZE * FIRMWARE_TARGET_BLOCK_NUMBER))*100));
+                load_firmware_control_block.firmware_length = load_firmware_control_block.firmware_read_length;
                 if (load_firmware_control_block.offset == (FLASH_CF_MEDIUM_BLOCK_SIZE * FIRMWARE_TARGET_BLOCK_NUMBER))
                 {
                     load_firmware_control_block.progress = 100;
