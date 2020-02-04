@@ -188,7 +188,7 @@ void gui_task( void * pvParameters )
 void main_10ms_emWin_update(TASK_INFO *task_info)
 {
 	GUI_Exec(); /* Do the background work ... Update windows etc.) */
-	GUI_X_ExecIdle(); /* Nothing left to do for the moment ... Idle processing */
+//	GUI_X_ExecIdle(); /* Nothing left to do for the moment ... Idle processing */
 }
 
 void main_100ms_display_update(TASK_INFO *task_info)
