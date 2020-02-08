@@ -50,7 +50,7 @@
 * the demo) are contained in FreeRTOSIPConfig.h.
 *----------------------------------------------------------*/
 #define configENABLE_BACKWARD_COMPATIBILITY        1
-#define configUSE_PREEMPTION                       1
+#define configUSE_PREEMPTION                       0
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION    0
 #define configMAX_PRIORITIES                       (7)
 #define configTICK_RATE_HZ                         (1000)
