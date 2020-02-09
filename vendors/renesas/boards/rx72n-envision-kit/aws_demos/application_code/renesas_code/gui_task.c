@@ -44,6 +44,7 @@
 
 /* for using Amazon FreeRTOS */
 #include "FreeRTOS.h"
+#include "FreeRTOS_IP.h"
 #include "aws_application_version.h"
 
 /* for RX72N Envision Kit system common header */
@@ -107,6 +108,7 @@ extern void display_update_demo_name(WM_HWIN hWin, char *demo_name);
 extern void display_syslog_putstring(WM_HWIN hWin, char *string);
 extern void display_update_cpu_load(WM_HWIN hWin, uint32_t cpu_load);
 extern void display_update_freertos_ram(WM_HWIN hWin, int32_t remaining, int32_t max);
+extern void display_update_ip_stat(WM_HWIN hWin, uint8_t *ip_address);
 
 extern int get_prev_button_id(void);
 extern int get_next_button_id(void);
@@ -259,8 +261,10 @@ void main_1s_display_update(TASK_INFO *task_info)
 {
 	char *stats_buffer, *tmp, *task_name, *state, *cpu_load_string;
 	uint32_t task_number, priority, hwm, cpu_time, idle_cpu_time, total_cpu_time, cpu_load;
-	float idle_rate, total_idle_rate;
+	float current_idle_rate, total_idle_rate;
 	static uint32_t previous_total_cpu_time, previous_total_idle_cpu_time, previous_cpu_load;
+	uint8_t ip_address_array[4];
+	uint32_t ip_address;
 
 	task_name = pvPortMalloc(TASK_NAME_SIZE);
 	cpu_load_string = pvPortMalloc(CPU_LOAD_SIZE);
@@ -292,12 +296,8 @@ void main_1s_display_update(TASK_INFO *task_info)
 			if(*tmp == 0)
 			{
 				total_idle_rate = ((float)(idle_cpu_time) / (float)(total_cpu_time));
-				idle_rate = ((float)(idle_cpu_time - previous_total_idle_cpu_time) / (float)(total_cpu_time - previous_total_cpu_time));
-				cpu_load = 100 - (uint32_t)(idle_rate * 100);
-				if(cpu_load > 100)
-				{
-					cpu_load = previous_cpu_load;	/* todo: bug fix -> cpu_load would sometimes underflow */
-				}
+				current_idle_rate = ((float)(idle_cpu_time - previous_total_idle_cpu_time) / (float)(total_cpu_time - previous_total_cpu_time));
+				cpu_load = 100 - (uint32_t)(total_idle_rate * 100); /* todo: use current_idle_rate for more sensitive cpu load info */
 				previous_cpu_load = cpu_load;
 				previous_total_idle_cpu_time = idle_cpu_time;
 				previous_total_cpu_time = total_cpu_time;
@@ -306,6 +306,21 @@ void main_1s_display_update(TASK_INFO *task_info)
 			}
 		}
 	}
+
+	/* get IP address info */
+	ip_address = FreeRTOS_GetIPAddress();
+#if (__LIT)
+	ip_address_array[3] = (ip_address & 0xff000000) >> 24;
+	ip_address_array[2] = (ip_address & 0x00ff0000) >> 16;
+	ip_address_array[1] = (ip_address & 0x0000ff00) >>  8;
+	ip_address_array[0] = (ip_address & 0x000000ff) >>  0;
+#else
+	ip_address_array[0] = (ip_address & 0xff000000) >> 24;
+	ip_address_array[1] = (ip_address & 0x00ff0000) >> 16;
+	ip_address_array[2] = (ip_address & 0x0000ff00) >>  8;
+	ip_address_array[3] = (ip_address & 0x000000ff) >>  0;
+#endif
+	display_update_ip_stat(task_info->hWin_frame, ip_address_array);
 
 	vPortFree(stats_buffer);
 	vPortFree(task_name);
