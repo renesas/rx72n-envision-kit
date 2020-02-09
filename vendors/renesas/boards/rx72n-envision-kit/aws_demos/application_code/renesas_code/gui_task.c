@@ -82,8 +82,9 @@ static void demo_window_free_list(DEMO_WINDOW_LIST *pdemo_window_list);
 static void demo_window_display_previous(DEMO_WINDOW_LIST *pdemo_window_list_head);
 static void demo_window_display_next(DEMO_WINDOW_LIST *pdemo_window_list_head);
 
-static void main_10ms_emWin_update(TASK_INFO *task_info);
+static void main_10ms_display_update(TASK_INFO *task_info);
 static void main_100ms_display_update(TASK_INFO *task_info);
+static void main_1s_display_update(TASK_INFO *task_info);
 
 static int32_t next_button_id, prev_button_id;
 
@@ -104,10 +105,17 @@ extern void display_update_ip_stat(WM_HWIN hWin, uint8_t *ip_address);
 extern void display_update_time(WM_HWIN hWin, SYS_TIME *sys_time);
 extern void display_update_demo_name(WM_HWIN hWin, char *demo_name);
 extern void display_syslog_putstring(WM_HWIN hWin, char *string);
+extern void display_update_cpu_load(WM_HWIN hWin, uint32_t cpu_load);
+extern void display_update_freertos_ram(WM_HWIN hWin, int32_t remaining, int32_t max);
+
 extern int get_prev_button_id(void);
 extern int get_next_button_id(void);
 extern int frame_next_button_enable(WM_HWIN hWin, uint8_t onoff);
 extern int frame_prev_button_enable(WM_HWIN hWin, uint8_t onoff);
+
+extern void vTaskGetCombinedRunTimeStats( char* pcWriteBuffer,  UBaseType_t uxClear);
+extern void vTaskClearUsage(void);
+extern void vTaskClearUsageSingleList(List_t *pxList);
 
 /*******************************************************************************
  global variables and functions
@@ -128,7 +136,7 @@ void callback_frame_window_to_main(int32_t id, int32_t event);
  ******************************************************************************/
 void gui_task( void * pvParameters )
 {
-	static uint32_t counter = 0;
+	static uint32_t counter_10ms = 0, counter_100ms = 0;
 	TASK_INFO *task_info = (TASK_INFO *)pvParameters;
 
 	/* GUI initialize complete */
@@ -148,8 +156,10 @@ void gui_task( void * pvParameters )
 	task_info->hWin_firmware_update_via_sd_card = CreateFirmwareUpdateViaSDCard();
 	demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_firmware_update_via_sd_card, task_info->hWin_frame, DEMO_NAME_FIRMWARE_UPDATE_VIA_SD_CARD);
 
+#if 0
 	task_info->hWin_task_manager = CreateTaskManager();
 	demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_task_manager, task_info->hWin_frame, DEMO_NAME_TASK_MANAGER);
+#endif
 
 	task_info->hWin_title_logo = CreateTitleLogoWindow();
 	demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_title_logo, task_info->hWin_frame, DEMO_NAME_TITLE_LOGO);
@@ -172,20 +182,30 @@ void gui_task( void * pvParameters )
     /* notify completing GUI initialization and first touch to main task */
 	xTaskNotifyGive(task_info->main_task_handle);
 
+	main_10ms_display_update(task_info);
+	main_100ms_display_update(task_info);
+	main_1s_display_update(task_info);
+
 	while(1)
 	{
-		main_10ms_emWin_update(task_info);
+		main_10ms_display_update(task_info);
 		vTaskDelay(10);
-		counter++;
-		if(counter > 10)
+		counter_10ms++;
+		if(counter_10ms > 10)
 		{
-			counter = 0;
+			counter_10ms = 0;
 			main_100ms_display_update(task_info);
+			counter_100ms++;
+			if(counter_100ms > 10)
+			{
+				counter_100ms = 0;
+				main_1s_display_update(task_info);
+			}
 		}
 	}
 }
 
-void main_10ms_emWin_update(TASK_INFO *task_info)
+void main_10ms_display_update(TASK_INFO *task_info)
 {
 	GUI_Exec(); /* Do the background work ... Update windows etc.) */
 //	GUI_X_ExecIdle(); /* Nothing left to do for the moment ... Idle processing */
@@ -229,6 +249,66 @@ void main_100ms_display_update(TASK_INFO *task_info)
 			}
 		}
 	}
+}
+
+#define STATS_BUFFER_SIZE 1024 * 8
+#define TASK_NAME_SIZE 16
+#define CPU_LOAD_SIZE 16
+
+void main_1s_display_update(TASK_INFO *task_info)
+{
+	char *stats_buffer, *tmp, *task_name, *state, *cpu_load_string;
+	uint32_t task_number, priority, hwm, cpu_time, idle_cpu_time, total_cpu_time, cpu_load;
+	float idle_rate, total_idle_rate;
+	static uint32_t previous_total_cpu_time, previous_total_idle_cpu_time, previous_cpu_load;
+
+	task_name = pvPortMalloc(TASK_NAME_SIZE);
+	cpu_load_string = pvPortMalloc(CPU_LOAD_SIZE);
+    stats_buffer = pvPortMalloc(STATS_BUFFER_SIZE);
+
+    memset(task_name, 0, TASK_NAME_SIZE);
+    memset(cpu_load_string, 0, CPU_LOAD_SIZE);
+    memset(stats_buffer, 0, STATS_BUFFER_SIZE);
+
+	memset(task_name, 0, sizeof(TASK_NAME_SIZE));
+	memset(cpu_load_string, 0, sizeof(CPU_LOAD_SIZE));
+	memset(stats_buffer, 0, sizeof(STATS_BUFFER_SIZE));
+
+	/* get freertos CPU load info */
+	vTaskGetCombinedRunTimeStats(stats_buffer, 0);	/* 0 means read */
+	tmp = stats_buffer;
+	tmp = strstr(tmp, "\n") + 1; /* ignore first 1 line */
+	total_cpu_time = 0;
+	while(1)
+	{
+		if(sscanf(tmp, "%d %16s %c %d %d %d %16s\n", &task_number, task_name, state, &priority, &hwm, &cpu_time, cpu_load_string))
+		{
+			tmp = strstr(tmp, "\n") + 1;
+			if(!strcmp(task_name, "IDLE"))
+			{
+				idle_cpu_time = cpu_time;
+			}
+			total_cpu_time += cpu_time;
+			if(*tmp == 0)
+			{
+				total_idle_rate = ((float)(idle_cpu_time) / (float)(total_cpu_time));
+				idle_rate = ((float)(idle_cpu_time - previous_total_idle_cpu_time) / (float)(total_cpu_time - previous_total_cpu_time));
+				cpu_load = 100 - (uint32_t)(idle_rate * 100);
+				if(cpu_load > 100)
+				{
+					cpu_load = previous_cpu_load;	/* todo: bug fix -> cpu_load would sometimes underflow */
+				}
+				previous_cpu_load = cpu_load;
+				previous_total_idle_cpu_time = idle_cpu_time;
+				previous_total_cpu_time = total_cpu_time;
+				display_update_cpu_load(task_info->hWin_frame, cpu_load);
+				break;
+			}
+		}
+	}
+
+	vPortFree(stats_buffer);
+	vPortFree(task_name);
 }
 
 void emWinCallback(WM_MESSAGE * pMsg)

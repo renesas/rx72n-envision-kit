@@ -33,15 +33,15 @@
 *
 **********************************************************************
 */
-#define ID_WINDOW_0 (GUI_ID_USER + 0x00)
-#define ID_TEXT_0 (GUI_ID_USER + 0x01)
-#define ID_TEXT_1 (GUI_ID_USER + 0x02)
-#define ID_TEXT_2 (GUI_ID_USER + 0x03)
-#define ID_TEXT_3 (GUI_ID_USER + 0x04)
-#define ID_TEXT_4 (GUI_ID_USER + 0x05)
-#define ID_BUTTON_0 (GUI_ID_USER + 0x06)
-#define ID_BUTTON_1 (GUI_ID_USER + 0x07)
-#define ID_TEXT_5 (GUI_ID_USER + 0x08)
+#define ID_WINDOW_0    (GUI_ID_USER + 0x00)
+#define ID_TEXT_0    (GUI_ID_USER + 0x01)
+#define ID_TEXT_1    (GUI_ID_USER + 0x02)
+#define ID_TEXT_2    (GUI_ID_USER + 0x03)
+#define ID_TEXT_3    (GUI_ID_USER + 0x04)
+#define ID_TEXT_4    (GUI_ID_USER + 0x05)
+#define ID_BUTTON_0    (GUI_ID_USER + 0x06)
+#define ID_BUTTON_1    (GUI_ID_USER + 0x07)
+#define ID_TEXT_5    (GUI_ID_USER + 0x08)
 
 
 // USER START (Optionally insert additional defines)
@@ -50,6 +50,7 @@ void display_update_sd_stat(WM_HWIN hWin, int8_t sd_stat);
 void display_update_time(WM_HWIN hWin, SYS_TIME *sys_time);
 void display_update_ip_stat(WM_HWIN hWin, uint8_t *ip_address);
 void display_update_demo_name(WM_HWIN hWin, uint8_t *demo_name);
+void display_update_cpu_load(WM_HWIN hWin, int8_t cpu_load);
 
 int get_prev_button_id(void);
 int get_next_button_id(void);
@@ -73,14 +74,14 @@ extern void callback_frame_window_to_main(int32_t id, int32_t event);
 */
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { WINDOW_CreateIndirect, "FrameWindow", ID_WINDOW_0, 0, 0, 480, 272, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "System Log", ID_TEXT_0, 5, 2, 204, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "System Log", ID_TEXT_0, 5, 2, 213, 20, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "USB", ID_TEXT_1, 7, 250, 80, 20, 0, 0x64, 0 },
   { TEXT_CreateIndirect, "SD", ID_TEXT_2, 85, 250, 80, 20, 0, 0x64, 0 },
   { TEXT_CreateIndirect, "Time", ID_TEXT_3, 312, 250, 157, 20, 0, 0x64, 0 },
   { TEXT_CreateIndirect, "IP", ID_TEXT_4, 157, 250, 109, 20, 0, 0x64, 0 },
   { BUTTON_CreateIndirect, "Button", ID_BUTTON_0, 309, 0, 80, 20, 0, 0x0, 0 },
   { BUTTON_CreateIndirect, "Button", ID_BUTTON_1, 392, 0, 80, 20, 0, 0x0, 0 },
-  { TEXT_CreateIndirect, "CPU Load    0 %", ID_TEXT_5, 220, 2, 84, 20, 0, 0x0, 0 },
+  { TEXT_CreateIndirect, "CPU Load   0 %", ID_TEXT_5, 224, 2, 79, 20, 0, 0x0, 0 },
   // USER START (Optionally insert additional widgets)
   // USER END
 };
@@ -159,7 +160,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     BUTTON_SetText(hItem, "next");
     BUTTON_SetFont(hItem, GUI_FONT_13_1);
     //
-    // Initialization of 'CPU Load    0 %'
+    // Initialization of 'CPU Load   0 %'
     //
     hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_5);
     TEXT_SetTextColor(hItem, GUI_MAKE_COLOR(0x00FFFFFF));
@@ -271,7 +272,7 @@ void display_update_sd_stat(WM_HWIN hWin, int8_t sd_stat)
 		  sprintf(string, "SD: attach");
 
 	  }
-	  else if(sd_stat == 1)
+	  else 	  if(sd_stat == -1)
 	  {
 		  sprintf(string, "SD: detach");
 
@@ -368,6 +369,36 @@ int frame_next_button_enable(WM_HWIN hWin, uint8_t onoff)
 //	WM_DisableWindow(hwin);
 //	WM_CF_HIDE
 	return 0;
+}
+
+void display_update_cpu_load(WM_HWIN hWin, int8_t cpu_load)
+{
+	  WM_HWIN hItem;
+	  char string[256] = {0};
+	  static char pre_string[256] = {0};
+
+	  hItem = WM_GetDialogItem(hWin, ID_TEXT_5);
+	  sprintf(string, "CPU Load %d%%", cpu_load);
+	  if(strcmp(string, pre_string))
+	  {
+		  TEXT_SetText(hItem, string);
+	  }
+	  strcpy(pre_string, string);
+}
+
+void display_update_freertos_ram(WM_HWIN hWin, int32_t remaining, int32_t max)
+{
+	  WM_HWIN hItem;
+	  char string[256] = {0};
+	  static char pre_string[256] = {0};
+
+	  hItem = WM_GetDialogItem(hWin, ID_TEXT_5);
+	  sprintf(string, "FreeRTOS RAM  %d / %d KB", remaining, max);
+	  if(strcmp(string, pre_string))
+	  {
+		  TEXT_SetText(hItem, string);
+	  }
+	  strcpy(pre_string, string);
 }
 
 // USER END
