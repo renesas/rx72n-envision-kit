@@ -139,6 +139,8 @@ extern void vTaskGetCombinedRunTimeStats( char* pcWriteBuffer,  UBaseType_t uxCl
 extern void vTaskClearUsage(void);
 extern void vTaskClearUsageSingleList(List_t *pxList);
 
+extern void firmware_version_read(char **ver_str);
+
 /*******************************************************************************
  global variables and functions
 ********************************************************************************/
@@ -159,6 +161,7 @@ void serial_terminal_task( void * pvParameters )
 
     sci_cfg_t   sci_config;
     char tmp[2];
+    char *ver;
     tmp[1] = 0;
     char *sci_buffer;
     uint32_t current_buffer_pointer = 0;
@@ -229,6 +232,9 @@ void serial_terminal_task( void * pvParameters )
 		        		}
 		        		break;
 		        	case COMMAND_VERSION:
+		        		firmware_version_read(&ver);
+		        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, ver);
+		        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, "\r\n");
 		        		break;
 		        	default:
 		        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, COMMAND_NOT_FOUND);
