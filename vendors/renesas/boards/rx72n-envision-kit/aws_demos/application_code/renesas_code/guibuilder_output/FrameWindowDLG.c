@@ -125,7 +125,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_1);
     TEXT_SetFont(hItem, GUI_FONT_13_1);
     TEXT_SetTextColor(hItem, GUI_MAKE_COLOR(0x00FFFFFF));
-    TEXT_SetText(hItem, "USB: detach");
+    TEXT_SetText(hItem, "USB: N/A");
     //
     // Initialization of 'SD'
     //
