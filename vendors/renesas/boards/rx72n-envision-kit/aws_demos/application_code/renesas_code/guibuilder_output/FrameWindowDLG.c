@@ -272,10 +272,9 @@ void display_update_sd_stat(WM_HWIN hWin, int8_t sd_stat)
 		  sprintf(string, "SD: attach");
 
 	  }
-	  else 	  if(sd_stat == -1)
+	  else 	  if(sd_stat == 1)
 	  {
 		  sprintf(string, "SD: detach");
-
 	  }
 	  TEXT_SetText(hItem, string);
 }
