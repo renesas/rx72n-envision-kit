@@ -181,7 +181,7 @@ void gui_task( void * pvParameters )
 		vTaskDelay(10);
 	}
 
-    /* notify completing GUI initialization and first touch to main task */
+	/* notify completing GUI initialization and first touch to main task */
 	xTaskNotifyGive(task_info->main_task_handle);
 
 	main_10ms_display_update(task_info);
@@ -324,6 +324,7 @@ void main_1s_display_update(TASK_INFO *task_info)
 
 	vPortFree(stats_buffer);
 	vPortFree(task_name);
+	vPortFree(cpu_load_string);
 }
 
 void emWinCallback(WM_MESSAGE * pMsg)

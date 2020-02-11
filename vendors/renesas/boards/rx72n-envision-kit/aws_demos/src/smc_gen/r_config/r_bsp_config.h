@@ -782,7 +782,7 @@ NOTE: The RAM areas are not contiguous.It is separated by 512 KB each.
 #define MY_BSP_CFG_SERIAL_TERM_SCI_INTERRUPT_PRIORITY   (15)
 
 /* This macro is used for RX72N Envision Kit prototype that includes wrong main clock oscillator. NG=12MHz, OK=16MHz */
-#define MY_BSP_CFG_RX72N_ENVISION_KIT_PROTOTYPE_THAT_INCLUDES_WRONG_MAIN_CLOCK_OSCILATTOR 0
+#define MY_BSP_CFG_RX72N_ENVISION_KIT_PROTOTYPE_THAT_INCLUDES_WRONG_MAIN_CLOCK_OSCILATTOR 1
 
 #endif /* R_BSP_CONFIG_REF_HEADER_FILE */
 
