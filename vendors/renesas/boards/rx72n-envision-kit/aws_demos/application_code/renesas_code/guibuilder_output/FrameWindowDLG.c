@@ -377,7 +377,8 @@ void display_update_cpu_load(WM_HWIN hWin, int8_t cpu_load)
 	  static char pre_string[256] = {0};
 
 	  hItem = WM_GetDialogItem(hWin, ID_TEXT_5);
-	  sprintf(string, "CPU Load %d%%", cpu_load);
+//	  sprintf(string, "CPU Load %d%%", cpu_load);
+	  sprintf(string, "CPU Load N/A%%", cpu_load);
 	  if(strcmp(string, pre_string))
 	  {
 		  TEXT_SetText(hItem, string);
