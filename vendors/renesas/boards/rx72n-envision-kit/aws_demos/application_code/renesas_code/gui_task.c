@@ -261,8 +261,7 @@ void main_1s_display_update(TASK_INFO *task_info)
 {
 	char *stats_buffer, *tmp, *task_name, *state, *cpu_load_string;
 	uint32_t task_number, priority, hwm, cpu_time, idle_cpu_time, total_cpu_time, cpu_load;
-	float current_idle_rate, total_idle_rate;
-	static uint32_t previous_total_cpu_time, previous_total_idle_cpu_time, previous_cpu_load;
+	float idle_rate;
 	uint8_t ip_address_array[4];
 	uint32_t ip_address;
 
@@ -295,13 +294,10 @@ void main_1s_display_update(TASK_INFO *task_info)
 			total_cpu_time += cpu_time;
 			if(*tmp == 0)
 			{
-				total_idle_rate = ((float)(idle_cpu_time) / (float)(total_cpu_time));
-				current_idle_rate = ((float)(idle_cpu_time - previous_total_idle_cpu_time) / (float)(total_cpu_time - previous_total_cpu_time));
-				cpu_load = 100 - (uint32_t)(total_idle_rate * 100); /* todo: use current_idle_rate for more sensitive cpu load info */
-				previous_cpu_load = cpu_load;
-				previous_total_idle_cpu_time = idle_cpu_time;
-				previous_total_cpu_time = total_cpu_time;
+				idle_rate = ((float)(idle_cpu_time) / (float)(total_cpu_time));
+				cpu_load = 100 - (uint32_t)(idle_rate * 100);
 				display_update_cpu_load(task_info->hWin_frame, cpu_load);
+				vTaskGetCombinedRunTimeStats(stats_buffer, 0);	/* 1 means reset */
 				break;
 			}
 		}
