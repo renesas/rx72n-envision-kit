@@ -22,7 +22,7 @@
 * Version      : 1.1.0
 * Device(s)    : R5F572NNHxFB
 * Description  : This file implements interrupt setting
-* Creation Date: 2019-12-28
+* Creation Date: 2020-02-22
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
 Includes
@@ -44,7 +44,7 @@ void R_Interrupt_Create(void)
     
 
     /* Set group AL1 interrupt priority level */
-    IPR(ICU,GROUPAL1) = _02_ICU_PRIORITY_LEVEL2;
+    IPR(ICU,GROUPAL1) = _0E_ICU_PRIORITY_LEVEL14;
 
     /* Enable group AL1 interrupt */
     IEN(ICU,GROUPAL1) = 1U;

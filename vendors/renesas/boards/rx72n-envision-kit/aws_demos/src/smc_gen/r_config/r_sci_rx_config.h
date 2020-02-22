@@ -91,7 +91,7 @@ Configuration Options
 */
                                    
 #define SCI_CFG_CH0_INCLUDED    (0)
-#define SCI_CFG_CH1_INCLUDED    (1)
+#define SCI_CFG_CH1_INCLUDED    (0)
 #define SCI_CFG_CH2_INCLUDED    (1)
 #define SCI_CFG_CH3_INCLUDED    (0)
 #define SCI_CFG_CH4_INCLUDED    (0)
@@ -106,7 +106,7 @@ Configuration Options
 
 /* SPECIFY ASYNC MODE TX QUEUE BUFFER SIZES (will not allocate if chan not enabled */
 #define SCI_CFG_CH0_TX_BUFSIZ   (80)
-#define SCI_CFG_CH1_TX_BUFSIZ   (2304)
+#define SCI_CFG_CH1_TX_BUFSIZ   (80)
 #define SCI_CFG_CH2_TX_BUFSIZ   (80)
 #define SCI_CFG_CH3_TX_BUFSIZ   (80)
 #define SCI_CFG_CH4_TX_BUFSIZ   (80)
@@ -121,7 +121,7 @@ Configuration Options
 
 /* SPECIFY ASYNC MODE RX QUEUE BUFFER SIZES (will not allocate if chan not enabled */
 #define SCI_CFG_CH0_RX_BUFSIZ   (80)
-#define SCI_CFG_CH1_RX_BUFSIZ   (4096)
+#define SCI_CFG_CH1_RX_BUFSIZ   (80)
 #define SCI_CFG_CH2_RX_BUFSIZ   (80)
 #define SCI_CFG_CH3_RX_BUFSIZ   (80)
 #define SCI_CFG_CH4_RX_BUFSIZ   (80)

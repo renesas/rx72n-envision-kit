@@ -278,7 +278,7 @@ uint32_t ulRand(void);
 
 /* Each TCP socket has a circular buffers for Rx and Tx, which have a fixed
  * maximum size.  Define the size of Rx buffer for TCP sockets. */
-#define ipconfigTCP_RX_BUFFER_LENGTH                   (1460 * 3)
+#define ipconfigTCP_RX_BUFFER_LENGTH                   (1460 * 6)
 
 /* Define the size of Tx buffer for TCP sockets. */
 #define ipconfigTCP_TX_BUFFER_LENGTH                   (1460 * 3)

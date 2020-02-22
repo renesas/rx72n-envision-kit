@@ -23,6 +23,7 @@ Purpose     : GUI runtime configuration
 
 #include "GUI_Private.h"
 #include "PIDConf.h"
+#include "r_emwin_rx_config.h"
 
 /*********************************************************************
 *
@@ -33,8 +34,7 @@ Purpose     : GUI runtime configuration
 //
 // Define the available number of bytes available for the GUI
 //
-#define GUI_NUMBYTES  (1024 * 80)
-//#define GUI_NUMBYTES  (1024 * 1024)
+#define GUI_NUMBYTES  EMWIN_GUI_NUM_BYTES
 
 /*********************************************************************
 *

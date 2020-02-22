@@ -22,7 +22,7 @@
 * Version      : 1.0.2
 * Device(s)    : R5F572NNHxFB
 * Description  : This file implements SMC pin code generation.
-* Creation Date: 2019-12-29
+* Creation Date: 2020-02-22
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -59,10 +59,6 @@ void R_Pins_Create(void)
     /* Set CLKOUT25M pin */
     MPC.P56PFS.BYTE = 0x2AU;
     PORT5.PMR.BYTE |= 0x40U;
-
-    /* Set CTS1# pin */
-    MPC.P31PFS.BYTE = 0x0BU;
-    PORT3.PMR.BYTE |= 0x02U;
 
     /* Set ET0_COL pin */
     MPC.PC7PFS.BYTE = 0x11U;
@@ -216,10 +212,6 @@ void R_Pins_Create(void)
     MPC.PB1PFS.BYTE = 0x25U;
     PORTB.PMR.BYTE |= 0x02U;
 
-    /* Set RXD1 pin */
-    MPC.P30PFS.BYTE = 0x0AU;
-    PORT3.PMR.BYTE |= 0x01U;
-
     /* Set RXD2 pin */
     MPC.P12PFS.BYTE = 0x0AU;
     PORT1.PMR.BYTE |= 0x04U;
@@ -263,11 +255,6 @@ void R_Pins_Create(void)
     /* Set SSDA6 pin */
     MPC.P32PFS.BYTE = 0x0AU;
     PORT3.PMR.BYTE |= 0x04U;
-
-    /* Set TXD1 pin */
-    PORT2.PODR.BYTE |= 0x40U;
-    MPC.P26PFS.BYTE = 0x0AU;
-    PORT2.PDR.BYTE |= 0x40U;
 
     /* Set TXD2 pin */
     PORT1.PODR.BYTE |= 0x08U;

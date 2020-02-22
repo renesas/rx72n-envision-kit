@@ -499,10 +499,10 @@ void PID_X_Init(void) {
   //
   // Reset touch ic
   //
-  R_GPIO_PinDirectionSet(GPIO_PORT_6_PIN_6, GPIO_DIRECTION_OUTPUT);
-  R_GPIO_PinWrite(GPIO_PORT_6_PIN_6, GPIO_LEVEL_LOW);
+  R_GPIO_PinDirectionSet(GPIO_PORT_0_PIN_7, GPIO_DIRECTION_OUTPUT);
+  R_GPIO_PinWrite(GPIO_PORT_0_PIN_7, GPIO_LEVEL_LOW);
   R_BSP_SoftwareDelay(10, BSP_DELAY_MILLISECS);
-  R_GPIO_PinWrite(GPIO_PORT_6_PIN_6, GPIO_LEVEL_HIGH);
+  R_GPIO_PinWrite(GPIO_PORT_0_PIN_7, GPIO_LEVEL_HIGH);
   R_BSP_SoftwareDelay(300, BSP_DELAY_MILLISECS);
   //
   // Sets IIC Information (Ch6)
@@ -517,7 +517,6 @@ void PID_X_Init(void) {
   //
   // Create timer for executing touch
   //
-  //R_CMT_CreatePeriodic(50, _cbTimer, &Channel);
   R_SYS_TIME_Open();
   R_SYS_TIME_RegisterPeriodicCallback(_cbTimer, 2);
 #if (USE_MULTITOUCH == 1)

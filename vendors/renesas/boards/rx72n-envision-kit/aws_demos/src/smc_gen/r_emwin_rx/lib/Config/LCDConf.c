@@ -47,6 +47,8 @@ MultiBuffering:
   #include "r_glcdc_rx_if.h"
   #include "r_pinset.h"
   #include "r_dmaca_rx_if.h"
+  #include "r_gpio_rx_if.h"
+  #include "r_emwin_rx_config.h"
 #endif
 #ifdef __ICCRX__
   #include "iorx65n.h"
@@ -215,8 +217,8 @@ extern void drw_int_isr(void);
 **********************************************************************
 */
 static const U32 _aBufferPTR[] = {
-  0x00800000,  // Begin of On-Chip RAM
-  0x00840000   // Begin of Expansion RAM
+  EMWIN_GUI_FRAME_BUFFER1,  // Begin of On-Chip RAM
+  EMWIN_GUI_FRAME_BUFFER2   // Begin of Expansion RAM
 };
 
 static volatile int _PendingBuffer = -1;
@@ -296,13 +298,13 @@ static void _InitController(void) {
   //
   // Set DISP signal on P97 (Pin31)
   //
-  PORTB.PDR.BIT.B3  = 1;  // Port direction: output
-  PORTB.PODR.BIT.B3 = 1;  // DISP on
+  R_GPIO_PinDirectionSet(EMWIN_DISP_SIGNAL_PIN, GPIO_DIRECTION_OUTPUT);
+  R_GPIO_PinWrite(EMWIN_DISP_SIGNAL_PIN, GPIO_LEVEL_HIGH);
   //
   // Switch backlight on, no PWM
   //
-  PORT6.PDR.BIT.B7  = 1;
-  PORT6.PODR.BIT.B7 = 1;
+  R_GPIO_PinDirectionSet(EMWIN_BACKLIGHT_PIN, GPIO_DIRECTION_OUTPUT);
+  R_GPIO_PinWrite(EMWIN_BACKLIGHT_PIN, GPIO_LEVEL_HIGH);
   //
   // Set the BGEN.SWRST bit to 1 to release the GLCDC from a software reset
   //
@@ -493,10 +495,10 @@ glcdc_clut_cfg_t p_clut_cfg;
 static void _DisplayOnOff(int OnOff) {
   if (OnOff) {
     R_GLCDC_Control(GLCDC_CMD_START_DISPLAY, FIT_NO_FUNC);  // Enable background generation block
-    PORT6.PODR.BIT.B7 = 1;
+    R_GPIO_PinWrite(EMWIN_BACKLIGHT_PIN, GPIO_LEVEL_HIGH);
   } else {
-	  R_GLCDC_Control(GLCDC_CMD_STOP_DISPLAY, FIT_NO_FUNC);  	// Disable background generation block
-    PORT6.PODR.BIT.B7 = 0;
+	R_GLCDC_Control(GLCDC_CMD_STOP_DISPLAY, FIT_NO_FUNC);  	// Disable background generation block
+    R_GPIO_PinWrite(EMWIN_BACKLIGHT_PIN, GPIO_LEVEL_LOW);
   }
 }
 

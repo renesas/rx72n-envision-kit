@@ -114,7 +114,7 @@
 /**
  * @brief Length of the buffer used to receive data.
  */
-#define mqttconfigRX_BUFFER_SIZE         (1024)
+#define mqttconfigRX_BUFFER_SIZE         (2048)
 
 /**
  * @brief The maximum time in ticks for which the MQTT task is permitted to block.

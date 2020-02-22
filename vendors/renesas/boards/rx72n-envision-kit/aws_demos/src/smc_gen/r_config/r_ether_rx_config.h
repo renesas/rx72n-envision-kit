@@ -72,7 +72,7 @@
 
 /* Group AL1 interrupt priority level. This definition is not used when EINT interrupt is assigned to Peripheral 
  interrupt. */
-    #define ETHER_CFG_AL1_INT_PRIORTY                   (2)     /* Please define the interruption level within the range of 1-15. */
+    #define ETHER_CFG_AL1_INT_PRIORTY                   (14)     /* Please define the interruption level within the range of 1-15. */
 
 /* The register bus of PHY0/1 for ETHER0/1 select
  0 = The access of the register of PHY uses ETHER0.
