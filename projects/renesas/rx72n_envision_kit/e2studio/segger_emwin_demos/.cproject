@@ -50,9 +50,10 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/renesas_code/key}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/renesas_code/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/tinycrypt/lib/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/Config}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/GUI}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/smc_gen/r_bsp}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/smc_gen/r_config}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/smc_gen/r_emwin_rx/lib/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/smc_gen/r_sci_iic_rx}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/smc_gen/r_sci_iic_rx/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/smc_gen/r_cmt_rx}&quot;"/>
@@ -150,8 +151,6 @@
 									<listOptionValue builtIn="false" value="&quot;.\src/Application/BicycleRace/Resource\OctinSportsRg40.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/Application/BicycleRace/Resource\StartFinish_Left_26x160.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/Application/BicycleRace/Resource\StartFinish_Right_125x264.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\src/Application/MainMenu\APP_BankSwap.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\src/Application/MainMenu\APP_Update.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/Application/MainMenu\GUI_KeyPad.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/Application/MainMenu\MainTask_Menu.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/Application/MainMenu/Resource\Archery_200x113.obj&quot;"/>
@@ -194,9 +193,18 @@
 									<listOptionValue builtIn="false" value="&quot;.\src/Application/Weightlifting/Resource\Weight_big_6x50.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/Application/Weightlifting/Resource\Weight_med_6x50.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/Application/Weightlifting/Resource\Weight_small_6x50.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\src\base64_decode.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\src\firm_update.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/Config\GUIConf.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/Config\GUI_X_Ex.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/Config\LCDConf.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/Config\PIDConf.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src\main.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/renesas_code/src\bank_swap.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/renesas_code/src\base64_decode.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/renesas_code/src\firm_update.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/renesas_code/src\progbar.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/renesas_code/src\r_sdc_sdmem_rx_demo_pin.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/renesas_code/src\sdcard_task.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/renesas_code/src\switch_button_function.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/general\r_cg_hardware_setup.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/general\r_smc_cgc.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/general\r_smc_cgc_user.obj&quot;"/>
@@ -253,10 +261,6 @@
 									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_drw2d_rx/src/tes\dave_utility.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_drw2d_rx/src/tes\dave_viewport.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_drw2d_rx/src/tes\dave_wedge.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_emwin_rx/lib/Config\GUIConf.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_emwin_rx/lib/Config\GUI_X_Ex.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_emwin_rx/lib/Config\LCDConf.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_emwin_rx/lib/Config\PIDConf.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_flash_rx/src/flash_type_1\r_codeflash.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_flash_rx/src/flash_type_1\r_codeflash_extra.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_flash_rx/src/flash_type_1\r_dataflash.obj&quot;"/>
@@ -276,20 +280,46 @@
 									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_pincfg\Pin.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_pincfg\r_glcdc_rx_pinset.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_pincfg\r_irq_rx_pinset.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_pincfg\r_sdhi_rx_pinset.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sci_iic_rx/src\r_sci_iic_rx.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sci_iic_rx/src/targets/rx72n\r_sci_iic_rx72n.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdc_sdmem_rx/src/mem\r_sdc_sdmem_initialize.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdc_sdmem_rx/src/mem\r_sdc_sdmem_param.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdc_sdmem_rx/src/mem\r_sdc_sdmem_read.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdc_sdmem_rx/src/mem\r_sdc_sdmem_util.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdc_sdmem_rx/src/mem\r_sdc_sdmem_wrapper.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdc_sdmem_rx/src/mem\r_sdc_sdmem_write.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdc_sdmem_rx/src\r_sdc_sd_cd.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdc_sdmem_rx/src\r_sdc_sd_cmd.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdc_sdmem_rx/src\r_sdc_sd_config.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdc_sdmem_rx/src\r_sdc_sd_initialize.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdc_sdmem_rx/src\r_sdc_sd_int.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdc_sdmem_rx/src\r_sdc_sd_open.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdc_sdmem_rx/src\r_sdc_sd_trans.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdc_sdmem_rx/src\r_sdc_sd_util.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdc_sdmem_rx/src\r_sdc_sd_wrapper.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdhi_rx/src\r_sdhi_int.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdhi_rx/src\r_sdhi_open.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdhi_rx/src\r_sdhi_util.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdhi_rx/src/targets/rx72n\r_sdhi_dev.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sdhi_rx/src/targets/rx72n\r_sdhi_register.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_sys_time_rx/src\r_sys_time_rx.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_tfat_driver_rx/src/device/sdmem\r_tfat_drv_if_sdmem.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_tfat_driver_rx/src/device/usb\r_tfat_drv_if_usb.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_tfat_driver_rx/src/device/usb_mini\r_tfat_drv_if_usb_mini.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src/smc_gen/r_tfat_driver_rx/src\r_tfat_drv_if.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/tinycrypt/lib/source\ecc.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/tinycrypt/lib/source\ecc_dsa.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/tinycrypt/lib/source\ecc_platform_specific.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/tinycrypt/lib/source\sha256.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/tinycrypt/lib/source\utils.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\segger_emwin_demos.lib&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/smc_gen/r_emwin_rx/lib/GUILib.lib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/smc_gen/r_tfat_rx/lib/tfat_rx600_little.lib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/GUI/GUILib.lib}&quot;"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.inputFile.297428832" name="リンクするリロケータブル・ファイル、ライブラリ・ファイルおよびバイナリ・ファイル" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.linker.option.inputFile" useByScannerDiscovery="false" valueType="stringList">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/smc_gen/r_emwin_rx/lib/GUILib.lib}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/smc_gen/r_tfat_rx/lib/tfat_rx600_little.lib}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/GUI/GUILib.lib}&quot;"/>
 								</option>
 							</tool>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.librarian.1513617724" name="Library Generator" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.librarian">

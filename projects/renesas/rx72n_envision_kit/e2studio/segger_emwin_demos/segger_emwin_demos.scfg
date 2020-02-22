@@ -140,9 +140,9 @@
 <Item current="comboBox1-2" error="false" id="pplldivider.comboBox"/>
 <Item current="true" id="ckodivider.isSelected"/>
 <Item current="240.0 MHz" id="ckodivider.InputValue"/>
-<Item current="240.0 MHz" id="ckodivider.OutputValue"/>
+<Item current="30.0 MHz" id="ckodivider.OutputValue"/>
 <Item current="ckoselector.radiobutton.swtpll" id="ckodivider.Condition"/>
-<Item current="comboBox1-1" error="false" id="ckodivider.comboBox"/>
+<Item current="comboBox1-8" error="false" id="ckodivider.comboBox"/>
 <Item current="240.0 MHz" error="false" id="ckodivider.PreOutput"/>
 <Item current="ckoselector" error="false" id="ckodivider.PreOutputController"/>
 <Item current="true" id="uclkSourceSelect.isSelected"/>
@@ -241,11 +241,11 @@
 <Item current="25.0" id="clkout25m.CurrentValue"/>
 <Item current="false" id="clkout25m.Disabled"/>
 <Item current="false" id="clkout.selectBox"/>
-<Item current="240.0 MHz" id="clkout.InputValue"/>
+<Item current="30.0 MHz" id="clkout.InputValue"/>
 <Item current="0" id="clkout.OutputValue"/>
 <Item current="-" id="clkout.frequencyTxt"/>
 <Item current="MHz" id="clkout.unitTxt"/>
-<Item current="240.0" id="clkout.CurrentValue"/>
+<Item current="30.0" id="clkout.CurrentValue"/>
 <Item current="true" id="clkout.Disabled"/>
 <Item current="false" id="clkout.SelectBoxDisabled"/>
 <Item current="false" id="cacilsclk.isSelected"/>
@@ -614,11 +614,6 @@
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 </configuration>
-<configuration inuse="true" name="r_emwin_rx">
-<component description="依存モジュール: r_cmt_rx バージョン 3.21&#10;依存モジュール: r_dmaca_rx バージョン 1.05&#10;依存モジュール: r_drw2d_rx バージョン 1.02&#10;依存モジュール: r_glcdc_rx バージョン 1.00&#10;依存モジュール: r_gpio_rx バージョン 2.31&#10;依存モジュール: r_sci_iic_rx バージョン 2.20&#10;emWin is designed to provide an efficient, processor- and display controller-independent graphical user interface for any application that operates with a graphical display. It is compatible with single-task and multitask environments, with a proprietary operating system or with any commercial RTOS. emWin is shipped as C source code. It may be adapted to any size physical and virtual display with any display controller and CPU." detailDescription="Graphic Library with Graphical User Interface" display="r_emwin_rx" id="r_emwin_rx5.42" version="5.42"/>
-<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-</configuration>
 <configuration inuse="true" name="r_sci_iic_rx">
 <component description="依存モジュール: r_bsp バージョン 5.50&#10; The SCI simple I2C mode fit module provides a method to transmit and receive data between the master and slave devices using the serial communications interface (SCI). The SCI simple I2C mode is in compliance with single master mode of the NXP I2C-bus (Inter-IC-Bus) interface.  " detailDescription="Simple IIC Driver." display="r_sci_iic_rx" id="r_sci_iic_rx2.45" version="2.45">
 <gridItem id="SSCL0" selectedIndex="0"/>
@@ -798,7 +793,7 @@
 <gridItem id="LCD_DATA23" selectedIndex="0"/>
 <gridItem id="LCD_EXTCLK" selectedIndex="0"/>
 <gridItem id="GLCDC_CFG_PARAM_CHECKING_ENABLE" selectedIndex="1"/>
-<gridItem id="GLCDC_CFG_INTERRUPT_PRIORITY_LEVEL" selectedIndex="5"/>
+<gridItem id="GLCDC_CFG_INTERRUPT_PRIORITY_LEVEL" selectedIndex="15"/>
 </component>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>

@@ -25,6 +25,22 @@ Purpose     : SEGGER internal standard configuration file
 #ifndef LCDCONF_H
 #define LCDCONF_H
 
+#ifndef WIN32
+#include "dave_driver.h"
+#endif
+
 #define LCD_MIRROR 1
 
+void   * LCDCONF_GetWriteBuffer(void);
+void     LCDCONF_DisableDave2D (void);
+void     LCDCONF_EnableDave2D  (void);
+void   * LCDCONF_GetBufferAddr(void);
+unsigned LCDCONF_GetDaveActive(void);
+
+#ifndef WIN32
+d2_device * LCDCONF_GetD2(void);
+#endif
+
 #endif /* LCDCONF_H */
+
+/*************************** End of file ****************************/

@@ -367,7 +367,7 @@ NOTE: The RAM areas are not contiguous.It is separated by 512 KB each.
    3 = x1/8
    4 = x1/16
  */
-#define BSP_CFG_CLKOUT_DIV              (0) /* Generated value. Do not edit this manually */
+#define BSP_CFG_CLKOUT_DIV              (3) /* Generated value. Do not edit this manually */
 
 /* Configure clock output(CLKOUT) pin (CKOSTP).
    Values

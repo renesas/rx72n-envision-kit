@@ -15,16 +15,29 @@ source code may not be used to write a similar product.  This file may
 only be used in accordance with a license and should not be re-
 distributed in any way. We appreciate your understanding and fairness.
 
-
 ----------------------------------------------------------------------
-File        : LCDConf.h
-Purpose     : SEGGER internal standard configuration file
-----------------------------------------------------------------------
+File        : GUIConf.h
+Purpose     : GUI compile time configuration
+---------------------------END-OF-HEADER------------------------------
 */
 
-#ifndef LCDCONF_H
-#define LCDCONF_H
+#ifndef GUICONF_H
+#define GUICONF_H
 
-#define LCD_MIRROR 1
+#define GUI_NUM_LAYERS            2
+#define GUI_USE_ARGB              1
 
-#endif /* LCDCONF_H */
+#define GUI_OS                    1
+
+#define GUI_WINSUPPORT            1  /* Use window manager if true (1)  */
+#define GUI_SUPPORT_TOUCH         1  /* Support a touch screen */
+#define GUI_SUPPORT_MOUSE         1  /* Support a mouse */
+#define GUI_SUPPORT_MEMDEV        1  /* Support for memory devices */
+#define GUI_SUPPORT_BIDI          0  /* Save RAM */
+
+                                       /* Request of a function pointer for... */
+#define LCD_DEVFUNC_SET_BUFFERPTR 0x29 /* ...setting an array of buffer pointers */
+
+#endif /* GUICONF_H */
+
+/*************************** End of file ****************************/
