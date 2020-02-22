@@ -27,6 +27,8 @@ Purpose     : Touch panel configuration
 #include "r_sci_iic_rx_if.h"
 #include "r_sys_time_rx_if.h"
 #include "r_gpio_rx_if.h"
+#include "r_emwin_rx_config.h"
+
 
 /*********************************************************************
 *
@@ -35,7 +37,7 @@ Purpose     : Touch panel configuration
 **********************************************************************
 */
 #ifndef USE_MULTITOUCH
-  #define USE_MULTITOUCH  0
+  #define USE_MULTITOUCH  EMWIN_USE_MULTITOUCH
 #endif
 
 /*********************************************************************
@@ -44,13 +46,13 @@ Purpose     : Touch panel configuration
 *
 **********************************************************************
 */
-#define SLAVE_ADDRESS        0x38
-#define MAX_NUM_TOUCHPOINTS  10
-#define MAX_NUM_IDS          10
-#define NUM_CALIB_POINTS     5
+#define SLAVE_ADDRESS        EMWIN_SLAVE_ADDRESS
+#define MAX_NUM_TOUCHPOINTS  EMWIN_MAX_NUM_TOUCHPOINTS
+#define MAX_NUM_IDS          EMWIN_MAX_NUM_IDS
+#define NUM_CALIB_POINTS     EMWIN_NUM_CALIB_POINTS
 
-#define XSIZE  480
-#define YSIZE  272
+#define XSIZE  EMWIN_XSIZE_PHYS
+#define YSIZE  EMWIN_YSIZE_PHYS
 
 /*********************************************************************
 *
@@ -126,7 +128,7 @@ static U8 _Busy;
 *       _cb_SCI_IIC_ch6
 */
 #if (USE_MULTITOUCH == 0)
-static void _cb_SCI_IIC_ch6(void) {
+static void _cb_SCI_IIC(void) {
   sci_iic_mcu_status_t      iic_status;
   volatile sci_iic_return_t ret;
   int Temp;
@@ -346,7 +348,7 @@ static void _CreateMoveAndDownInputs(POINT_DATA * pPointData, int NumPoints, GUI
 *
 *       _cb_SCI_IIC_ch6
 */
-static void _cb_SCI_IIC_ch6(void) {
+static void _cb_SCI_IIC(void) {
   sci_iic_mcu_status_t      iic_status;
   volatile sci_iic_return_t ret;
   GUI_MTOUCH_INPUT * pInput;
@@ -449,7 +451,7 @@ static void _Exec(void) {
     return;
   }
   //
-  // Sets IIC Information (Ch6)
+  // Sets IIC Information
   //
   _Info.p_slv_adr    = slave_addr_eeprom;
   _Info.p_data1st    = access_addr1;
@@ -457,7 +459,7 @@ static void _Exec(void) {
   _Info.dev_sts      = SCI_IIC_NO_INIT;
   _Info.cnt1st       = sizeof(access_addr1);
   _Info.cnt2nd       = sizeof(_aBuffer);
-  _Info.callbackfunc = &_cb_SCI_IIC_ch6;
+  _Info.callbackfunc = &_cb_SCI_IIC;
   //
   // Start Master Receive
   //
@@ -499,15 +501,15 @@ void PID_X_Init(void) {
   //
   // Reset touch ic
   //
-  R_GPIO_PinDirectionSet(GPIO_PORT_0_PIN_7, GPIO_DIRECTION_OUTPUT);
-  R_GPIO_PinWrite(GPIO_PORT_0_PIN_7, GPIO_LEVEL_LOW);
+  R_GPIO_PinDirectionSet(EMWIN_TOUCH_IC_RESET_PIN, GPIO_DIRECTION_OUTPUT);
+  R_GPIO_PinWrite(EMWIN_TOUCH_IC_RESET_PIN, GPIO_LEVEL_LOW);
   R_BSP_SoftwareDelay(10, BSP_DELAY_MILLISECS);
-  R_GPIO_PinWrite(GPIO_PORT_0_PIN_7, GPIO_LEVEL_HIGH);
+  R_GPIO_PinWrite(EMWIN_TOUCH_IC_RESET_PIN, GPIO_LEVEL_HIGH);
   R_BSP_SoftwareDelay(300, BSP_DELAY_MILLISECS);
   //
   // Sets IIC Information (Ch6)
   //
-  _Info.ch_no        = 6;
+  _Info.ch_no        = EMWIN_SCI_IIC_NUMBER;
   //
   // SCI open
   //

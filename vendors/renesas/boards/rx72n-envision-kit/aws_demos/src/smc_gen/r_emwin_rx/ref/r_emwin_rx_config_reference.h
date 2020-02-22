@@ -27,26 +27,44 @@
 #ifndef EMWIN_RX_CONFIG_HEADER_FILE
 #define EMWIN_RX_CONFIG_HEADER_FILE
 
+#define RX65N_ENVISION_KIT 1
+#define RX72N_ENVISION_KIT 2
+
 /***********************************************************************************************************************
 Configuration Options
 ***********************************************************************************************************************/
 
-#define EMWIN_BOARD RX65N_ENVISION_KIT
-//#define EMWIN_BOARD RX72N_ENVISION_KIT
+//#define EMWIN_BOARD RX65N_ENVISION_KIT
+#define EMWIN_BOARD RX72N_ENVISION_KIT
 
 #define EMWIN_GUI_NUM_BYTES (1024 * 80)
+#define EMWIN_XSIZE_PHYS 480
+#define EMWIN_YSIZE_PHYS 272
 
-#define EMWIN_GUI_FRAME_BUFFER1 0x00800000
-#define EMWIN_GUI_FRAME_BUFFER2 0x00840000
+#define EMWIN_USE_DRW2D 1
 
-#if (EMWIN_BOARD) == (RX72N_ENVISION_KIT)
+#define EMWIN_USE_MULTITOUCH 0
+#define EMWIN_SLAVE_ADDRESS        0x38
+#define EMWIN_MAX_NUM_TOUCHPOINTS  10
+#define EMWIN_MAX_NUM_IDS          10
+#define EMWIN_NUM_CALIB_POINTS     5
+
+#if ((EMWIN_BOARD) == (RX72N_ENVISION_KIT))
+#define EMWIN_GUI_FRAME_BUFFER1       0x00800000
+#define EMWIN_GUI_FRAME_BUFFER2       0x00840000
 #define EMWIN_DISP_SIGNAL_PIN         GPIO_PORT_B_PIN_3
 #define EMWIN_BACKLIGHT_PIN           GPIO_PORT_6_PIN_7
 #define EMWIN_TOUCH_IC_RESET_PIN      GPIO_PORT_6_PIN_6
-#elif  (EMWIN_BOARD) == (RX65N_ENVISION_KIT)
+#define EMWIN_SCI_IIC_NUMBER          6
+#elif ((EMWIN_BOARD) == (RX65N_ENVISION_KIT))
+#define EMWIN_GUI_FRAME_BUFFER1       0x00000000
+#define EMWIN_GUI_FRAME_BUFFER2       0x00800000
 #define EMWIN_DISP_SIGNAL_PIN         GPIO_PORT_6_PIN_3
 #define EMWIN_BACKLIGHT_PIN           GPIO_PORT_6_PIN_6
 #define EMWIN_TOUCH_IC_RESET_PIN      GPIO_PORT_0_PIN_7
+#define EMWIN_SCI_IIC_NUMBER          6
+#else
+#error "please define your board number at r_emwin_rx_config.h"
 #endif
 
 #endif /* EMWIN_RX_CONFIG_HEADER_FILE */

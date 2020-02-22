@@ -69,8 +69,8 @@ extern void drw_int_isr(void);
 //
 // Physical display size
 //
-#define XSIZE_PHYS 480
-#define YSIZE_PHYS 272
+#define XSIZE_PHYS EMWIN_XSIZE_PHYS
+#define YSIZE_PHYS EMWIN_YSIZE_PHYS
 
 //
 // Color depth
@@ -179,9 +179,9 @@ extern void drw_int_isr(void);
 // Check if the Dave2D engine can be used
 //
 #if ((BITS_PER_PIXEL > 8)) // && (DISPLAY_ORIENTATION == 0))
-  #define USE_DAVE2D  1
+  #define USE_DAVE2D  EMWIN_USE_DRW2D
 #else
-  #define USE_DAVE2D  0
+  #define USE_DAVE2D  EMWIN_USE_DRW2D
 #endif
 
 //
