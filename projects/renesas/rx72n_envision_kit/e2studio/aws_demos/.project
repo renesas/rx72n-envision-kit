@@ -170,6 +170,11 @@
 			<locationURI>AFR_HOME/vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code/serial_terminal_task.c</locationURI>
 		</link>
 		<link>
+			<name>application_code/renesas_code/sntp_task.c</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code/sntp_task.c</locationURI>
+		</link>
+		<link>
 			<name>application_code/renesas_code/task_manager_task.c</name>
 			<type>1</type>
 			<locationURI>AFR_HOME/vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code/task_manager_task.c</locationURI>

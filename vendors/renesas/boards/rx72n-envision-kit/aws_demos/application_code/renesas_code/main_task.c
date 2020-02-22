@@ -82,6 +82,8 @@ extern void serial_terminal_task( void * pvParameters );
 extern void sdcard_task( void * pvParameters );
 extern void gui_task( void * pvParameters );
 extern void task_manager_task( void * pvParameters );
+extern void sntp_task( void * pvParameters );
+
 extern void display_syslog_putstring(WM_HWIN hWin_handle, char *string);
 
 /*******************************************************************************
@@ -137,6 +139,9 @@ void main_task(void)
     /* task manager task creation */
     xTaskCreate(task_manager_task, "task_manager", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.task_manager_task_handle);
 #endif
+
+    /* sntp task creation */
+    xTaskCreate(sntp_task, "sntp", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.sntp_task_handle);
 
     /* wait completing gui initializing */
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);

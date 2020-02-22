@@ -1,4 +1,3 @@
-
 /**********************************************************************************************************************
  * DISCLAIMER
  * This software is supplied by Renesas Electronics Corporation and is only intended for use with Renesas products. No
@@ -15,20 +14,23 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2014(2016) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2020 Renesas Electronics Corporation. All rights reserved.
  *********************************************************************************************************************/
 /**********************************************************************************************************************
- * File Name    : rx72n_envision_kit_system.h
- * Description  : rx72n_envision_kit_system header
+ * File Name    : sntp_task.c
+ * Description  :
  *********************************************************************************************************************/
 /**********************************************************************************************************************
  * History : DD.MM.YYYY Version Description
- *         : 29.12.2019 1.00 First Release
+ *         : 31.01.2020 1.00 First Release
  *********************************************************************************************************************/
 
-/******************************************************************************
- Includes   <System Includes> , "Project Includes"
- ******************************************************************************/
+#include <stdio.h>
+
+/* for using C standard library */
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 /* for using Segger emWin */
 #include "GUI.h"
@@ -36,34 +38,30 @@
 
 /* for using Amazon FreeRTOS */
 #include "FreeRTOS.h"
-#include "task.h"
 #include "aws_application_version.h"
 
-/* for using C standard library */
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+/* for RX72N Envision Kit system common header */
+#include "rx72n_envision_kit_system.h"
 
-/**********************************************************************************************************************
-Typedef definitions
-**********************************************************************************************************************/
+/*******************************************************************************
+Imported global variables and functions (from other files)
+*******************************************************************************/
 
-typedef struct _task_info
+/*******************************************************************************
+Exported global variables and functions (to be accessed by other files)
+*******************************************************************************/
+
+/*******************************************************************************
+Private global variables and functions
+*******************************************************************************/
+void sntp_task( void * pvParameters );
+
+void sntp_task( void * pvParameters )
 {
-	/* for FreeRTOS */
-	TaskHandle_t main_task_handle;
-	TaskHandle_t serial_terminal_task_handle;
-	TaskHandle_t gui_task_handle;
-	TaskHandle_t sdcard_task_handle;
-	TaskHandle_t task_manager_task_handle;
-	TaskHandle_t sntp_task_handle;
+	TASK_INFO *task_info = (WM_HWIN *)pvParameters;
 
-	/* for emWin */
-	WM_HWIN hWin_serial_terminal;
-	WM_HWIN hWin_firmware_update_via_sd_card;
-	WM_HWIN hWin_task_manager;
-	WM_HWIN hWin_system_log;
-	WM_HWIN hWin_frame;
-	WM_HWIN hWin_title_logo;
-
-}TASK_INFO;
+    while(1)
+    {
+    	vTaskDelay(1000);
+    }
+}
