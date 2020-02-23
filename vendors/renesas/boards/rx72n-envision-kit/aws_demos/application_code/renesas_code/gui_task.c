@@ -253,55 +253,32 @@ void main_100ms_display_update(TASK_INFO *task_info)
 	}
 }
 
-#define STATS_BUFFER_SIZE 1024 * 8
-#define TASK_NAME_SIZE 16
-#define CPU_LOAD_SIZE 16
-
 void main_1s_display_update(TASK_INFO *task_info)
 {
-	char *stats_buffer, *tmp, *task_name, *state, *cpu_load_string;
-	uint32_t task_number, priority, hwm, cpu_time, idle_cpu_time, total_cpu_time, cpu_load;
+	TaskStatus_t *stats_buffer;
+	uint32_t task_number, priority, hwm, cpu_time, idle_cpu_time, total_cpu_time, cpu_load, state;
 	float idle_rate;
+	static uint32_t previous_total_cpu_time = 0, previous_idle_cpu_time = 0;
 	uint8_t ip_address_array[4];
 	uint32_t ip_address;
-
-	task_name = pvPortMalloc(TASK_NAME_SIZE);
-	cpu_load_string = pvPortMalloc(CPU_LOAD_SIZE);
-    stats_buffer = pvPortMalloc(STATS_BUFFER_SIZE);
-
-    memset(task_name, 0, TASK_NAME_SIZE);
-    memset(cpu_load_string, 0, CPU_LOAD_SIZE);
-    memset(stats_buffer, 0, STATS_BUFFER_SIZE);
-
-	memset(task_name, 0, sizeof(TASK_NAME_SIZE));
-	memset(cpu_load_string, 0, sizeof(CPU_LOAD_SIZE));
-	memset(stats_buffer, 0, sizeof(STATS_BUFFER_SIZE));
+	uint32_t number_of_tasks;
 
 	/* get freertos CPU load info */
-	vTaskGetCombinedRunTimeStats(stats_buffer, 0);	/* 0 means read */
-	tmp = stats_buffer;
-	tmp = strstr(tmp, "\n") + 1; /* ignore first 1 line */
-	total_cpu_time = 0;
-	while(1)
+	number_of_tasks = uxTaskGetNumberOfTasks();
+	stats_buffer = pvPortMalloc(number_of_tasks * sizeof(TaskStatus_t));
+	number_of_tasks = uxTaskGetSystemState(stats_buffer, number_of_tasks, &total_cpu_time);
+	for(int i = 0; i < number_of_tasks; i++)
 	{
-		if(sscanf(tmp, "%d %16s %c %d %d %d %16s\n", &task_number, task_name, state, &priority, &hwm, &cpu_time, cpu_load_string))
+		if(!strcmp(stats_buffer[i].pcTaskName, "IDLE"))
 		{
-			tmp = strstr(tmp, "\n") + 1;
-			if(!strcmp(task_name, "IDLE"))
-			{
-				idle_cpu_time = cpu_time;
-			}
-			total_cpu_time += cpu_time;
-			if(*tmp == 0)
-			{
-				idle_rate = ((float)(idle_cpu_time) / (float)(total_cpu_time));
-				cpu_load = 100 - (uint32_t)(idle_rate * 100);
-				display_update_cpu_load(task_info->hWin_frame, cpu_load);
-				vTaskGetCombinedRunTimeStats(stats_buffer, 0);	/* 1 means reset */
-				break;
-			}
+			idle_cpu_time = stats_buffer[i].ulRunTimeCounter;
 		}
 	}
+	idle_rate = ((float)(idle_cpu_time - previous_idle_cpu_time) / (float)(total_cpu_time - previous_total_cpu_time));
+	cpu_load = 100 - (uint32_t)(idle_rate * 100);
+	display_update_cpu_load(task_info->hWin_frame, cpu_load);
+	previous_idle_cpu_time = idle_cpu_time;
+	previous_total_cpu_time = total_cpu_time;
 
 	/* get IP address info */
 	ip_address = FreeRTOS_GetIPAddress();
@@ -319,8 +296,6 @@ void main_1s_display_update(TASK_INFO *task_info)
 	display_update_ip_stat(task_info->hWin_frame, ip_address_array);
 
 	vPortFree(stats_buffer);
-	vPortFree(task_name);
-	vPortFree(cpu_load_string);
 }
 
 void emWinCallback(WM_MESSAGE * pMsg)

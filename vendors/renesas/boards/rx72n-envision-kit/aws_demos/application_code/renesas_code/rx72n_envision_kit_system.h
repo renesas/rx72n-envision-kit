@@ -65,5 +65,4 @@ typedef struct _task_info
 	WM_HWIN hWin_system_log;
 	WM_HWIN hWin_frame;
 	WM_HWIN hWin_title_logo;
-
 }TASK_INFO;
