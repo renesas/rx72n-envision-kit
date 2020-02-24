@@ -44,6 +44,9 @@
 #include <string.h>
 #include <stdlib.h>
 
+/* for RX Family FIT */
+#include "r_sys_time_rx_if.h"
+
 /**********************************************************************************************************************
 Typedef definitions
 **********************************************************************************************************************/
@@ -65,4 +68,7 @@ typedef struct _task_info
 	WM_HWIN hWin_system_log;
 	WM_HWIN hWin_frame;
 	WM_HWIN hWin_title_logo;
+
+	/* for demo system time */
+	SYS_TIME sys_time;
 }TASK_INFO;

@@ -124,7 +124,6 @@ extern void vTaskClearUsageSingleList(List_t *pxList);
 
 volatile int32_t first_touch_wait_flag;
 volatile int32_t gui_initialize_complete_flag;
-SYS_TIME sys_time;
 
 void gui_task( void * pvParameters );
 void emWinCallback(WM_MESSAGE * pMsg);
@@ -218,9 +217,9 @@ void main_100ms_display_update(TASK_INFO *task_info)
 	DEMO_WINDOW_LIST *p;
 	static DEMO_WINDOW_LIST *prev_p;
 
-	R_SYS_TIME_GetCurrentTime(&sys_time);
+	R_SYS_TIME_GetCurrentTime(&task_info->sys_time);
 
-	display_update_time(task_info->hWin_frame, &sys_time);
+	display_update_time(task_info->hWin_frame, &task_info->sys_time);
 
 	p = demo_window_list_head;
 	while(1)

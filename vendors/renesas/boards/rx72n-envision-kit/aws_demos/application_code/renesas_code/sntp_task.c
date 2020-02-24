@@ -52,13 +52,13 @@
 
 /* for RX Family FIT */
 #include "r_sys_time_rx_if.h"
+#include "r_simple_filesystem_on_dataflash_if.h"
 
 #define RECEIVE_BUFFER_LENGTH 1500
 
 /*******************************************************************************
 Imported global variables and functions (from other files)
 *******************************************************************************/
-extern SYS_TIME sys_time;
 
 /*******************************************************************************
 Exported global variables and functions (to be accessed by other files)
@@ -91,6 +91,17 @@ void sntp_task( void * pvParameters )
 	uint32_t *receive_buffer;
 	uint32_t unix_time;
 	char *s_ptr, *s_ptr2;
+	uint8_t timezone_label[] = "timezone";
+	SFD_HANDLE sfd_handle_timezone;
+	uint8_t *timezone;
+	uint32_t timezone_length;
+
+	sfd_handle_timezone = R_SFD_FindObject(timezone_label, strlen((char *)timezone_label));
+	if(sfd_handle_timezone == SFD_HANDLE_INVALID)
+	{
+		sfd_handle_timezone = R_SFD_SaveObject(timezone_label, strlen((char *)timezone_label), SYS_TIME_UTC, strlen((char *)SYS_TIME_UTC));
+	}
+	R_SFD_GetObjectValue(sfd_handle_timezone, (uint8_t **)&timezone, &timezone_length);
 
     while(1)
     {
@@ -142,8 +153,11 @@ void sntp_task( void * pvParameters )
 					s_ptr2 = strstr(s_ptr, ".");
 					*s_ptr2 = '\0';
 		            sscanf(s_ptr, "%d", &unix_time);
-		            R_SYS_TIME_ConvertUnixTimeToSystemTime(unix_time, &sys_time, SYS_TIME_UTC_PLUS_0900);
-		            R_SYS_TIME_SetCurrentTime(&sys_time);
+		            if(SYS_TIME_ERR_BAD_TIME_OFFSET == R_SYS_TIME_ConvertUnixTimeToSystemTime(unix_time, &task_info->sys_time, timezone))
+		            {
+		        		sfd_handle_timezone = R_SFD_SaveObject(timezone_label, strlen((char *)timezone_label), SYS_TIME_UTC, strlen((char *)SYS_TIME_UTC));
+		            }
+		            R_SYS_TIME_SetCurrentTime(&task_info->sys_time);
 				}
 			}
             vPortFree(receive_buffer);

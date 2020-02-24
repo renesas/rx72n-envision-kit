@@ -39,6 +39,8 @@
 #include "r_sci_rx_if.h"
 #include "r_cmt_rx_if.h"
 #include "r_pinset.h"
+#include "r_sys_time_rx_if.h"
+#include "r_simple_filesystem_on_dataflash_if.h"
 
 /* for using Segger emWin */
 #include "GUI.h"
@@ -67,6 +69,7 @@ Typedef definitions
 #define COMMAND_UNKNOWN -1
 #define COMMAND_FREERTOS 1
 #define COMMAND_VERSION 2
+#define COMMAND_TIMEZONE 3
 
 #if !defined(MY_BSP_CFG_AFR_TERM_SCI)
 #error "Error! Need to define MY_BSP_CFG_SERIAL_TERM_SCI in r_bsp_config.h"
@@ -167,6 +170,11 @@ void serial_terminal_task( void * pvParameters )
     uint32_t current_buffer_pointer = 0;
     uint8_t *command, *arg1, *arg2, *arg3, *arg4;
 
+	uint8_t timezone_label[] = "timezone";
+	SFD_HANDLE sfd_handle_timezone;
+	uint8_t *timezone;
+	uint32_t timezone_length;
+
     /* wait completing gui initializing */
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
@@ -209,7 +217,6 @@ void serial_terminal_task( void * pvParameters )
 		sci_buffer[current_buffer_pointer++] = tmp[0];
 		if((tmp[0] == 0x0a) && (sci_buffer[current_buffer_pointer - 2] == 0x0d))
 		{
-			display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, PROMPT);
 		    /* command execution */
 		    if ( 0 != sscanf((char*)sci_buffer, "%16s %256s %256s %256s %256s", command, arg1, arg2, arg3, arg4))
 		    {
@@ -236,10 +243,24 @@ void serial_terminal_task( void * pvParameters )
 		        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, ver);
 		        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, "\r\n");
 		        		break;
+		        	case COMMAND_TIMEZONE:
+		        		sfd_handle_timezone = R_SFD_SaveObject(timezone_label, strlen((char *)timezone_label), arg1, strlen((char *)arg1));
+		        		R_SFD_GetObjectValue(sfd_handle_timezone, (uint8_t **)&timezone, &timezone_length);
+			            if(SYS_TIME_SUCCESS == R_SYS_TIME_ConvertUnixTimeToSystemTime(task_info->sys_time.unix_time, &task_info->sys_time, timezone))
+			            {
+			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, "timezone is accepted.\r\n");
+			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, "system time is updated.\r\n");
+			            }
+			            else
+			            {
+			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, "timezone is not accepted.\r\n");
+			            }
+		        		break;
 		        	default:
 		        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, COMMAND_NOT_FOUND);
 		        		break;
 		        }
+				display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, PROMPT);
 		    }
 		    else
 		    {
@@ -273,6 +294,10 @@ static int32_t get_command_code(uint8_t *command)
     else if(!strcmp((char*)command, "version"))
     {
     	return_code = COMMAND_VERSION;
+    }
+    else if(!strcmp((char*)command, "timezone"))
+    {
+    	return_code = COMMAND_TIMEZONE;
     }
     else
     {

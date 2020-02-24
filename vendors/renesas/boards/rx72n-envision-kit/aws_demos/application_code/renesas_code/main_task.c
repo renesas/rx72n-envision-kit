@@ -43,6 +43,7 @@
 #include "r_flash_rx_if.h"
 #include "r_usb_basic_if.h"
 #include "r_tfat_lib.h"
+#include "r_simple_filesystem_on_dataflash_if.h"
 #include "Pin.h"
 
 /* for using Segger emWin */
@@ -119,6 +120,7 @@ void main_task(void)
     /* flash initialization */
     R_FLASH_Open();
     R_FLASH_Control(FLASH_CMD_BANK_GET, &bank_info);
+    R_SFD_Open();
 
     /* flash access semaphore creation */
     xSemaphoreFlashAccess = xSemaphoreCreateMutex();
