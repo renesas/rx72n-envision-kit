@@ -76,7 +76,6 @@ typedef struct _demo_window_list
 /******************************************************************************
  Private global variables
  ******************************************************************************/
-static SYS_TIME sys_time;
 static DEMO_WINDOW_LIST *demo_window_list_head;
 static DEMO_WINDOW_LIST* demo_window_add_list(DEMO_WINDOW_LIST *pdemo_window_list_head, WM_HWIN new_handle, WM_HWIN frame_handle, char *demo_name);
 static void demo_window_free_list(DEMO_WINDOW_LIST *pdemo_window_list);
@@ -125,6 +124,7 @@ extern void vTaskClearUsageSingleList(List_t *pxList);
 
 volatile int32_t first_touch_wait_flag;
 volatile int32_t gui_initialize_complete_flag;
+SYS_TIME sys_time;
 
 void gui_task( void * pvParameters );
 void emWinCallback(WM_MESSAGE * pMsg);
