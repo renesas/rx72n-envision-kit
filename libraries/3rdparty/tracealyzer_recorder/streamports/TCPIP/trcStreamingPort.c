@@ -51,19 +51,12 @@
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
 	
 /* TCP/IP includes */
-#include "lwip/tcpip.h"
-#include "lwip/sockets.h"
-#include "lwip/errno.h"
 
 #define TRC_TCPIP_PORT 12000
 
-int sock = -1, new_sd = -1;
-int flags = 0;
-int remoteSize;
-struct sockaddr_in address, remote;
-
 int32_t trcSocketSend( void* data, int32_t size, int32_t* bytesWritten )
 {
+#if 0
   if (new_sd < 0)
     return -1;
   
@@ -80,12 +73,13 @@ int32_t trcSocketSend( void* data, int32_t size, int32_t* bytesWritten )
     else
         *bytesWritten = 0;
   }
-  
+#endif
   return 0;
 }
 
 int32_t trcSocketReceive( void* data, int32_t size, int32_t* bytesRead )
 {
+#if 0
   if (new_sd < 0)
     return -1;
   
@@ -102,12 +96,13 @@ int32_t trcSocketReceive( void* data, int32_t size, int32_t* bytesRead )
     else
         *bytesRead = 0;
   }
-
+#endif
   return 0;
 }
 
 int32_t trcSocketInitializeListener()
 {
+#if 0
   if (sock >= 0)
 	return 0;
   
@@ -133,12 +128,13 @@ int32_t trcSocketInitializeListener()
     sock = -1;
     return -1;
   }
-
+#endif
   return 0;
 }
 
 int32_t trcSocketAccept()
 {
+#if 0
   if (sock < 0)
       return -1;
   
@@ -159,23 +155,27 @@ int32_t trcSocketAccept()
     sock = -1;
     return -1;
   }
-
+#endif
   return 0;
 }
 /************** MODIFY THE ABOVE PART TO USE YOUR TPC/IP STACK ****************/
 
 int32_t trcTcpWrite(void* data, uint32_t size, int32_t *ptrBytesWritten)
 {
-    return trcSocketSend(data, size, ptrBytesWritten);
+#if 0
+	return trcSocketSend(data, size, ptrBytesWritten);
+#endif
 }
 
 int32_t trcTcpRead(void* data, uint32_t size, int32_t *ptrBytesRead)
 {
-    trcSocketInitializeListener();
+#if 0
+	trcSocketInitializeListener();
         
     trcSocketAccept();
       
     return trcSocketReceive(data, size, ptrBytesRead);
+#endif
 }
 
 #endif /*(TRC_USE_TRACEALYZER_RECORDER == 1)*/

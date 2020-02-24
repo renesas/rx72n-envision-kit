@@ -500,6 +500,16 @@
 			<locationURI>AFR_HOME/libraries/3rdparty/tinycbor/cborpretty.c</locationURI>
 		</link>
 		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/trcKernelPort.c</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tracealyzer_recorder/trcKernelPort.c</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/trcStreamingRecorder.c</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tracealyzer_recorder/trcStreamingRecorder.c</locationURI>
+		</link>
+		<link>
 			<name>vendors/renesas/amazon_freertos_common/croutine.h</name>
 			<type>1</type>
 			<locationURI>AFR_HOME/vendors/renesas/amazon_freertos_common/croutine.h</locationURI>
@@ -908,6 +918,41 @@
 			<name>libraries/3rdparty/mbedtls/utils/mbedtls_utils.c</name>
 			<type>1</type>
 			<locationURI>AFR_HOME/libraries/3rdparty/mbedtls/utils/mbedtls_utils.c</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/config/trcConfig.h</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tracealyzer_recorder/config/trcConfig.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/config/trcSnapshotConfig.h</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tracealyzer_recorder/config/trcSnapshotConfig.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/config/trcStreamingConfig.h</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tracealyzer_recorder/config/trcStreamingConfig.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/include/trcHardwarePort.h</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tracealyzer_recorder/include/trcHardwarePort.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/include/trcKernelPort.h</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tracealyzer_recorder/include/trcKernelPort.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/include/trcPortDefines.h</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tracealyzer_recorder/include/trcPortDefines.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/include/trcRecorder.h</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tracealyzer_recorder/include/trcRecorder.h</locationURI>
 		</link>
 		<link>
 			<name>libraries/abstractions/pkcs11/include/iot_pkcs11_pal.h</name>
@@ -1353,6 +1398,11 @@
 			<name>libraries/3rdparty/tinycrypt/lib/source/utils.c</name>
 			<type>1</type>
 			<locationURI>AFR_HOME/libraries/3rdparty/tinycrypt/lib/source/utils.c</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/streamports/TCPIP/trcStreamingPort.c</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tracealyzer_recorder/streamports/TCPIP/trcStreamingPort.c</locationURI>
 		</link>
 		<link>
 			<name>libraries/abstractions/platform/include/platform/iot_clock.h</name>
@@ -1873,6 +1923,11 @@
 			<name>libraries/3rdparty/tinycrypt/lib/include/tinycrypt/utils.h</name>
 			<type>1</type>
 			<locationURI>AFR_HOME/libraries/3rdparty/tinycrypt/lib/include/tinycrypt/utils.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/streamports/TCPIP/include/trcStreamingPort.h</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/libraries/3rdparty/tracealyzer_recorder/streamports/TCPIP/include/trcStreamingPort.h</locationURI>
 		</link>
 		<link>
 			<name>libraries/abstractions/platform/freertos/include/platform/iot_network_freertos.h</name>
