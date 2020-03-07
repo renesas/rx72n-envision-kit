@@ -538,15 +538,26 @@ static void check_dataflash_area(uint32_t retry_counter)
         else
         {
             SFD_DEBUG_PRINT(("NG\r\n"));
-            while(1)
+			SFD_DEBUG_PRINT(("------------------------------------------------\r\n"));
+			SFD_DEBUG_PRINT(("Data flash is completely broken.\r\n"));
+			SFD_DEBUG_PRINT(("Initializing Data Flash data to all zero.\r\n"));
+			SFD_DEBUG_PRINT(("------------------------------------------------\r\n"));
+
+			memset(&sfd_control_block_data_image.data, 0, sizeof(sfd_control_block_data_image.data));
+	        mbedtls_sha256_starts_ret(&ctx, 0); /* 0 means SHA256 context */
+	        mbedtls_sha256_update_ret(&ctx, (unsigned char *)&sfd_control_block_data_image.data, sizeof(sfd_control_block_data_image.data));
+	        mbedtls_sha256_finish_ret(&ctx, sfd_control_block_data_image.hash_sha256);
+            data_flash_update_status_initialize();
+            while ( update_data_flash_control_block.status < SFD_DATA_FLASH_UPDATE_STATE_FINALIZE_COMPLETED )
             {
-            	R_BSP_SoftwareDelay(3, BSP_DELAY_SECS);
-                SFD_DEBUG_PRINT(("------------------------------------------------\r\n"));
-                SFD_DEBUG_PRINT(("Data flash is completely broken.\r\n"));
-                SFD_DEBUG_PRINT(("Please erase all code flash.\r\n"));
-                SFD_DEBUG_PRINT(("And, write initial firmware using debugger/rom writer.\r\n"));
-                SFD_DEBUG_PRINT(("------------------------------------------------\r\n"));
+                update_dataflash_data_from_image();
             }
+            data_flash_update_status_initialize();
+            while ( update_data_flash_control_block.status < SFD_DATA_FLASH_UPDATE_STATE_FINALIZE_COMPLETED )
+            {
+                update_dataflash_data_mirror_from_image();
+            }
+            check_dataflash_area(0);
         }
     }
 }

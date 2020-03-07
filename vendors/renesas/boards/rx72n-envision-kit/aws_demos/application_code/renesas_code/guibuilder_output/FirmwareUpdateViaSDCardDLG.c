@@ -75,7 +75,7 @@ DIR dir;
 static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
   { WINDOW_CreateIndirect, "FirmwareUpdateViaSDCard", ID_WINDOW_0, 0, 22, 480, 228, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "Firmware Update via SD Card", ID_TEXT_0, 6, 0, 158, 20, 0, 0x0, 0 },
-  { BUTTON_CreateIndirect, "Bank Swap", ID_BUTTON_0, 396, 201, 80, 20, 0, 0x0, 0 },
+  { BUTTON_CreateIndirect, "Reset", ID_BUTTON_0, 396, 201, 80, 20, 0, 0x0, 0 },
   { LISTBOX_CreateIndirect, "Listbox", ID_LISTBOX_0, 7, 33, 129, 162, 0, 0x0, 0 },
   { TEXT_CreateIndirect, "SD Card File List", ID_TEXT_1, 7, 18, 105, 20, 0, 0x0, 0 },
   { MULTIEDIT_CreateIndirect, "Multiedit", ID_MULTIEDIT_0, 142, 33, 334, 162, 0, 0x0, 0 },
@@ -96,6 +96,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate[] = {
 
 // USER START (Optionally insert additional static code)
 extern void bank_swap_with_software_reset(void);
+extern void software_reset(void);
 extern void firmware_update_request(char *string);
 extern bool is_firmupdating(void);
 extern void SetSwbankchangeRebootBotton(void);
@@ -146,7 +147,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
     Id    = WM_GetId(pMsg->hWinSrc);
     NCode = pMsg->Data.v;
     switch(Id) {
-    case ID_BUTTON_0: // Notifications sent by 'Bank Swap'
+    case ID_BUTTON_0: // Notifications sent by 'Reset'
       switch(NCode) {
       case WM_NOTIFICATION_CLICKED:
         // USER START (Optionally insert code for reacting on notification message)
@@ -154,7 +155,8 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         break;
       case WM_NOTIFICATION_RELEASED:
         // USER START (Optionally insert code for reacting on notification message)
-          bank_swap_with_software_reset();
+          //bank_swap_with_software_reset();	// for initial firmware
+          software_reset();	// for updata
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)
