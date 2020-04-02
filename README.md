@@ -1,2 +1,15 @@
 # rx72n-envision-kit
 RX72N Envision Kit bootloader/demos based on Amazon FreeRTOS
+
+# RX72N Envision Kit product page (User's Manual, Schematics, How to buy, etc)
+en: xxxx
+ja: xxxx
+
+# Quick Start Guide
+en: [[Quick Start Guide]]
+ja: [[クイックスタートガイド]]
+
+# Board Introduction @ YouTube / ボード紹介動画 @ YouTube
+en: [![](https://img.youtube.com/vi/tsOEiG4gNNE/0.jpg)](https://www.youtube.com/watch?v=tsOEiG4gNNE)
+ja: [![](https://img.youtube.com/vi/ZC1WexzCJEo/0.jpg)](https://www.youtube.com/watch?v=ZC1WexzCJEo)
+
