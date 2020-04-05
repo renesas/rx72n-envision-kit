@@ -29,8 +29,8 @@
 #include "iot_appversion32.h"
 extern const AppVersion32_t xAppFirmwareVersion;
 
-#define APP_VERSION_MAJOR    0
-#define APP_VERSION_MINOR    9
-#define APP_VERSION_BUILD    4
+#define APP_VERSION_MAJOR    1
+#define APP_VERSION_MINOR    0
+#define APP_VERSION_BUILD    1
 
 #endif
