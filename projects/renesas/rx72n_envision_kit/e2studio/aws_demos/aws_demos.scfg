@@ -356,6 +356,11 @@
 <pinItem allocation="35$C" comments="" direction="None" id="SDHI_D0" locked="false" status="0"/>
 <pinItem allocation="43" comments="" direction="None" id="USB0_OVRCURA" locked="false" status="0"/>
 <pinItem allocation="40" comments="" direction="None" id="USB0_VBUSEN" locked="false" status="0"/>
+<pinItem allocation="121$B" comments="" direction="None" id="QSPCLK" locked="false" status="0"/>
+<pinItem allocation="123$B" comments="" direction="None" id="QIO3" locked="false" status="0"/>
+<pinItem allocation="120$B" comments="" direction="None" id="QIO0" locked="false" status="0"/>
+<pinItem allocation="124$B" comments="" direction="None" id="QIO2" locked="false" status="0"/>
+<pinItem allocation="119$B" comments="" direction="None" id="QIO1" locked="false" status="0"/>
 <pinnumItem comment="QIO0-B" id="145"/>
 <pinnumItem comment="QSPCLK-B" id="147"/>
 <pinnumItem comment="QSSL-B" id="148"/>
@@ -1342,6 +1347,94 @@
 <gridItem id="BSP_CFG_SWINT_UNIT2_ENABLE" selectedIndex="0"/>
 <gridItem id="BSP_CFG_SWINT_TASK_BUFFER_NUMBER" selectedIndex="8"/>
 <gridItem id="BSP_CFG_SWINT_IPR_INITIAL_VALUE" selectedIndex="1"/>
+</component>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+</configuration>
+<configuration inuse="true" name="r_flash_spi">
+<component description="依存モジュール: r_bsp バージョン 5.20&#10;The Serial Flash memory control software controls the Serial Flash memory devices using a Renesas Electronics' microcomputer." detailDescription="Clock Synchronous Control Module for Serial Flash memory Access" display="r_flash_spi" id="r_flash_spi3.01" version="3.01">
+<gridItem id="FLASH_SPI_CFG_WEL_CHK" selectedIndex="1"/>
+<gridItem id="FLASH_SPI_CFG_LONGQ_ENABLE" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_USE_GPIO_MPC_FIT" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV0_INCLUDED" selectedIndex="1"/>
+<gridItem id="FLASH_SPI_CFG_DEV1_INCLUDED" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV0_MX25L" selectedIndex="1"/>
+<gridItem id="FLASH_SPI_CFG_DEV0_MX66L" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV0_MX25R" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV1_MX25L" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV1_MX66L" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV1_MX25R" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV0_SIZE_512K" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV0_SIZE_1M" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV0_SIZE_2M" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV0_SIZE_4M" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV0_SIZE_16M" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV0_SIZE_32M" selectedIndex="1"/>
+<gridItem id="FLASH_SPI_CFG_DEV0_SIZE_64M" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV0_SIZE_128M" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV0_SIZE_256M" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV0_SIZE_512M" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV0_SIZE_1G" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV1_SIZE_512K" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV1_SIZE_1M" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV1_SIZE_2M" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV1_SIZE_4M" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV1_SIZE_16M" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV1_SIZE_32M" selectedIndex="1"/>
+<gridItem id="FLASH_SPI_CFG_DEV1_SIZE_64M" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV1_SIZE_128M" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV1_SIZE_256M" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV1_SIZE_512M" selectedIndex="0"/>
+<gridItem id="FLASH_SPI_CFG_DEV1_SIZE_1G" selectedIndex="0"/>
+</component>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+</configuration>
+<configuration inuse="true" name="r_memdrv_rx">
+<component description="依存モジュール: r_bsp バージョン 5.50&#10;The MEMDRV FIT module functions as an adapter between an upper layer consisting of serial NOR or NAND flash command control middleware and a lower layer consisting of an RSPI, QSPI, or SCI (SPI mode) device driver." detailDescription="MEMDRV Driver" display="r_memdrv_rx" id="r_memdrv_rx1.02" version="1.02">
+<gridItem id="MEMDRV_CFG_DEV0_INCLUDED" selectedIndex="1"/>
+<gridItem id="MEMDRV_CFG_DEV1_INCLUDED" selectedIndex="0"/>
+<gridItem id="MEMDRV_CFG_DEV0_MODE_TRNS" selectedIndex="0"/>
+<gridItem id="MEMDRV_CFG_DEV1_MODE_TRNS" selectedIndex="0"/>
+<gridItem id="MEMDRV_CFG_DEV0_MODE_DRVR" selectedIndex="1"/>
+<gridItem id="MEMDRV_CFG_DEV1_MODE_DRVR" selectedIndex="0"/>
+<gridItem id="MEMDRV_CFG_DEV0_MODE_DRVR_CH" selectedIndex="0"/>
+<gridItem id="MEMDRV_CFG_DEV1_MODE_DRVR_CH" selectedIndex="0"/>
+<gridItem id="MEMDRV_CFG_DEV0_TYPE" selectedIndex="0"/>
+<gridItem id="MEMDRV_CFG_DEV1_TYPE" selectedIndex="0"/>
+<gridItem id="MEMDRV_CFG_DEV0_BR" selectedIndex="30000000"/>
+<gridItem id="MEMDRV_CFG_DEV0_BR_WRITE_DATA" selectedIndex="30000000"/>
+<gridItem id="MEMDRV_CFG_DEV0_BR_READ_DATA" selectedIndex="30000000"/>
+<gridItem id="MEMDRV_CFG_DEV1_BR" selectedIndex="1000000"/>
+<gridItem id="MEMDRV_CFG_DEV1_BR_WRITE_DATA" selectedIndex="1000000"/>
+<gridItem id="MEMDRV_CFG_DEV1_BR_READ_DATA" selectedIndex="1000000"/>
+<gridItem id="MEMDRV_CFG_DEV0_DMAC_CH_NO_Tx" selectedIndex="0"/>
+<gridItem id="MEMDRV_CFG_DEV0_DMAC_CH_NO_Rx" selectedIndex="1"/>
+<gridItem id="MEMDRV_CFG_DEV1_DMAC_CH_NO_Tx" selectedIndex="2"/>
+<gridItem id="MEMDRV_CFG_DEV1_DMAC_CH_NO_Rx" selectedIndex="3"/>
+<gridItem id="MEMDRV_CFG_DEV0_DMAC_INT_PRL_Tx" selectedIndex="10"/>
+<gridItem id="MEMDRV_CFG_DEV0_DMAC_INT_PRL_Rx" selectedIndex="10"/>
+<gridItem id="MEMDRV_CFG_DEV1_DMAC_INT_PRL_Tx" selectedIndex="10"/>
+<gridItem id="MEMDRV_CFG_DEV1_DMAC_INT_PRL_Rx" selectedIndex="10"/>
+<gridItem id="MEMDRV_CFG_PARAM_CHECKING_ENABLE" selectedIndex="2"/>
+<gridItem id="MEMDRV_CFG_LONGQ_ENABLE" selectedIndex="0"/>
+</component>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+</configuration>
+<configuration inuse="true" name="r_qspi_smstr_rx">
+<component description="依存モジュール: r_bsp バージョン 5.50&#10;The QSPI built into the RX Family microcontroller is used to implement clock synchronous control. QSPI mode single master control can be enabled by adding slave device selection control by means of port control." detailDescription="QSPI Clock Synchronous Single Master Control Module Using Firmware Integration Technology" display="r_qspi_smstr_rx" id="r_qspi_smstr_rx1.14" version="1.14">
+<gridItem id="QSPCLK" selectedIndex="1"/>
+<gridItem id="QIO0" selectedIndex="1"/>
+<gridItem id="QIO1" selectedIndex="1"/>
+<gridItem id="QIO2" selectedIndex="1"/>
+<gridItem id="QIO3" selectedIndex="1"/>
+<gridItem id="QSPI0" selectedIndex="1"/>
+<gridItem id="QSPI_SMSTR_CFG_USE_FIT" selectedIndex="1"/>
+<gridItem id="QSPI_SMSTR_CFG_CH0_INCLUDED" selectedIndex="1"/>
+<gridItem id="QSPI_SMSTR_CFG_LONGQ_ENABLE" selectedIndex="0"/>
+<gridItem id="QSPI_SMSTR_CFG_CH0_INT_SPTI_LEVEL" selectedIndex="10"/>
+<gridItem id="QSPI_SMSTR_CFG_CH0_INT_SPRI_LEVEL" selectedIndex="10"/>
 </component>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>

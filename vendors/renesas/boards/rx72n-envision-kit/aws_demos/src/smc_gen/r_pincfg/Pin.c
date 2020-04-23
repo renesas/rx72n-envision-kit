@@ -212,6 +212,26 @@ void R_Pins_Create(void)
     MPC.PB1PFS.BYTE = 0x25U;
     PORTB.PMR.BYTE |= 0x02U;
 
+    /* Set QIO0 pin */
+    MPC.PD6PFS.BYTE = 0x1BU;
+    PORTD.PMR.BYTE |= 0x40U;
+
+    /* Set QIO1 pin */
+    MPC.PD7PFS.BYTE = 0x1BU;
+    PORTD.PMR.BYTE |= 0x80U;
+
+    /* Set QIO2 pin */
+    MPC.PD2PFS.BYTE = 0x1BU;
+    PORTD.PMR.BYTE |= 0x04U;
+
+    /* Set QIO3 pin */
+    MPC.PD3PFS.BYTE = 0x1BU;
+    PORTD.PMR.BYTE |= 0x08U;
+
+    /* Set QSPCLK pin */
+    MPC.PD5PFS.BYTE = 0x1BU;
+    PORTD.PMR.BYTE |= 0x20U;
+
     /* Set RXD2 pin */
     MPC.P12PFS.BYTE = 0x0AU;
     PORT1.PMR.BYTE |= 0x04U;

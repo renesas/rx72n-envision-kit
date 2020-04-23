@@ -60,6 +60,7 @@ typedef struct _task_info
 	TaskHandle_t sdcard_task_handle;
 	TaskHandle_t task_manager_task_handle;
 	TaskHandle_t sntp_task_handle;
+	TaskHandle_t serial_flash_task_handle;
 
 	/* for emWin */
 	WM_HWIN hWin_serial_terminal;

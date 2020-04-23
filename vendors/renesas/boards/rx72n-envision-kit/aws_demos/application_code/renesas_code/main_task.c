@@ -84,6 +84,7 @@ extern void sdcard_task( void * pvParameters );
 extern void gui_task( void * pvParameters );
 extern void task_manager_task( void * pvParameters );
 extern void sntp_task( void * pvParameters );
+extern void serial_flash_task( void * pvParameters );
 
 extern void display_syslog_putstring(WM_HWIN hWin_handle, char *string);
 
@@ -145,6 +146,9 @@ void main_task(void)
     /* sntp task creation */
     xTaskCreate(sntp_task, "sntp", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.sntp_task_handle);
 
+    /* serial flash task creation */
+    xTaskCreate(serial_flash_task, "serial_flash", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.serial_flash_task_handle);
+
     /* wait completing gui initializing */
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
@@ -152,7 +156,7 @@ void main_task(void)
 	xTaskNotifyGive(task_info.serial_terminal_task_handle);
 	xTaskNotifyGive(task_info.sdcard_task_handle);
 	xTaskNotifyGive(task_info.task_manager_task_handle);
-
+	xTaskNotifyGive(task_info.serial_flash_task_handle);
 
     /* main loop */
     while(1)
