@@ -18,7 +18,7 @@
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_glcdc_private.h
- * Version      : 1.20
+ * Version      : 1.30
  * Description  : Header file of GLCDC internal functions.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
@@ -26,6 +26,9 @@
  *         : 01.10.2017 1.00      First Release
  *         : 04.04.2019 1.10      Added support for GNUC and ICCRX.
  *         : 09.04.2019 1.20      Added support for RX72M.
+ *         : 20.09.2019 1.30      Added support for RX72N and RX66N.
+ *                                Deleted BG_PLANE_H_FRONT_PORCH_MAX and BG_PLANE_V_FRONT_PORCH_MAX.
+ *                                Added BG_BGSYNC_HP_MAX and BG_BGSYNC_VP_MAX to extend the range of front porch.
  ***********************************************************************************************************************/
 
 #ifndef R_GLCDC_PRIVATE_H
@@ -43,23 +46,23 @@
 #include "r_glcdc_rx_config.h"
 
 /* This checks that the module of the GLCDC is supported to the MCU that has been selected for sure. */
-#if ((defined(BSP_MCU_RX65N_2MB))||(defined(BSP_MCU_RX72M))||(defined(BSP_MCU_RX72N)))
+#if ((defined(BSP_MCU_RX65N_2MB))||(defined(BSP_MCU_RX72M))||(defined(BSP_MCU_RX72N))||(defined(BSP_MCU_RX66N)))
 #else
-	#error "This MCU is not supported by the current r_glcdc_rx module."
+#error "This MCU is not supported by the current r_glcdc_rx module."
 #endif
 
 #if ((GLCDC_CFG_PARAM_CHECKING_ENABLE == 0) || (GLCDC_CFG_PARAM_CHECKING_ENABLE == 1))
 #else
-	#error "ERROR- GLCDC_CFG_PARAM_CHECKING_ENABLE - setting values is out of range defined in r_glcdc_rx_config.h."
+#error "ERROR- GLCDC_CFG_PARAM_CHECKING_ENABLE - setting values is out of range defined in r_glcdc_rx_config.h."
 #endif
 
 #if ((GLCDC_CFG_INTERRUPT_PRIORITY_LEVEL >= 0) && (GLCDC_CFG_INTERRUPT_PRIORITY_LEVEL <= 15))
 #else
-	#error "ERROR- GLCDC_CFG_INTERRUPT_PRIORITY_LEVEL - setting values is out of range defined in r_glcdc_rx_config.h."
+#error "ERROR- GLCDC_CFG_INTERRUPT_PRIORITY_LEVEL - setting values is out of range defined in r_glcdc_rx_config.h."
 #endif
 
-#if R_BSP_VERSION_MAJOR < 5
-	#error "This module must use BSP module of Rev.5.00 or higher. Please use the BSP module of Rev.5.00 or higher."
+#if (R_BSP_VERSION_MAJOR < 5)
+#error "This module must use BSP module of Rev.5.00 or higher. Please use the BSP module of Rev.5.00 or higher."
 #endif
 
 /**********************************************************************************************************************
@@ -96,13 +99,13 @@
 #define GR_PLANE_V_CYC_ACTIVE_SIZE_MAX    (1020)        /* GRn_AB3_GRCVW (Max=1020) */
 #define GR_PLANE_H_ACTIVE_POS_MAX         (1005)        /* GRn_AB2.GRCHS (Min=1005) */
 #define GR_PLANE_V_ACTIVE_POS_MAX         (1006)        /* GRn_AB2.GRCVS (Min=1006) */
-#define BG_PLANE_H_FRONT_PORCH_MAX        (17)          /* Horizontal front porch parameter (MAX=17)*/
-#define BG_PLANE_V_FRONT_PORCH_MAX        (16)          /* Vertical front porch parameter (MAX=16)*/
 #define GR_PLANE_DATANUM_POS_MAX          (65536)       /* GRn_FLM5_DATANUM (Max=65536) */
 #define GR_BLEND_H_ACTIVE_POS_MAX         (1005)        /* GRn_AB5_GRCHS (Max=1005) */
 #define GR_BLEND_V_ACTIVE_POS_MAX         (1006)        /* GRn_AB4_GRCVS (Max=1006) */
 #define GR_BLEND_H_CYC_ACTIVE_SIZE_MAX    (1016)        /* GRn_AB5_GRCHW (Max=1016) */
 #define GR_BLEND_V_CYC_ACTIVE_SIZE_MAX    (1020)        /* GRn_AB4_GRCVW (Max=1020) */
+#define BG_BGSYNC_HP_MAX                  (15)          /*BGSYNC_HP (Max=15)*/
+#define BG_BGSYNC_VP_MAX                  (15)          /*BGSYNC_VP (Max=15)*/
 
 /* Panel timing, Minimum threshold */
 #define BG_PLANE_H_CYC_MIN             (24)             /* BG_PERI.FH (Min=24) */
@@ -182,7 +185,6 @@
 #define GRn_AB7_ARCDEF_MASK   (0x000000FFUL)
 #define GRn_CLUTINT_LINE_MASK (0x000007FFUL)
 
-
 /* Register bit definition for Output Control Block */
 #define GAMX_LUTX_GAIN_MASK            (0x07FFU)
 #define GAMX_AREAX_MASK                (0x03FFU)
@@ -212,236 +214,270 @@
 /** GR1,GR2 register access definition */
 
 R_BSP_PRAGMA_UNPACK
-typedef struct st_glcdc_gr_clut {
-	union {
-		uint32_t lsize;
-		R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
-				uint32_t a:8,
-				uint32_t r:8,
-				uint32_t g:8,
-				uint32_t b:8
-		)bit;
-	} grxclut[256];
+typedef struct st_glcdc_gr_clut
+{
+    union
+    {
+        uint32_t lsize;
+        R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
+                uint32_t a:8,
+                uint32_t r:8,
+                uint32_t g:8,
+                uint32_t b:8
+        )
+        bit;
+    } grxclut[256];
 } st_glcdc_gr_clut_t;
 
-typedef struct st_glcdc_gr {
-	union {
-		uint32_t lsize;
-		R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_2(
-				uint32_t :31,
-				uint32_t ven:1
-		) bit;
-	} grxven;
-	union {
-		uint32_t lsize;
-		R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_2(
-				uint32_t :31,
-				uint32_t renb:1
-		) bit;
-	} grxflmrd;
-	char           wk0[4];
-	uint32_t  grxflm2;
-	union {
-		uint32_t lsize;
-		R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_2(
-				uint32_t lnoff:16,
-				uint32_t :16
-		) bit;
-	} grxflm3;
-	char           wk1[4];
-	union {
-		uint32_t lsize;
-		R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_3(
-				uint32_t :5,
-				uint32_t lnnum:11,
-				uint32_t datanum:16
-		) bit;
-	} grxflm5;
-	union {
-		uint32_t lsize;
-		R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_3(
-			uint32_t :1,
-			uint32_t format:3,
-			uint32_t :28
-		) bit;
-	} grxflm6;
-	union {
-		uint32_t lsize;
-		R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_8(
-			uint32_t :19,
-			uint32_t arcon:1,
-			uint32_t :3,
-			uint32_t arcdispon:1,
-			uint32_t :3,
-			uint32_t grcdispon:1,
-			uint32_t :2,
-			uint32_t dispsel:2
-		)bit;
-	} grxab1;
-	union {
-		uint32_t lsize;
-		R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
-			uint32_t :5,
-			uint32_t grcvs:11,
-			uint32_t :5,
-			uint32_t grcvw:11
-		)bit;
-	} grxab2;
-	union {
-		uint32_t lsize;
-		R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
-			uint32_t :5,
-			uint32_t grchs:11,
-			uint32_t :5,
-			uint32_t grchw:11
-		)bit;
-	} grxab3;
-	union {
-		uint32_t lsize;
-		R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
-			uint32_t :5,
-			uint32_t arcvs:11,
-			uint32_t :5,
-			uint32_t arcvw:11
-		) bit;
-	} grxab4;
-	union {
-		uint32_t lsize;
-		R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
-			uint32_t :5,
-			uint32_t archs:11,
-			uint32_t :5,
-			uint32_t archw:11
-		) bit;
-	} grxab5;
-	union {
-		uint32_t lsize;
-		R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
-			uint32_t :7,
-			uint32_t arccoef:9,
-			uint32_t :8,
-			uint32_t arcrate:8
-		) bit;
-	} grxab6;
-	union {
-		uint32_t lsize;
-		R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
-			uint32_t :8,
-			uint32_t arcdef:8,
-			uint32_t :15,
-			uint32_t ckon:1
-		) bit;
-	} grxab7;
-	union {
-		uint32_t lsize;
-		R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
-			uint32_t :8,
-			uint32_t ckkg:8,
-			uint32_t ckkb:8,
-			uint32_t ckkr:8
-		) bit;
-	} grxab8;
-	union {
-		uint32_t lsize;
-		R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
-			uint32_t cka:8,
-			uint32_t ckg:8,
-			uint32_t ckb:8,
-			uint32_t ckr:8
-		) bit;
-	} grxab9;
-	char           wk2[8];
-	union {
-		uint32_t lsize;
-		R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
-			uint32_t :8,
-			uint32_t g:8,
-			uint32_t b:8,
-			uint32_t r:8
-		) bit;
-	} grxbase;
-	union {
-		uint32_t lsize;
-		R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
-			uint32_t :15,
-			uint32_t sel:1,
-			uint32_t :5,
-			uint32_t line:11
-		) bit;
-	} grxclutint;
-	union {
-		uint32_t lsize;
-		R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
-			uint32_t :15,
-			uint32_t ufst:1,
-			uint32_t :15,
-			uint32_t arcst:1
-		) bit;
-	} grxmon;
+typedef struct st_glcdc_gr
+{
+    union
+    {
+        uint32_t lsize;
+        R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_2(
+                uint32_t :31,
+                uint32_t ven:1
+        )
+        bit;
+    } grxven;
+    union
+    {
+        uint32_t lsize;
+        R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_2(
+                uint32_t :31,
+                uint32_t renb:1
+        )
+        bit;
+    } grxflmrd;
+    char wk0[4];
+    uint32_t grxflm2;
+    union
+    {
+        uint32_t lsize;
+        R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_2(
+                uint32_t lnoff:16,
+                uint32_t :16
+        )
+        bit;
+    } grxflm3;
+    char wk1[4];
+    union
+    {
+        uint32_t lsize;
+        R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_3(
+                uint32_t :5,
+                uint32_t lnnum:11,
+                uint32_t datanum:16
+        )
+        bit;
+    } grxflm5;
+    union
+    {
+        uint32_t lsize;
+        R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_3(
+                uint32_t :1,
+                uint32_t format:3,
+                uint32_t :28
+        )
+        bit;
+    } grxflm6;
+    union
+    {
+        uint32_t lsize;
+        R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_8(
+                uint32_t :19,
+                uint32_t arcon:1,
+                uint32_t :3,
+                uint32_t arcdispon:1,
+                uint32_t :3,
+                uint32_t grcdispon:1,
+                uint32_t :2,
+                uint32_t dispsel:2
+        )
+        bit;
+    } grxab1;
+    union
+    {
+        uint32_t lsize;
+        R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
+                uint32_t :5,
+                uint32_t grcvs:11,
+                uint32_t :5,
+                uint32_t grcvw:11
+        )
+        bit;
+    } grxab2;
+    union
+    {
+        uint32_t lsize;
+        R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
+                uint32_t :5,
+                uint32_t grchs:11,
+                uint32_t :5,
+                uint32_t grchw:11
+        )
+        bit;
+    } grxab3;
+    union
+    {
+        uint32_t lsize;
+        R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
+                uint32_t :5,
+                uint32_t arcvs:11,
+                uint32_t :5,
+                uint32_t arcvw:11
+        )
+        bit;
+    } grxab4;
+    union
+    {
+        uint32_t lsize;
+        R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
+                uint32_t :5,
+                uint32_t archs:11,
+                uint32_t :5,
+                uint32_t archw:11
+        )
+        bit;
+    } grxab5;
+    union
+    {
+        uint32_t lsize;
+        R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
+                uint32_t :7,
+                uint32_t arccoef:9,
+                uint32_t :8,
+                uint32_t arcrate:8
+        )
+        bit;
+    } grxab6;
+    union
+    {
+        uint32_t lsize;
+        R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
+                uint32_t :8,
+                uint32_t arcdef:8,
+                uint32_t :15,
+                uint32_t ckon:1
+        )
+        bit;
+    } grxab7;
+    union
+    {
+        uint32_t lsize;
+        R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
+                uint32_t :8,
+                uint32_t ckkg:8,
+                uint32_t ckkb:8,
+                uint32_t ckkr:8
+        )
+        bit;
+    } grxab8;
+    union
+    {
+        uint32_t lsize;
+        R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
+                uint32_t cka:8,
+                uint32_t ckg:8,
+                uint32_t ckb:8,
+                uint32_t ckr:8
+        )
+        bit;
+    } grxab9;
+    char wk2[8];
+    union
+    {
+        uint32_t lsize;
+        R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
+                uint32_t :8,
+                uint32_t g:8,
+                uint32_t b:8,
+                uint32_t r:8
+        )
+        bit;
+    } grxbase;
+    union
+    {
+        uint32_t lsize;
+        R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
+                uint32_t :15,
+                uint32_t sel:1,
+                uint32_t :5,
+                uint32_t line:11
+        )
+        bit;
+    } grxclutint;
+    union
+    {
+        uint32_t lsize;
+        R_BSP_ATTRIB_STRUCT_BIT_ORDER_LEFT_4(
+                uint32_t :15,
+                uint32_t ufst:1,
+                uint32_t :15,
+                uint32_t arcst:1
+        )
+        bit;
+    } grxmon;
 } st_glcdc_gr_t;
 R_BSP_PRAGMA_PACKOPTION
 
 /** Timing signals for driving the LCD panel */
 typedef enum e_glcdc_tcon_signal_select
 {
-	GLCDC_TCON_SIGNAL_SELECT_STVA_VS = 0,  // STVA/VS
-	GLCDC_TCON_SIGNAL_SELECT_STVB_VE = 1,  // STVB/VE
-	GLCDC_TCON_SIGNAL_SELECT_STHA_HS = 2,  // STH/SP/HS
-	GLCDC_TCON_SIGNAL_SELECT_STHB_HE = 3,  // STB/LP/HE
-	GLCDC_TCON_SIGNAL_SELECT_DE      = 7   // DE
+    GLCDC_TCON_SIGNAL_SELECT_STVA_VS = 0,  // STVA/VS
+    GLCDC_TCON_SIGNAL_SELECT_STVB_VE = 1,  // STVB/VE
+    GLCDC_TCON_SIGNAL_SELECT_STHA_HS = 2,  // STH/SP/HS
+    GLCDC_TCON_SIGNAL_SELECT_STHB_HE = 3,  // STB/LP/HE
+    GLCDC_TCON_SIGNAL_SELECT_DE = 7        // DE
 } glcdc_tcon_signal_select_t;
 
 /** Fade control initial value set */
 typedef enum e_glcd_fading_ctrl_initial_alpha
 {
-	GLCDC_FADING_CONTROL_INITIAL_ALPHA_MIN = 0,    // Initial alpha value setting for a graphics plane is zero.
-	GLCDC_FADING_CONTROL_INITIAL_ALPHA_MAX = 0xff  // Initial alpha value setting for a graphics plane is maximum.
+    GLCDC_FADING_CONTROL_INITIAL_ALPHA_MIN = 0,    // Initial alpha value setting for a graphics plane is zero.
+    GLCDC_FADING_CONTROL_INITIAL_ALPHA_MAX = 0xff  // Initial alpha value setting for a graphics plane is maximum.
 } glcdc_fade_ctrl_initial_alpha_t;
-
 
 /** Blend plane select */
 typedef enum e_glcdc_plane_blend
 {
-	GLCDC_PLANE_BLEND_TRANSPARENT = 1,     // Current graphics layer is transparent and the lower layer is displayed.
-	GLCDC_PLANE_BLEND_NON_TRANSPARENT = 2, // Current graphics layer is displayed.
-	GLCDC_PLANE_BLEND_ON_LOWER_LAYER = 3   // Current graphics layer is blended with the lower layer.
+    GLCDC_PLANE_BLEND_TRANSPARENT = 1,     // Current graphics layer is transparent and the lower layer is displayed.
+    GLCDC_PLANE_BLEND_NON_TRANSPARENT = 2, // Current graphics layer is displayed.
+    GLCDC_PLANE_BLEND_ON_LOWER_LAYER = 3   // Current graphics layer is blended with the lower layer.
 } glcdc_plane_blend_t;
 
 /** Clut plane select */
 typedef enum e_glcdc_clut_plane
 {
-	GLCDC_CLUT_PLANE_0 = 0,                // GLCD CLUT plane 0.
-	GLCDC_CLUT_PLANE_1 = 1                 // GLCD CLUT plane 1.
+    GLCDC_CLUT_PLANE_0 = 0,                // GLCD CLUT plane 0.
+    GLCDC_CLUT_PLANE_1 = 1                 // GLCD CLUT plane 1.
 } glcdc_clut_plane_t;
 
 /** Dithering output format */
 typedef enum e_glcdc_dithering_output_format
 {
-	GLCDC_DITHERING_OUTPUT_FORMAT_RGB888 = 0,  // Dithering output format RGB888.
-	GLCDC_DITHERING_OUTPUT_FORMAT_RGB666 = 1,  // Dithering output format RGB666.
-	GLCDC_DITHERING_OUTPUT_FORMAT_RGB565 = 2   // Dithering output format RGB565.
+    GLCDC_DITHERING_OUTPUT_FORMAT_RGB888 = 0,  // Dithering output format RGB888.
+    GLCDC_DITHERING_OUTPUT_FORMAT_RGB666 = 1,  // Dithering output format RGB666.
+    GLCDC_DITHERING_OUTPUT_FORMAT_RGB565 = 2   // Dithering output format RGB565.
 } glcdc_dithering_output_format_t;
 
 /** GLCD hardware specific control block */
 typedef struct st_glcdc_ctrl
 {
-	glcdc_operating_status_t state;                                      // Status of GLCD module.
-	bool is_entry;                                                       // Flag of subcribed GLCDC interrupt function.
-	glcdc_coordinate_t active_start_pos;                                 // Zero coordinate for graphics plane.
-	uint16_t hsize;                                                      // Horizontal pixel size in a line.
-	uint16_t vsize;                                                      // Vertical pixel size in a frame.
-	bool graphics_read_enable[GLCDC_FRAME_LAYER_NUM];                    // Graphics data read enable.
-	void (*p_callback)(void *);                                          // Pointer to callback function.
-	bool first_vpos_interrupt_flag;                                      // First vpos interrupt after release software reset.
-	glcdc_interrupt_cfg_t interrupt;                                     // Interrupt setting values.
+    glcdc_operating_status_t state;                                // Status of GLCD module.
+    bool is_entry;                                                 // Flag of subcribed GLCDC interrupt function.
+    glcdc_coordinate_t active_start_pos;                           // Zero coordinate for graphics plane.
+    uint16_t hsize;                                                // Horizontal pixel size in a line.
+    uint16_t vsize;                                                // Vertical pixel size in a frame.
+    bool graphics_read_enable[GLCDC_FRAME_LAYER_NUM];              // Graphics data read enable.
+    void (*p_callback)(void *);                                    // Pointer to callback function.
+    bool first_vpos_interrupt_flag;                                // First vpos interrupt after release software reset.
+    glcdc_interrupt_cfg_t interrupt;                               // Interrupt setting values.
 } glcdc_ctrl_t;
-
-
-
 
 /***********************************************************************************************************************
  Exported global functions (to be accessed by other files)
- ***********************************************************************************************************************/
+ **********************************************************************************************************************/
 
 #if (GLCDC_CFG_PARAM_CHECKING_ENABLE)
 glcdc_err_t r_glcdc_open_param_check(glcdc_cfg_t const * const p_cfg);

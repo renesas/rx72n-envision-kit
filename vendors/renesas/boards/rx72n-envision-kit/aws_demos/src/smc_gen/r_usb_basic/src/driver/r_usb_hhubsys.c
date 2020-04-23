@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2014(2019) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2014(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_hhubsys.c
@@ -32,6 +32,7 @@
  *         : 31.03.2018 1.23 Supporting Smart Configurator
  *         : 31.05.2019 1.26 Added support for GNUC and ICCRX.
  *         : 30.07.2019 1.27 RX72M is added.
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 /******************************************************************************
@@ -44,6 +45,10 @@
 #include "r_usb_extern.h"
 #include "r_usb_bitdefine.h"
 #include "r_usb_reg_access.h"
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+#include "r_rtos_abstract.h"
+#include "r_usb_cstd_rtos.h"
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
 #if USB_CFG_HUB == USB_CFG_ENABLE
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
@@ -105,7 +110,7 @@ static void usb_hhub_new_connect (usb_utr_t *ptr, uint16_t hubaddr, uint16_t por
 static uint16_t usb_hhub_port_attach (uint16_t hubaddr, uint16_t portnum, usb_clsinfo_t *mess);
 static void usb_hhub_port_reset (usb_utr_t *ptr, uint16_t hubaddr, uint16_t portnum, usb_clsinfo_t *mess);
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)    /* Non-OS */
 static void usb_hhub_enumeration (usb_clsinfo_t *mess);
 static void usb_hhub_event (usb_clsinfo_t *mess);
 static void usb_hhub_specified_path (usb_clsinfo_t *mess);
@@ -197,7 +202,8 @@ const uint16_t g_usb_hhub_tpl[4] =
  ******************************************************************************/
 void usb_hhub_open (usb_utr_t *ptr, uint16_t devaddr, uint16_t data2)
 {
-    usb_er_t err, err2;
+#if (BSP_CFG_RTOS_USED == 0)    /* Non-OS */
+    usb_er_t err;
     usb_mh_t p_blf;
     usb_mgrinfo_t *mp;
     uint16_t hubaddr;
@@ -214,11 +220,9 @@ void usb_hhub_open (usb_utr_t *ptr, uint16_t devaddr, uint16_t data2)
         {
             mp = (usb_mgrinfo_t*) p_blf;
             mp->msghead = (usb_mh_t) USB_NULL;
-#if (BSP_CFG_RTOS_USED == 1)
-            mp->msginfo = USB_MSG_HUB_START;
-#else /* (BSP_CFG_RTOS_USED == 1) */
+
             mp->msginfo = USB_MSG_CLS_INIT;
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+
             mp->keyword = devaddr;
 
             mp->ipp = ptr->ipp;
@@ -230,10 +234,10 @@ void usb_hhub_open (usb_utr_t *ptr, uint16_t devaddr, uint16_t data2)
             {
                 /* Send Message failure */
                 USB_PRINTF1("### hHubOpen snd_msg error (%ld)\n", err);
-                err2 = USB_REL_BLK(USB_HUB_MPL, (usb_mh_t )p_blf);
-                if (USB_OK != err2)
+                err = USB_REL_BLK(USB_HUB_MPL, (usb_mh_t )p_blf);
+                if (USB_OK != err)
                 {
-                    USB_PRINTF1("### hHubOpen rel_blk error (%ld)\n", err2);
+                    USB_PRINTF1("### hHubOpen rel_blk error (%ld)\n", err);
                 }
             }
         }
@@ -258,13 +262,78 @@ void usb_hhub_open (usb_utr_t *ptr, uint16_t devaddr, uint16_t data2)
         g_usb_shhub_remote[ptr->ip][devaddr] = 0;
         g_usb_pipe_table[ptr->ip][USB_HUB_PIPE].pipe_maxp |= hubaddr;
 
-#if (BSP_CFG_RTOS_USED == 0)
         g_usb_shhub_process[ptr->ip] = USB_MSG_CLS_INIT;
-#endif /* (BSP_CFG_RTOS_USED == 0) */
+
         usb_hstd_set_pipe_reg (ptr, USB_HUB_PIPE);
 
         g_usb_shhub_number[ptr->ip]++;
     }
+#else /* (BSP_CFG_RTOS_USED == 0) */
+    rtos_err_t err;
+    rtos_err_t ret;
+    usb_mh_t p_blf;
+    usb_mgrinfo_t *mp;
+    uint16_t hubaddr;
+
+    ret = RTOS_ERROR;
+    hubaddr = (uint16_t) (devaddr << USB_DEVADDRBIT);
+
+    if (USB_MAXHUB != g_usb_shhub_number[ptr->ip])
+    {
+        /* Wait 10ms */
+        usb_cpu_delay_xms((uint16_t) 10);
+        ret = rtos_get_fixed_memory(&g_rtos_usb_mpf_id, (void **)&p_blf, RTOS_ZERO);
+        if (RTOS_SUCCESS == ret)
+        {
+            mp = (usb_mgrinfo_t*) p_blf;
+            mp->msghead = (usb_mh_t) USB_NULL;
+
+            mp->msginfo = USB_MSG_HUB_START;
+
+            mp->keyword = devaddr;
+
+            mp->ipp = ptr->ipp;
+            mp->ip = ptr->ip;
+
+            /* Send message */
+            err = rtos_send_mailbox (&g_rtos_usb_hub_mbx_id, (void *)p_blf);
+            if (RTOS_SUCCESS != err)
+            {
+                /* Send Message failure */
+                USB_PRINTF1("### hHubOpen snd_msg error (%ld)\n", err);
+                err = rtos_release_fixed_memory(&g_rtos_usb_mpf_id, (void *)p_blf);
+                if (RTOS_SUCCESS != err)
+                {
+                    USB_PRINTF1("### hHubOpen rel_blk error (%ld)\n", err);
+                }
+            }
+        }
+        else
+        {
+            /* Release memory block failure */
+            USB_PRINTF1("### hHubOpen pget_blk error (%ld)\n", ret);
+            /* WAIT_LOOP */
+            while (1)
+            {
+                /* Non */
+            }
+        }
+
+        /* Pipe number set */
+        g_usb_shhub_info_data[ptr->ip][devaddr].pipe_num = USB_HUB_PIPE;
+
+        /* HUB down port status */
+        g_usb_shhub_down_port[ptr->ip][devaddr] = 0;
+
+        /* Down port remote wake up */
+        g_usb_shhub_remote[ptr->ip][devaddr] = 0;
+        g_usb_pipe_table[ptr->ip][USB_HUB_PIPE].pipe_maxp |= hubaddr;
+
+        usb_hstd_set_pipe_reg (ptr, USB_HUB_PIPE);
+
+        g_usb_shhub_number[ptr->ip]++;
+    }
+#endif  /* (BSP_CFG_RTOS_USED == 0) */
 }
 /******************************************************************************
  End of function usb_hhub_open
@@ -396,7 +465,7 @@ uint16_t usb_hhub_get_hub_information (usb_utr_t *ptr, uint16_t hubaddr, usb_cb_
     g_usb_shhub_ctrl_mess[ptr->ip].ip = ptr->ip;
 
     /* Transfer start */
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
     qerr = usb_hstd_transfer_start_req(&g_usb_shhub_ctrl_mess[ptr->ip]);
     if (USB_QOVR == qerr)
     {
@@ -419,7 +488,7 @@ uint16_t usb_hhub_get_hub_information (usb_utr_t *ptr, uint16_t hubaddr, usb_cb_
     {
         return USB_ERROR;
     }
-#else  /* (BSP_CFG_RTOS_USED == 1) */
+#else  /* (BSP_CFG_RTOS_USED != 0) */
     qerr = usb_hstd_transfer_start_req(&g_usb_shhub_ctrl_mess[ptr->ip]);
     if (USB_QOVR == qerr)
     {
@@ -427,7 +496,7 @@ uint16_t usb_hhub_get_hub_information (usb_utr_t *ptr, uint16_t hubaddr, usb_cb_
     }
 
     return USB_OK;
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 }
 /******************************************************************************
  End of function usb_hhub_get_hub_information
@@ -465,7 +534,7 @@ uint16_t usb_hhub_get_port_information (usb_utr_t *ptr, uint16_t hubaddr, uint16
     g_usb_shhub_ctrl_mess[ptr->ip].ip = ptr->ip;
 
     /* Transfer start */
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
     qerr = usb_hstd_transfer_start(&g_usb_shhub_ctrl_mess[ptr->ip]);
     if (USB_QOVR == qerr)
     {
@@ -488,7 +557,7 @@ uint16_t usb_hhub_get_port_information (usb_utr_t *ptr, uint16_t hubaddr, uint16
     {
         return USB_ERROR;
     }
-#else /* (BSP_CFG_RTOS_USED == 1) */
+#else /* (BSP_CFG_RTOS_USED != 0) */
     qerr = usb_hstd_transfer_start(&g_usb_shhub_ctrl_mess[ptr->ip]);
     if (USB_QOVR == qerr)
     {
@@ -496,33 +565,37 @@ uint16_t usb_hhub_get_port_information (usb_utr_t *ptr, uint16_t hubaddr, uint16
     }
 
     return USB_OK;
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 }
 /******************************************************************************
  End of function usb_hhub_get_port_information
  ******************************************************************************/
 
 /******************************************************************************
- Function Name   : usb_hhub_task
+ Function Name   : usb_hstd_hub_task
  Description     : HUB task
  Arguments       : usb_vp_int_t stacd          : Start Code of Hub Task
  Return value    : none
  ******************************************************************************/
-void usb_hhub_task (usb_vp_int_t stacd)
+void usb_hstd_hub_task (usb_vp_int_t stacd)
 {
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
     usb_utr_t *mess;
     usb_utr_t *ptr;
-    usb_er_t err;
-    uint16_t hubaddr, pipenum, portnum, retval, devaddr;
+    rtos_err_t ret;
+    uint16_t hubaddr;
+    uint16_t pipenum;
+    uint16_t portnum;
+    uint16_t retval;
+    uint16_t devaddr;
     uint32_t port_status;
 
     /* WAIT_LOOP */
     while(1)
     {
         /* Receive message */
-        err = USB_TRCV_MSG(USB_HUB_MBX, (usb_msg_t** )&mess, (usb_tm_t )0);
-        if (USB_OK != err)
+        ret = rtos_receive_mailbox (&g_rtos_usb_hub_mbx_id, (void **)&mess, RTOS_TMO);
+        if (RTOS_SUCCESS != ret)
         {
             continue;
         }
@@ -540,8 +613,8 @@ void usb_hhub_task (usb_vp_int_t stacd)
                 usb_hhub_init_down_port(ptr, hubaddr, (usb_clsinfo_t *)USB_NULL);
 
                 /* Release memory block */
-                err = USB_REL_BLK(USB_HUB_MPL, (usb_mh_t )mess);
-                if (USB_OK != err)
+                ret = rtos_release_fixed_memory(&g_rtos_usb_mpf_id, (void *)mess);
+                if (RTOS_SUCCESS != ret)
                 {
                     USB_PRINTF0("### HUB Class rel_blk error !\n");
                 }
@@ -562,8 +635,8 @@ void usb_hhub_task (usb_vp_int_t stacd)
                         if (USB_DEFAULT == g_usb_hstd_mgr_mode[ptr->ip])
                         {
                             usb_cpu_delay_xms((uint16_t) 10);
-                            err = USB_SND_MSG(USB_HUB_MBX, (usb_msg_t* )mess);
-                            if (USB_OK != err)
+                            ret = rtos_send_mailbox (&g_rtos_usb_hub_mbx_id, (void *)mess);
+                            if (RTOS_SUCCESS != ret)
                             {
                                 USB_PRINTF0("### HUB task snd_msg error\n");
                             }
@@ -687,15 +760,15 @@ void usb_hhub_task (usb_vp_int_t stacd)
                 break;
             default:
                 /* Release memory block */
-                err = USB_REL_BLK(USB_HUB_MPL, (usb_mh_t )mess);
-                if (USB_OK != err)
+                ret = rtos_release_fixed_memory(&g_rtos_usb_mpf_id, (void *)mess);
+                if (RTOS_SUCCESS != ret)
                 {
                     USB_PRINTF0("### HUB Class rel_blk error !\n");
                 }
                 break;
         }
     }
-#else /* (BSP_CFG_RTOS_USED == 1) */
+#else /* (BSP_CFG_RTOS_USED != 0) */
     usb_utr_t *mess;
     usb_er_t err;
 
@@ -761,13 +834,13 @@ void usb_hhub_task (usb_vp_int_t stacd)
             }
         break;
     }
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 }
 /******************************************************************************
- End of function usb_hhub_task
+ End of function usb_hstd_hub_task
  ******************************************************************************/
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)    /* Non-OS */
 /******************************************************************************
  Function Name   : usb_hhub_enumeration
  Description     : USB HUB Class Enumeration
@@ -1026,7 +1099,7 @@ static void usb_hhub_enumeration (usb_clsinfo_t *ptr)
  ******************************************************************************/
 static void usb_hhub_init_down_port (usb_utr_t *ptr, uint16_t hubaddr, usb_clsinfo_t *mess)
 {
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
     uint16_t portnum;
     uint16_t retval;
     uint32_t port_status;
@@ -1095,7 +1168,7 @@ static void usb_hhub_init_down_port (usb_utr_t *ptr, uint16_t hubaddr, usb_clsin
     usb_hhub_trans_start(ptr, hubaddr, (uint32_t) 1, &g_usb_hhub_data[ptr->ip][hubaddr][0],
             &usb_hhub_trans_complete); /* Get Hub and Port Status Change Bitmap */
 
-#else /* (BSP_CFG_RTOS_USED == 1) */
+#else /* (BSP_CFG_RTOS_USED != 0) */
 
     usb_er_t err;
     uint16_t retval;
@@ -1215,7 +1288,7 @@ static void usb_hhub_init_down_port (usb_utr_t *ptr, uint16_t hubaddr, usb_clsin
             USB_PRINTF0("### USB HostHubClass rel_blk error\n");
         }
     }
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 }
 /******************************************************************************
  End of function usb_hhub_init_down_port
@@ -1231,7 +1304,7 @@ static void usb_hhub_init_down_port (usb_utr_t *ptr, uint16_t hubaddr, usb_clsin
  ******************************************************************************/
 static uint16_t usb_hhub_port_attach (uint16_t hubaddr, uint16_t portnum, usb_clsinfo_t *mess)
 {
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
     uint16_t devaddr;
     uint16_t hpphub, hubport, buffer;
     usb_utr_t *ptr;
@@ -1316,16 +1389,16 @@ static uint16_t usb_hhub_port_attach (uint16_t hubaddr, uint16_t portnum, usb_cl
 
     return USB_DETACHED;
 
-#else /* (BSP_CFG_RTOS_USED == 1) */
+#else /* (BSP_CFG_RTOS_USED != 0) */
     uint16_t devaddr, retval;
     uint16_t hpphub, hubport, buffer;
     usb_er_t err;
     usb_utr_t *ptr;
 #if ((!defined(BSP_MCU_RX64M)) && (!defined(BSP_MCU_RX65N)) && (!defined(BSP_MCU_RX71M)) && (!defined(BSP_MCU_RX72T))\
-    && (!defined(BSP_MCU_RX72M)))
+    && (!defined(BSP_MCU_RX72M)) && (!defined(BSP_MCU_RX72N)) && (!defined(BSP_MCU_RX66N)))
     usb_ctrl_t ctrl;
-#endif  /* ((!defined(BSP_MCU_RX64M)) && (!defined(BSP_MCU_RX65N)) && (!defined(BSP_MCU_RX71M))\
-    && (!defined(BSP_MCU_RX72T)) && (!defined(BSP_MCU_RX72M))) */
+#endif  /* (!defined(BSP_MCU_RX64M)) && (!defined(BSP_MCU_RX65N)) && (!defined(BSP_MCU_RX71M))\
+ && (!defined(BSP_MCU_RX72T)) && (!defined(BSP_MCU_RX72M)) && (!defined(BSP_MCU_RX72N)) && (!defined(BSP_MCU_RX66N)) */
 
     ptr = (usb_utr_t *) mess;
     hubaddr = g_usb_shhub_hub_addr[ptr->ip];
@@ -1370,10 +1443,10 @@ static uint16_t usb_hhub_port_attach (uint16_t hubaddr, uint16_t portnum, usb_cl
                     break;
                     case 0x02 :
 #if defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX72T)\
-    || defined (BSP_MCU_RX72M)
+    || defined (BSP_MCU_RX72M) || defined (BSP_MCU_RX72N) || defined (BSP_MCU_RX66N)
                         g_usb_hstd_device_speed[ptr->ip] = USB_LSCONNECT;
 #else   /* defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX72T)\
-    || defined (BSP_MCU_RX72M) */
+    || defined (BSP_MCU_RX72M) || defined (BSP_MCU_RX72N) || defined (BSP_MCU_RX66N) */
                         g_usb_hstd_device_speed[ptr->ip] = USB_NOCONNECT;
 
                         ctrl.address = 0;                               /* USB Device address */
@@ -1381,7 +1454,7 @@ static uint16_t usb_hhub_port_attach (uint16_t hubaddr, uint16_t portnum, usb_cl
                         usb_set_event(USB_STS_NOT_SUPPORT, &ctrl);      /* Set Event()  */
 
 #endif  /* defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX72T)\
-    || defined (BSP_MCU_RX72M) */
+    || defined (BSP_MCU_RX72M) || defined (BSP_MCU_RX72N) || defined (BSP_MCU_RX66N) */
                         USB_PRINTF0(" Low-Speed Device\n");
                     break;
                     case 0x04 :
@@ -1516,13 +1589,13 @@ static uint16_t usb_hhub_port_attach (uint16_t hubaddr, uint16_t portnum, usb_cl
         }
     }
     return USB_OK;
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 }
 /******************************************************************************
  End of function usb_hhub_port_attach
  ******************************************************************************/
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)    /* Non-OS */
 /******************************************************************************
  Function Name   : usb_hhub_event
  Description     : USB Hub Event process.
@@ -1790,7 +1863,7 @@ static void usb_hhub_event (usb_clsinfo_t *mess)
  ******************************************************************************/
 static void usb_hhub_port_reset (usb_utr_t *ptr, uint16_t hubaddr, uint16_t portnum, usb_clsinfo_t *mess)
 {
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
     uint16_t retval;
     uint32_t port_status;
 
@@ -1822,7 +1895,7 @@ static void usb_hhub_port_reset (usb_utr_t *ptr, uint16_t hubaddr, uint16_t port
     usb_hhub_port_clr_feature(ptr, hubaddr, portnum, (uint16_t) USB_HUB_C_PORT_RESET,
                                 class_trans_result);
 
-#else /* (BSP_CFG_RTOS_USED == 1) */
+#else /* (BSP_CFG_RTOS_USED != 0) */
     usb_er_t err;
     uint16_t retval;
     uint32_t port_status;
@@ -1939,7 +2012,7 @@ static void usb_hhub_port_reset (usb_utr_t *ptr, uint16_t hubaddr, uint16_t port
             USB_PRINTF0("### USB HostHubClass rel_blk error\n");
         }
     }
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 }
 /******************************************************************************
  End of function usb_hhub_port_reset
@@ -1954,7 +2027,7 @@ static void usb_hhub_port_reset (usb_utr_t *ptr, uint16_t hubaddr, uint16_t port
  ******************************************************************************/
 static void usb_hhub_check_class (usb_utr_t *ptr, uint16_t **table)
 {
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
     uint16_t retval;
     uint8_t string;
 
@@ -2113,7 +2186,7 @@ static void usb_hhub_check_class (usb_utr_t *ptr, uint16_t **table)
 
     /* Port number set */
     g_usb_shhub_info_data[ptr->ip][g_usb_shhub_dev_addr[ptr->ip]].port_num = g_usb_hhub_descriptor[ptr->ip][2];
-#else /* (BSP_CFG_RTOS_USED == 1) */
+#else /* (BSP_CFG_RTOS_USED != 0) */
     usb_clsinfo_t *p_blf;
     usb_clsinfo_t *cp;
     usb_er_t err;
@@ -2154,7 +2227,7 @@ static void usb_hhub_check_class (usb_utr_t *ptr, uint16_t **table)
             /* Non */
         }
     }
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 }
 /******************************************************************************
  End of function usb_hhub_check_class
@@ -2231,7 +2304,7 @@ static uint16_t usb_hhub_port_set_feature (usb_utr_t *ptr, uint16_t hubaddr, uin
     g_usb_shhub_ctrl_mess[ptr->ip].ip = ptr->ip;
 
     /* Transfer start */
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
     qerr = usb_hstd_transfer_start(&g_usb_shhub_ctrl_mess[ptr->ip]);
     if (USB_QOVR == qerr)
     {
@@ -2254,7 +2327,7 @@ static uint16_t usb_hhub_port_set_feature (usb_utr_t *ptr, uint16_t hubaddr, uin
     {
         return USB_ERROR;
     }
-#else /* (BSP_CFG_RTOS_USED == 1) */
+#else /* (BSP_CFG_RTOS_USED != 0) */
     qerr = usb_hstd_transfer_start(&g_usb_shhub_ctrl_mess[ptr->ip]);
     if (USB_QOVR == qerr)
     {
@@ -2262,7 +2335,7 @@ static uint16_t usb_hhub_port_set_feature (usb_utr_t *ptr, uint16_t hubaddr, uin
     }
 
     return USB_OK;
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 }
 /******************************************************************************
  End of function usb_hhub_port_set_feature
@@ -2301,7 +2374,7 @@ static uint16_t usb_hhub_port_clr_feature (usb_utr_t *ptr, uint16_t hubaddr, uin
     g_usb_shhub_ctrl_mess[ptr->ip].ip = ptr->ip;
 
     /* Transfer start */
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
     qerr = usb_hstd_transfer_start(&g_usb_shhub_ctrl_mess[ptr->ip]);
     if (USB_QOVR == qerr)
     {
@@ -2324,7 +2397,7 @@ static uint16_t usb_hhub_port_clr_feature (usb_utr_t *ptr, uint16_t hubaddr, uin
     {
         return USB_ERROR;
     }
-#else /* (BSP_CFG_RTOS_USED == 1) */
+#else /* (BSP_CFG_RTOS_USED != 0) */
     qerr = usb_hstd_transfer_start(&g_usb_shhub_ctrl_mess[ptr->ip]);
     if (USB_QOVR == qerr)
     {
@@ -2332,13 +2405,13 @@ static uint16_t usb_hhub_port_clr_feature (usb_utr_t *ptr, uint16_t hubaddr, uin
     }
 
     return USB_OK;
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 }
 /******************************************************************************
  End of function usb_hhub_port_clr_feature
  ******************************************************************************/
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)    /* Non-OS */
 /******************************************************************************
  Function Name   : usb_hhub_request_result
  Description     : Hub Request Result Check
@@ -2383,8 +2456,8 @@ static uint16_t usb_hhub_request_result (uint16_t errcheck)
  ******************************************************************************/
 static void usb_hhub_trans_complete (usb_utr_t *mess, uint16_t data1, uint16_t data2)
 {
-#if (BSP_CFG_RTOS_USED == 1)
-    usb_er_t err;
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+    rtos_err_t ret;
     uint16_t pipenum, hubaddr;
 
     pipenum = mess->keyword;
@@ -2395,13 +2468,13 @@ static void usb_hhub_trans_complete (usb_utr_t *mess, uint16_t data1, uint16_t d
     mess->msginfo = USB_MSG_HUB_SUBMITRESULT;
 
     /** Send message **/
-    err = USB_SND_MSG(USB_HUB_MBX, (usb_msg_t *)mess);
-    if (USB_OK != err)
+    ret = rtos_send_mailbox (&g_rtos_usb_hub_mbx_id, (void *)mess);
+    if (RTOS_SUCCESS != ret)
     {
         /** Send Message failure **/
         USB_PRINTF1("### HUB snd_msg error (%ld)\n", err);
     }
-#else /* (BSP_CFG_RTOS_USED == 1) */
+#else /* (BSP_CFG_RTOS_USED != 0) */
     usb_er_t err;
     uint16_t pipenum, hubaddr;
     usb_utr_t *ptr;
@@ -2465,13 +2538,13 @@ static void usb_hhub_trans_complete (usb_utr_t *mess, uint16_t data1, uint16_t d
             break;
         }
     }
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 }
 /******************************************************************************
  End of function usb_hhub_trans_complete
  ******************************************************************************/
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)    /* Non-OS */
 /******************************************************************************
  Function Name   : usb_hhub_class_request_complete
  Description     : Hub class check result
@@ -2645,7 +2718,7 @@ static uint16_t usb_hhub_pipe_info (usb_utr_t *ptr, uint8_t *table, uint16_t spe
  End of function usb_hhub_pipe_info
  ******************************************************************************/
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)    /* Non-OS */
 /******************************************************************************
  Function Name   : usb_hhub_check_request
  Description     : Class check request
@@ -2807,7 +2880,7 @@ static uint16_t usb_hhub_chk_interface (uint16_t **table, uint16_t spec)
  ******************************************************************************/
 static void usb_hhub_new_connect (usb_utr_t *ptr, uint16_t hubaddr, uint16_t portnum, usb_clsinfo_t *mess)
 {
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
     uint16_t devaddr;
     uint16_t result;
 
@@ -2839,7 +2912,7 @@ static void usb_hhub_new_connect (usb_utr_t *ptr, uint16_t hubaddr, uint16_t por
     {
         USB_PRINTF0("### device count over !\n");
     }
-#else /* (BSP_CFG_RTOS_USED == 1) */
+#else /* (BSP_CFG_RTOS_USED != 0) */
     uint16_t devaddr;
 
     hubaddr = g_usb_shhub_hub_addr[ptr->ip];
@@ -2860,7 +2933,7 @@ static void usb_hhub_new_connect (usb_utr_t *ptr, uint16_t hubaddr, uint16_t por
     {
         USB_PRINTF0("### device count over !\n");
     }
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 }
 /******************************************************************************
  End of function usb_hhub_new_connect
@@ -2998,11 +3071,11 @@ static void usb_hhub_selective_detach (usb_utr_t *ptr, uint16_t devaddr)
  ******************************************************************************/
 uint16_t usb_hhub_get_string_descriptor1 (usb_utr_t *ptr, uint16_t devaddr, uint16_t index, usb_cb_t complete)
 {
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
     usb_hstd_get_string_desc(ptr, devaddr, (uint16_t) 0);
-#else /* (BSP_CFG_RTOS_USED == 1) */
+#else /* (BSP_CFG_RTOS_USED != 0) */
     usb_hstd_get_string_desc(ptr, devaddr, (uint16_t) 0, complete);
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
     return USB_OK;
 }
@@ -3021,18 +3094,18 @@ uint16_t usb_hhub_get_string_descriptor1 (usb_utr_t *ptr, uint16_t devaddr, uint
  ******************************************************************************/
 uint16_t usb_hhub_get_string_descriptor2 (usb_utr_t *ptr, uint16_t devaddr, uint16_t index, usb_cb_t complete)
 {
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
     usb_hstd_get_string_desc(ptr, devaddr, index);
-#else /* (BSP_CFG_RTOS_USED == 1) */
+#else /* (BSP_CFG_RTOS_USED != 0) */
     usb_hstd_get_string_desc(ptr, devaddr, index, complete);
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
     return USB_OK;
 }
 /******************************************************************************
  End of function usb_hhub_get_string_descriptor2
  ******************************************************************************/
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)    /* Non-OS */
 /******************************************************************************
  Function Name   : usb_hhub_get_string_descriptor1check
  Description     : Get String descriptor Check
@@ -3175,7 +3248,7 @@ static uint16_t usb_hhub_get_cnn_devaddr (usb_utr_t *ptr, uint16_t hubaddr, uint
  End of function usb_hhub_get_cnn_devaddr
  ******************************************************************************/
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)    /* Non-OS */
 /******************************************************************************
  Function Name   : usb_hhub_specified_path
  Description     : Next Process Selector

@@ -14,7 +14,7 @@
 * following link:
 * http://www.renesas.com/disclaimer 
 *
-* Copyright (C) 2018 Renesas Electronics Corporation. All rights reserved.    
+* Copyright (C) 2017(2018) Renesas Electronics Corporation. All rights reserved.    
 **********************************************************************************************************************/
 /**********************************************************************************************************************
 * System Name  : SDHI Driver
@@ -33,12 +33,15 @@
 *              : 31.07.2017 2.00    SDHI FIT module separated into hardware low level layer and middleware layer.
 *              :                    Changed prefix from SDHI to SDC_SD.
 *              : 29.06.2018 2.02    Corresponded to SD Specifications Part1 Physical Layer Simplified Specification.
+*              : 10.02.2020 3.00    Added comment "WAIT_LOOP".
+*                                   Fixed function names and return values.
 **********************************************************************************************************************/
 
 /**********************************************************************************************************************
 Includes <System Includes> , "Project Includes"
 **********************************************************************************************************************/
 #include "r_sdc_sd_rx_if.h"
+#include "r_sdhi_rx_if.h"
 #include ".\src\r_sdc_sd_rx_private.h"
 
 /**********************************************************************************************************************
@@ -52,12 +55,12 @@ Typedef definitions
 /**********************************************************************************************************************
 Private global variables and functions
 **********************************************************************************************************************/
-static sdc_sd_status_t r_sdc_sd_callback0(uint32_t sdsts1, uint32_t sdsts2);
-static sdc_sd_status_t r_sdc_sd_dtc_callback0(void *);
-static sdc_sd_status_t r_sdc_sdio_callback0(uint32_t sdiosts);
-static sdc_sd_status_t r_sdc_sd_callback1(uint32_t sdsts1, uint32_t sdsts2);
-static sdc_sd_status_t r_sdc_sd_dtc_callback1(void *);
-static sdc_sd_status_t r_sdc_sdio_callback1(uint32_t sdiosts);
+static sdhi_status_t r_sdc_sd_callback0(uint32_t sdsts1, uint32_t sdsts2);
+static sdhi_status_t r_sdc_sd_dtc_callback0(void *);
+static sdhi_status_t r_sdc_sdio_callback0(uint32_t sdiosts);
+static sdhi_status_t r_sdc_sd_callback1(uint32_t sdsts1, uint32_t sdsts2);
+static sdhi_status_t r_sdc_sd_dtc_callback1(void *);
+static sdhi_status_t r_sdc_sdio_callback1(uint32_t sdiosts);
 
 sdc_sd_hndl_t * g_sdc_sd_handle[SDC_SD_CFG_CARD_NUM];
 uint32_t g_sdc_sd_int_dmacdtcflg[SDC_SD_CFG_CARD_NUM];
@@ -82,6 +85,7 @@ sdc_sd_status_t r_sdc_sd_int_wait(uint32_t card_no, uint32_t time)
         return SDC_SD_ERR;
     }
 
+    /* WAIT_LOOP */
     while (1)
     {
         /* Get an interrupt generation. */
@@ -124,6 +128,7 @@ sdc_sd_status_t r_sdc_sd_int_mem_wait(uint32_t card_no, uint32_t time)
         return SDC_SD_ERR;
     }
 
+    /* WAIT_LOOP */
     while (1)
     {
         /* Get an interrupt generation. */
@@ -167,6 +172,7 @@ sdc_sd_status_t r_sdc_sd_int_io_wait(uint32_t card_no, uint32_t time, uint32_t f
         return SDC_SD_ERR;
     }
 
+    /* WAIT_LOOP */
     while (1)
     {
         /* Get an interrupt generation. */
@@ -209,6 +215,7 @@ sdc_sd_status_t r_sdc_sd_int_err_mem_wait(uint32_t card_no, uint32_t time)
         return SDC_SD_ERR;
     }
 
+    /* WAIT_LOOP */
     while (1)
     {
         /* Get an interrupt generation. */
@@ -252,6 +259,7 @@ sdc_sd_status_t r_sdc_sd_int_err_io_wait(uint32_t card_no, uint32_t time, uint32
         return SDC_SD_ERR;
     }
 
+    /* WAIT_LOOP */
     while (1)
     {
         /* Get an interrupt generation. */
@@ -292,6 +300,7 @@ sdc_sd_status_t r_sdc_sd_wait(uint32_t card_no, uint32_t time)
         return SDC_SD_ERR;
     }
 
+    /* WAIT_LOOP */
     while (1)
     {
         /* Timeout? */
@@ -421,12 +430,12 @@ sdc_sd_status_t r_sdc_sd_set_int_callback(uint32_t card_no, uint32_t enable)
 * Description  : Executes the callback function of card access interrupt.
 * Arguments    : uint32_t           sdsts1              ;   SDSTS1 register value
 *              : uint32_t           sdsts2              ;   SDSTS2 register value
-* Return Value : SDC_SD_SUCCESS                         ;   Successful operation
-*              : SDC_SD_ERR                             ;   Failed operation
+* Return Value : SDHI_SUCCESS                           ;   Successful operation
+*              : SDHI_ERR                               ;   Failed operation
 *----------------------------------------------------------------------------------------------------------------------
 * Notes        : For device no 0.
 **********************************************************************************************************************/
-static sdc_sd_status_t r_sdc_sd_callback0(uint32_t sdsts1, uint32_t sdsts2)
+static sdhi_status_t r_sdc_sd_callback0(uint32_t sdsts1, uint32_t sdsts2)
 {
     sdc_sd_hndl_t   * p_hndl = 0;
     int32_t           cd = 0;
@@ -436,7 +445,7 @@ static sdc_sd_status_t r_sdc_sd_callback0(uint32_t sdsts1, uint32_t sdsts2)
 #if (BSP_CFG_PARAM_CHECKING_ENABLE)
     if (0 == p_hndl)
     {
-        return SDC_SD_ERR;
+        return SDHI_ERR;
     }
 #endif /* BSP_CFG_PARAM_CHECKING_ENABLE */
 
@@ -469,7 +478,7 @@ static sdc_sd_status_t r_sdc_sd_callback0(uint32_t sdsts1, uint32_t sdsts2)
         }
     }
 
-    return SDC_SD_SUCCESS;
+    return SDHI_SUCCESS;
 } /* End of function r_sdc_sd_callback0() */
 
 /**********************************************************************************************************************
@@ -478,15 +487,15 @@ static sdc_sd_status_t r_sdc_sd_callback0(uint32_t sdsts1, uint32_t sdsts2)
 * Description  : Executes the callback function of SD buffer access interrupt.
 * Arguments    : uint32_t           sdsts1              ;   SDSTS1 register value
 *              : uint32_t           sdsts2              ;   SDSTS2 register value
-* Return Value : SDC_SD_SUCCESS                         ;   Successful operation
+* Return Value : SDHI_SUCCESS                           ;   Successful operation
 *----------------------------------------------------------------------------------------------------------------------
 * Notes        : For device no 0.
 **********************************************************************************************************************/
-static sdc_sd_status_t r_sdc_sd_dtc_callback0(void * vect)
+static sdhi_status_t r_sdc_sd_dtc_callback0(void * vect)
 {
     R_SDC_SD_SetDmacDtcTransFlg(SDC_SD_CARD_NO0, SDC_SD_SET_TRANS_STOP);  /* Card No. 0 */
 
-    return SDC_SD_SUCCESS;
+    return SDHI_SUCCESS;
 } /* End of function r_sdc_sd_dtc_callback0() */
 
 /**********************************************************************************************************************
@@ -494,12 +503,12 @@ static sdc_sd_status_t r_sdc_sd_dtc_callback0(void * vect)
 * Function Name: r_sdc_sdio_callback0
 * Description  : Executes the callback function of SDIO interrupt.
 * Arguments    : uint32_t           sdiosts             ;   SDIOSTS register value.
-* Return Value : SDC_SD_SUCCESS                         ;   Successful operation
-*              : SDC_SD_ERR                             ;   Failed operation
+* Return Value : SDHI_SUCCESS                           ;   Successful operation
+*              : SDHI_ERR                               ;   Failed operation
 *----------------------------------------------------------------------------------------------------------------------
 * Notes        : For device no 0.
 **********************************************************************************************************************/
-static sdc_sd_status_t r_sdc_sdio_callback0(uint32_t sdiosts)
+static sdhi_status_t r_sdc_sdio_callback0(uint32_t sdiosts)
 {
     sdc_sd_hndl_t   * p_hndl = 0;
 
@@ -508,7 +517,7 @@ static sdc_sd_status_t r_sdc_sdio_callback0(uint32_t sdiosts)
 #if (BSP_CFG_PARAM_CHECKING_ENABLE)
     if (0 == p_hndl)
     {
-        return SDC_SD_ERR;
+        return SDHI_ERR;
     }
 #endif /* BSP_CFG_PARAM_CHECKING_ENABLE */
 
@@ -522,7 +531,7 @@ static sdc_sd_status_t r_sdc_sdio_callback0(uint32_t sdiosts)
     }
 #endif /* SDC_SD_CFG_DRIVER_MODE & SDC_SD_MODE_IO */
 
-    return SDC_SD_SUCCESS;
+    return SDHI_SUCCESS;
 } /* End of function r_sdc_sdio_callback0() */
 
 /**********************************************************************************************************************
@@ -531,12 +540,12 @@ static sdc_sd_status_t r_sdc_sdio_callback0(uint32_t sdiosts)
 * Description  : Executes the callback function of card access interrupt.
 * Arguments    : uint32_t           sdsts1              ;   SDSTS1 register value
 *              : uint32_t           sdsts2              ;   SDSTS2 register value
-* Return Value : SDC_SD_SUCCESS                         ;   Successful operation
-*              : SDC_SD_ERR                             ;   Failed operation
+* Return Value : SDHI_SUCCESS                           ;   Successful operation
+*              : SDHI_ERR                               ;   Failed operation
 *----------------------------------------------------------------------------------------------------------------------
 * Notes        : For device no 1.
 **********************************************************************************************************************/
-static sdc_sd_status_t r_sdc_sd_callback1(uint32_t sdsts1, uint32_t sdsts2)
+static sdhi_status_t r_sdc_sd_callback1(uint32_t sdsts1, uint32_t sdsts2)
 {
     sdc_sd_hndl_t   * p_hndl = 0;
     int32_t           cd = 0;
@@ -546,7 +555,7 @@ static sdc_sd_status_t r_sdc_sd_callback1(uint32_t sdsts1, uint32_t sdsts2)
 #if (BSP_CFG_PARAM_CHECKING_ENABLE)
     if (0 == p_hndl)
     {
-        return SDC_SD_ERR;
+        return SDHI_ERR;
     }
 #endif /* BSP_CFG_PARAM_CHECKING_ENABLE */
 
@@ -579,7 +588,7 @@ static sdc_sd_status_t r_sdc_sd_callback1(uint32_t sdsts1, uint32_t sdsts2)
         }
     }
 
-    return SDC_SD_SUCCESS;
+    return SDHI_SUCCESS;
 } /* End of function r_sdc_sd_callback1() */
 
 /**********************************************************************************************************************
@@ -588,15 +597,15 @@ static sdc_sd_status_t r_sdc_sd_callback1(uint32_t sdsts1, uint32_t sdsts2)
 * Description  : Executes the callback function of SD buffer access interrupt.
 * Arguments    : uint32_t           sdsts1              ;   SDSTS1 register value
 *              : uint32_t           sdsts2              ;   SDSTS2 register value
-* Return Value : SDC_SD_SUCCESS                         ;   Successful operation
+* Return Value : SDHI_SUCCESS                           ;   Successful operation
 *----------------------------------------------------------------------------------------------------------------------
 * Notes        : For device no 1.
 **********************************************************************************************************************/
-static sdc_sd_status_t r_sdc_sd_dtc_callback1(void * vect)
+static sdhi_status_t r_sdc_sd_dtc_callback1(void * vect)
 {
     R_SDC_SD_SetDmacDtcTransFlg(SDC_SD_CARD_NO1, SDC_SD_SET_TRANS_STOP);  /* Card No. 1 */
 
-    return SDC_SD_SUCCESS;
+    return SDHI_SUCCESS;
 } /* End of function r_sdc_sd_dtc_callback1() */
 
 /**********************************************************************************************************************
@@ -604,12 +613,12 @@ static sdc_sd_status_t r_sdc_sd_dtc_callback1(void * vect)
 * Function Name: r_sdc_sdio_callback1
 * Description  : Executes the callback function of SDIO interrupt.
 * Arguments    : uint32_t           sdiosts             ;   SDIOSTS register value.
-* Return Value : SDC_SD_SUCCESS                         ;   Successful operation
-*              : SDC_SD_ERR                             ;   Failed operation
+* Return Value : SDHI_SUCCESS                           ;   Successful operation
+*              : SDHI_ERR                               ;   Failed operation
 *----------------------------------------------------------------------------------------------------------------------
 * Notes        : For device no 1.
 **********************************************************************************************************************/
-static sdc_sd_status_t r_sdc_sdio_callback1(uint32_t sdiosts)
+static sdhi_status_t r_sdc_sdio_callback1(uint32_t sdiosts)
 {
     sdc_sd_hndl_t   * p_hndl = 0;
 
@@ -618,7 +627,7 @@ static sdc_sd_status_t r_sdc_sdio_callback1(uint32_t sdiosts)
 #if (BSP_CFG_PARAM_CHECKING_ENABLE)
     if (0 == p_hndl)
     {
-        return SDC_SD_ERR;
+        return SDHI_ERR;
     }
 #endif /* BSP_CFG_PARAM_CHECKING_ENABLE */
 
@@ -632,7 +641,7 @@ static sdc_sd_status_t r_sdc_sdio_callback1(uint32_t sdiosts)
     }
 #endif /* SDC_SD_CFG_DRIVER_MODE & SDC_SD_MODE_IO */
 
-    return SDC_SD_SUCCESS;
+    return SDHI_SUCCESS;
 } /* End of function r_sdc_sdio_callback1() */
 
 /**********************************************************************************************************************

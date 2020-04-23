@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2014(2018) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2014(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_typedef.h
@@ -29,6 +29,7 @@
  *         : 30.09.2016 1.20 RX65N/RX651 is added.
  *         : 30.09.2017 1.22 Move Typedef from r_usb_basic_if.h
  *         : 31.03.2018 1.23 Supporting Smart Configurator
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 #ifndef R_USB_TYPEDEF_H
@@ -39,15 +40,19 @@ Includes <System Includes>
 ******************************************************************************/
 #include <stdint.h>
 #include "r_usb_basic_if.h"
-
+#if (BSP_CFG_RTOS_USED == 4)         /* Renesas RI600V4 & RI600PX */
+#include "itron.h"
+#endif /* (BSP_CFG_RTOS_USED == 4) */
 /******************************************************************************
  Typedef definitions
  ******************************************************************************/
+#if (BSP_CFG_RTOS_USED != 4)         /* Excluding Renesas RI600V4 & RI600PX */
 typedef void*   VP;         /* Pointer to variable      */
 typedef long    ER;         /* Error code               */
 typedef short   ID;         /* Object ID (xxxid)        */
 typedef long    TMO;        /* Time out                 */
 typedef long    VP_INT;     /* Integer data             */
+#endif /* (BSP_CFG_RTOS_USED != 4) */
 
 /*----------- msghead -----------*/
 typedef struct
@@ -61,6 +66,18 @@ typedef ID              usb_id_t;
 typedef TMO             usb_tm_t;
 typedef VP              usb_mh_t;
 typedef VP_INT          usb_vp_int_t;
+
+enum e_driver_type
+{
+    USB_TYPE_HCD = 0x10,
+    USB_TYPE_MGR,
+    USB_TYPE_HUB,
+    USB_TYPE_CLS,
+    USB_TYPE_HCD_SUB,
+    USB_TYPE_HCD_SUB_ADDR,
+    USB_TYPE_PCD,
+    USB_TYPE_PCD_SUB,
+};
 
 #if defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX71M)
 typedef struct st_usba R_BSP_VOLATILE_EVENACCESS * usb_regadr1_t;
@@ -105,10 +122,10 @@ typedef struct usb_utr
     uint8_t     errcnt;         /* Error count */
     uint8_t     segment;        /* Last flag */
     void        *p_usr_data;
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)    /* Use RTOS */
     uint16_t    setup_data[5];  /* Save setup for Request */
-    usb_hdl_t   cur_task_hdl;   /* Task Handle */
-#endif /* BSP_CFG_RTOS_USED == 1 */
+    rtos_task_id_t   task_id;   /* Task Handle */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 } usb_message_t;
 
 typedef struct st_usb usb_stnbyint_t;
@@ -167,7 +184,7 @@ typedef struct usb_ctrl_trans
     uint16_t    address;            /* Device address setting */
 } usb_ctrl_trans_t;
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
 typedef struct
 {
     uint16_t    type;
@@ -177,17 +194,17 @@ typedef struct
 
 typedef struct
 {
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
     uint16_t    type;
     uint16_t    status;
     uint16_t    ip;
     uint16_t    fifo_type;
 
-#else /* (BSP_CFG_RTOS_USED == 1) */
+#else /* (BSP_CFG_RTOS_USED != 0) */
     usb_int_info_t  buf[USB_INT_BUFSIZE];   /* Interrupt Info */
     uint8_t         wp;             /* Write pointer */
     uint8_t         rp;             /* Read pointer */
-#endif /*(BSP_CFG_RTOS_USED == 1)*/
+#endif /*(BSP_CFG_RTOS_USED != 0)*/
 } usb_int_t;
 
 typedef struct
@@ -198,30 +215,29 @@ typedef struct
 
 typedef struct
 {
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
     uint16_t    type;
     uint16_t    status;
     uint16_t    ip;
     uint16_t    fifo_type;
-#else /* (BSP_CFG_RTOS_USED == 1) */
+#else /* (BSP_CFG_RTOS_USED != 0) */
     usb_fifo_type_t buf[USB_INT_BUFSIZE];   /* Complete DMA Info */
     uint8_t         wp;             /* Write pointer */
     uint8_t         rp;             /* Read pointer */
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 } usb_dma_int_t;
 
 typedef struct usb_event
 {
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
     usb_ctrl_t  ctrl;       /* Control Information */
     uint8_t     code;
-
-#else /* (BSP_CFG_RTOS_USED == 1) */
+#else /* (BSP_CFG_RTOS_USED != 0) */
     uint8_t         write_pointer;       /* Write pointer */
     uint8_t         read_pointer;        /* Read pointer */
     usb_status_t    code[USB_EVENT_MAX]; /* Event code */
     usb_ctrl_t      ctrl[USB_EVENT_MAX]; /* Control Information */
-#endif /*(BSP_CFG_RTOS_USED == 1)*/
+#endif /*(BSP_CFG_RTOS_USED != 0)*/
 } usb_event_t;
 
 typedef struct usb_pipe_table
@@ -245,3 +261,7 @@ typedef struct usb_pipe_reg
     uint16_t    pipe_peri;
 } usb_pipe_table_reg_t;
 #endif /* R_USB_TYPEDEF_H */
+
+/******************************************************************************
+ End  Of File
+ ******************************************************************************/

@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2014(2018) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2014(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_hinthandler_usbip1.c
@@ -27,6 +27,7 @@
  *         : 30.09.2015 1.11 RX63N/RX631 is added.
  *         : 30.09.2016 1.20 RX65N/RX651 is added.
  *         : 31.03.2018 1.23 Supporting Smart Configurator
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 /******************************************************************************
@@ -35,6 +36,11 @@
 #include "r_usb_basic_if.h"
 #include "r_usb_typedef.h"
 #include "r_usb_extern.h"
+
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+#include "r_rtos_abstract.h"
+#include "r_usb_cstd_rtos.h"
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
 #if USB_NUM_USBIP == 2
@@ -57,10 +63,17 @@
 void usb2_hstd_usb_handler(void)
 {
     usb_utr_t *ptr;
-    usb_er_t err;
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+    rtos_err_t ret;
 
     /* Initial pointer */
-    ptr = &g_usb_cstd_int_msg[1][g_usb_cstd_int_msg_cnt[1]];
+    ret = rtos_get_fixed_memory_isr(&g_rtos_usb_mpf_id, (void **)&ptr);
+    if (RTOS_ERROR == ret)
+    {
+        return; /* Error */
+    }
+    ptr->msginfo = USB_MSG_HCD_INT;
+
     ptr->ip = USB_IP1;
     ptr->ipp = usb_hstd_get_usb_ip_adr(ptr->ip);
 
@@ -69,11 +82,21 @@ void usb2_hstd_usb_handler(void)
     usb_hstd_interrupt_handler(ptr);
     ptr->msghead = (usb_mh_t)USB_NULL;
     /* Send message */
-    err = USB_ISND_MSG(USB_HCD_MBX, (usb_msg_t*)ptr);
-    if (err != USB_OK)
-    {
-        /*USB_PRINTF1("### lib_UsbHandler DEF2 isnd_msg error (%ld)\n", err);*/
-    }
+    rtos_send_mailbox_isr (&g_rtos_usb_hcd_mbx_id, (void *)ptr);
+
+#else /* (BSP_CFG_RTOS_USED != 0) */
+    /* Initial pointer */
+    ptr = &g_usb_cstd_int_msg[1][g_usb_cstd_int_msg_cnt[1]];
+
+    ptr->ip = USB_IP1;
+    ptr->ipp = usb_hstd_get_usb_ip_adr(ptr->ip);
+
+    /* Host Function */
+    /* Host Interrupt handler */
+    usb_hstd_interrupt_handler(ptr);
+    ptr->msghead = (usb_mh_t)USB_NULL;
+    /* Send message */
+    USB_ISND_MSG(USB_HCD_MBX, (usb_msg_t*)ptr);
 
     /* Renewal Message count  */
     g_usb_cstd_int_msg_cnt[1]++;
@@ -81,6 +104,8 @@ void usb2_hstd_usb_handler(void)
     {
         g_usb_cstd_int_msg_cnt[1] = 0;
     }
+
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 }
 
 #endif  /* #if USB_NUM_USBIP == 2 */

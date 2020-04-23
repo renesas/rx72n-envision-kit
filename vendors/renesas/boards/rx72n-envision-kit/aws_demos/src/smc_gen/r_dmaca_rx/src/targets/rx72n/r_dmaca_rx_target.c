@@ -31,7 +31,7 @@
 *******************************************************************************/
 /*******************************************************************************
 * History      : DD.MM.YYYY Version  Description
-*              : 15.08.2019 1.00     First Release for RX72M.
+*              : 30.12.2019 1.00     First Release for RX72N.
 *******************************************************************************/
 
 /*******************************************************************************
@@ -79,6 +79,7 @@ volatile uint8_t R_BSP_EVENACCESS_SFR *g_icu_dmrsr[] =
 {
     /* Initialize Array of address of DMRSRm */
     &(ICU.DMRSR0), &(ICU.DMRSR1), &(ICU.DMRSR2), &(ICU.DMRSR3),
+
     /* Initialize Array of address of DMRSRm */
     &(ICU.DMRSR4), &(ICU.DMRSR5), &(ICU.DMRSR6), &(ICU.DMRSR7)
 };
@@ -115,13 +116,13 @@ bool r_dmaca_channel_valid_check(uint8_t channel)
         {
             /* The channel number is valid. */
             ret = true;
-        break;
+            break;
         }
         default:
         {
             /* The channel number is invalid. */
             ret = false;
-        break;
+            break;
         }
     }
 
@@ -145,6 +146,7 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void r_dmaca_intdmac0i_isr(void)
 {
     /* If the pointer to function is not 'NULL' */
     if (((uint32_t)NULL != (uint32_t)g_pdmaci_handlers[DMACA_CH0]) &&
+
        /* If the pointer to function is not 'FIT_NO_FUNC' */
        ((uint32_t)FIT_NO_FUNC != (uint32_t)g_pdmaci_handlers[DMACA_CH0]))
     {
@@ -176,6 +178,7 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void r_dmaca_intdmac1i_isr(void)
 {
     /* If the pointer to function is not 'NULL' */
     if (((uint32_t)NULL != (uint32_t)g_pdmaci_handlers[DMACA_CH1]) &&
+
        /* If the pointer to function is not 'FIT_NO_FUNC' */
        ((uint32_t)FIT_NO_FUNC != (uint32_t)g_pdmaci_handlers[DMACA_CH1]))
     {
@@ -207,6 +210,7 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void r_dmaca_intdmac2i_isr(void)
 {
     /* If the pointer to function is not 'NULL' */
     if (((uint32_t)NULL != (uint32_t)g_pdmaci_handlers[DMACA_CH2]) &&
+
        /* If the pointer to function is not 'FIT_NO_FUNC' */
        ((uint32_t)FIT_NO_FUNC != (uint32_t)g_pdmaci_handlers[DMACA_CH2]))
     {
@@ -238,6 +242,7 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void r_dmaca_intdmac3i_isr(void)
 {
     /* If the pointer to function is not 'NULL' */
     if (((uint32_t)NULL != (uint32_t)g_pdmaci_handlers[DMACA_CH3]) &&
+
        /* If the pointer to function is not 'FIT_NO_FUNC' */
        ((uint32_t)FIT_NO_FUNC != (uint32_t)g_pdmaci_handlers[DMACA_CH3]))
     {
@@ -276,6 +281,7 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void r_dmaca_intdmac74i_isr(void)
     {
         /* If the pointer to function is not 'NULL' */
         if (((uint32_t)NULL != (uint32_t)g_pdmaci_handlers[DMACA_CH4]) &&
+
            /* If the pointer to function is not 'FIT_NO_FUNC' */
            ((uint32_t)FIT_NO_FUNC != (uint32_t)g_pdmaci_handlers[DMACA_CH4]))
         {
@@ -292,6 +298,7 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void r_dmaca_intdmac74i_isr(void)
     {
         /* If the pointer to function is not 'NULL' */
         if (((uint32_t)NULL != (uint32_t)g_pdmaci_handlers[DMACA_CH5]) &&
+
            /* If the pointer to function is not 'FIT_NO_FUNC' */
            ((uint32_t)FIT_NO_FUNC != (uint32_t)g_pdmaci_handlers[DMACA_CH5]))
         {
@@ -308,6 +315,7 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void r_dmaca_intdmac74i_isr(void)
     {
         /* If the pointer to function is not 'NULL' */
         if (((uint32_t)NULL != (uint32_t)g_pdmaci_handlers[DMACA_CH6]) &&
+
            /* If the pointer to function is not 'FIT_NO_FUNC' */
            ((uint32_t)FIT_NO_FUNC != (uint32_t)g_pdmaci_handlers[DMACA_CH6]))
         {
@@ -324,6 +332,7 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void r_dmaca_intdmac74i_isr(void)
     {
         /* If the pointer to function is not 'NULL' */
         if (((uint32_t)NULL != (uint32_t)g_pdmaci_handlers[DMACA_CH7]) &&
+
            /* If the pointer to function is not 'FIT_NO_FUNC' */
            ((uint32_t)FIT_NO_FUNC != (uint32_t)g_pdmaci_handlers[DMACA_CH7]))
         {
@@ -366,7 +375,7 @@ dmaca_return_t r_dmaca_int_disable(uint8_t channel)
 
             /* Clear the DMAC0I priority level. */
             IPR(DMAC, DMAC0I) = 0;
-        break;
+            break;
         }
         case DMACA_CH1:
         {
@@ -375,7 +384,7 @@ dmaca_return_t r_dmaca_int_disable(uint8_t channel)
 
             /* Clear the DMAC1I priority level. */
             IPR(DMAC, DMAC1I) = 0;
-        break;
+            break;
         }
         case DMACA_CH2:
         {
@@ -384,7 +393,7 @@ dmaca_return_t r_dmaca_int_disable(uint8_t channel)
 
             /* Clear the DMAC2I priority level. */
             IPR(DMAC, DMAC2I) = 0;
-        break;
+            break;
         }
         case DMACA_CH3:
         {
@@ -393,7 +402,7 @@ dmaca_return_t r_dmaca_int_disable(uint8_t channel)
 
             /* Clear the DMAC3I priority level. */
             IPR(DMAC, DMAC3I) = 0;
-        break;
+            break;
         }
         case DMACA_CH4:
         {
@@ -406,7 +415,7 @@ dmaca_return_t r_dmaca_int_disable(uint8_t channel)
                 /* Clear the DMAC74I priority level. */
                 IPR(DMAC, DMAC74I) = 0;
             }
-        break;
+            break;
         }
         case DMACA_CH5:
         {
@@ -419,7 +428,7 @@ dmaca_return_t r_dmaca_int_disable(uint8_t channel)
                 /* Clear the DMAC74I priority level. */
                 IPR(DMAC, DMAC74I) = 0;
             }
-        break;
+            break;
         }
         case DMACA_CH6:
         {
@@ -432,7 +441,7 @@ dmaca_return_t r_dmaca_int_disable(uint8_t channel)
                 /* Clear the DMAC74I priority level. */
                 IPR(DMAC, DMAC74I) = 0;
             }
-        break;
+            break;
         }
         case DMACA_CH7:
         {
@@ -445,13 +454,13 @@ dmaca_return_t r_dmaca_int_disable(uint8_t channel)
                 /* Clear the DMAC74I priority level. */
                 IPR(DMAC, DMAC74I) = 0;
             }
-        break;
+            break;
         }
         default:
         {
             /* The channel number is invalid. */
             return DMACA_ERR_INVALID_CH;
-        break;
+            break;
         }
     }
 
@@ -493,7 +502,7 @@ dmaca_return_t r_dmaca_int_enable(uint8_t channel, uint8_t priority)
 
             /* Set the DMAC0I interrupt Enable bit. */
             R_BSP_InterruptRequestEnable(VECT(DMAC,DMAC0I));
-        break;
+            break;
         }
         case DMACA_CH1:
         {
@@ -502,7 +511,7 @@ dmaca_return_t r_dmaca_int_enable(uint8_t channel, uint8_t priority)
 
             /* Set the DMAC1I interrupt Enable bit. */
             R_BSP_InterruptRequestEnable(VECT(DMAC,DMAC1I));
-        break;
+            break;
         }
         case DMACA_CH2:
         {
@@ -512,7 +521,7 @@ dmaca_return_t r_dmaca_int_enable(uint8_t channel, uint8_t priority)
 
             /* Set the DMAC2I interrupt Enable bit. */
             R_BSP_InterruptRequestEnable(VECT(DMAC,DMAC2I));
-        break;
+            break;
         }
         case DMACA_CH3:
         {
@@ -522,7 +531,7 @@ dmaca_return_t r_dmaca_int_enable(uint8_t channel, uint8_t priority)
 
             /* Set the DMAC3I interrupt Enable bit. */
             R_BSP_InterruptRequestEnable(VECT(DMAC,DMAC3I));
-        break;
+            break;
         }
         case DMACA_CH4:
         case DMACA_CH5:
@@ -539,13 +548,13 @@ dmaca_return_t r_dmaca_int_enable(uint8_t channel, uint8_t priority)
 
             /* Set the DMAC3I interrupt Enable bit. */
             R_BSP_InterruptRequestEnable(VECT(DMAC,DMAC74I));
-        break;
+            break;
         }
         default:
         {
             /* The channel number is invalid. */
             return DMACA_ERR_INVALID_CH;
-        break;
+            break;
         }
     }
 
@@ -569,11 +578,22 @@ dmaca_return_t r_dmaca_int_enable(uint8_t channel, uint8_t priority)
 *******************************************************************************/
 void r_dmaca_module_enable(void)
 {
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6)
+bsp_int_ctrl_t int_ctrl;
+#endif
     /* Enable writing to MSTP registers. */
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_CGC_SWR);
 
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6)
+    R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_DISABLE, &int_ctrl);
+#endif
+
     /* Release from module stop state. */
     MSTP(DMAC) = 0;
+
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6)
+    R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_ENABLE, &int_ctrl);
+#endif
 
     /* Disable writing to MSTP registers. */
     R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_LPC_CGC_SWR);
@@ -592,12 +612,22 @@ void r_dmaca_module_enable(void)
 *******************************************************************************/
 void r_dmaca_module_disable(void)
 {
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6)
+bsp_int_ctrl_t int_ctrl;
+#endif
     /* Enable writing to MSTP registers. */
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_CGC_SWR);
+
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6)
+    R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_DISABLE, &int_ctrl);
+#endif
 
     /* Set to module stop state. */
     MSTP(DMAC) = 1;
 
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6)
+    R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_ENABLE, &int_ctrl);
+#endif
     /* Disable writing to MSTP registers. */
     R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_LPC_CGC_SWR);
 

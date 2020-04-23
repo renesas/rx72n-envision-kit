@@ -34,6 +34,7 @@
 *         : 28.09.2018  2.30    Updated GSCE coding rules.
 *         : 20.05.2019  3.00    Added support for GNUC and ICCRX.
 *         : 15.08.2019  3.20    Fixed warnings in IAR.
+*         : 25.11.2019  3.30    Modified comment of API function to Doxygen style.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -419,30 +420,27 @@ Function definitions
 
 /***********************************************************************************************************************
 * Function Name: R_IRQ_Open
-* Description  : Initializes the IRQ registers, enables interrupts, provides handle for other API functions.
-* Arguments    : irq_number -
-*                    Number of the IRQ to be initialized
-*                trigger -
-*                    Enumerated type for trigger type: low level, rising edge, falling edge, both edges.
-*                priority -
-*                    Enumerated priority level setting for the IRQ.
-*                phandle -
-*                    Pointer to a handle for IRQ. Handle value will be set by this function.
-*                pcallback -
-*                    Pointer to function called from interrupt
-* Return Value : IRQ_SUCCESS -
-*                    Successful; IRQ initialized.
-*                IRQ_ERR_BAD_NUM -
-*                    IRQ number is invalid or unavailable.
-*                IRQ_ERR_NOT_CLOSED -
-*                    IRQ currently in operation; Perform R_IRQ_Close() first.
-*                IRQ_ERR_INVALID_PTR -
-*                    phandle pointer is NULL.
-*                IRQ_ERR_INVALID_ARG -
-*                    An invalid argument value was passed.
-*                IRQ_ERR_LOCK -
-*                    The lock could not be acquired.
-***********************************************************************************************************************/
+********************************************************************************************************************//**
+ * @brief This function initializes the associated IRQ registers, enables interrupts, and provides the handle for use
+ * with other API functions. This function must be called before calling any other API functions.
+ * @param[in] irq_number Number of the IRQ to be initialized.
+ * @param[in] trigger Enumerated type for trigger type: low level, rising edge, falling edge, both edges.
+ * @param[in] priority Enumerated priority level setting for the IRQ.
+ * @param[in] phandle Pointer to a location for handle for IRQ. Handle value will be set by this function.
+ * @param[in] pcallback Pointer to function called from interrupt.
+ * @retval IRQ_SUCCESS: Successful; IRQ initialized
+ * @retval IRQ_ERR_BAD_NUM: IRQ number is invalid or unavailable
+ * @retval IRQ_ERR_NOT_CLOSED: IRQ currently in operation; Perform R_IRQ_Close() first
+ * @retval IRQ_ERR_INVALID_PTR: phandle pointer is NULL
+ * @retval IRQ_ERR_INVALID_ARG: An invalid argument value was passed.
+ * @retval IRQ_ERR_LOCK: The lock could not be acquired.
+ * @details The Open function is responsible for preparing an IRQ for operation. After completion of the Open function
+ * the IRQ shall be enabled and ready to service interrupts. This function must be called once prior to calling any other
+ * IRQ API functions. Once successfully completed, the status of the selected IRQ will be set to "open". After that this
+ * function should not be called again for the same IRQ without first performing a "close" by calling R_IRQ_Close().
+ * @note
+ * None.
+ */
 irq_err_t   R_IRQ_Open (irq_number_t     irq_number,
                         irq_trigger_t    trigger,
                         irq_prio_t       priority,
@@ -571,29 +569,29 @@ End of function R_IRQ_Open
 
 /***********************************************************************************************************************
 * Function Name: R_IRQ_Control
-* Description  : Handles special hardware or software operations for the IRQ.
-* Arguments    : handle -
-*                    Pointer to the handle for the IRQ.
-*                cmd -
-*                    Enumerated command code:  enable filtering, disable filtering, set filter clock, set priority
-*                pcmd_data -
-*                    Pointer to the command-data structure parameter of type void that is used to reference the location
-*                    of any data specific to the command that is needed for its completion.
-* Return Value : IRQ_SUCCESS -
-*                    Command successfully completed.
-*                IRQ_ERR_BAD_NUM -
-*                    IRQ number is invalid or unavailable.
-*                IRQ_ERR_NOT_OPENED -
-*                    The IRQ has not been opened.  Perform R_IRQ_Open() first
-*                IRQ_ERR_UNKNOWN_CMD-
-*                    Control command is not recognized.
-*                IRQ_ERR_INVALID_PTR -
-*                    pcmd_data  pointer or handle pointer is NULL
-*                IRQ_ERR_INVALID_ARG -
-*                    An element of the pcmd_data structure contains an invalid value.
-*                IRQ_ERR_LOCK -
-*                    The lock could not be acquired.
-***********************************************************************************************************************/
+********************************************************************************************************************//**
+ * @brief The Control function is responsible for handling special hardware or software operations for the IRQ.
+ * @param[in] handle Handle for the IRQ.
+ * @param[in] cmd Enumerated command codes:\n
+ * IRQ_CMD_SET_PRIO	- Changes the interrupt priority level.\n
+ * IRQ_CMD_SET_TRIG - Changes the interrupt triggering mode.
+ * @param[in] pcmd_data Pointer to the command-data structure parameter of type void that is used to reference the location
+ * of any data specific to the command that is needed for its completion.
+ * @retval IRQ_SUCCESS: Command successfully completed.
+ * @retval IRQ_ERR_NOT_OPENED:	The IRQ has not been opened.  Perform R_IRQ_Open() first
+ * @retval IRQ_ERR_BAD_NUM: 	IRQ number is invalid or unavailable
+ * @retval IRQ_ERR_UNKNOWN_CMD: Control command is not recognized.
+ * @retval IRQ_ERR_INVALID_PTR: pcmd_data pointer or handle is NULL
+ * @retval IRQ_ERR_INVALID_ARG: An element of the pcmd_data structure contains an invalid value.
+ * @retval IRQ_ERR_LOCK The lock could not be acquired
+ * @details This function is responsible for handling special hardware or software operations for the IRQ . It takes
+ * an IRQ handle to identify the selected IRQ, an enumerated command value to select the operation to be performed,
+ * and a void pointer to a location that contains information or data required to complete the operation. This pointer
+ * must point to storage that has been type-cast by the caller for the particular command using the appropriate type
+ * provided in "r_irq_rx_if.h".
+ * @note
+ * None.
+ */
 irq_err_t   R_IRQ_Control(irq_handle_t  const handle,
                           irq_cmd_t     const cmd,
                           void               *pcmd_data)
@@ -712,20 +710,23 @@ irq_err_t   R_IRQ_Control(irq_handle_t  const handle,
 End of function R_IRQ_Control
 ***********************************************************************************************************************/
 
+
 /***********************************************************************************************************************
 * Function Name: R_IRQ_Close
-* Description  : Fully disables the IRQ designated by the handle.
-* Arguments    : handle -
-*                    Pointer to the handle for the IRQ.
-* Return Value : IRQ_SUCCESS -
-*                    Successful; IRQ closed.
-*                IRQ_ERR_BAD_NUM -
-*                    IRQ number is invalid or unavailable.
-*                IRQ_ERR_NOT_OPENED -
-*                    The IRQ has not been opened so closing has no effect.
-*                IRQ_ERR_INVALID_PTR -
-*                    A required pointer argument is NULL
-***********************************************************************************************************************/
+********************************************************************************************************************//**
+ * @brief Fully disables the IRQ designated by the handle.
+ * @param[in] handle Handle for the IRQ.
+ * @retval IRQ_SUCCESS: Successful; IRQ closed
+ * @retval IRQ_ERR_NOT_OPENED: The IRQ has not been opened so closing has no effect.
+ * @retval IRQ_ERR_BAD_NUM: IRQ number is invalid or unavailable.
+ * @retval IRQ_ERR_INVALID_PTR: A required pointer argument is NULL.
+ * @details This function frees the IRQ by clearing its assignment to a port, and disables the associated interrupts.
+ * The IRQ handle is modified to indicate that it is no longer in the 'open' state. The IRQ cannot be used again
+ * until it has been reopened with the R_IRQ_Open function. If this function is called for an IRQ that is not in the
+ * open state then an error code is returned.
+ * @note
+ * None.
+ */
 irq_err_t   R_IRQ_Close(irq_handle_t handle)
 {
     irq_err_t ret = IRQ_SUCCESS;
@@ -777,20 +778,20 @@ End of function R_IRQ_Close
 
 /***********************************************************************************************************************
 * Function Name: R_IRQ_ReadInput
-* Description  : Reads the current level of the pin assigned to the specified IRQ.
-* Arguments    : handle -
-*                    Handle pointer for the IRQ.
-*                plevel -
-*                    Pointer to storage for the returned value of the input level.
-* Return Value : IRQ_SUCCESS -
-*                    Operation successfully completed.
-*                IRQ_ERR_BAD_NUM -
-*                    IRQ number is invalid or unavailable.
-*                IRQ_ERR_NOT_OPENED -
-*                    The IRQ has not been opened.  Perform R_IRQ_Open() first
-*                IRQ_ERR_INVALID_PTR -
-*                    handle pointer is NULL
-***********************************************************************************************************************/
+********************************************************************************************************************//**
+ * @brief This function reads the current level of the pin assigned to the specified IRQ.
+ * @param[in] handle Handle for the IRQ.
+ * @param[in] plevel Pointer to location where the input pin state can be returned.
+ * @retval IRQ_SUCCESS: Operation successfully completed.
+ * @retval IRQ_ERR_NOT_OPENED: The IRQ has not been opened.  Perform R_IRQ_Open() first.
+ * @retval IRQ_ERR_BAD_NUM: IRQ number is invalid or unavailable.
+ * @retval IRQ_ERR_INVALID_PTR: plevel data pointer or handle is NULL.
+ * @details This function reads the current level of the pin assigned to the specified IRQ. This is a realtime read which
+ * may indicate a different value than the level that initially triggered an interrupt. One example use is for cases in
+ * which a switch has triggered an interrupt and then needs to be polled for debounce.
+ * @note
+ * None.
+ */
 irq_err_t   R_IRQ_ReadInput(irq_handle_t const handle, uint8_t *plevel)
 {
     irq_err_t ret = IRQ_SUCCESS;
@@ -822,20 +823,20 @@ End of function R_IRQ_ReadInput
 
 /***********************************************************************************************************************
 * Function Name: R_IRQ_InterruptEnable
-* Description  : Enables or disables the ICU interrupt for the specified IRQ.
-* Arguments    : handle -
-*                    Handle pointer for the IRQ.
-*                enable -
-*                    true  = enable the interrupt. false = disable interrupt.
-* Return Value : IRQ_SUCCESS -
-*                    Operation successfully completed.
-*                IRQ_ERR_BAD_NUM -
-*                    IRQ number is invalid or unavailable.
-*                IRQ_ERR_NOT_OPENED -
-*                    The IRQ has not been opened.  Perform R_IRQ_Open() first
-*                IRQ_ERR_INVALID_PTR -
-*                    handle pointer is NULL
-***********************************************************************************************************************/
+********************************************************************************************************************//**
+ * @brief This function enables or disables the ICU interrupt for the specified IRQ.
+ * @param[in] handle Handle for the IRQ.
+ * @param[in] enable true  = enable the interrupt.\n
+ * false = disable interrupt.
+ * @retval IRQ_SUCCESS: Operation successfully completed.
+ * @retval IRQ_ERR_NOT_OPENED: The IRQ has not been opened.  Perform R_IRQ_Open() first.
+ * @retval IRQ_ERR_BAD_NUM: IRQ number is invalid or unavailable.
+ * @retval IRQ_ERR_INVALID_PTR: handle is NULL.
+ * @details The function enables or disables the ICU interrupt for the IRQ specified by the handle argument. This function
+ * is potentially called frequently and is expected to execute quickly.
+ * @note
+ * None.
+ */
 irq_err_t   R_IRQ_InterruptEnable (irq_handle_t const handle, bool enable)
 {
     irq_err_t ret = IRQ_SUCCESS;
@@ -879,16 +880,17 @@ irq_err_t   R_IRQ_InterruptEnable (irq_handle_t const handle, bool enable)
 End of function R_IRQ_InterruptEnable
 ***********************************************************************************************************************/
 
+
 /***********************************************************************************************************************
 * Function Name: R_IRQ_GetVersion
-* Description : Returns the version of this module. The version number is
-* encoded where the top 2 bytes are the major version number and
-* the bottom 2 bytes are the minor version number.
-* For example, Rev 4.25 would be 0x00040019.
-* NOTE: This function is inlined using #pragma inline directive.
-* Arguments : none
-* Return Value : Version Number
-***********************************************************************************************************************/
+********************************************************************************************************************//**
+ * @brief This function returns the driver version number at runtime.
+ * @return Version number with major and minor version digits packed into a single 32-bit value.
+ * @details The function returns the version of this module. The version number is encoded such that the top 2 bytes are
+ * the major version number and the bottom 2 bytes are the minor version number.
+ * @note
+ * None.
+ */
 uint32_t R_IRQ_GetVersion(void)
 {
     uint32_t version_number = 0;

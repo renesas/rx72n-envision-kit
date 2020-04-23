@@ -22,6 +22,7 @@
 ************************************************************************************************************************
 * History : DD.MM.YYYY Version Description
 *         : 06.11.2013 2.00    First GSCE Release.
+*         : 25.11.2019 4.30    Changed for FIT+RTOS
 ***********************************************************************************************************************/
 #ifndef CMT_CONFIG_HEADER_FILE
 #define CMT_CONFIG_HEADER_FILE
@@ -31,6 +32,9 @@ Configuration Options
 ***********************************************************************************************************************/
 /* The interrupt priority level to be used for CMT interrupts. */
 #define CMT_RX_CFG_IPR         (5)
+
+/* Reserve software trace timer channel(CMT1). */
+#define _RI_TRACE_TIMER 1
 
 #endif /* CMT_CONFIG_HEADER_FILE */
 

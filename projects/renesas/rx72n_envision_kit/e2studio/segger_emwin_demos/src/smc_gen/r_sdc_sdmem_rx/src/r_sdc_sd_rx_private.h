@@ -14,7 +14,7 @@
 * following link:
 * http://www.renesas.com/disclaimer 
 *
-* Copyright (C) 2014(2015-2018) Renesas Electronics Corporation. All rights reserved.    
+* Copyright (C) 2014(2015-2019) Renesas Electronics Corporation. All rights reserved.    
 **********************************************************************************************************************/
 /**********************************************************************************************************************
 * File Name    : r_sdc_sd_rx_private.h
@@ -29,6 +29,7 @@
 *              : 31.07.2017 2.00    SDHI FIT module separated into hardware low level layer and middleware layer.
 *              :                    Changed prefix from SDHI to SDC_SD.
 *              : 29.06.2018 2.02    Corresponded to SD Specifications Part1 Physical Layer Simplified Specification.
+*              : 10.02.2020 3.00    Changed macro "SDC_SD_BIG_ENDIAN".
 **********************************************************************************************************************/
 
 #ifndef SDC_SD_RX_PRIVATE_H
@@ -55,7 +56,7 @@ Macro definitions
 #define SDC_SD_DEBUG_ERR_ID         (1)     /* sdc sd debug log error id */
 #endif /* SDC_SD_CFG_LONGQ_ENABLE */
 
-#define SDC_SD_BIG_ENDIAN           (defined(__BIG) || defined(__BIG_ENDIAN__) || defined(__RX_BIG_ENDIAN__))
+#define SDC_SD_BIG_ENDIAN           (defined(__BIG))
 
 /* ==== option ==== */
 #define SDC_SD_UNMOUNT_CARD         (0x00)

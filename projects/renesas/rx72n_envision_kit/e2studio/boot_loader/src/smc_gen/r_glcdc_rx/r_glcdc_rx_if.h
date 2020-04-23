@@ -18,7 +18,7 @@
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_glcdc_rx_if.h
- * Version      : 1.20
+ * Version      : 1.30
  * Description  : GLCDC interface header file
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
@@ -27,6 +27,7 @@
  *         : 01.02.2019 1.01     Changed Minor version to 1.01.
  *         : 04.04.2019 1.10     Added support for GNUC and ICCRX. 
  *         : 04.04.2019 1.20     Added support for RX72M.
+ *         : 20.09.2019 1.30     Added GLCDC_TCON_PIN_NON in enum e_glcdc_tcon_pin.
  ***********************************************************************************************************************/
 
 #ifndef R_GLCDC_RX_IF_H
@@ -42,7 +43,7 @@
  **********************************************************************************************************************/
 /* Version Number of API. */
 #define GLCDC_RX_VERSION_MAJOR         (1)
-#define GLCDC_RX_VERSION_MINOR         (20)
+#define GLCDC_RX_VERSION_MINOR         (30)
 
 /* Number of Gamma correction setting items  */
 #define GLCDC_GAMMA_CURVE_GAIN_ELEMENT_NUM      (16)
@@ -75,7 +76,7 @@ typedef enum e_glcdc_err
     GLCDC_ERR_INVALID_GAMMA_SETTING,       // Invalid gamma correction parameter.
     GLCDC_ERR_INVALID_UPDATE_TIMING,       // Invalid timing for register update.
     GLCDC_ERR_INVALID_CLUT_ACCESS,         // Invalid access to CLUT entry.
-    GLCDC_ERR_INVALID_BLEND_SETTING,       // Invalid blending setting.
+    GLCDC_ERR_INVALID_BLEND_SETTING        // Invalid blending setting.
 } glcdc_err_t;
 
 /** Correction Command */
@@ -84,7 +85,7 @@ typedef enum e_glcdc_correction_cmd
     GLCDC_CORRECTION_CMD_SET_ALL,          // All correction setting command.
     GLCDC_CORRECTION_CMD_BRIGHTNESS,       // Brightness setting command.
     GLCDC_CORRECTION_CMD_CONTRAST,         // Contrast setting command.
-    GLCDC_CORRECTION_CMD_GAMMA,            // Gamma setting command.
+    GLCDC_CORRECTION_CMD_GAMMA             // Gamma setting command.
 } glcdc_correction_cmd_t;
 
 /** Control Command */
@@ -94,7 +95,7 @@ typedef enum e_glcdc_control_cmd
     GLCDC_CMD_STOP_DISPLAY,                // Stop display command.
     GLCDC_CMD_SET_INTERRUPT,               // Interrupt setting command.
     GLCDC_CMD_CLR_DETECTED_STATUS,         // Detected status clear command.
-    GLCDC_CMD_CHANGE_BG_COLOR,             // Change background color in background screen.
+    GLCDC_CMD_CHANGE_BG_COLOR              // Change background color in background screen.
 } glcdc_control_cmd_t;
 
 /** Graphics frame number */
@@ -117,7 +118,7 @@ typedef enum e_glcdc_event
 {
     GLCDC_EVENT_GR1_UNDERFLOW = 1,         // Graphics plane1 underflow occurs
     GLCDC_EVENT_GR2_UNDERFLOW = 2,         // Graphics plane2 underflow occurs
-    GLCDC_EVENT_LINE_DETECTION = 3,        // Designated line is processed.
+    GLCDC_EVENT_LINE_DETECTION = 3         // Designated line is processed.
 } glcdc_event_t;
 
 /** Input format select ( Don't change this value, because this value is set to the register ) */
@@ -130,7 +131,7 @@ typedef enum e_glcdc_in_format
     GLCDC_IN_FORMAT_32BITS_ARGB8888 = 4,   // Input format ARGB8888, 32 bits.
     GLCDC_IN_FORMAT_CLUT8           = 5,   // Input format CLUT8,     8 bits.
     GLCDC_IN_FORMAT_CLUT4           = 6,   // Input format CLUT4,     4 bits.
-    GLCDC_IN_FORMAT_CLUT1           = 7,   // Input format CLUT1,     1 bits.
+    GLCDC_IN_FORMAT_CLUT1           = 7    // Input format CLUT1,     1 bits.
 } glcdc_in_format_t;
 
 /** Output format select ( Don't change this value, because this value is set to the register ) */
@@ -139,14 +140,14 @@ typedef enum e_glcdc_out_format
     GLCDC_OUT_FORMAT_24BITS_RGB888 = 0,    // Output format RGB888, 24 bits.
     GLCDC_OUT_FORMAT_18BITS_RGB666 = 1,    // Output format RGB666, 18 bits.
     GLCDC_OUT_FORMAT_16BITS_RGB565 = 2,    // Output format RGB565, 16 bits.
-    GLCDC_OUT_FORMAT_8BITS_SERIAL =3       // Output format SERIAL,  8 bits (this function is not supported).
+    GLCDC_OUT_FORMAT_8BITS_SERIAL = 3      // Output format SERIAL,  8 bits (this function is not supported).
 } glcdc_out_format_t;
 
 /** Data endian select ( Don't change this value, because this value is set to the register ) */
 typedef enum e_glcdc_endian
 {
     GLCDC_ENDIAN_LITTLE = 0,               // Little endian.
-    GLCDC_ENDIAN_BIG = 1,                  // Big endian.
+    GLCDC_ENDIAN_BIG = 1                   // Big endian.
 } glcdc_endian_t;
 
 /** RGB color order select ( Don't change this value, because this value is set to the register ) */
@@ -210,7 +211,7 @@ typedef enum e_glcdc_panel_clk_div
     GLCDC_PANEL_CLK_DIVISOR_12 = 12,       // Division Ratio 1/12.
     GLCDC_PANEL_CLK_DIVISOR_16 = 16,       // Division Ratio 1/16.
     GLCDC_PANEL_CLK_DIVISOR_24 = 24,       // Division Ratio 1/24.
-    GLCDC_PANEL_CLK_DIVISOR_32 = 32,       // Division Ratio 1/32.
+    GLCDC_PANEL_CLK_DIVISOR_32 = 32       // Division Ratio 1/32.
 } glcdc_panel_clk_div_t;
 
 /** LCD TCON output pin select */
@@ -219,7 +220,8 @@ typedef enum e_glcdc_tcon_pin
     GLCDC_TCON_PIN_0 = 0,                  // LCD_TCON0.
     GLCDC_TCON_PIN_1 = 1,                  // LCD_TCON1.
     GLCDC_TCON_PIN_2 = 2,                  // LCD_TCON2.
-    GLCDC_TCON_PIN_3 = 3                   // LCD_TCON3.
+    GLCDC_TCON_PIN_3 = 3,                  // LCD_TCON3.
+    GLCDC_TCON_PIN_NON = 4                 // LCD_TCON_PIN_NON.
 } glcdc_tcon_pin_t;
 
 /** Correction circuit sequence control select ( Don't change this value, because this value is set to the register ) */
@@ -259,14 +261,14 @@ typedef enum e_glcdc_serial_output_delay
     GLCDC_SERIAL_DELAY_0_CYCLE = 0,        // 0 cycles delay.
     GLCDC_SERIAL_DELAY_1_CYCLE = 1,        // 1 cycle delay.
     GLCDC_SERIAL_DELAY_2_CYCLE = 2,        // 2 cycles delay.
-    GLCDC_SERIAL_DELAY_3_CYCLE = 3,        // 3 cycles delay.
+    GLCDC_SERIAL_DELAY_3_CYCLE = 3        // 3 cycles delay.
 } glcdc_serial_output_delay_t;
 
 /** Serial RGB scan direction select (this function is not supported) */
 typedef enum e_glcdc_serial_scan_direction
 {
     GLCDC_SERIAL_FORWARD_SCAN = 0,         // Forward scan.
-    GLCDC_SERIAL_REVERSE_SCAN = 1,         // Reverse scan.
+    GLCDC_SERIAL_REVERSE_SCAN = 1         // Reverse scan.
 } glcdc_serial_scan_direction_t;
 
 /** Display output signal timing setting */
@@ -497,7 +499,7 @@ typedef struct st_glcdc_status
 
 /***********************************************************************************************************************
  Exported global functions (to be accessed by other files)
- ***********************************************************************************************************************/
+ **********************************************************************************************************************/
 glcdc_err_t R_GLCDC_Open(glcdc_cfg_t const * const p_cfg);
 glcdc_err_t R_GLCDC_Close(void);
 glcdc_err_t R_GLCDC_Control(glcdc_control_cmd_t cmd, void const * const p_args);

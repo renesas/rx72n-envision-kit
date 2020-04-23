@@ -14,7 +14,7 @@
 * following link:
 * http://www.renesas.com/disclaimer 
 *
-* Copyright (C) 2014(2015-2017) Renesas Electronics Corporation. All rights reserved.    
+* Copyright (C) 2014(2015-2019) Renesas Electronics Corporation. All rights reserved.    
 **********************************************************************************************************************/
 /**********************************************************************************************************************
 * System Name  : SDHI Driver
@@ -34,6 +34,7 @@
 *              : 17.07.2015 1.10    Standardized by the combo.
 *              : 31.07.2017 2.00    SDHI FIT module separated into hardware low level layer and middleware layer.
 *              :                    Changed prefix from SDHI to SDC_SD.
+*              : 10.02.2020 3.00    Added comment "WAIT_LOOP".
 **********************************************************************************************************************/
 
 /**********************************************************************************************************************
@@ -87,6 +88,7 @@ sdc_sd_status_t r_sdc_sd_software_trans(uint32_t card_no, uint8_t * p_buff, int3
 
     R_SDHI_GetBuffRegAddress(p_hndl->channel, &sd_buff_addr);
 
+    /* WAIT_LOOP */
     for (j = cnt; j > 0; j--)
     {
         /* ---- Wait for BWE/BRE interrupt. ---- */
@@ -170,6 +172,7 @@ sdc_sd_status_t r_sdc_sd_software_trans_blk(uint32_t card_no, uint8_t * p_buff, 
 
     R_SDHI_GetBuffRegAddress(p_hndl->channel, &sd_buff_addr);
 
+    /* WAIT_LOOP */
     for (j = cnt; j > 0; j--)
     {
         /* ---- Wait for BWE/BRE interrupt. ---- */
@@ -248,6 +251,7 @@ sdc_sd_status_t r_sdc_sd_dmacdtc_trans(uint32_t card_no, int32_t cnt)
         return SDC_SD_ERR;
     }
 
+    /* WAIT_LOOP */
     while (1)
     {
         /* Check timeout. */

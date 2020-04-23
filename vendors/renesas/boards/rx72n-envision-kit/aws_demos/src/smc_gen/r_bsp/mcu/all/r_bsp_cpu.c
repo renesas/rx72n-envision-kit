@@ -36,6 +36,9 @@
 *                               - R_BSP_InterruptsDisable
 *                               - R_BSP_InterruptsEnable
 *                               - R_BSP_CpuInterruptLevelWrite
+*         : 10.12.2019 3.13     Modified the following functions.
+*                               - R_BSP_RegisterProtectEnable
+*                               - R_BSP_RegisterProtectDisable
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -337,12 +340,12 @@ bool R_BSP_CpuInterruptLevelWrite (uint32_t level)
 void R_BSP_RegisterProtectEnable (bsp_reg_protect_t regs_to_protect)
 {
 #ifdef BSP_MCU_REGISTER_WRITE_PROTECTION
-    volatile uint32_t    ipl_value;
+    bsp_int_ctrl_t int_ctrl;
 
     /* Set IPL to the maximum value to disable all interrupts,
      * so the scheduler can not be scheduled in critical region.
      * Note: Please set this macro more than IPR for other FIT module interrupts. */
-    R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_DISABLE, (uint32_t *)&ipl_value);
+    R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_DISABLE, &int_ctrl);
 
     /* Is it safe to disable write access? */
     if (0 != s_protect_counters[regs_to_protect])
@@ -385,7 +388,7 @@ void R_BSP_RegisterProtectEnable (bsp_reg_protect_t regs_to_protect)
     }
 
     /* Restore the IPL. */
-    R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_ENABLE, (uint32_t *)&ipl_value);
+    R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_ENABLE, &int_ctrl);
 
 #else /* BSP_MCU_REGISTER_WRITE_PROTECTION */
     /* No registers to protect. */
@@ -415,12 +418,12 @@ void R_BSP_RegisterProtectEnable (bsp_reg_protect_t regs_to_protect)
 void R_BSP_RegisterProtectDisable (bsp_reg_protect_t regs_to_unprotect)
 {
 #ifdef BSP_MCU_REGISTER_WRITE_PROTECTION
-    volatile uint32_t    ipl_value;
+    bsp_int_ctrl_t int_ctrl;
 
     /* Set IPL to the maximum value to disable all interrupts,
      * so the scheduler can not be scheduled in critical region.
      * Note: Please set this macro more than IPR for other FIT module interrupts. */
-    R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_DISABLE, (uint32_t *)&ipl_value);
+    R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_DISABLE, &int_ctrl);
 
     /* If this is first entry then disable protection. */
     if (0 == s_protect_counters[regs_to_unprotect])
@@ -454,7 +457,7 @@ void R_BSP_RegisterProtectDisable (bsp_reg_protect_t regs_to_unprotect)
     s_protect_counters[regs_to_unprotect]++;
 
     /* Restore the IPL. */
-    R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_ENABLE, (uint32_t *)&ipl_value);
+    R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_ENABLE, &int_ctrl);
 
 #else /* BSP_MCU_REGISTER_WRITE_PROTECTION */
     /* No registers to protect. */

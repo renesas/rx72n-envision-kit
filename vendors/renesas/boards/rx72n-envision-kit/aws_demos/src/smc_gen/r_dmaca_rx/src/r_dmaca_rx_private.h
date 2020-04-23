@@ -39,6 +39,8 @@
 *         : 20.05.2019 2.00    Added support for GNUC and ICCRX.
 *         : 28.06.2019 2.10    Supported RX23W.
 *         : 15.08.2019 2.20    Supported RX72M.
+*         : 30.12.2019 2.30    Added support RX66N, RX72N.
+*                              Fixed to comply with GSCE Coding Standards Rev.6.00.
 *******************************************************************************/
 #ifndef DMACA_RX_PRIVATE_H
 #define DMACA_RX_PRIVATE_H
@@ -53,6 +55,8 @@ Includes   <System Includes>, "Project Includes"
     #include "./src/targets/rx64m/r_dmaca_rx_target.h"
 #elif defined(BSP_MCU_RX65N)
     #include "./src/targets/rx65n/r_dmaca_rx_target.h"
+#elif defined(BSP_MCU_RX66N)
+    #include "./src/targets/rx66n/r_dmaca_rx_target.h"
 #elif defined(BSP_MCU_RX66T)
     #include "./src/targets/rx66t/r_dmaca_rx_target.h"
 #elif defined(BSP_MCU_RX71M)
@@ -93,6 +97,7 @@ typedef enum e_dmaca_transfer_enable
 {
     /* Disables DMA transfer. */
     DMACA_TRANSFER_DISABLE  = (0),
+
     /* Enables DMAC transfer. */
     DMACA_TRANSFER_ENABLE    = (1)
 } dmaca_transfer_enable_t;
@@ -102,7 +107,9 @@ typedef enum e_dmaca_swreq_auto_clear
 {
     /* =(0 << 4) : SWREQ bit is cleared after DMA transfer is started by software. */
     DMACA_SOFTWARE_START_BIT_CLEAR      = (0),
+
     /* SWREQ bit is not cleared after DMA transfer is started by software. */
+
     DMACA_SOFTWARE_START_BIT_NOT_CLEAR  = (1 << 4)
 } dmaca_swreq_auto_clear_t;
 
@@ -111,6 +118,7 @@ typedef enum e_dmaca_swreq
 {
     /* DMA transfer is not requested. */
     DMACA_SOFTWARE_START_NOT_REQUESTED  = (0),
+
     /* DMA transfer is requested. */
     DMACA_SOFTWARE_START_REQUESTED      = (1)
 } dmaca_swreq_t;

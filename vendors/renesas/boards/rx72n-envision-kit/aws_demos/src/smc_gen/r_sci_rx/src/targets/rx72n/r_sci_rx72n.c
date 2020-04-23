@@ -17,11 +17,11 @@
 * Copyright (C) 2019 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 /**********************************************************************************************************************
-* File Name    : r_sci_rx72m.c
-* Description  : Functions for using SCI on the RX72M device.
+* File Name    : r_sci_rx72n.c
+* Description  : Functions for using SCI on the RX72N device.
 ***********************************************************************************************************************
 * History : DD.MM.YYYY Version Description
-*           15.08.2019 1.00    Initial Release.
+*           30.12.2019 1.00    Initial Release.
 ***********************************************************************************************************************/
 
 /*****************************************************************************
@@ -538,7 +538,7 @@ sci_err_t sci_async_cmds(sci_hdl_t const hdl,
             hdl->rom->regs->SNFR.BYTE = 0;          /* clock divided by 1 (default) */
             SCI_IR_TXI_CLEAR;
             hdl->rom->regs->SCR.BYTE |= SCI_EN_XCVR_MASK;
-        break;
+            break;
         }
 
         case (SCI_CMD_OUTPUT_BAUD_CLK):
@@ -548,7 +548,7 @@ sci_err_t sci_async_cmds(sci_hdl_t const hdl,
             hdl->rom->regs->SCR.BIT.CKE = 0x01;     /* output baud clock on SCK pin */
             SCI_IR_TXI_CLEAR;
             hdl->rom->regs->SCR.BYTE |= SCI_EN_XCVR_MASK;
-        break;
+            break;
         }
 
         case (SCI_CMD_START_BIT_EDGE):
@@ -558,13 +558,13 @@ sci_err_t sci_async_cmds(sci_hdl_t const hdl,
             hdl->rom->regs->SEMR.BIT.RXDESEL = 1;   /* detect start bit on falling edge */
             SCI_IR_TXI_CLEAR;
             hdl->rom->regs->SCR.BYTE |= SCI_EN_XCVR_MASK;
-        break;
+            break;
         }
 
     #if SCI_CFG_TEI_INCLUDED
         case (SCI_CMD_EN_TEI):  /* SCI_CMD_EN_TEI is obsolete command, but it exists only for compatibility with older version. */
         {
-        break;
+            break;
         }
     #endif
 
@@ -574,7 +574,7 @@ sci_err_t sci_async_cmds(sci_hdl_t const hdl,
             DISABLE_TXI_INT;
             R_BYTEQ_Flush(hdl->u_tx_data.que);
             ENABLE_TXI_INT;
-        break;
+            break;
         }
 
         case (SCI_CMD_RX_Q_FLUSH):
@@ -583,21 +583,21 @@ sci_err_t sci_async_cmds(sci_hdl_t const hdl,
             DISABLE_RXI_INT;
             R_BYTEQ_Flush(hdl->u_rx_data.que);
             ENABLE_RXI_INT;
-        break;
+            break;
         }
 
         case (SCI_CMD_TX_Q_BYTES_FREE):
         {
             /* Casting pointer void* to uint16_t* type is valid */
             R_BYTEQ_Unused(hdl->u_tx_data.que, (uint16_t *) p_args);
-        break;
+            break;
         }
 
         case (SCI_CMD_RX_Q_BYTES_AVAIL_TO_READ):
         {
             /* Casting pointer void* type to uint16_t* type is valid  */
             R_BYTEQ_Used(hdl->u_rx_data.que, (uint16_t *) p_args);
-        break;
+            break;
         }
 
         case (SCI_CMD_GENERATE_BREAK):
@@ -638,7 +638,7 @@ sci_err_t sci_async_cmds(sci_hdl_t const hdl,
                 SCI_IR_TXI_CLEAR;
                 hdl->rom->regs->SCR.BYTE |= SCI_EN_XCVR_MASK;
             }
-        break;
+            break;
         }
 
     #if SCI_CFG_DATA_MATCH_INCLUDED
@@ -648,14 +648,14 @@ sci_err_t sci_async_cmds(sci_hdl_t const hdl,
             hdl->rom->regs->DCCR.BIT.DPER = 0; /* Clear Match Data Parity Error Flag */
             hdl->rom->regs->DCCR.BIT.DCME = 1; /* Enable Data match function */
             hdl->rom->regs->CDR.BYTE.L = *((unsigned char *)p_args); /* Comparison data */
-        break;
+            break;
         }
     #endif
 
         default:
         {
             err = SCI_ERR_INVALID_ARG;
-        break;
+            break;
         }
     }
 
@@ -699,7 +699,7 @@ sci_err_t sci_sync_cmds(sci_hdl_t const hdl,
             {
                 err = SCI_ERR_XFER_NOT_DONE;
             }
-        break;
+            break;
         }
 
         case (SCI_CMD_XFER_LSB_FIRST):
@@ -709,7 +709,7 @@ sci_err_t sci_sync_cmds(sci_hdl_t const hdl,
             hdl->rom->regs->SCMR.BIT.SDIR = 0;
             SCI_IR_TXI_CLEAR;
             hdl->rom->regs->SCR.BYTE |= SCI_EN_XCVR_MASK;
-        break;
+            break;
         }
 
         case (SCI_CMD_XFER_MSB_FIRST):
@@ -719,7 +719,7 @@ sci_err_t sci_sync_cmds(sci_hdl_t const hdl,
             hdl->rom->regs->SCMR.BIT.SDIR = 1;
             SCI_IR_TXI_CLEAR;
             hdl->rom->regs->SCR.BYTE |= SCI_EN_XCVR_MASK;
-        break;
+            break;
         }
 
         case (SCI_CMD_INVERT_DATA):
@@ -729,7 +729,7 @@ sci_err_t sci_sync_cmds(sci_hdl_t const hdl,
             hdl->rom->regs->SCMR.BIT.SINV ^= 1;
             SCI_IR_TXI_CLEAR;
             hdl->rom->regs->SCR.BYTE |= SCI_EN_XCVR_MASK;
-        break;
+            break;
         }
 
         case (SCI_CMD_ABORT_XFER):
@@ -763,7 +763,7 @@ sci_err_t sci_sync_cmds(sci_hdl_t const hdl,
             /* Enable receive interrupt in peripheral after rcvr or will get "extra" interrupt */
             hdl->rom->regs->SCR.BYTE |= (SCI_SCR_RE_MASK | SCI_SCR_TE_MASK);
             hdl->rom->regs->SCR.BYTE |= SCI_SCR_REI_MASK;
-        break;
+            break;
         }
 
         case (SCI_CMD_CHANGE_SPI_MODE):
@@ -796,13 +796,13 @@ sci_err_t sci_sync_cmds(sci_hdl_t const hdl,
             hdl->rom->regs->SPMR.BYTE |= (*((uint8_t *)p_args));
             SCI_IR_TXI_CLEAR;
             hdl->rom->regs->SCR.BYTE |= SCI_EN_XCVR_MASK;
-        break;
+            break;
         }
 
         default:
         {
             err = SCI_ERR_INVALID_ARG;
-        break;
+            break;
         }
     }
 

@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2015(2018) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2015(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_cdataio.c
@@ -41,6 +41,7 @@
  *                           "hnvdr_write_complete"->"usb_hnvdr_write_complete"
  *         : 31.03.2018 1.23 Supporting Smart Configurator
  *         : 16.11.2018 1.24 Supporting RTOS Thread safe
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 /******************************************************************************
@@ -52,6 +53,10 @@
 #include "r_usb_extern.h"
 #include "r_usb_bitdefine.h"
 #include "r_usb_reg_access.h"
+
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+#include "r_rtos_abstract.h"
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
 #if defined(USB_CFG_HCDC_USE)
 #include "r_usb_hcdc_config.h"
@@ -133,24 +138,20 @@ static const uint8_t g_usb_pipe_peri[] =
 {
     /* OUT pipe */          /* IN pipe */
   #if defined(USB_CFG_PCDC_USE)
-    USB_CFG_PCDC_BULK_OUT,  USB_CFG_PCDC_BULK_IN,   /* USB_PCDC */
-    USB_NULL,               USB_CFG_PCDC_INT_IN,    /* USB_PCDCC */
+    USB_CFG_PCDC_BULK_OUT,  USB_CFG_PCDC_BULK_IN,       /* USB_PCDC */
+    USB_NULL,               USB_CFG_PCDC_INT_IN,        /* USB_PCDCC */
   #else   /* defined(USB_CFG_PCDC_USE) */
     USB_NULL,               USB_NULL,
     USB_NULL,               USB_NULL,
   #endif  /* defined(USB_CFG_PCDC_USE) */
 
   #if defined(USB_CFG_PHID_USE)
-    USB_CFG_PHID_INT_OUT,   USB_CFG_PHID_INT_IN,    /* USB_PHID */
+    USB_CFG_PHID_INT_OUT,   USB_CFG_PHID_INT_IN,        /* USB_PHID */
   #else   /* defined(USB_CFG_PHID_USE) */
     USB_NULL,               USB_NULL,
   #endif  /* defined(USB_CFG_PHID_USE) */
 };
 #endif  /* (USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI */
-
-#if (BSP_CFG_RTOS_USED == 1)
-usb_utr_t g_usb_cstd_int[USB_INT_BUFSIZE];  
-#endif /*(BSP_CFG_RTOS_USED == 1)*/
 
 /******************************************************************************
  Exported global variables (to be accessed by other files)
@@ -272,22 +273,22 @@ usb_er_t usb_ctrl_read (usb_ctrl_t *p_ctrl, uint8_t *buf, uint32_t size)
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
     usb_er_t err;
     usb_utr_t   *p_tran_data;
-  #if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)                /* Use RTOS */
     usb_utr_t   tran_data;
-  #endif /* BSP_CFG_RTOS_USED == 1 */
+#endif /* BSP_CFG_RTOS_USED != 0 */
 
     if (USB_HOST == g_usb_usbmode)
     {
-  #if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)                 /* Use RTOS */
         p_tran_data = (usb_utr_t *)&tran_data;
-  #else  /* BSP_CFG_RTOS_USED == 1 */
+#else  /* BSP_CFG_RTOS_USED != 0 */
         p_tran_data = (usb_utr_t *)&g_usb_hdata[p_ctrl->module][USB_PIPE0];
-  #endif /* BSP_CFG_RTOS_USED == 1 */
+#endif /* BSP_CFG_RTOS_USED != 0 */
 
-        p_tran_data->read_req_len = size; /* Save Read Request Length */
-        p_tran_data->keyword = USB_PIPE0; /* Pipe No */
-        p_tran_data->p_tranadr = buf; /* Data address */
-        p_tran_data->tranlen = size; /* Data Size */
+        p_tran_data->read_req_len = size;   /* Save Read Request Length */
+        p_tran_data->keyword = USB_PIPE0;   /* Pipe No */
+        p_tran_data->p_tranadr = buf;       /* Data address */
+        p_tran_data->tranlen = size;        /* Data Size */
 
         /* Callback function */
         p_tran_data->complete = usb_class_request_complete;
@@ -333,23 +334,23 @@ usb_er_t usb_ctrl_write (usb_ctrl_t *p_ctrl, uint8_t *buf, uint32_t size)
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
     usb_er_t err;
     usb_utr_t   *p_tran_data;
-  #if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)                /* Use RTOS */
     usb_utr_t   tran_data;
-  #endif /* BSP_CFG_RTOS_USED == 1 */
+#endif /* BSP_CFG_RTOS_USED != 0 */
 
     if (USB_HOST == g_usb_usbmode)
     {
-  #if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)                /* Use RTOS */
         p_tran_data = (usb_utr_t *)&tran_data;
-  #else  /* BSP_CFG_RTOS_USED == 1 */
+#else  /* (BSP_CFG_RTOS_USED != 0) */
         p_tran_data = (usb_utr_t *)&g_usb_hdata[p_ctrl->module][USB_PIPE0];
-  #endif /* BSP_CFG_RTOS_USED == 1 */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
-        p_tran_data->read_req_len = size; /* Save Read Request Length */
+        p_tran_data->read_req_len = size;   /* Save Read Request Length */
 
-        p_tran_data->keyword = USB_PIPE0; /* Pipe No */
-        p_tran_data->p_tranadr = buf; /* Data address */
-        p_tran_data->tranlen = size; /* Data Size */
+        p_tran_data->keyword = USB_PIPE0;   /* Pipe No */
+        p_tran_data->p_tranadr = buf;       /* Data address */
+        p_tran_data->tranlen = size;        /* Data Size */
 
         /* Callback function */
         p_tran_data->complete = usb_class_request_complete;
@@ -369,6 +370,9 @@ usb_er_t usb_ctrl_write (usb_ctrl_t *p_ctrl, uint8_t *buf, uint32_t size)
 
 #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
     usb_ctrl_t ctrl;
+#if (BSP_CFG_RTOS_USED != 0)                /* Use RTOS */
+    rtos_task_id_t  task_id;
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
     if (USB_PERI == g_usb_usbmode)
     {
@@ -382,15 +386,17 @@ usb_er_t usb_ctrl_write (usb_ctrl_t *p_ctrl, uint8_t *buf, uint32_t size)
             {
                 usb_pstd_set_stall_pipe0();
             }
-
-            ctrl.setup  = p_ctrl->setup;                            /* Save setup data. */
+            
+            ctrl.setup  = p_ctrl->setup;    /* Save setup data. */
             ctrl.module = USB_CFG_USE_USBIP;
             ctrl.size   = 0;
             ctrl.status = USB_ACK;
             ctrl.type   = USB_REQUEST;
-#if (BSP_CFG_RTOS_USED == 1)
-            ctrl.p_data = (void *)xTaskGetCurrentTaskHandle();
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#if (BSP_CFG_RTOS_USED != 0)                /* Use RTOS */
+            rtos_get_task_id(&task_id);
+
+            ctrl.p_data = (void *)task_id;
+#endif /* (BSP_CFG_RTOS_USED != 0) */
             usb_set_event(USB_STS_REQUEST_COMPLETE, &ctrl);
 
         }
@@ -453,9 +459,9 @@ usb_er_t usb_data_read (usb_ctrl_t *p_ctrl, uint8_t *buf, uint32_t size)
     uint8_t pipe;
     usb_er_t err;
     usb_utr_t   *p_tran_data;
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)                /* Use RTOS */
     usb_utr_t   tran_data;
-#endif /* BSP_CFG_RTOS_USED == 1 */
+#endif /* BSP_CFG_RTOS_USED != 0 */
 
     pipe = usb_get_usepipe(p_ctrl, USB_READ);
 
@@ -463,17 +469,17 @@ usb_er_t usb_data_read (usb_ctrl_t *p_ctrl, uint8_t *buf, uint32_t size)
     {
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
 
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)                /* Use RTOS */
         p_tran_data = (usb_utr_t *)&tran_data;
-#else  /* BSP_CFG_RTOS_USED == 1 */
+#else  /* BSP_CFG_RTOS_USED != 0 */
         p_tran_data = (usb_utr_t *)&g_usb_hdata[p_ctrl->module][pipe];
-#endif /* BSP_CFG_RTOS_USED == 1 */
+#endif /* BSP_CFG_RTOS_USED != 0 */
 
-        p_tran_data->read_req_len = size; /* Save Read Request Length */
+        p_tran_data->read_req_len = size;   /* Save Read Request Length */
 
-        p_tran_data->keyword = pipe; /* Pipe No */
-        p_tran_data->p_tranadr = buf; /* Data address */
-        p_tran_data->tranlen = size; /* Data Size */
+        p_tran_data->keyword = pipe;        /* Pipe No */
+        p_tran_data->p_tranadr = buf;       /* Data address */
+        p_tran_data->tranlen = size;        /* Data Size */
         p_tran_data->complete = g_usb_callback[p_ctrl->type * 2]; /* Callback function */
         p_tran_data->segment = USB_TRAN_END;
         p_tran_data->ip = p_ctrl->module;
@@ -486,17 +492,17 @@ usb_er_t usb_data_read (usb_ctrl_t *p_ctrl, uint8_t *buf, uint32_t size)
     {
 #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
 
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)                /* Use RTOS */
         p_tran_data = (usb_utr_t *)&tran_data;
-#else  /* BSP_CFG_RTOS_USED == 1 */
+#else  /* BSP_CFG_RTOS_USED != 0 */
         p_tran_data = (usb_utr_t *)&g_usb_pdata[pipe];
-#endif /* BSP_CFG_RTOS_USED == 1 */
+#endif /* BSP_CFG_RTOS_USED != 0 */
 
-        p_tran_data->read_req_len = size; /* Save Read Request Length */
+        p_tran_data->read_req_len = size;   /* Save Read Request Length */
 
-        p_tran_data->keyword = pipe; /* Pipe No */
-        p_tran_data->p_tranadr = buf; /* Data address */
-        p_tran_data->tranlen = size; /* Data Size */
+        p_tran_data->keyword = pipe;        /* Pipe No */
+        p_tran_data->p_tranadr = buf;       /* Data address */
+        p_tran_data->tranlen = size;        /* Data Size */
         p_tran_data->complete = (usb_cb_t)g_usb_callback[p_ctrl->type*2]; /* Callback function */
         err = usb_pstd_transfer_start(p_tran_data);
 #endif  /* (USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI */
@@ -518,9 +524,9 @@ usb_er_t usb_data_write (usb_ctrl_t *p_ctrl, uint8_t *buf, uint32_t size)
     uint8_t pipe;
     usb_er_t err;
     usb_utr_t   *p_tran_data;
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)                /* Use RTOS */
     usb_utr_t   tran_data;
-#endif /* BSP_CFG_RTOS_USED == 1 */
+#endif /* BSP_CFG_RTOS_USED != 0 */
 
     pipe = usb_get_usepipe(p_ctrl, USB_WRITE);
 
@@ -528,15 +534,15 @@ usb_er_t usb_data_write (usb_ctrl_t *p_ctrl, uint8_t *buf, uint32_t size)
     {
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
 
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)                /* Use RTOS */
         p_tran_data = (usb_utr_t *)&tran_data;
-#else  /* BSP_CFG_RTOS_USED == 1 */
+#else  /* BSP_CFG_RTOS_USED != 0 */
         p_tran_data = (usb_utr_t *)&g_usb_hdata[p_ctrl->module][pipe];
-#endif /* BSP_CFG_RTOS_USED == 1 */
+#endif /* BSP_CFG_RTOS_USED != 0 */
 
-        p_tran_data->keyword = pipe; /* Pipe No */
-        p_tran_data->p_tranadr = buf; /* Data address */
-        p_tran_data->tranlen = size; /* Data Size */
+        p_tran_data->keyword = pipe;        /* Pipe No */
+        p_tran_data->p_tranadr = buf;       /* Data address */
+        p_tran_data->tranlen = size;        /* Data Size */
         p_tran_data->complete = g_usb_callback[(p_ctrl->type * 2) + 1]; /* Callback function */
         p_tran_data->segment = USB_TRAN_END;
         p_tran_data->ip = p_ctrl->module;
@@ -548,31 +554,31 @@ usb_er_t usb_data_write (usb_ctrl_t *p_ctrl, uint8_t *buf, uint32_t size)
     {
 #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
 
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)                /* Use RTOS */
         p_tran_data = (usb_utr_t *)&tran_data;
-#else  /* BSP_CFG_RTOS_USED == 1 */
+#else  /* BSP_CFG_RTOS_USED != 0 */
         p_tran_data = (usb_utr_t *)&g_usb_pdata[pipe];
-#endif /* BSP_CFG_RTOS_USED == 1 */
+#endif /* BSP_CFG_RTOS_USED != 0 */
 
   #if defined(USB_CFG_PCDC_USE)
         if (USB_CFG_PCDC_INT_IN != pipe)
         {
-            p_tran_data->p_tranadr = buf; /* Data address */
-            p_tran_data->tranlen = size; /* Data Size */
+            p_tran_data->p_tranadr = buf;   /* Data address */
+            p_tran_data->tranlen = size;    /* Data Size */
         }
         else
         {
             g_usb_pcdc_serialstate_table[8] = buf[0];
             g_usb_pcdc_serialstate_table[9] = buf[1];
             p_tran_data->p_tranadr = g_usb_pcdc_serialstate_table; /* Data address */
-            p_tran_data->tranlen = 10; /* Data Size */
+            p_tran_data->tranlen = 10;      /* Data Size */
         }
 
   #else   /* defined(USB_CFG_PCDC_USE) */
-        p_tran_data->p_tranadr = buf; /* Data address */
-        p_tran_data->tranlen = size; /* Data Size */
+        p_tran_data->p_tranadr = buf;       /* Data address */
+        p_tran_data->tranlen = size;        /* Data Size */
   #endif  /* defined(USB_CFG_PCDC_USE) */
-        p_tran_data->keyword = pipe; /* Pipe No */
+        p_tran_data->keyword = pipe;        /* Pipe No */
         p_tran_data->complete = (usb_cb_t)g_usb_callback[(p_ctrl->type*2)+1]; /* Callback function */
         err = usb_pstd_transfer_start(p_tran_data);
 #endif /* ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI) */
@@ -786,30 +792,6 @@ uint16_t usb_cstd_get_pipe_buf_value (uint16_t pipe_no)
 } /* End of function usb_cstd_get_pipe_buf_value() */
 
 #endif /* defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX71M) */
-
-#if (BSP_CFG_RTOS_USED == 1)
-/******************************************************************************
- Function Name   : get_usb_int_buf
- Description     : USB interrupt routine. Analyze which USB interrupt occurred
-                 : and send message to PCD task.
- Arguments       : none
- Return value    : Point to the area for usb_int_t structure
- ******************************************************************************/
-usb_utr_t    *get_usb_int_buf(void)
-{
-    static uint16_t count = 0;
-    usb_utr_t       *p;
-
-    p = &g_usb_cstd_int[count];
-
-    count = ((count + 1) % USB_INT_BUFSIZE);
-
-    return p;
-}
-/******************************************************************************
- End of function get_usb_int_buf
- ******************************************************************************/
-#endif /* BSP_CFG_RTOS_USED == 1 */
 
 /******************************************************************************
  End  Of File

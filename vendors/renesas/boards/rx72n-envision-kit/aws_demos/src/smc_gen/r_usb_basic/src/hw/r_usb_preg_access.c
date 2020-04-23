@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2015(2019) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2015(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_preg_access.c
@@ -29,6 +29,7 @@
  *         : 31.03.2018 1.23 Supporting Smart Configurator
  *         : 31.05.2019 1.26 Added support for GNUC and ICCRX.
  *         : 30.07.2019 1.27 RX72M is added.
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 /******************************************************************************
@@ -209,11 +210,11 @@ void hw_usb_pmodule_init( void )
     }
 
 #if defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX72T)\
-    || defined (BSP_MCU_RX72M)
+    || defined (BSP_MCU_RX72M) || defined (BSP_MCU_RX72N) || defined (BSP_MCU_RX66N)
     USB_M0.PHYSLEW.LONG = 0x5;
 
 #endif  /* defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX72T)\
-    || defined (BSP_MCU_RX72M) */
+    || defined (BSP_MCU_RX72M) || defined (BSP_MCU_RX72N) || defined (BSP_MCU_RX66N) */
 
     USB_M0.SYSCFG.WORD &= (~USB_DRPD);
 

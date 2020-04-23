@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2014(2018) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2014(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_hlibusbip.c
@@ -29,6 +29,7 @@
  *         : 26.01.2017 1.21 usb_hstd_set_pipe_register() is fixed.
  *         : 30.09.2017 1.22 Rename "usb_hstd_buf2fifo"->"usb_hstd_buf_to_fifo" and Function move for"r_usb_hdriver.c"
  *         : 31.03.2018 1.23 Supporting Smart Configurator
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 /******************************************************************************
@@ -40,6 +41,10 @@
 #include "r_usb_extern.h"
 #include "r_usb_bitdefine.h"
 #include "r_usb_reg_access.h"
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+#include "r_rtos_abstract.h"
+#include "r_usb_cstd_rtos.h"
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
 #if ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE))
 #include "r_usb_dmac.h"
@@ -58,6 +63,22 @@
 #endif /* defined(USB_CFG_HHID_USE) */
 
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
+/******************************************************************************
+ Macro definitions
+ *****************************************************************************/
+
+/******************************************************************************
+ Exported global variables (to be accessed by other files)
+ ******************************************************************************/
+
+/******************************************************************************
+ Private global variables and functions
+ *****************************************************************************/
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+static uint16_t     g_rtos_msg_devaddr[USB_NUM_USBIP][USB_MAXDEVADDR + 1];
+static uint16_t     g_rtos_msg_count_hcd_sub_devaddr[USB_NUM_USBIP];
+#endif /* BSP_CFG_RTOS_USED != 0 */
+
 /******************************************************************************
  Renesas Abstracted Host Lib IP functions
  ******************************************************************************/
@@ -534,6 +555,7 @@ uint16_t usb_hstd_write_data (usb_utr_t *ptr, uint16_t pipe, uint16_t pipemode)
     uint16_t buffer;
     uint16_t mxps;
     uint16_t end_flag;
+    uint16_t read_pid;
 
     if (USB_MAX_PIPE_NO < pipe)
     {
@@ -600,6 +622,9 @@ uint16_t usb_hstd_write_data (usb_utr_t *ptr, uint16_t pipe, uint16_t pipemode)
         count = size;
     }
 
+    read_pid = usb_cstd_get_pid(ptr, pipe);
+    usb_cstd_set_nak(ptr, pipe);
+
     gp_usb_hstd_data_ptr[ptr->ip][pipe] = usb_hstd_write_fifo(ptr, count, pipemode, gp_usb_hstd_data_ptr[ptr->ip][pipe]);
 
     /* Check data count to remain */
@@ -620,6 +645,13 @@ uint16_t usb_hstd_write_data (usb_utr_t *ptr, uint16_t pipe, uint16_t pipemode)
     {
         /* Total data count - count */
         g_usb_hstd_data_cnt[ptr->ip][pipe] -= count;
+    }
+
+    hw_usb_clear_status_bemp(ptr,pipe);
+    /* USB_PID_BUF ? */
+    if (USB_PID_BUF == (USB_PID & read_pid))
+    {
+        usb_cstd_set_buf(ptr, pipe);
     }
 
     /* End or Err or Continue */
@@ -948,15 +980,15 @@ void usb_hstd_data_end (usb_utr_t *ptr, uint16_t pipe, uint16_t status)
         g_p_usb_hstd_pipe[ip][pipe]->ipp = usb_hstd_get_usb_ip_adr(ip);
         g_p_usb_hstd_pipe[ip][pipe]->ip = ip;
         (g_p_usb_hstd_pipe[ip][pipe]->complete)(g_p_usb_hstd_pipe[ip][pipe], USB_NULL, USB_NULL);
-#if BSP_CFG_RTOS_USED == 1
-        vPortFree (g_p_usb_hstd_pipe[ip][pipe]);
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+        rtos_release_fixed_memory(&g_rtos_usb_mpf_id, (void *)g_p_usb_hstd_pipe[ip][pipe]);
         g_p_usb_hstd_pipe[ip][pipe] = (usb_utr_t*) USB_NULL;
-        usb_cstd_pipe_msg_re_forward (ip, pipe);    /* Get PIPE Transfer wait que and Message send to HCD */
+        usb_rtos_resend_msg_to_submbx (ip, pipe, USB_HOST);
 
-#else   /* BSP_CFG_RTOS_USED == 1 */
+#else   /* (BSP_CFG_RTOS_USED != 0) */
         g_p_usb_hstd_pipe[ip][pipe] = (usb_utr_t*) USB_NULL;
 
-#endif  /* BSP_CFG_RTOS_USED == 1 */
+#endif  /* (BSP_CFG_RTOS_USED != 0) */
     }
 }
 /******************************************************************************
@@ -1601,6 +1633,118 @@ uint16_t usb_hstd_get_pipe_peri_value (uint16_t speed, uint8_t binterval)
 
     return pipe_peri;
 } /* eof usb_hstd_get_pipe_peri_value() */
+
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+/******************************************************************************
+ Function Name   : usb_rtos_delete_msg_submbx_addr
+ Description     : Message clear for PIPE0 Transfer wait que.
+ Arguments       : usb_utr_t *ptr       : Pointer to usb_utr_t structure.
+                 : uint16_t  dev_addr   : device address
+ Return          : none
+ ******************************************************************************/
+void usb_rtos_delete_msg_submbx_addr (usb_utr_t *p_ptr)
+{
+    usb_utr_t   *mess;
+    uint16_t    i;
+    uint16_t    ip;
+    uint16_t    devaddr;
+
+    ip = p_ptr->ip;
+    devaddr = p_ptr->p_setup[4];
+
+    if (0 == g_rtos_msg_devaddr[ip][devaddr])
+    {
+        return;
+    }
+
+    /* WAIT_LOOP */
+    for (i = 0; i != g_rtos_msg_count_hcd_sub_devaddr[ip]; i++)
+    {
+        rtos_receive_mailbox(&g_rtos_usb_hcd_sub_addr_mbx_id, (void **)&mess, RTOS_ZERO);
+        if ((ip == mess->ip)&&(devaddr == mess->p_setup[4]))
+        {
+        	rtos_release_fixed_memory (&g_rtos_usb_mpf_id, (void *)mess);
+        }
+        else
+        {
+            rtos_send_mailbox(&g_rtos_usb_hcd_sub_addr_mbx_id, (void *)mess);
+        }
+    }
+    g_rtos_msg_count_hcd_sub_devaddr[ip] -= g_rtos_msg_devaddr[ip][devaddr];
+    g_rtos_msg_devaddr[ip][devaddr] = 0;
+}
+/******************************************************************************
+ End of function usb_rtos_delete_msg_submbx_addr
+ ******************************************************************************/
+
+/******************************************************************************
+ Function Name   : usb_rtos_resend_msg_to_submbx_addr
+ Description     : Get PIPE0 Transfer wait que and Message send to HCD/PCD
+ Argument        : none
+ Return          : none
+ ******************************************************************************/
+void usb_rtos_resend_msg_to_submbx_addr (usb_utr_t *p_ptr)
+{
+    usb_utr_t       *mess;
+    uint16_t        ip;
+    uint16_t        devaddr;
+
+    ip = p_ptr->ip;
+
+    if (0 == g_rtos_msg_count_hcd_sub_devaddr[ip])
+    {
+        return;
+    }
+
+    /* WAIT_LOOP */
+    while (1)
+    {
+        rtos_receive_mailbox(&g_rtos_usb_hcd_sub_addr_mbx_id, (void **)&mess, RTOS_ZERO);
+        
+        if (ip == mess->ip)
+        {
+            devaddr = mess->p_setup[4];
+
+
+            g_rtos_msg_devaddr[ip][devaddr]--;
+            g_rtos_msg_count_hcd_sub_devaddr[ip]--;
+
+            rtos_send_mailbox(&g_rtos_usb_hcd_mbx_id,(void *)mess);
+            break;
+        }
+        else
+        {
+            rtos_send_mailbox(&g_rtos_usb_hcd_sub_addr_mbx_id, (void *)mess);
+        }
+    }
+}
+/******************************************************************************
+ End of function usb_rtos_resend_msg_to_submbx_addr
+ ******************************************************************************/
+
+/******************************************************************************
+ Function Name   : usb_rtos_send_msg_to_submbx_addr
+ Description     : Message foward to PIPE0 Transfer wait que.
+ Arguments       : usb_utr_t *ptr       : Pointer to usb_utr_t structure.
+                 : uint16_t  devaddr    : device address
+ Return          : none
+ ******************************************************************************/
+void usb_rtos_send_msg_to_submbx_addr (usb_utr_t *p_ptr, uint16_t devaddr)
+{
+    if ((USB_DEVICEADDR > devaddr) || (USB_MAXDEVADDR < devaddr))
+    {
+        return;
+    }
+
+    g_rtos_msg_devaddr[p_ptr->ip][devaddr]++;
+    g_rtos_msg_count_hcd_sub_devaddr[p_ptr->ip]++;
+
+    rtos_send_mailbox (&g_rtos_usb_hcd_sub_addr_mbx_id, (void *)p_ptr);
+}
+/******************************************************************************
+ End of function usb_rtos_send_msg_to_submbx_addr
+ ******************************************************************************/
+#endif /* BSP_CFG_RTOS_USE != 0 */
 
 #endif  /* (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST */
 

@@ -52,6 +52,7 @@
 *                              Fixed to comply with GSCE Coding Standards Rev.6.00.
 *                              Fixed a bug that error when a reception interrupt occurs before incrementing "u_tx_data.buf"
 *                               in "sci_send_sync_data" and "sci_receive" functions
+*          30.12.2019  3.40    Added support RX66N, RX72N.
 ***********************************************************************************************************************/
 
 /*****************************************************************************
@@ -1099,7 +1100,11 @@ static sci_err_t sci_send_sync_data(sci_hdl_t const hdl,
             /* WAIT_LOOP */
             for (cnt = 0; cnt < thresh_cnt; cnt++)
             {
-                SCI_TDR(*hdl->u_tx_data.buf++);    /* start transmit */
+                if(0 != cnt)
+                {
+                    hdl->u_tx_data.buf++;
+                }
+                SCI_TDR(*hdl->u_tx_data.buf);    /* start transmit */
             }
         }
         else
@@ -1675,7 +1680,8 @@ static void sci_fifo_receive_sync(sci_hdl_t const hdl)
                 /* WAIT_LOOP */
                 for (cnt = 0; cnt < fifo_num_tx; cnt++)
                 {
-                    SCI_TDR(*hdl->u_tx_data.buf++);
+                    hdl->u_tx_data.buf++;
+                    SCI_TDR(*hdl->u_tx_data.buf);
                 }
             }
         }
@@ -2098,7 +2104,7 @@ sci_err_t R_SCI_Control(sci_hdl_t const     hdl,
             return SCI_ERR_NULL_PTR;
         }
 #endif
-#if defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX66T) || defined(BSP_MCU_RX72T) || defined(BSP_MCU_RX72M)
+#if defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX66T) || defined(BSP_MCU_RX72T) || defined(BSP_MCU_RX72M) || defined(BSP_MCU_RX72N) || defined(BSP_MCU_RX66N)
         if ((SCI_CMD_SET_TXI_PRIORITY == cmd) || (SCI_CMD_SET_RXI_PRIORITY == cmd))
         {
             return SCI_ERR_NULL_PTR;
@@ -2127,7 +2133,7 @@ sci_err_t R_SCI_Control(sci_hdl_t const     hdl,
         }
     }
 #endif
-#if defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX66T) || defined(BSP_MCU_RX72T) || defined(BSP_MCU_RX72M)
+#if defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX66T) || defined(BSP_MCU_RX72T) || defined(BSP_MCU_RX72M) || defined(BSP_MCU_RX72N) || defined(BSP_MCU_RX66N)
     if ((SCI_CMD_SET_TXI_PRIORITY == cmd) || (SCI_CMD_SET_RXI_PRIORITY == cmd))
     {
         /* Casting void* type is valid */
@@ -2233,7 +2239,7 @@ sci_err_t R_SCI_Control(sci_hdl_t const     hdl,
     }
 #endif /* End of SCI_CFG_FIFO_INCLUDED */
 
-#if defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX66T) || defined(BSP_MCU_RX72T) || defined(BSP_MCU_RX72M)
+#if defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX66T) || defined(BSP_MCU_RX72T) || defined(BSP_MCU_RX72M) || defined(BSP_MCU_RX72N) || defined(BSP_MCU_RX66N)
     case (SCI_CMD_SET_TXI_PRIORITY):
     {
         /* Casting void type to uint8_t type is valid */

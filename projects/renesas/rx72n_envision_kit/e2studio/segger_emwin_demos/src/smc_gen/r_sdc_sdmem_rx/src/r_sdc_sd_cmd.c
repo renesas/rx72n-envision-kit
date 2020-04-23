@@ -14,7 +14,7 @@
 * following link:
 * http://www.renesas.com/disclaimer 
 *
-* Copyright (C) 2014(2015-2018) Renesas Electronics Corporation. All rights reserved.    
+* Copyright (C) 2014(2015-2019) Renesas Electronics Corporation. All rights reserved.    
 **********************************************************************************************************************/
 /**********************************************************************************************************************
 * System Name  : SDHI Driver
@@ -35,6 +35,7 @@
 *              : 31.07.2017 2.00    SDHI FIT module separated into hardware low level layer and middleware layer.
 *              :                    Changed prefix from SDHI to SDC_SD.
 *              : 29.06.2018 2.02    Corresponded to SD Specifications Part1 Physical Layer Simplified Specification.
+*              : 10.02.2020 3.00    Added comment "WAIT_LOOP".
 **********************************************************************************************************************/
 
 /**********************************************************************************************************************
@@ -175,6 +176,7 @@ sdc_sd_status_t r_sdc_sd_send_cmd(uint32_t card_no, uint32_t cmd)
     r_sdc_sd_set_int_mask(card_no, SDHI_SDIMSK1_RESP, 0);
     r_sdc_sd_enable_icu_int(card_no);
 
+    /* WAIT_LOOP */
     for (i = 0 ; i < SDC_SD_SCLKDIVEN_LOOP_COUNT ; i++)
     {
 #ifdef USE_INFO2_CBSY
@@ -341,6 +343,7 @@ sdc_sd_status_t r_sdc_sd_send_ocr(uint32_t card_no, int32_t type)
     p_hndl = SDC_SD_GET_HNDL(card_no);
 
     /* ===== Distinguish card type using the CMD5, ACMD41. ==== */
+    /* WAIT_LOOP */
     for (i = 0; i < 200; i++)
     {
         switch (type)

@@ -44,35 +44,36 @@
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler.829055" name="Compiler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.include.737778905" name="インクルード・ファイルを検索するフォルダ" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.include" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="${TCINSTALL}/include"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_bsp&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/application_code/renesas_code/utility}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/application_code/renesas_code/key}&quot;"/>
 									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../freertos_kernel/include"/>
 									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/amazon_freertos_common"/>
 									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/amazon_freertos_common/compiler_support/ccrx"/>
 									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/amazon_freertos_common/network_support/onchip_rx_ether"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_bsp"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_bsp/board/generic_rx72n"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_ether_rx"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_flash_rx"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_flash_rx/src"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_flash_rx/src/flash_type_1"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_flash_rx/src/flash_type_2"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_flash_rx/src/flash_type_3"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_flash_rx/src/flash_type_4"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_flash_rx/src/targets"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_byteq"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_byteq/src"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_sci_rx"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_sci_rx/src"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_riic_rx"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_riic_rx/src"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_sci_iic_rx"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_sci_iic_rx/src"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_cmt_rx/src"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_s12ad_rx"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_s12ad_rx/src"/>
-									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v122/r_s12ad_rx/src/targets/rx72n"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_bsp"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_bsp/board/generic_rx72n"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_ether_rx"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_flash_rx"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_flash_rx/src"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_flash_rx/src/flash_type_1"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_flash_rx/src/flash_type_2"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_flash_rx/src/flash_type_3"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_flash_rx/src/flash_type_4"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_flash_rx/src/targets"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_byteq"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_byteq/src"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_sci_rx"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_sci_rx/src"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_riic_rx"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_riic_rx/src"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_sci_iic_rx"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_sci_iic_rx/src"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_cmt_rx/src"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_s12ad_rx"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_s12ad_rx/src"/>
+									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/rx_driver_package/v125/r_s12ad_rx/src/targets/rx72n"/>
 									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../freertos_kernel/portable/Renesas/RX600v2"/>
 									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/config_files"/>
 									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code"/>
@@ -113,29 +114,10 @@
 									<listOptionValue builtIn="false" value="${ProjDirPath}/generate"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_config&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_ether_rx&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_sci_rx&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_sci_rx/src&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_flash_rx&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_flash_rx/src&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_flash_rx/src/flash_type_1&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_flash_rx/src/flash_type_3&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_flash_rx/src/flash_type_4&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_flash_rx/src/targets&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_s12ad_rx&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_s12ad_rx/src&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_byteq&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_byteq/src&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_sci_iic_rx&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_sci_iic_rx/src&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_gpio_rx&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_gpio_rx/src&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_glcdc_rx&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_drw2d_rx/inc/tes&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_dmaca_rx&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_dmaca_rx/src&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_cmt_rx&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_cmt_rx/src&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_sdc_sdmem_rx&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_sdhi_rx&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_sys_time_rx&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_sys_time_rx/src&quot;"/>
@@ -143,13 +125,32 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_tfat_driver_rx/src&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_tfat_rx&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_tfat_rx/lib&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_emwin_rx/lib/Config&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_emwin_rx/lib/GUI&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_dmaca_rx&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_dmaca_rx/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_s12ad_rx&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_s12ad_rx/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_gpio_rx&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_gpio_rx/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_flash_rx&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_flash_rx/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_flash_rx/src/flash_type_1&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_flash_rx/src/flash_type_3&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_flash_rx/src/flash_type_4&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_flash_rx/src/targets&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_sci_rx&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_sci_rx/src&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_usb_basic&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_usb_basic\src\driver\inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_usb_basic\src\hw\inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_glcdc_rx&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_cmt_rx&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_cmt_rx/src&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_usb_hmsc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_usb_hmsc\src\inc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_emwin_rx/lib/Config&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_emwin_rx/lib/GUI&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_drw2d_rx/inc/tes&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_sdc_sdmem_rx&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/general&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_pincfg&quot;"/>
 								</option>
@@ -526,57 +527,56 @@
 									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_usb_hmsc/src\r_usb_hstorage_driver.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/boards/rx72n-envision-kit/ports/ota\aws_ota_pal.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/boards/rx72n-envision-kit/ports/pkcs11\iot_pkcs11_pal.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_bsp/board/generic_rx72n\hwsetup.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_bsp/mcu/all\dbsct.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_bsp/mcu/all\lowlvl.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_bsp/mcu/all\lowsrc.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_bsp/mcu/all\mcu_locks.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_bsp/mcu/all\r_bsp_common.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_bsp/mcu/all\r_bsp_cpu.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_bsp/mcu/all\r_bsp_interrupts.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_bsp/mcu/all\r_bsp_locking.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_bsp/mcu/all\r_bsp_mcu_startup.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_bsp/mcu/all\r_bsp_software_interrupt.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_bsp/mcu/all\r_rx_intrinsic_functions.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_bsp/mcu/all\resetprg.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_bsp/mcu/all\sbrk.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_bsp/mcu/rx72n\mcu_clocks.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_bsp/mcu/rx72n\mcu_init.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_bsp/mcu/rx72n\mcu_interrupts.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_bsp/mcu/rx72n\mcu_mapped_interrupts.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_bsp/mcu/rx72n\vecttbl.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_byteq/src\r_byteq.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_ether_rx/src/phy\phy.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_ether_rx/src\r_ether_rx.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_ether_rx/src/targets/rx63n\r_ether_setting_rx63n.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_ether_rx/src/targets/rx64m\r_ether_setting_rx64m.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_ether_rx/src/targets/rx65n\r_ether_setting_rx65n.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_ether_rx/src/targets/rx71m\r_ether_setting_rx71m.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_ether_rx/src/targets/rx72n\r_ether_setting_rx72n.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_flash_rx/src/flash_type_1\r_codeflash.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_flash_rx/src/flash_type_1\r_codeflash_extra.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_flash_rx/src/flash_type_1\r_dataflash.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_flash_rx/src/flash_type_1\r_flash_type1.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_flash_rx/src/flash_type_1\r_flash_utils.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_flash_rx/src/flash_type_3\r_flash_type3.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_flash_rx/src/flash_type_4\r_flash_type4.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_flash_rx/src\r_flash_fcu.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_flash_rx/src\r_flash_group.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_flash_rx/src\r_flash_rx.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_s12ad_rx/src\r_s12ad_rx.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_s12ad_rx/src/targets/rx110\r_s12ad_rx110.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_s12ad_rx/src/targets/rx111\r_s12ad_rx111.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_s12ad_rx/src/targets/rx113\r_s12ad_rx113.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_s12ad_rx/src/targets/rx130\r_s12ad_rx130.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_s12ad_rx/src/targets/rx230\r_s12ad_rx230.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_s12ad_rx/src/targets/rx231\r_s12ad_rx231.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_s12ad_rx/src/targets/rx64m\r_s12ad_rx64m.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_s12ad_rx/src/targets/rx65n\r_s12ad_rx65n.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_s12ad_rx/src/targets/rx71m\r_s12ad_rx71m.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_s12ad_rx/src/targets/rx72n\r_s12ad_rx72n.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_sci_rx/src\r_sci_rx.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_sci_rx/src/targets/rx72n\r_sci_rx72n.obj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v122/r_sci_rx/src/targets/rx72n\r_sci_rx72n_data.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_bsp/board/generic_rx72n\hwsetup.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_bsp/mcu/all\dbsct.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_bsp/mcu/all\lowlvl.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_bsp/mcu/all\lowsrc.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_bsp/mcu/all\mcu_locks.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_bsp/mcu/all\r_bsp_common.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_bsp/mcu/all\r_bsp_cpu.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_bsp/mcu/all\r_bsp_interrupts.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_bsp/mcu/all\r_bsp_locking.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_bsp/mcu/all\r_bsp_mcu_startup.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_bsp/mcu/all\r_bsp_software_interrupt.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_bsp/mcu/all\r_rx_intrinsic_functions.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_bsp/mcu/all\resetprg.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_bsp/mcu/all\sbrk.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_bsp/mcu/rx72n\mcu_clocks.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_bsp/mcu/rx72n\mcu_init.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_bsp/mcu/rx72n\mcu_interrupts.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_bsp/mcu/rx72n\mcu_mapped_interrupts.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_bsp/mcu/rx72n\vecttbl.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_byteq/src\r_byteq.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_ether_rx/src/phy\phy.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_ether_rx/src\r_ether_rx.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_ether_rx/src/targets/rx64m\r_ether_setting_rx64m.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_ether_rx/src/targets/rx65n\r_ether_setting_rx65n.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_ether_rx/src/targets/rx71m\r_ether_setting_rx71m.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_ether_rx/src/targets/rx72n\r_ether_setting_rx72n.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_flash_rx/src/flash_type_1\r_codeflash.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_flash_rx/src/flash_type_1\r_codeflash_extra.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_flash_rx/src/flash_type_1\r_dataflash.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_flash_rx/src/flash_type_1\r_flash_type1.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_flash_rx/src/flash_type_1\r_flash_utils.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_flash_rx/src/flash_type_3\r_flash_type3.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_flash_rx/src/flash_type_4\r_flash_type4.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_flash_rx/src\r_flash_fcu.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_flash_rx/src\r_flash_group.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_flash_rx/src\r_flash_rx.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_s12ad_rx/src\r_s12ad_rx.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_s12ad_rx/src/targets/rx110\r_s12ad_rx110.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_s12ad_rx/src/targets/rx111\r_s12ad_rx111.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_s12ad_rx/src/targets/rx113\r_s12ad_rx113.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_s12ad_rx/src/targets/rx130\r_s12ad_rx130.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_s12ad_rx/src/targets/rx230\r_s12ad_rx230.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_s12ad_rx/src/targets/rx231\r_s12ad_rx231.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_s12ad_rx/src/targets/rx64m\r_s12ad_rx64m.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_s12ad_rx/src/targets/rx65n\r_s12ad_rx65n.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_s12ad_rx/src/targets/rx71m\r_s12ad_rx71m.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_s12ad_rx/src/targets/rx72n\r_s12ad_rx72n.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_sci_rx/src\r_sci_rx.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_sci_rx/src/targets/rx72n\r_sci_rx72n.obj&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\vendors/renesas/rx_driver_package/v125/r_sci_rx/src/targets/rx72n\r_sci_rx72n_data.obj&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\aws_demos.lib&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_tfat_rx/lib/tfat_rx600_little.lib&quot;"/>
 								</option>
@@ -649,10 +649,16 @@
 					</folderInfo>
 					<folderInfo id="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.configuration.216582545.1720943287" name="/" resourcePath="libraries/3rdparty/tracealyzer_recorder">
 						<toolChain id="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.toolChain.1389827055" name="Renesas CCRX Toolchain" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.toolChain" unusedChildren="">
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.PE" id="com.renesas.cdt.managedbuild.renesas.ccrx.base.targetPlatform" osList="win32" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.targetPlatform"/>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.dsp.363149868" name="DSP Assembler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.dsp.283334129"/>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.common.837535619" name="Common" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.common.1850118877"/>
-							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler.1394674913" name="Compiler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler.829055"/>
-							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.assembler.718285870" name="Assembler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.assembler.175236271"/>
+							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler.1394674913" name="Compiler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler.829055">
+								<inputType id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gcc.inputType.2066132488" name="Compiler Input C" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gcc.inputType"/>
+								<inputType id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gpp.inputType.276934297" name="Compiler Input CPP" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gpp.inputType"/>
+							</tool>
+							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.assembler.718285870" name="Assembler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.assembler.175236271">
+								<inputType id="com.renesas.cdt.managedbuild.renesas.ccrx.assembler.inputType.729053044" name="Assembler InputType" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.assembler.inputType"/>
+							</tool>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.linker.293789228" name="Linker" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.linker.2099553218"/>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.librarian.175515442" name="Library Generator" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.librarian.1357919725"/>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.converter.2097676693" name="Converter" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.converter.1607322956"/>

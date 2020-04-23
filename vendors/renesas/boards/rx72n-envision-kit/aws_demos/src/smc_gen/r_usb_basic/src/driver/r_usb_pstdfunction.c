@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2015(2018) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2015(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_pstdfunction.c
@@ -27,6 +27,7 @@
  *         : 30.09.2015 1.11 RX63N/RX631 is added.
  *         : 30.09.2016 1.20 RX65N/RX651 is added.
  *         : 31.03.2018 1.23 Supporting Smart Configurator
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 /******************************************************************************
@@ -179,7 +180,7 @@ void usb_pdriver_init (usb_ctrl_t *ctrl, usb_cfg_t *cfg)
     /* WAIT_LOOP */
     for (i = 0; i < USB_EVENT_MAX; i++)
     {
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)    /* Non-OS */
         g_usb_cstd_event.code[i] = USB_STS_NONE;
 #else /*(BSP_CFG_RTOS_USED == 0)*/
         g_usb_cstd_event[i].event = USB_STS_NONE;

@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2014(2018) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2014(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_hmsc_api.c
@@ -28,40 +28,44 @@
  *         : 30.09.2016 1.20 RX65N/RX651 is added.
  *         : 30.09.2017 1.22 Support USB_ATAPI_MODE_SELECT10, Non support MODE_SELECT6.
  *                           Change Arguments for "R_USB_HmscDriverStart()","usb_hmsc_mode_sense10()"
- *         : 31.03.2018 1.23 Supporting Smart Configurator 
- ***********************************************************************************************************************/
+ *         : 31.03.2018 1.23 Supporting Smart Configurator
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
+************************************************************************************************************************/
 
-/******************************************************************************
+/**********************************************************************************************************************
  Includes   <System Includes> , "Project Includes"
- ******************************************************************************/
+************************************************************************************************************************/
 
 #include "r_usb_basic_if.h"
 #include "r_usb_typedef.h"
 #include "r_usb_hmsc_if.h"
 #include "r_usb_extern.h"
 #include "r_usb_hmsc.h"
-#if (BSP_CFG_RTOS_USED == 1)
-#include "FreeRTOS.h"
-#endif  /* (BSP_CFG_RTOS_USED == 1) */
 
-#if defined(USB_CFG_HMSC_USE)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+#include "r_rtos_abstract.h"
+#include "r_usb_cstd_rtos.h"
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
-/******************************************************************************
+/**********************************************************************************************************************
  Exported global variables (to be accessed by other files)
- ******************************************************************************/
-#if (BSP_CFG_RTOS_USED == 1)
-extern SemaphoreHandle_t  SemaphoreHandleRead;
-#endif /* BSP_CFG_RTOS_USED == 1 */
+************************************************************************************************************************/
 
-/******************************************************************************
-Function Name   : R_USB_HmscStrgCmd
-Description     : Processing for MassStorage(ATAPI) command.
-Arguments       : usb_ctrl_t    *p_ctrl : Pointer to usb_ctrl_t structure
-                : uint8_t       *buf    : Pointer to the buffer area to store the transfer data
-                : uint16_t      command : ATAPI command
-Return value    : usb_err_t error code  : USB_SUCCESS,USB_ERR_NG etc.
-******************************************************************************/
-usb_err_t   R_USB_HmscStrgCmd(usb_ctrl_t *p_ctrl, uint8_t *buf, uint16_t command)
+/***********************************************************************************************************************
+ * Function Name   : R_USB_HmscStrgCmd
+ *******************************************************************************************************************//**
+ * @brief  Issues a Mass Storage command
+ * @param[in]      p_ctrl      Pointer to usb_ctrl_t structure area
+ * @param[in, out] p_buf         Pointer to data area
+ * @param[in]      command     Mass storage command
+ * @retval     USB_SUCCESS     Successfully completed
+ * @retval     USB_ERR_PARA    Parameter error
+ * @retval     USB_ERR_NG      Other error
+ * @details The Mass Storage command assigned to the argument (command) is issued to the MSC device that is specifed 
+ * by the members (address and module) in the argument (p_ctrl).
+ * @note The argument (p_ctrl) is not supported when using RX100/RX200 series MCU.
+ */
+usb_err_t   R_USB_HmscStrgCmd(usb_ctrl_t *p_ctrl, uint8_t *p_buf, uint16_t command)
 {
     usb_err_t   err;
     usb_info_t  info;
@@ -105,7 +109,7 @@ usb_err_t   R_USB_HmscStrgCmd(usb_ctrl_t *p_ctrl, uint8_t *buf, uint16_t command
         return USB_ERR_NG;
     }
 
-    ret = usb_hmsc_strg_user_command(&utr, side, command, buf, usb_hmsc_strg_cmd_complete);
+    ret = usb_hmsc_strg_user_command(&utr, side, command, p_buf, usb_hmsc_strg_cmd_complete);
     if (USB_PAR == ret)
     {
 #if USB_CFG_PARAM_CHECKING == USB_CFG_ENABLE
@@ -114,7 +118,7 @@ usb_err_t   R_USB_HmscStrgCmd(usb_ctrl_t *p_ctrl, uint8_t *buf, uint16_t command
     }
     if (USB_OK != ret)
     {
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
         if (USB_HMSC_CSW_ERR == utr.result)
         {
             p_ctrl->status  = USB_CSW_FAIL;
@@ -122,7 +126,7 @@ usb_err_t   R_USB_HmscStrgCmd(usb_ctrl_t *p_ctrl, uint8_t *buf, uint16_t command
             p_ctrl->pipe    = utr.keyword;  /* Pipe number setting */
             p_ctrl->address = usb_hstd_get_devsel(&utr, p_ctrl->pipe) >> 12;
             p_ctrl->size = 0;
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED == 1)                /* FreeRTOS */
             p_ctrl->p_data = (void *)xTaskGetCurrentTaskHandle();
 #endif /* (BSP_CFG_RTOS_USED == 1) */
             usb_set_event(USB_STS_MSC_CMD_COMPLETE, p_ctrl); /* Set Event(USB receive complete)  */
@@ -132,12 +136,12 @@ usb_err_t   R_USB_HmscStrgCmd(usb_ctrl_t *p_ctrl, uint8_t *buf, uint16_t command
         {
             return USB_ERR_NG;
         }
-#else   /* (BSP_CFG_RTOS_USED == 1) */
+#else  /* (BSP_CFG_RTOS_USED != 0) */
         return USB_ERR_NG;
-#endif  /* (BSP_CFG_RTOS_USED == 1) */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
     }
 
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
     else
     {
         p_ctrl->module  = utr.ip;       /* Module number setting */
@@ -164,28 +168,33 @@ usb_err_t   R_USB_HmscStrgCmd(usb_ctrl_t *p_ctrl, uint8_t *buf, uint16_t command
                 p_ctrl->status  = USB_CSW_FAIL;
             break;
         }
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED == 1)             /* FreeRTOS */
         p_ctrl->p_data = (void *)xTaskGetCurrentTaskHandle();
 #endif /* (BSP_CFG_RTOS_USED == 1) */
         usb_set_event(USB_STS_MSC_CMD_COMPLETE, p_ctrl); /* Set Event(USB receive complete)  */
     }
-#endif  /* (BSP_CFG_RTOS_USED == 1) */
+#endif  /* (BSP_CFG_RTOS_USED != 0) */
 
     return USB_SUCCESS;
 
 }
-/******************************************************************************
+/**********************************************************************************************************************
  End of function R_USB_HmscStrgCmd
- ******************************************************************************/
+************************************************************************************************************************/
 
-
-/******************************************************************************
-Function Name   : R_USB_HmscGetDriveNo
-Description     : Get number of Storage drive.
-Arguments       : usb_ctrl_t    *p_ctrl     : Pointer to usb_ctrl_t structure
-                : uint8_t       *p_drive    : Store address for Drive No.
-Return value    : usb_err_t error code      : USB_SUCCESS,USB_ERR_NG etc.
-******************************************************************************/
+/***********************************************************************************************************************
+ * Function Name   : R_USB_HmscGetDriveNo
+ *******************************************************************************************************************//**
+ * @brief  Obtains the drive number
+ * @param[in]      p_ctrl          Pointer to usb_ctrl_t structure area
+ * @param[out]     p_drive         Pointer to the area to store the drive number
+ * @retval         USB_SUCCESS     Successfully completed
+ * @retval         USB_ERR_PARA    Parameter error
+ * @retval         USB_ERR_NG      Other error
+ * @details Based on the information assigned to the usb_crtl_t structure (the member module and address), 
+ * obtains the related drive number. The drive number is stored in the area indicated by the argument (p_drive).
+ * @note This API is not supported when using RX100/RX200 series MCU.
+ */
 usb_err_t     R_USB_HmscGetDriveNo(usb_ctrl_t *p_ctrl, uint8_t *p_drive)
 {
     usb_info_t  info;
@@ -207,12 +216,14 @@ usb_err_t     R_USB_HmscGetDriveNo(usb_ctrl_t *p_ctrl, uint8_t *p_drive)
         return USB_ERR_PARA;
     }
 
-#if defined(BSP_MCU_RX65N) ||  defined(BSP_MCU_RX63N) || defined(BSP_MCU_RX63T)
+#if defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX63N) || defined(BSP_MCU_RX63T) || defined(BSP_MCU_RX72T)\
+     || defined(BSP_MCU_RX72M) || defined(BSP_MCU_RX72N) || defined(BSP_MCU_RX66N)
     if( USB_IP1 == p_ctrl->module)
     {
         return USB_ERR_PARA;
     }
-#endif
+#endif /* defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX63N) || defined(BSP_MCU_RX63T) || defined(BSP_MCU_RX72T)\
+     || defined(BSP_MCU_RX72M) || defined(BSP_MCU_RX72N) || defined(BSP_MCU_RX66N) */
 
 #endif  /* USB_CFG_PARAM_CHECKING == USB_CFG_ENABLE */
 
@@ -237,42 +248,42 @@ usb_err_t     R_USB_HmscGetDriveNo(usb_ctrl_t *p_ctrl, uint8_t *p_drive)
     return USB_SUCCESS;
 
 }
-/******************************************************************************
+/**********************************************************************************************************************
  End of function R_USB_HmscGetDriveNo
- ******************************************************************************/
+************************************************************************************************************************/
 
-#if (BSP_CFG_RTOS_USED == 1)
-/******************************************************************************
-Function Name   : R_USB_HmscGetSem
-Description     : Get a semaphore.
-Arguments       : none
-Return value    : none
-******************************************************************************/
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+/***********************************************************************************************************************
+ * Function Name   : R_USB_HmscGetSem
+ *******************************************************************************************************************//**
+ * @brief      Gets a semaphore (Only RTOS)
+ * @details    Gets a specific semaphore which is used in HMSC driver.
+ * @note This API is not supported when using RX100/RX200 series MCU.
+ */
 void     R_USB_HmscGetSem(void)
 {
-    xSemaphoreTake(SemaphoreHandleRead, portMAX_DELAY);
+    rtos_get_semaphore (&g_rtos_usb_hmsc_sem_id, RTOS_FOREVER);
 }
-/******************************************************************************
+/**********************************************************************************************************************
  End of function R_USB_HmscGetSem
- ******************************************************************************/
+************************************************************************************************************************/
 
-/******************************************************************************
-Function Name   : R_USB_HmscRelSem
-Description     : Release a semaphore.
-Arguments       : none
-Return value    : none
-******************************************************************************/
+/***********************************************************************************************************************
+ * Function Name   : R_USB_HmscRelSem
+ *******************************************************************************************************************//**
+ * @brief      Releases a semaphore (Only RTOS)
+ * @details    Releases a specific semaphore which is used in HMSC driver.
+ * @note This API is not supported when using RX100/RX200 series MCU.
+ */
 void     R_USB_HmscRelSem(void)
 {
-    xSemaphoreGive(SemaphoreHandleRead);
+    rtos_release_semaphore (&g_rtos_usb_hmsc_sem_id);
 }
-/******************************************************************************
+/**********************************************************************************************************************
  End of function R_USB_HmscRelSem
- ******************************************************************************/
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+************************************************************************************************************************/
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
-#endif /* defined(USB_CFG_HMSC_USE) */
-
-/******************************************************************************
+/**********************************************************************************************************************
  End  Of File
- ******************************************************************************/
+************************************************************************************************************************/

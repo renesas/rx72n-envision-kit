@@ -189,7 +189,7 @@ R_BSP_POR_FUNCTION(R_BSP_STARTUP_FUNCTION)
 {
     /* Stack pointers are setup prior to calling this function - see comments above */
 
-    /* You can use auto variables in this funcion but such variables other than register variables 
+    /* You can use auto variables in this function but such variables other than register variables 
      * will be unavailable after you change the stack from the I stack to the U stack (if change). */
 
     /* The bss sections have not been cleared and the data sections have not been initialized 

@@ -1,5 +1,3 @@
-
-
 drw_2d
 =========
 
@@ -11,16 +9,24 @@ Release history
 ----------------
 DD.MM.YYYY Version Description
 26.03.2018 1.02    First release.
+28.06.2019 1.03    Folder name was changed.
+28.02.2020 1.10    Supported Smart Configurator.
 
 File Structure
 --------------
 drw_2d
 +---ReadMe.txt
 |
-+---doc (TES's DRW2D documents)
++---doc 
+|    +-- d2_driver(TES's DRW2D documents)
+|    +-- en (APN English)
+|    +-- ja (APN Japanese)
+|    +-- License.txt
 |
 +---inc
-|    +-- dave_driver.h (TES's driver version 3.17)
+|    +-- tes (TES's driver version 3.17)
++---ref 
+|    +-- r_drw2d_rx_config_reference.h
 +---src
      +-- rx (Source code depending on RX)
      |
@@ -28,34 +34,25 @@ drw_2d
 
 Limitation
 ----------
-¥This driver does not support big endian.
+This driver does not support big endian.
 
 Usage Note
 ----------
-¥Making program changes when the same group interrupt is used by DRW2D and another peripheral device.
+ At initial setting Excep_ICU_GROUPAL1 function, which is the interrupt function of DRW2D, (around line 300 of dave_base_rx.c) 
+ has been set to invalidate by using the macro of ICU_GROUPAL1_ENABLE considering using BSP at the same time.
 
- When the same group interrupt is used by DRW2D and another peripheral device, it is 
- necessary to make changes to the DRW2D program. The procedure for making program changes 
- using the BSP for the peripheral device (for example, GLCDC) that uses the same group
- interrupts as the DRW2D is described below.
+ #define ICU_GROUPAL1_ENABLE    (0) /*ICU_GROUPAL1 Enable/Disable*/
 
- 1) Comment out the DRW2D Excep_ICU_GROUPAL1 function (near line 300 of dave_base_rx.c). 
-    /* <<< comment out start >>>
-    #pragma interrupt Excep_ICU_GROUPAL1(vect=113)
-    static void Excep_ICU_GROUPAL1(void)
-    {
-        unsigned long isflag;
+ Two options described below allow user set DRW2D interrupt. 
+ 1)Change ICU_GROUPAL1_ENABLE from 0 to 1, 
+   and comment out the function of group_al1_handler_isr in mcu_interrupt.c in BSP.
+   This way also makes the other peripherals interrupt in the same group interrupt as DRW2D invalidate.
 
-        isflag = d1_grpal1_get();
+   When the same group interrupt is used by DRW2D and another peripheral device, 
+   follow the next description.
 
-        if (0x00000800UL == isflag)
-        {
-            drw_int_isr();
-        }
-    }
-    <<< comment out end >>> */
-
- 2) For functions created by the user, use the BSP API to register the interrupt handler
+ 2)
+ a) For functions created by the user, use the BSP API to register the interrupt handler
     for DRW2D. 
     /* Add an include statement for platform.h. */
     #include "platform.h"
@@ -81,7 +78,7 @@ Usage Note
     }
 
 
- 3) In the DRW2D program, set the group interrupt priority based on the define macro 
+ b) In the DRW2D program, set the group interrupt priority based on the define macro 
     below (near line 26 of dave_irq_rx.c).
 
     If it is necessary to adjust the priority of the group interrupt, change the value of

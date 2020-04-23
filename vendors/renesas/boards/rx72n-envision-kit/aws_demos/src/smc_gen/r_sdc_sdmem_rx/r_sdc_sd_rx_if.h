@@ -14,7 +14,7 @@
 * following link:
 * http://www.renesas.com/disclaimer 
 *
-* Copyright (C) 2014(2015-2018) Renesas Electronics Corporation. All rights reserved.    
+* Copyright (C) 2014(2015-2019) Renesas Electronics Corporation. All rights reserved.    
 **********************************************************************************************************************/
 
 /**********************************************************************************************************************
@@ -36,6 +36,7 @@
 *         :                    There is no change in the FIT module.
 *         : 29.06.2018 2.02    Corresponded to SD Specifications Part1 Physical Layer Simplified Specification.
 *         : 30.11.2018 2.03    Corresponded to FIT guide function of Smart Configurator.
+*         : 10.02.2020 3.00    Updated RX_SDC_SD_VERSION.
 **********************************************************************************************************************/
 
 #ifndef SDC_SD_RX_H
@@ -54,8 +55,8 @@ Macro definitions
 **********************************************************************************************************************/
 /* #### SD Memory and common definitions #### */
 /* Version Number of API. */
-#define RX_SDC_SD_VERSION_MAJOR     (2)
-#define RX_SDC_SD_VERSION_MINOR     (03)
+#define RX_SDC_SD_VERSION_MAJOR     (3)
+#define RX_SDC_SD_VERSION_MINOR     (00)
 
 #define SDC_SD_CARD_NO0             (0)
 #define SDC_SD_CARD_NO1             (1)

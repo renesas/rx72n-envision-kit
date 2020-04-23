@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2015(2019) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2015(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_pstdrequest.c
@@ -29,6 +29,7 @@
  *         : 31.03.2018 1.23 Supporting Smart Configurator
  *         : 31.05.2019 1.26 Added support for GNUC and ICCRX.
  *         : 30.07.2019 1.27 RX72M is added.
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 /******************************************************************************
@@ -40,6 +41,10 @@
 #include "r_usb_extern.h"
 #include "r_usb_bitdefine.h"
 #include "r_usb_reg_access.h"
+
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+#include "r_rtos_abstract.h"
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
 #if defined(USB_CFG_PMSC_USE)
 #include "r_usb_pmsc_if.h"
@@ -176,7 +181,10 @@ void usb_pstd_stand_req2 (void)
  ******************************************************************************/
 void usb_pstd_stand_req3 (void)
 {
-    usb_ctrl_t ctrl;
+    usb_ctrl_t      ctrl;
+#if (BSP_CFG_RTOS_USED != 0)                    /* Use RTOS */
+    rtos_task_id_t  task_id;
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
     switch ((g_usb_pstd_req_type & USB_BREQUEST))
     {
@@ -208,9 +216,11 @@ void usb_pstd_stand_req3 (void)
         ctrl.size   = 0;
         ctrl.status = USB_ACK;
         ctrl.type   = USB_REQUEST;
-#if (BSP_CFG_RTOS_USED == 1)
-        ctrl.p_data = (void *)xTaskGetCurrentTaskHandle();
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#if (BSP_CFG_RTOS_USED != 0)                    /* Use RTOS */
+        rtos_get_task_id(&task_id);
+
+        ctrl.p_data = (void *)task_id;
+#endif /* (BSP_CFG_RTOS_USED != 0) */
         usb_set_event(USB_STS_REQUEST_COMPLETE, &ctrl);
 
         g_usb_pstd_std_request = USB_NO;
@@ -229,7 +239,10 @@ void usb_pstd_stand_req3 (void)
  ******************************************************************************/
 void usb_pstd_stand_req4 (void)
 {
-    usb_ctrl_t ctrl;
+    usb_ctrl_t      ctrl;
+#if (BSP_CFG_RTOS_USED != 0)                        /* Use RTOS */
+    rtos_task_id_t  task_id;
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
     switch ((g_usb_pstd_req_type & USB_BREQUEST))
     {
@@ -268,9 +281,13 @@ void usb_pstd_stand_req4 (void)
         ctrl.size   = 0;
         ctrl.status = USB_ACK;
         ctrl.type   = USB_REQUEST;
-#if (BSP_CFG_RTOS_USED == 1)
-        ctrl.p_data = (void *)xTaskGetCurrentTaskHandle();
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+        
+#if (BSP_CFG_RTOS_USED != 0)                        /* Use RTOS */
+        rtos_get_task_id(&task_id);
+
+        ctrl.p_data = (void *)task_id;
+#endif /* (BSP_CFG_RTOS_USED != 0) */
+
         usb_set_event(USB_STS_REQUEST_COMPLETE, &ctrl);
 
         g_usb_pstd_std_request = USB_NO;
@@ -289,7 +306,10 @@ void usb_pstd_stand_req4 (void)
  ******************************************************************************/
 void usb_pstd_stand_req5 (void)
 {
-    usb_ctrl_t ctrl;
+    usb_ctrl_t      ctrl;
+#if (BSP_CFG_RTOS_USED != 0)                        /* Use RTOS */
+    rtos_task_id_t  task_id;
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
     if (USB_SET_DESCRIPTOR == (g_usb_pstd_req_type & USB_BREQUEST))
     {
@@ -312,15 +332,17 @@ void usb_pstd_stand_req5 (void)
         ctrl.size   = 0;
         ctrl.status = USB_ACK;
         ctrl.type   = USB_REQUEST;
-#if (BSP_CFG_RTOS_USED == 1)
-        ctrl.p_data = (void *)xTaskGetCurrentTaskHandle();
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#if (BSP_CFG_RTOS_USED != 0)                        /* Use RTOS */
+        rtos_get_task_id(&task_id);
+
+        ctrl.p_data = (void *)task_id;
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
         usb_set_event(USB_STS_REQUEST_COMPLETE, &ctrl);
 
         g_usb_pstd_std_request = USB_NO;
     }
-    usb_pstd_ctrl_end((uint16_t) USB_CTRL_END);    /* Control transfer stop(end) */
+    usb_pstd_ctrl_end((uint16_t) USB_CTRL_END);     /* Control transfer stop(end) */
 }
 /******************************************************************************
  End of function usb_pstd_stand_req5
@@ -1505,7 +1527,10 @@ void usb_peri_class_request_rss (usb_setup_t *req)
 {
 #if defined(USB_CFG_PMSC_USE)
     /* Is a request receive target Interface? */
-    usb_ctrl_t ctrl;
+    usb_ctrl_t      ctrl;
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+    rtos_task_id_t  task_id;
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
     if (USB_GET_MAX_LUN == (req->type & USB_BREQUEST))
     {
@@ -1519,9 +1544,12 @@ void usb_peri_class_request_rss (usb_setup_t *req)
         ctrl.size   = 0;
         ctrl.status = USB_ACK;
         ctrl.type   = USB_REQUEST;
-#if (BSP_CFG_RTOS_USED == 1)
-        ctrl.p_data = (void *)xTaskGetCurrentTaskHandle();
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+        rtos_get_task_id(&task_id);
+
+        ctrl.p_data = (void *)task_id;
+#endif /* (BSP_CFG_RTOS_USED != 0) */
+
         usb_set_event(USB_STS_REQUEST_COMPLETE, &ctrl);
         g_usb_pstd_std_request = USB_NO;
     }
@@ -1531,7 +1559,10 @@ void usb_peri_class_request_rss (usb_setup_t *req)
 #else   /* defined(USB_CFG_PMSC_USE) */
 
     /* Is a request receive target Interface? */
-    usb_ctrl_t ctrl;
+    usb_ctrl_t      ctrl;
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+    rtos_task_id_t  task_id;
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
     ctrl.setup  = *req; /* Save setup data. */
     usb_cstd_set_buf(USB_NULL, (uint16_t) USB_PIPE0); /* Set pipe PID_BUF */
@@ -1539,10 +1570,14 @@ void usb_peri_class_request_rss (usb_setup_t *req)
     ctrl.size   = 0;
     ctrl.status = USB_ACK;
     ctrl.type   = USB_REQUEST;
-#if (BSP_CFG_RTOS_USED == 1)
-    ctrl.p_data = (void *)xTaskGetCurrentTaskHandle();
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+    rtos_get_task_id(&task_id);
+
+    ctrl.p_data = (void *)task_id;
+#endif /* (BSP_CFG_RTOS_USED != 0) */
+
     usb_set_event(USB_STS_REQUEST_COMPLETE, &ctrl);
+
     g_usb_pstd_std_request = USB_NO;
 
     usb_pstd_ctrl_end((uint16_t) USB_CTRL_END); /* End control transfer. */
@@ -1558,7 +1593,10 @@ void usb_peri_class_request_rss (usb_setup_t *req)
  ******************************************************************************/
 void usb_peri_class_request_wss (usb_setup_t *req)
 {
-    usb_ctrl_t ctrl;
+    usb_ctrl_t      ctrl;
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+    rtos_task_id_t  task_id;
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
     ctrl.setup = *req;
     usb_cstd_set_buf(USB_NULL, (uint16_t) USB_PIPE0); /* Set BUF */
@@ -1566,10 +1604,14 @@ void usb_peri_class_request_wss (usb_setup_t *req)
     ctrl.size   = ctrl.setup.length - g_usb_pstd_data_cnt[USB_PIPE0];
     ctrl.status = USB_ACK;
     ctrl.type   = USB_REQUEST;
-#if (BSP_CFG_RTOS_USED == 1)
-    ctrl.p_data = (void *)xTaskGetCurrentTaskHandle();
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+    rtos_get_task_id(&task_id);
+
+    ctrl.p_data = (void *)task_id;
+#endif /* (BSP_CFG_RTOS_USED != 0) */
+
     usb_set_event(USB_STS_REQUEST_COMPLETE, &ctrl);
+    
     g_usb_pstd_std_request = USB_NO;
 
     usb_pstd_ctrl_end((uint16_t) USB_CTRL_END);

@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2015(2018) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2015(2020) Renesas Electronics Corporation. All rights reserved.
  *********************************************************************************************************************/
 /**********************************************************************************************************************
  * File Name    : r_usb_clibusbip.c
@@ -28,6 +28,7 @@
  *         : 30.09.2016 1.20 RX65N/RX651 is added.
  *         : 31.03.2018 1.23 Supporting Smart Configurator
  *         : 16.11.2018 1.24 Supporting RTOS Thread safe
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 /******************************************************************************
@@ -39,6 +40,10 @@
 #include "r_usb_extern.h"
 #include "r_usb_bitdefine.h"
 #include "r_usb_reg_access.h"
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+#include "r_rtos_abstract.h"
+#include "r_usb_cstd_rtos.h"
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
 #if defined(USB_CFG_HCDC_USE)
 #include "r_usb_hcdc_if.h"
@@ -80,6 +85,18 @@
 /******************************************************************************
  Private global variables and functions
  *****************************************************************************/
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+static uint16_t     g_rtos_msg_pipe[USB_NUM_USBIP][USB_MAXPIPE_NUM + 1];
+
+#if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
+static uint16_t     g_rtos_msg_count_pcd_sub            = 0;
+#endif /* (USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI */
+
+#if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
+static uint16_t     g_rtos_msg_count_hcd_sub            = 0;
+#endif /* (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST */
+#endif /* BSP_CFG_RTOS_USED != 0 */
+
 
 /******************************************************************************
  Renesas Abstracted Driver API functions
@@ -345,7 +362,15 @@ uint16_t usb_cstd_port_speed (usb_utr_t *ptr)
  ******************************************************************************/
 void usb_set_event (usb_status_t event, usb_ctrl_t *p_ctrl)
 {
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED == 0)    /* Non-OS */
+    g_usb_cstd_event.code[g_usb_cstd_event.write_pointer] = event;
+    g_usb_cstd_event.ctrl[g_usb_cstd_event.write_pointer] = *p_ctrl;
+    g_usb_cstd_event.write_pointer++;
+    if (g_usb_cstd_event.write_pointer >= USB_EVENT_MAX)
+    {
+        g_usb_cstd_event.write_pointer = 0;
+    }
+#else /* (BSP_CFG_RTOS_USED == 0) */
     static uint16_t     count = 0;
 
     p_ctrl->event = event;
@@ -354,16 +379,22 @@ void usb_set_event (usb_status_t event, usb_ctrl_t *p_ctrl)
     switch (event)
     {
         case    USB_STS_DEFAULT :
-        case    USB_STS_CONFIGURED :     
+            (*g_usb_apl_callback)(&g_usb_cstd_event[count], (rtos_task_id_t)USB_NULL, USB_OFF);
+        break;
+        case    USB_STS_CONFIGURED :
+            (*g_usb_apl_callback)(&g_usb_cstd_event[count], (rtos_task_id_t)USB_NULL, USB_OFF);
+        break;
         case    USB_STS_BC :
         case    USB_STS_OVERCURRENT :
         case    USB_STS_NOT_SUPPORT :
+            (*g_usb_apl_callback)(&g_usb_cstd_event[count], (rtos_task_id_t)USB_NULL, USB_OFF);
+        break;
         case    USB_STS_DETACH :
-            (*g_usb_apl_callback)(&g_usb_cstd_event[count], (usb_hdl_t)USB_NULL, USB_OFF);
+            (*g_usb_apl_callback)(&g_usb_cstd_event[count], (rtos_task_id_t)USB_NULL, USB_OFF);
         break;
  
         case    USB_STS_REQUEST :
-            (*g_usb_apl_callback)(&g_usb_cstd_event[count], (usb_hdl_t)USB_NULL, USB_ON);
+            (*g_usb_apl_callback)(&g_usb_cstd_event[count], (rtos_task_id_t)USB_NULL, USB_ON);
         break;
 
         case    USB_STS_SUSPEND :
@@ -371,13 +402,13 @@ void usb_set_event (usb_status_t event, usb_ctrl_t *p_ctrl)
             if (USB_HOST == g_usb_usbmode)
             {
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
-                (*g_usb_apl_callback)(&g_usb_cstd_event[count], (usb_hdl_t)p_ctrl->p_data, USB_OFF);
+                (*g_usb_apl_callback)(&g_usb_cstd_event[count], (rtos_task_id_t)p_ctrl->p_data, USB_OFF);
 #endif  /* (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST */
             }
             else
             {
 #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-                (*g_usb_apl_callback)(&g_usb_cstd_event[count], (usb_hdl_t)USB_NULL, USB_OFF);
+                (*g_usb_apl_callback)(&g_usb_cstd_event[count], (rtos_task_id_t)USB_NULL, USB_OFF);
 #endif  /* (USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI */
             }
         break;
@@ -386,7 +417,7 @@ void usb_set_event (usb_status_t event, usb_ctrl_t *p_ctrl)
             if (USB_HOST == g_usb_usbmode)
             {
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
-                (*g_usb_apl_callback)(&g_usb_cstd_event[count], (usb_hdl_t)p_ctrl->p_data, USB_OFF);
+                (*g_usb_apl_callback)(&g_usb_cstd_event[count], (rtos_task_id_t)p_ctrl->p_data, USB_OFF);
 #endif  /* (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST */
             }
             else
@@ -395,12 +426,12 @@ void usb_set_event (usb_status_t event, usb_ctrl_t *p_ctrl)
                 if (0 == p_ctrl->setup.length)
                 {
                     /* Processing for USB request has the no data stage */
-                    (*g_usb_apl_callback)(&g_usb_cstd_event[count], (usb_hdl_t)USB_NULL, USB_OFF);
+                    (*g_usb_apl_callback)(&g_usb_cstd_event[count], (rtos_task_id_t)USB_NULL, USB_OFF);
                 }
                 else
                 {
                     /* Processing for USB request has the data state */
-                    (*g_usb_apl_callback)(&g_usb_cstd_event[count], (usb_hdl_t)p_ctrl->p_data, USB_OFF);
+                    (*g_usb_apl_callback)(&g_usb_cstd_event[count], (rtos_task_id_t)p_ctrl->p_data, USB_OFF);
                 }
 #endif  /* (USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI */
             }
@@ -411,28 +442,18 @@ void usb_set_event (usb_status_t event, usb_ctrl_t *p_ctrl)
 #if defined(USB_CFG_HMSC_USE)       
         case    USB_STS_MSC_CMD_COMPLETE:
 #endif /* defined(USB_CFG_HMSC_USE) */
-            (*g_usb_apl_callback)(&g_usb_cstd_event[count], (usb_hdl_t)p_ctrl->p_data, USB_OFF);
+            (*g_usb_apl_callback)(&g_usb_cstd_event[count], (rtos_task_id_t)p_ctrl->p_data, USB_OFF);
         break;
 
         default :
             /* Do Nothing */
         break;
     }
-
     count = ((count + 1) % USB_EVENT_MAX);
-
-#else /* (BSP_CFG_RTOS_USED == 1) */
-    g_usb_cstd_event.code[g_usb_cstd_event.write_pointer] = event;
-    g_usb_cstd_event.ctrl[g_usb_cstd_event.write_pointer] = *p_ctrl;
-    g_usb_cstd_event.write_pointer++;
-    if (g_usb_cstd_event.write_pointer >= USB_EVENT_MAX)
-    {
-        g_usb_cstd_event.write_pointer = 0;
-    }
-#endif /*(BSP_CFG_RTOS_USED == 1)*/
+#endif /*(BSP_CFG_RTOS_USED == 0)*/
 } /* End of function usb_set_event() */
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)    /* Non-OS */
 /******************************************************************************
  Function Name   : usb_cstd_usb_task
  Description     : USB driver main loop processing.
@@ -455,7 +476,7 @@ void usb_cstd_usb_task (void)
             usb_hstd_hcd_task((usb_vp_int_t) 0); /* HCD Task */
             usb_hstd_mgr_task((usb_vp_int_t) 0); /* MGR Task */
   #if USB_CFG_HUB == USB_CFG_ENABLE
-            usb_hhub_task((usb_vp_int_t) 0); /* HUB Task */
+            usb_hstd_hub_task((usb_vp_int_t) 0); /* HUB Task */
   #endif  /* USB_CFG_HUB == USB_CFG_ENABLE */
 #if defined(USB_CFG_HCDC_USE) || defined(USB_CFG_HHID_USE) || defined(USB_CFG_HMSC_USE) || defined(USB_CFG_HVND_USE)
 
@@ -529,6 +550,189 @@ void usb_class_task (void)
 
 } /* End of function usb_class_task */
 #endif /*(BSP_CFG_RTOS_USED == 0)*/
+
+#if (BSP_CFG_RTOS_USED != 0)         /* Use RTOS */
+/******************************************************************************
+ Function Name   : usb_rtos_delete_msg_submbx
+ Description     : Message clear for PIPE Transfer wait que.
+ Arguments       : usb_utr_t *ptr       : Pointer to usb_utr_t structure.
+                 : uint16_t  pipe_no    : Pipe no.
+ Return          : none
+ ******************************************************************************/
+void usb_rtos_delete_msg_submbx (usb_utr_t *p_ptr, uint16_t usb_mode)
+{
+    usb_utr_t   *mess;
+    uint16_t    i;
+    uint16_t    ip;
+    uint16_t    pipe;
+
+    if (USB_HOST == usb_mode)
+    {
+#if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
+    ip = p_ptr->ip;
+#endif /* ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST) */
+    }
+    else
+    {
+#if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
+        ip = USB_CFG_USE_USBIP;
+#endif /* ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST) */
+    }
+
+    pipe = p_ptr->pipectr;
+
+    if (0 == g_rtos_msg_pipe[ip][pipe])
+    {
+        return;
+    }
+
+    if (USB_HOST == usb_mode)
+    {
+#if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
+        /* WAIT_LOOP */
+        for (i = 0; i != g_rtos_msg_count_hcd_sub; i++)
+        {
+            rtos_receive_mailbox(&g_rtos_usb_hcd_sub_mbx_id, (void **)&mess, RTOS_ZERO);
+            if ((ip == mess->ip)&&(pipe == mess->keyword))
+            {
+            	rtos_release_fixed_memory (&g_rtos_usb_mpf_id, (void *)mess);
+            }
+            else
+            {
+                rtos_send_mailbox (&g_rtos_usb_hcd_sub_mbx_id, (void *)mess);
+            }
+        }
+        g_rtos_msg_count_hcd_sub -= g_rtos_msg_pipe[ip][pipe];
+#endif /* ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST) */
+    }
+    else
+    {
+#if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
+        /* WAIT_LOOP */
+        for (i = 0; i != g_rtos_msg_count_pcd_sub; i++)
+        {
+            rtos_receive_mailbox (&g_rtos_usb_pcd_sub_mbx_id, (void **)&mess, RTOS_ZERO);
+            if (pipe == mess->keyword)
+            {
+                rtos_release_fixed_memory (&g_rtos_usb_mpf_id, (void *)mess);
+            }
+            else
+            {
+                rtos_send_mailbox (&g_rtos_usb_pcd_sub_mbx_id, (void *)mess);
+            }
+        }
+        g_rtos_msg_count_pcd_sub -= g_rtos_msg_pipe[ip][pipe];
+#endif /* ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST) */
+    }
+    g_rtos_msg_pipe[ip][pipe] = 0;
+}
+/******************************************************************************
+ End of function usb_rtos_delete_msg_submbx
+ ******************************************************************************/
+
+/******************************************************************************
+ Function Name   : usb_rtos_resend_msg_to_submbx
+ Description     : Get PIPE Transfer wait que and Message send to HCD/PCD
+ Argument        : uint16_t  pipe_no    : Pipe no.
+ Return          : none
+ ******************************************************************************/
+void usb_rtos_resend_msg_to_submbx (uint16_t ip, uint16_t pipe, uint16_t usb_mode)
+{
+    usb_utr_t   *mess;
+
+    if ((USB_MIN_PIPE_NO > pipe) || (USB_MAXPIPE_NUM < pipe))
+    {
+        return;
+    }
+
+    if (0 == g_rtos_msg_pipe[ip][pipe])
+    {
+        return;
+    }
+
+    if (USB_HOST == usb_mode)
+    {
+#if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
+        /* WAIT_LOOP */
+        while(1)
+        {
+            rtos_receive_mailbox (&g_rtos_usb_hcd_sub_mbx_id, (void **)&mess, RTOS_ZERO);
+            if ((mess->ip == ip) && (mess->keyword == pipe))
+            {
+                g_rtos_msg_pipe[ip][pipe]--;
+                g_rtos_msg_count_hcd_sub--;
+                rtos_send_mailbox (&g_rtos_usb_hcd_mbx_id,(void *)mess);
+                break;
+            }
+            else
+            {
+                rtos_send_mailbox (&g_rtos_usb_hcd_sub_mbx_id, (void *)mess);
+            }
+        }
+#endif /* ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST) */
+    }
+    else
+    {
+#if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
+        /* WAIT_LOOP */
+        while(1)
+        {
+            rtos_receive_mailbox (&g_rtos_usb_pcd_sub_mbx_id, (void **)&mess, RTOS_ZERO);
+            if (mess->keyword == pipe)
+            {
+                g_rtos_msg_pipe[ip][pipe]--;
+                g_rtos_msg_count_pcd_sub--;
+                rtos_send_mailbox (&g_rtos_usb_pcd_mbx_id,(void *)mess);
+                break;
+            }
+            else
+            {
+                rtos_send_mailbox (&g_rtos_usb_pcd_sub_mbx_id, (void *)mess);
+            }
+        }
+#endif /* ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI) */
+    }
+}
+/******************************************************************************
+ End of function usb_rtos_resend_msg_to_submbx
+ ******************************************************************************/
+
+/******************************************************************************
+ Function Name   : usb_rtos_send_msg_to_submbx
+ Description     : Message foward to PIPE Transfer wait que.
+ Arguments       : usb_utr_t *ptr       : Pointer to usb_utr_t structure.
+                 : uint16_t  pipe_no    : Pipe no.
+ Return          : none
+ ******************************************************************************/
+void usb_rtos_send_msg_to_submbx (usb_utr_t *p_ptr, uint16_t pipe_no, uint16_t usb_mode)
+{
+    if ((USB_MIN_PIPE_NO > pipe_no) || (USB_MAXPIPE_NUM < pipe_no))
+    {
+        return;
+    }
+
+
+    if (USB_HOST == usb_mode)
+    {
+#if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
+        g_rtos_msg_pipe[p_ptr->ip][pipe_no]++;
+        g_rtos_msg_count_hcd_sub++;
+        rtos_send_mailbox (&g_rtos_usb_hcd_sub_mbx_id, (void *)p_ptr);
+#endif  /* ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST) */
+    }
+    else
+    {
+#if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
+        g_rtos_msg_pipe[USB_CFG_USE_USBIP][pipe_no]++;
+        g_rtos_msg_count_pcd_sub++;
+        rtos_send_mailbox (&g_rtos_usb_pcd_sub_mbx_id, (void *)p_ptr);
+#endif /* ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI) */
+    }
+}
+/******************************************************************************
+ End of function usb_rtos_send_msg_to_submbx
+ ******************************************************************************/
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
 /******************************************************************************
  End  Of File

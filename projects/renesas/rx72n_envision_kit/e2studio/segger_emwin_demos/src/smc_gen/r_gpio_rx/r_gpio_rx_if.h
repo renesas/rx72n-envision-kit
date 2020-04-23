@@ -45,6 +45,9 @@
 *         : 20.05.2019 3.00    Added support for GNUC and ICCRX.
 *         : 28.06.2019 3.10    Added support RX23W
 *         : 15.08.2019 3.20    Added support RX72M
+*         : 25.11.2019 3.30    Added support RX13T
+*                              Removed support for Generation 1 devices.
+*         : 30.12.2019 3.40    Added support RX72N, RX66N
 ***********************************************************************************************************************/
 
 #ifndef GPIO_RX_INTERFACE_HEADER_FILE
@@ -67,8 +70,8 @@ Includes   <System Includes> , "Project Includes"
     #include "./src/targets/rx111/r_gpio_rx111.h"
 #elif   defined(BSP_MCU_RX130)
     #include "./src/targets/rx130/r_gpio_rx130.h"
-#elif defined(BSP_MCU_RX210)
-    #include "./src/targets/rx210/r_gpio_rx210.h"
+#elif   defined(BSP_MCU_RX13T)
+    #include "./src/targets/rx13t/r_gpio_rx13t.h"
 #elif defined(BSP_MCU_RX230)
     #include "./src/targets/rx230/r_gpio_rx230.h"
 #elif defined(BSP_MCU_RX231)
@@ -81,14 +84,14 @@ Includes   <System Includes> , "Project Includes"
     #include "./src/targets/rx24t/r_gpio_rx24t.h"
 #elif defined(BSP_MCU_RX24U)
     #include "./src/targets/rx24u/r_gpio_rx24u.h"
-#elif defined(BSP_MCU_RX63N)
-    #include "./src/targets/rx63n/r_gpio_rx63n.h"
 #elif defined(BSP_MCU_RX64M)
     #include "./src/targets/rx64m/r_gpio_rx64m.h"
 #elif defined(BSP_MCU_RX65N)
     #include "./src/targets/rx65n/r_gpio_rx65n.h"
 #elif defined(BSP_MCU_RX66T)
     #include "./src/targets/rx66t/r_gpio_rx66t.h"
+#elif defined(BSP_MCU_RX66N)
+    #include "./src/targets/rx66n/r_gpio_rx66n.h"
 #elif defined(BSP_MCU_RX71M)
     #include "./src/targets/rx71m/r_gpio_rx71m.h"
 #elif defined(BSP_MCU_RX72T)
@@ -111,7 +114,7 @@ Macro definitions
 
 /* Version Number of API. */
 #define GPIO_RX_VERSION_MAJOR           (3)
-#define GPIO_RX_VERSION_MINOR           (20)
+#define GPIO_RX_VERSION_MINOR           (40)
 
 /***********************************************************************************************************************
 Typedef definitions

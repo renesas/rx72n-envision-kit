@@ -10,7 +10,7 @@ R01AN2025JJ
 
 Version
 -------
-v1.27
+v1.30
 
 Overview
 --------
@@ -31,6 +31,8 @@ Supported MCUs
 * RX66T Group
 * RX72T Group
 * RX72M Group
+* RX72N Group
+* RX66N Group
 
 
 Boards Tested On
@@ -41,6 +43,7 @@ Boards Tested On
 * RSKRX65N_2MB
 * RSKRX72T
 * RSKRX72M
+* RSKRX72N
 
  
 Limitations
@@ -72,9 +75,9 @@ r_usb_basic
 |
 +---doc
 |     \en
-|     |   r01an2025ej0127_usb.pdf
+|     |   r01an2025ej0130_usb.pdf
 |     \jp
-|         r01an2025jj0127_usb.pdf
+|         r01an2025jj0130_usb.pdf
 |
 +---ref
 |       r_usb_config_reference.h
@@ -82,11 +85,13 @@ r_usb_basic
 \---src
      +---driver
      |      +---inc
+     |            r_rtos_abstract.h
      |            r_usb_basic_define.h
      |            r_usb_extern.h
      |            r_usb_typedef.h
      |            r_usb_cstd_rtos.h
      |
+     |      r_rtos_abstract.c
      |      r_usb_cdataio.c
      |      r_usb_clibusbip.c
      |      r_usb_cstd_rtos.c

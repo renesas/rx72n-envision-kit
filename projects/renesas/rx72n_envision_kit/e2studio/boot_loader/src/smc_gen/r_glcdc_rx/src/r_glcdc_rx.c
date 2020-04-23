@@ -18,7 +18,7 @@
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_glcdc_rx.c
- * Version      : 1.10
+ * Version      : 1.30
  * Description  : GLCDC API functions.
  ************************************************************************************************************************/
 /***********************************************************************************************************************
@@ -27,6 +27,7 @@
  *         : 04.04.2019 1.10      Added the comment to loop statement.
  *                                Added support for GNUC and ICCRX.
  *                                Deleted the inline expansion of R_GLCDC_GetVersion.
+ *         : 20.09.2019 1.30      Changed the comment based on Doxygen format.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  Includes <System Includes> , "Project Includes"
@@ -39,53 +40,51 @@
 /* GLCD control block */
 glcdc_ctrl_t g_ctrl_blk =
 {
-   GLCDC_STATE_CLOSED,
-   false,
-   { 0U, 0U },
-   0U,
-   0U,
-   { false, false },
-   NULL,
-   false,
-   { false, false, false }
-};
+    GLCDC_STATE_CLOSED,
+    false,
+    { 0U, 0U }, 0U, 0U,
+    { false, false },
+    NULL,
+    false,
+    { false, false, false } };
 
 /***********************************************************************************************************************
  Private global variables and functions
- ***********************************************************************************************************************/
+ **********************************************************************************************************************/
 
 /***********************************************************************************************************************
- * Outline      : GLCDC Initialization Processing
- * Function Name: R_GLCDC_Open
- * Description  : Setting GLCDC initialization. It is necessary to set an argument *p_cfg
- *                and when this function is executed, GLCDC is ready to be used.
- * Arguments    : p_cfg -
- *                  GLCDC configuration parameters.
- * Return Value : GLCDC_SUCCESS -
- *                  Device was opened successfully.
- *                GLCDC_ERR_LOCK_FUNC -
- *                  GLCDC resource is in use by another process.
- *                GLCDC_ERR_INVALID_PTR -
- *                  Pointer to the control block or the configuration structure is NULL.
- *                GLCDC_ERR_INVALID_ARG -
- *                  Invalid parameter in the argument.
- *                GLCDC_ERR_INVALID_MODE -
- *                  Incorrect mode
- *                GLCDC_ERR_INVALID_TIMING_SETTING -
- *                  Invalid panel timing parameter.
- *                GLCDC_ERR_INVALID_LAYER_SETTING -
- *                  Invalid layer setting found.
- *                GLCDC_ERR_INVALID_ALIGNMENT -
- *                  Invalid memory alignment found.
- *                GLCDC_ERR_INVALID_GAMMA_SETTING -
- *                  Invalid gamma correction setting found.
- *                GLCDC_ERR_INVALID_CLUT_ACCESS -
- *                  Invalid access to color palette entry.
- *                GLCDC_ERR_INVALID_BLEND_SETTING -
- *                  Invalid blend setting.
- * Note         : To use Graphics LCD Controller (GLCDC), PCLKA setting is required.
- *              : GLCDC pins must be set in IOPORT after calling this API.
- ***********************************************************************************************************************/
+ *Function Name: R_GLCDC_Open
+ *******************************************************************************************************************//**
+ *@brief This function initializes the GLCDC FIT module. This function must be called before calling
+ *any other API functions.
+ *@param[in] *p_cfg Pointer to the GLCDC setting data structure.
+ *@retval GLCDC_SUCCESS                    Processing has been completed successfully.
+ *@retval GLCDC_ERR_INVALID_PTR            The p_cfg parameter is NULL pointer.
+ *@retval GLCDC_ERR_LOCK_FUNC              GLCDC resource is used by another process
+ *@retval GLCDC_ERR_INVALID_ARG            The argument for the GLCDC setting data is invalid.
+ *@retval GLCDC_ERR_INVALID_MODE           Function cannot be executed in this mode.
+ *@retval GLCDC_ERR_INVALID_TIMING_SETTING Timing setting of the panel output signal is invalid.
+ *@retval GLCDC_ERR_INVALID_LAYER_SETTING  Graphics screen setting is invalid.
+ *@retval GLCDC_ERR_INVALID_ALIGNMENT      Start address of the frame buffer is invalid.
+ *@retval GLCDC_ERR_INVALID_GAMMA_SETTING  Gamma correction setting is invalid.
+ *@retval GLCDC_ERR_INVALID_CLUT_ACCESS    CLUT memory setting is invalid.
+ *@retval GLCDC_ERR_INVALID_BLEND_SETTING  Setting for blending is invalid.
+ *@details This function releases the GLCDC module-stop state and software reset to enable the GLCDC operation.
+ *Then it specifies the panel clock, the panel output signal timing, background screen, graphics screen, CLUT memory,
+ *output data format, correction processing, and interrupts used by the GLCDC.
+ *This function can be executed when the mode is 'GLCDC_STATE_CLOSED'.
+ *When processing in this function has been completed successfully, a transition is made to
+ *'GLCDC_STATE_NOT_DISPLAYING'.
+ *@note (1) If the target graphics screen is disabled by setting p_base to NULL in this function\n
+ *The graphics screen setting in the R_GLCDC_LayerChange function and CLUT memory updates in the R_GLCDC_ClutUpdate
+ *function becomes disabled.
+ *To enable the disabled graphics, execute the R_GLCDC_Open function again and set the target graphics screen
+ *to be enabled.\n
+ *(2) Notes on macro line offset setting\n
+ *On the hardware specification, since data is read from the frame buffer for every 64 bytes, set a multiple of 64 for
+ *structure member input.offset (macro line offset).
+ *If it is not possible to observe this restriction, refer to the application note for details.
+ **********************************************************************************************************************/
 glcdc_err_t R_GLCDC_Open(glcdc_cfg_t const * const p_cfg)
 {
     uint32_t frame;
@@ -126,7 +125,7 @@ glcdc_err_t R_GLCDC_Open(glcdc_cfg_t const * const p_cfg)
     }
 
     /* Save status of frame buffer read enable */
-    if(NULL == p_cfg->input[GLCDC_FRAME_LAYER_1].p_base)
+    if (NULL == p_cfg->input[GLCDC_FRAME_LAYER_1].p_base)
     {
         g_ctrl_blk.graphics_read_enable[GLCDC_FRAME_LAYER_1] = false;
     }
@@ -135,7 +134,7 @@ glcdc_err_t R_GLCDC_Open(glcdc_cfg_t const * const p_cfg)
         g_ctrl_blk.graphics_read_enable[GLCDC_FRAME_LAYER_1] = true;
     }
 
-    if(NULL == p_cfg->input[GLCDC_FRAME_LAYER_2].p_base)
+    if (NULL == p_cfg->input[GLCDC_FRAME_LAYER_2].p_base)
     {
         g_ctrl_blk.graphics_read_enable[GLCDC_FRAME_LAYER_2] = false;
     }
@@ -153,7 +152,8 @@ glcdc_err_t R_GLCDC_Open(glcdc_cfg_t const * const p_cfg)
     g_ctrl_blk.interrupt.gr2uf_enable = p_cfg->interrupt.gr2uf_enable;
 
     /* If one of the interrupt setting is enable, setting value is set after first vpos interrupt */
-    if ((true == p_cfg->interrupt.vpos_enable) || (true == p_cfg->interrupt.gr1uf_enable) || (true == p_cfg->interrupt.gr2uf_enable))
+    if ((true == p_cfg->interrupt.vpos_enable) || (true == p_cfg->interrupt.gr1uf_enable)
+            || (true == p_cfg->interrupt.gr2uf_enable))
     {
         g_ctrl_blk.first_vpos_interrupt_flag = false;
         initial_interrupt.vpos_enable = true;
@@ -206,7 +206,7 @@ glcdc_err_t R_GLCDC_Open(glcdc_cfg_t const * const p_cfg)
         r_glcdc_graphics_layer_set (&p_cfg->input[frame], (glcdc_frame_layer_t) frame);
         r_glcdc_blend_condition_set (&p_cfg->blend[frame], (glcdc_frame_layer_t) frame);
         r_glcdc_graphics_chromakey_set (&p_cfg->chromakey[frame], (glcdc_frame_layer_t) frame);
-        r_glcdc_clut_update(&p_cfg->clut[frame], (glcdc_frame_layer_t) frame);
+        r_glcdc_clut_update (&p_cfg->clut[frame], (glcdc_frame_layer_t) frame);
     }
 
     /* Configure the output control block */
@@ -227,7 +227,7 @@ glcdc_err_t R_GLCDC_Open(glcdc_cfg_t const * const p_cfg)
     r_glcdc_interrupt_setting (&initial_interrupt);
 
     /* Allow reading of graphics data */
-    r_glcdc_graphics_read_enable();
+    r_glcdc_graphics_read_enable ();
 
     /* Change GLCDC driver state */
     g_ctrl_blk.state = GLCDC_STATE_NOT_DISPLAYING;
@@ -235,22 +235,21 @@ glcdc_err_t R_GLCDC_Open(glcdc_cfg_t const * const p_cfg)
     return GLCDC_SUCCESS;
 } /* End of function R_GLCDC_Open() */
 
-
 /***********************************************************************************************************************
- * Outline      : GLCDC Closing Processing
- * Function Name: R_GLCDC_Close
- * Description  : Perform GLCDC closing process. When this function is executed,
- *                GLCDC is reset and transitioned to module stop state.
- * Arguments    : none
- * Return Value : GLCDC_SUCCESS -
- *                  Device was opened successfully.
- *                GLCDC_ERR_NOT_OPEN -
- *                  Open function is not called yet.
- *                GLCDC_ERR_INVALID_MODE -
- *                  Incorrect mode.
- * Note         : Stop displaying with GLCDC_CMD_STOP_DISPLAY command of
- *                R_GLCDC_Control function before call this function.
- ***********************************************************************************************************************/
+ *Function Name: R_GLCDC_Close
+ *******************************************************************************************************************//**
+ *@brief This function closes the GLCDC FIT module.
+ *@param None.
+ *@retval GLCDC_SUCCESS             Processing has been completed successfully.
+ *@retval GLCDC_ERR_NOT_OPEN        R_GLCDC_Open has not been executed.
+ *@retval GLCDC_ERR_INVALID_MODE    Function cannot be executed in this mode.
+ *@details To close the GLCDC FIT module, this function disables interrupts used by the GLCDC. Then it executes
+ *the software reset and place the GLCDC in the module-stop state. This function can be executed when the mode
+ *is 'GLCDC_STATE_NOT_DISPLAYING'.
+ *When processing in this function has been completed successfully, a transition is made to 'GLCDC_STATE_CLOSED'.
+ *@note When this function is executed, registers except registers associated with the CLUT memory are initialized.
+ *To enable GLCDC operation again, specify necessary settings again when the R_GLCDC_Open function is executed.
+ **********************************************************************************************************************/
 glcdc_err_t R_GLCDC_Close(void)
 {
     glcdc_interrupt_cfg_t interrupt;
@@ -270,14 +269,14 @@ glcdc_err_t R_GLCDC_Close(void)
     detection.vpos_detect = false;
     detection.gr1uf_detect = false;
     detection.gr2uf_detect = false;
-    r_glcdc_detect_setting(&detection);
+    r_glcdc_detect_setting (&detection);
 
     /* interrupt disable */
     interrupt.vpos_enable = false;
     interrupt.gr1uf_enable = false;
     interrupt.gr2uf_enable = false;
 
-    r_glcdc_interrupt_setting(&interrupt);
+    r_glcdc_interrupt_setting (&interrupt);
 
     /* Reset the GLCD hardware */
     r_glcdc_software_reset ();
@@ -294,34 +293,27 @@ glcdc_err_t R_GLCDC_Close(void)
     return GLCDC_SUCCESS;
 } /* End of function R_GLCDC_Close() */
 
-
 /***********************************************************************************************************************
- * Outline      : GLCDC Control Processing
- * Function Name: R_GLCDC_Control
- * Description  : Perform GLCDC Control Process.
- *                Corresponding to argument cmd, GLCDC Operation Start, Operation Stop,
- *                Interrupt Setting, Detection Status Clear processing is performed.
- * Arguments    : cmd -
- *                  Control function command.
- *                p_args -
- *                  Pointer of setting parameter.
- * Return Value : GLCDC_SUCCESS -
- *                  Device was opened successfully.
- *                GLCDC_ERR_INVALID_PTR -
- *                  Pointer to the control block or the configuration structure is NULL.
- *                GLCDC_ERR_INVALID_ARG -
- *                  Invalid parameter in the argument.
- *                GLCDC_ERR_INVALID_MODE -
- *                  Incorrect mode
- *                GLCDC_ERR_NOT_OPEN -
- *                  Open function is not called yet.
- *                GLCDC_ERR_INVALID_UPDATE_TIMING -
- *                  Invalid timing for register update.
- * Note         : none
- ***********************************************************************************************************************/
+ *Function Name: R_GLCDC_Control
+ *******************************************************************************************************************//**
+ *@brief This function performs processing according to the control command.
+ *@param[in] cmd Control command to specify.
+ *@param[in] p_args Pointer to the setting parameters structure.
+ *@retval GLCDC_SUCCESS           Processing has been completed successfully.
+ *@retval GLCDC_ERR_INVALID_PTR   The p_args parameter is NULL pointer.
+ *@retval GLCDC_ERR_INVALID_ARG   The argument set is invalid.
+ *@retval GLCDC_ERR_INVALID_MODE  Function cannot be executed in this mode.
+ *@retval GLCDC_ERR_NOT_OPEN      R_GLCDC_Open has not been executed.
+ *@retval GLCDC_ERR_INVALID_UPDATE_TIMING Update timing of the register is invalid.
+ *@details This function performs GLCDC control processing according to the control command.
+ *@note When the GLCDC_CMD_STOP_DISPLAY command is executed, the GLCDC stops its operation after the frame end of
+ *background generating block. To enable GLCDC operation again, wait for the frame end of an output signal to
+ *the LCD panel, and then enable GLCDC operation.
+ *Otherwise, the GLCDC may not operate correctly depending on the LCD panel used.
+ **********************************************************************************************************************/
 glcdc_err_t R_GLCDC_Control(glcdc_control_cmd_t cmd, void const * const p_args)
 {
-    glcdc_detect_cfg_t * p_detection;
+    glcdc_detect_cfg_t *p_detection;
 
     if (GLCDC_STATE_CLOSED == g_ctrl_blk.state)
     {
@@ -343,7 +335,7 @@ glcdc_err_t R_GLCDC_Control(glcdc_control_cmd_t cmd, void const * const p_args)
             /* Start to output the vertical and horizontal synchronization signals and screen data. */
             r_glcdc_bg_operation_enable ();
 
-        break;
+            break;
 
         case GLCDC_CMD_STOP_DISPLAY:
 
@@ -380,7 +372,7 @@ glcdc_err_t R_GLCDC_Control(glcdc_control_cmd_t cmd, void const * const p_args)
             /* status update */
             g_ctrl_blk.state = GLCDC_STATE_NOT_DISPLAYING;
 
-        break;
+            break;
 
         case GLCDC_CMD_SET_INTERRUPT:
 
@@ -399,7 +391,7 @@ glcdc_err_t R_GLCDC_Control(glcdc_control_cmd_t cmd, void const * const p_args)
             /* interrupt setting */
             r_glcdc_interrupt_setting ((glcdc_interrupt_cfg_t *) p_args);
 
-        break;
+            break;
 
         case GLCDC_CMD_CLR_DETECTED_STATUS:
 
@@ -424,7 +416,7 @@ glcdc_err_t R_GLCDC_Control(glcdc_control_cmd_t cmd, void const * const p_args)
                 r_glcdc_gr2uf_int_status_clear ();
             }
 
-        break;
+            break;
 
         case GLCDC_CMD_CHANGE_BG_COLOR:
 
@@ -437,7 +429,7 @@ glcdc_err_t R_GLCDC_Control(glcdc_control_cmd_t cmd, void const * const p_args)
 
             r_glcdc_bg_color_setting ((glcdc_color_t *) p_args);
 
-        break;
+            break;
 
         default:
             return GLCDC_ERR_INVALID_ARG;
@@ -446,37 +438,25 @@ glcdc_err_t R_GLCDC_Control(glcdc_control_cmd_t cmd, void const * const p_args)
     return GLCDC_SUCCESS;
 } /* End of function R_GLCDC_Control() */
 
-
 /***********************************************************************************************************************
- * Outline      : Change processing of Graphic 1 and Graphic 2 of GLCDC
- * Function Name: R_GLCDC_LayerChange
- * Description  : Perform change processing of Graphic 1 and Graphic 2 of GLCDC.
- *                Corresponding to argument cmd, the basic setting, chroma key
- *                and blending setting of Graphic 1 and Graphic 2 are performed.
- * Arguments    : frame -
- *                   Graphic plane select.
- *                p_args -
- *                   Pointer of setting parameter.
- * Return Value : GLCDC_SUCCESS -
- *                  Device was opened successfully.
- *                GLCDC_ERR_INVALID_PTR -
- *                  Pointer to the control block or the configuration structure is NULL.
- *                GLCDC_ERR_INVALID_ARG -
- *                  Invalid parameter in the argument.
- *                GLCDC_ERR_INVALID_MODE -
- *                  Incorrect mode.
- *                GLCDC_ERR_NOT_OPEN -
- *                  Open function is not called yet.
- *                GLCDC_ERR_INVALID_UPDATE_TIMING -
- *                  Invalid timing for register update.
- *                GLCDC_ERR_INVALID_LAYER_SETTING -
- *                  Invalid layer setting found.
- *                GLCDC_ERR_INVALID_ALIGNMENT -
- *                  Invalid memory alignment found.
- *                GLCDC_ERR_INVALID_BLEND_SETTING -
- *                  Invalid blend setting.
- * Note         : none
- ***********************************************************************************************************************/
+ *Function Name: R_GLCDC_LayerChange
+ *******************************************************************************************************************//**
+ *@brief This function changes operation of graphics 1 and graphics 2.
+ *@param[in] frame Graphics screen to change operation.
+ *@param[in] p_args Pointer to the setting parameters structure.
+ *@retval GLCDC_SUCCESS                    Processing has been completed successfully.
+ *@retval GLCDC_ERR_INVALID_PTR            The p_args parameter is NULL pointer.
+ *@retval GLCDC_ERR_INVALID_ARG            The argument set is invalid.
+ *@retval GLCDC_ERR_INVALID_MODE           Function cannot be executed in this mode.
+ *@retval GLCDC_ERR_NOT_OPEN               R_GLCDC_Open has not been executed.
+ *@retval GLCDC_ERR_INVALID_UPDATE_TIMING  Update timing of the register is invalid.
+ *@retval GLCDC_ERR_INVALID_LAYER_SETTING Graphics screen setting is invalid.
+ *@retval GLCDC_ERR_INVALID_ALIGNMENT     Start address of the frame buffer is invalid.
+ *@retval GLCDC_ERR_INVALID_BLEND_SETTING Setting for blending is invalid.
+ *@details This function changes operation of graphics 1 and 2.This function can be executed when the mode is
+ *'GLCDC_STATE_DISPLAYING'. The mode remains unchanged after processing in this function is complete.
+ *@note None.
+ **********************************************************************************************************************/
 glcdc_err_t R_GLCDC_LayerChange(glcdc_frame_layer_t frame, glcdc_runtime_cfg_t const * const p_args)
 {
 
@@ -504,7 +484,7 @@ glcdc_err_t R_GLCDC_LayerChange(glcdc_frame_layer_t frame, glcdc_runtime_cfg_t c
     }
 #endif
 
-    if(false == g_ctrl_blk.graphics_read_enable[frame])
+    if (false == g_ctrl_blk.graphics_read_enable[frame])
     {
         return GLCDC_ERR_INVALID_ARG;
     }
@@ -518,7 +498,6 @@ glcdc_err_t R_GLCDC_LayerChange(glcdc_frame_layer_t frame, glcdc_runtime_cfg_t c
     {
         return GLCDC_ERR_INVALID_UPDATE_TIMING;
     }
-
 
 #if (GLCDC_CFG_PARAM_CHECKING_ENABLE)
 
@@ -547,36 +526,27 @@ glcdc_err_t R_GLCDC_LayerChange(glcdc_frame_layer_t frame, glcdc_runtime_cfg_t c
     return GLCDC_SUCCESS;
 } /* End of function R_GLCDC_LayerChange() */
 
-
 /***********************************************************************************************************************
- * Outline      : GLCDC brightness, contrast, gamma change processing
- * Function Name: R_GLCDC_ColorCorrection
- * Description  : Perform GLCDC brightness, contrast, gamma change processing.
- *                Corresponding to argument cmd, GLCDC brightness, contrast,
- *                gamma change processing is performed.
- * Arguments    : cmd -
- *                   Control function command.
- *                p_args -
- *                   Pointer of setting parameter.
- * Return Value : GLCDC_SUCCESS -
- *                  Device was opened successfully.
- *                GLCDC_ERR_INVALID_PTR -
- *                  Pointer to the control block or the configuration structure is NULL.
- *                GLCDC_ERR_INVALID_ARG -
- *                  Invalid parameter in the argument.
- *                GLCDC_ERR_INVALID_MODE -
- *                  incorrect mode
- *                GLCDC_ERR_NOT_OPEN -
- *                  Open function is not called yet.
- *                GLCDC_ERR_INVALID_UPDATE_TIMING -
- *                  Invalid timing for register update.
- *                GLCDC_ERR_INVALID_GAMMA_SETTING -
- *                  Invalid gamma correction setting found.
- * Note         : none
- ***********************************************************************************************************************/
+ *Function Name: R_GLCDC_ColorCorrection
+ *******************************************************************************************************************//**
+ *@brief This function changes settings for brightness, contrast, and gamma correction of the GLCDC.
+ *@param[in] cmd Command to change the setting
+ *@param[in] p_args Pointer to the setting parameter structure
+ *@retval GLCDC_SUCCESS                    Processing has been completed successfully.
+ *@retval GLCDC_ERR_INVALID_PTR            The p_args parameter is NULL pointer.
+ *@retval GLCDC_ERR_INVALID_ARG            The argument set is invalid.
+ *@retval GLCDC_ERR_INVALID_MODE           Function cannot be executed in this mode.
+ *@retval GLCDC_ERR_NOT_OPEN               R_GLCDC_Open has not been executed.
+ *@retval GLCDC_ERR_INVALID_UPDATE_TIMING  Update timing of the register is invalid.
+ *@retval GLCDC_ERR_INVALID_GAMMA_SETTING  Gamma correction setting is invalid.
+ *@details This function changes settings for brightness, contrast, and gamma correction of the GLCDC. The setting to be
+ *changed is determined according to the first argument of this function. This function can be executed when the mode
+ *is 'GLCDC_STATE_DISPLAYING'. The mode remains unchanged after processing for this command is complete.
+ *@note None.
+ **********************************************************************************************************************/
 glcdc_err_t R_GLCDC_ColorCorrection(glcdc_correction_cmd_t cmd, void const * const p_args)
 {
-    glcdc_correction_t * p_correction;
+    glcdc_correction_t *p_correction;
 
 #if (GLCDC_CFG_PARAM_CHECKING_ENABLE)
     glcdc_err_t err = GLCDC_SUCCESS;
@@ -641,7 +611,7 @@ glcdc_err_t R_GLCDC_ColorCorrection(glcdc_correction_cmd_t cmd, void const * con
             r_glcdc_output_ctrl_update ();
             r_glcdc_gamma_update ();
 
-        break;
+            break;
 
         case GLCDC_CORRECTION_CMD_BRIGHTNESS:
 
@@ -658,7 +628,7 @@ glcdc_err_t R_GLCDC_ColorCorrection(glcdc_correction_cmd_t cmd, void const * con
             /* Reflect the output block section register setting. */
             r_glcdc_output_ctrl_update ();
 
-        break;
+            break;
 
         case GLCDC_CORRECTION_CMD_CONTRAST:
 
@@ -668,7 +638,7 @@ glcdc_err_t R_GLCDC_ColorCorrection(glcdc_correction_cmd_t cmd, void const * con
             /* Reflect the output block section register setting. */
             r_glcdc_output_ctrl_update ();
 
-        break;
+            break;
 
         case GLCDC_CORRECTION_CMD_GAMMA:
 
@@ -685,48 +655,39 @@ glcdc_err_t R_GLCDC_ColorCorrection(glcdc_correction_cmd_t cmd, void const * con
             /* Reflect the gamma register setting. */
             r_glcdc_gamma_update ();
 
-        break;
+            break;
 
         default:
             return GLCDC_ERR_INVALID_ARG;
     }
 
-
     return GLCDC_SUCCESS;
 } /* End of function R_GLCDC_ColorCorrection() */
 
-
 /***********************************************************************************************************************
- * Outline      : GLCDC color palette update processing
- * Function Name: R_GLCDC_ClutUpdate
- * Description  : Perform GLCDC color palette update processing.
- * Arguments    : p_clut_cfg -
- *                   Control function command.
- *                frame -
- *                   Graphic plane select.
- * Return Value : GLCDC_SUCCESS -
- *                  Device was opened successfully.
- *                GLCDC_ERR_INVALID_PTR -
- *                  Pointer to the control block or the configuration structure is NULL.
- *                GLCDC_ERR_INVALID_ARG -
- *                  Invalid parameter in the argument.
- *                GLCDC_ERR_INVALID_MODE -
- *                  incorrect mode
- *                GLCDC_ERR_NOT_OPEN -
- *                  Open function is not called yet.
- *                GLCDC_ERR_INVALID_UPDATE_TIMING -
- *                  Invalid timing for register update.
- *                GLCDC_ERR_INVALID_CLUT_ACCESS -
- *                  Invalid access to color palette entry.
- * Note         : none
- ***********************************************************************************************************************/
+ *Function Name:R_GLCDC_ClutUpdate
+ *******************************************************************************************************************//**
+ *@brief This function updates the CLUT memory of the GLCDC.
+ *@param[in] frame Graphics screen to change operation
+ *@param[in] p_clut_cfg Pointer to the CLUT memory structure
+ *@retval GLCDC_SUCCESS                    Processing has been completed successfully.
+ *@retval GLCDC_ERR_INVALID_PTR            The p_clut_cfg parameter is NULL pointer.
+ *@retval GLCDC_ERR_INVALID_ARG            The argument set is invalid.
+ *@retval GLCDC_ERR_INVALID_MODE           Function cannot be executed in this mode.
+ *@retval GLCDC_ERR_NOT_OPEN               R_GLCDC_Open has not been executed.
+ *@retval GLCDC_ERR_INVALID_UPDATE_TIMING  Update timing of the register is invalid.
+ *@retval GLCDC_ERR_INVALID_CLUT_ACCESS    CLUT memory setting is invalid.
+ *@details This function updates the CLUT memory of the GLCDC. This function can be executed when the mode is
+ *'GLCDC_STATE_DISPLAYING'. The mode remains unchanged after processing in this function is complete.
+ *@note None.
+ **********************************************************************************************************************/
 glcdc_err_t R_GLCDC_ClutUpdate(glcdc_frame_layer_t frame, glcdc_clut_cfg_t const * const p_clut_cfg)
 {
 
 #if (GLCDC_CFG_PARAM_CHECKING_ENABLE)
     glcdc_err_t err = GLCDC_SUCCESS;
 #endif
-    
+
     /* Status check */
     if (GLCDC_STATE_CLOSED == g_ctrl_blk.state)
     {
@@ -747,14 +708,14 @@ glcdc_err_t R_GLCDC_ClutUpdate(glcdc_frame_layer_t frame, glcdc_clut_cfg_t const
         return GLCDC_ERR_INVALID_ARG;
     }
 #endif
-    
-    if(false == g_ctrl_blk.graphics_read_enable[frame])
+
+    if (false == g_ctrl_blk.graphics_read_enable[frame])
     {
         return GLCDC_ERR_INVALID_ARG;
     }
 
 #if (GLCDC_CFG_PARAM_CHECKING_ENABLE)
-    err = r_glcdc_param_check_clut(p_clut_cfg);
+    err = r_glcdc_param_check_clut (p_clut_cfg);
     if (GLCDC_SUCCESS != err)
     {
         return err;
@@ -773,7 +734,7 @@ glcdc_err_t R_GLCDC_ClutUpdate(glcdc_frame_layer_t frame, glcdc_clut_cfg_t const
     }
 
     /* Update a color palette */
-    r_glcdc_clut_update(p_clut_cfg, frame);
+    r_glcdc_clut_update (p_clut_cfg, frame);
 
     /* Reflect the graphics module register value */
     r_glcdc_gr_plane_update (frame);
@@ -781,27 +742,20 @@ glcdc_err_t R_GLCDC_ClutUpdate(glcdc_frame_layer_t frame, glcdc_clut_cfg_t const
     return GLCDC_SUCCESS;
 } /* End of function R_GLCDC_ClutUpdate() */
 
+/***********************************************************************************************************************
+ *Function Name: R_GLCDC_GetStatus
+ *******************************************************************************************************************//**
+ *@brief This function obtains the GLCDC status.
+ *@param[out] p_status Pointer to the structure which stores the obtained status.
+ *@retval GLCDC_SUCCESS           Processing has been completed successfully.
+ *@retval GLCDC_ERR_INVALID_PTR   The p_status parameter is NULL pointer.
+ *@retval GLCDC_ERR_NOT_OPEN      R_GLCDC_Open has not been executed.
+ *@details This function obtains the GLCDC status. The obtained status is written to the p_status structure passed
+ *with the argument. This function can be called at any time after the R_GLCDC_Open function is executed.
+ *The mode remains unchanged after processing in this function is complete.
+ *@note None.
+ **********************************************************************************************************************/
 
-/*******************************************************************************
- * Outline      : GLCDC status acquisition processing
- * Function Name: R_GLCDC_GetStatus
- * Description  : Perform GLCDC status acquisition processing
- *                The following status is stored in the argument pointer.
- *                 - Graphic 2 Line Detection Status
- *                 - Graphic 1 Underflow Detection Status
- *                 - Graphic 2 Underflow Detection Status
- *                 - Fade in/out Status
- *                 - Internal Status
- * Arguments    : p_status -
- *                  Control function command.
- * Return Value : GLCDC_SUCCESS -
- *                  Device was opened successfully.
- *                GLCDC_ERR_INVALID_PTR -
- *                  Pointer to the control block or the configuration structure is NULL.
- *                GLCDC_ERR_NOT_OPEN -
- *                  Open function is not called yet.
- * Note         : none
- *******************************************************************************/
 glcdc_err_t R_GLCDC_GetStatus(glcdc_status_t * const p_status)
 {
     uint8_t frame;
@@ -822,7 +776,7 @@ glcdc_err_t R_GLCDC_GetStatus(glcdc_status_t * const p_status)
     p_status->state = g_ctrl_blk.state;
 
     /* Return the fading status for the layers */
-    
+
     /* WAIT_LOOP */
     for (frame = 0; frame < GLCDC_FRAME_LAYER_NUM; frame++)
     {
@@ -873,16 +827,19 @@ glcdc_err_t R_GLCDC_GetStatus(glcdc_status_t * const p_status)
     return GLCDC_SUCCESS;
 } /* End of function R_GLCDC_GetStatus() */
 
-
 /***********************************************************************************************************************
- * Function Name: R_GLCDC_GetVersion
- * Description  : Returns this module's version information.
- *                The version number is encoded where the top 2 bytes are the major version number and the bottom 2 bytes
- *                are the minor version number. For example, Version 4.25 would be returned as 0x00040019.
- * Arguments    : none
- * Return Value : Version number
- ***********************************************************************************************************************/
-uint32_t R_GLCDC_GetVersion (void)
+ *Function Name: R_GLCDC_GetVersion
+ *******************************************************************************************************************//**
+ *@brief This function returns the current version of this API.
+ *@param None.
+ *@retval Version of this API.
+ *@details This function will return the version of the currently running API. The version number is encoded where the
+ *top 2 bytes are the major version number and the bottom 2 bytes are the minor version number.
+ *For example, Version 4.25 would be returned as 0x00040019.
+ *@note None.
+ **********************************************************************************************************************/
+
+uint32_t R_GLCDC_GetVersion(void)
 {
     return ((((uint32_t) GLCDC_RX_VERSION_MAJOR) << 16) | ((uint32_t) GLCDC_RX_VERSION_MINOR));
 } /* End of function R_GLCDC_GetVersion() */

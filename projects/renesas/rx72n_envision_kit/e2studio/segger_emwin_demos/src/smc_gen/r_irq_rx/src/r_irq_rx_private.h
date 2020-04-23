@@ -44,6 +44,8 @@
 *         : 20.05.2019  3.00    Added support for GNUC and ICCRX.
 *         : 28.06.2019  3.10    Added support for RX23W.
 *         : 15.08.2019  3.20    Added support for RX72M.
+*         : 25.11.2019  3.30    Added support RX13T.
+*         : 30.12.2019  3.40    Added support RX66N, RX72N.
 ***********************************************************************************************************************/
 #ifndef R_IRQ_PRIVATE_H_
 #define R_IRQ_PRIVATE_H_
@@ -56,7 +58,7 @@ Macro definitions
 ******************************************************************************/
 /* Version Number of API. */
 #define IRQ_RX_VERSION_MAJOR           (3)
-#define IRQ_RX_VERSION_MINOR           (20)
+#define IRQ_RX_VERSION_MINOR           (40)
 
 /* Bit position of interrupt enable bits in interrupt enable register. */
 #define IRQ_IEN_MASK_IRQ0   (0x01)

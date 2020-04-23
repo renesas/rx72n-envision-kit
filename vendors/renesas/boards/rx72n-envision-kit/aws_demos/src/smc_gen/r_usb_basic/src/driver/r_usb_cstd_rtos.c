@@ -18,7 +18,7 @@
 * you agree to the additional terms and conditions found by accessing the 
 * following link:
 * http://www.renesas.com/disclaimer
-* Copyright (C) 2016 Renesas Electronics Corporation. All rights reserved.    
+* Copyright (C) 2016(2020) Renesas Electronics Corporation. All rights reserved.    
 *******************************************************************************/
 /*******************************************************************************
 * File Name    : r_usb_cstd_rtos.c
@@ -29,6 +29,7 @@
 * History : DD.MM.YYYY Version  Description
 *         : 15.06.2016 1.00     First Release
 *         : 16.11.2018 1.24     Supporting RTOS Thread safe
+*         : 01.03.2020 1.30     RX72N/RX66N is added and uITRON is supported.
 ******************************************************************************/
 
 /******************************************************************************
@@ -36,1010 +37,338 @@ Includes   <System Includes> , "Project Includes"
 ******************************************************************************/
 #include "r_usb_basic_if.h"
 #include "r_usb_typedef.h"
-
 #include "r_usb_extern.h"
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+#include "r_rtos_abstract.h"
+#include "r_usb_cstd_rtos.h"
+#if (BSP_CFG_RTOS_USED == 4)        /* Renesas RI600V4 & RI600PX */
+#include "kernel_id.h"
+#endif /* (BSP_CFG_RTOS_USED == 4) */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
+
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+/**********************************************************************************************************************
+ Macro definitions
+ *********************************************************************************************************************/
+
+/**********************************************************************************************************************
+ Typedef definitions
+ *********************************************************************************************************************/
+
+/******************************************************************************
+ Exported global variables (to be accessed by other files)
+ *****************************************************************************/
+rtos_mem_id_t       g_rtos_usb_mpf_id;
+#if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
+static  rtos_task_id_t      g_rtos_usb_hcd_task_id;
+static  rtos_task_id_t      g_rtos_usb_mgr_task_id;
+static  rtos_task_id_t      g_rtos_usb_hub_task_id;
+
+rtos_mbx_id_t       g_rtos_usb_hcd_mbx_id;
+rtos_mbx_id_t       g_rtos_usb_hcd_sub_mbx_id;
+rtos_mbx_id_t       g_rtos_usb_hcd_sub_addr_mbx_id;
+rtos_mbx_id_t       g_rtos_usb_mgr_mbx_id;
+rtos_mbx_id_t       g_rtos_usb_hub_mbx_id;
+rtos_mbx_id_t       g_rtos_usb_cls_mbx_id;
 
 #if defined(USB_CFG_HMSC_USE)
-#include "r_usb_hmsc_if.h"
+rtos_mbx_id_t       g_rtos_usb_hmsc_mbx_id;
+rtos_mbx_id_t       g_rtos_usb_hmsc_req_mbx_id;
+rtos_sem_id_t       g_rtos_usb_hmsc_sem_id;
 #endif /* defined(USB_CFG_HMSC_USE) */
-
-#if defined(USB_CFG_HCDC_USE)
-#include "r_usb_hcdc.h"
-#endif /* defined(USB_CFG_HCDC_USE) */
 
 #if defined(USB_CFG_HHID_USE)
-#include "r_usb_hhid.h"
+rtos_mbx_id_t       g_rtos_usb_hhid_mbx_id;
 #endif /* defined(USB_CFG_HHID_USE) */
 
-#if (BSP_CFG_RTOS_USED == 1)
-#include <r_usb_cstd_rtos.h>
-
-
-/******************************************************************************
- Macro definitions
- *****************************************************************************/
-#define USB_TMO_VAL     (3000)
-
-/******************************************************************************
-Exported global variables (to be accessed by other files)
-******************************************************************************/
-
-/******************************************************************************
-Private global variables and functions
-******************************************************************************/
-/** Declare a task handler for the created tasks. **/
-#if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
-static TaskHandle_t g_hcd_tsk_hdl;
-static TaskHandle_t g_mgr_tsk_hdl;
-  #if USB_CFG_HUB == USB_CFG_ENABLE
-static TaskHandle_t g_hub_tsk_hdl;
-  #endif  /* USB_CFG_HUB == USB_CFG_ENABLE */
-#endif /* ( (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST ) */
+#endif  /* ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST) */
 
 #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-static TaskHandle_t g_pcd_tsk_hdl;
-#endif /* ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI) */
+static  rtos_task_id_t      g_rtos_usb_pcd_task_id;
 
+rtos_mbx_id_t       g_rtos_usb_pcd_mbx_id;
+rtos_mbx_id_t       g_rtos_usb_pcd_sub_mbx_id;
 #if defined(USB_CFG_PMSC_USE)
-static TaskHandle_t g_pmsc_tsk_hdl;
+static  rtos_task_id_t      g_rtos_usb_pmsc_task_id;
+rtos_mbx_id_t               g_rtos_usb_pmsc_mbx_id;
 #endif /* defined(USB_CFG_PMSC_USE) */
 
-#if defined(USB_CFG_HMSC_USE)
-SemaphoreHandle_t   SemaphoreHandleRead;
-#endif /* defined(USB_CFG_HMSC_USE) */
+#endif /* ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI) */
 
-/** Declare a mailbox handler for the created tasks **/
-static QueueHandle_t g_hcd_mbx_hdl;
-static QueueHandle_t g_mgr_mbx_hdl;
-static QueueHandle_t g_hub_mbx_hdl;
-static QueueHandle_t g_pcd_mbx_hdl;
-static QueueHandle_t g_cls_mbx_hdl;
-static QueueHandle_t g_hmsc_mbx_hdl;
-static QueueHandle_t g_hmsc_req_mbx_hdl;
-static QueueHandle_t g_hcdc_mbx_hdl;
-static QueueHandle_t g_hhid_mbx_hdl;
-static QueueHandle_t g_pmsc_mbx_hdl;
-
-static QueueHandle_t g_pipe0_hdl[USB_NUM_USBIP][USB_MAXDEVADDR];       /* USB Transfer MBX for PIPE0 wait que */
-static QueueHandle_t g_pipe_hdl[USB_NUM_USBIP][USB_MAXPIPE_NUM + 1];   /* USB Transfer MBX for PIPE1-9 wait que */
-
-/** Declare an array of mailbox handlers. **/
-QueueHandle_t *g_mbx_table[] = {
-    NULL,                   /* Not used */
-    &g_hcd_mbx_hdl,         /* A mailbox handler of USB HCD task */
-    &g_mgr_mbx_hdl,         /* A mailbox handler of USB MGR task */
-    &g_hub_mbx_hdl,         /* A mailbox handler of USB HUB task */
-    &g_cls_mbx_hdl,         /* A mailbox handler of USB internal communication */
-    &g_pcd_mbx_hdl,         /* A mailbox handler of USB PCD task */
-    &g_hmsc_mbx_hdl,        /* A mailbox handler of USB HMSC */
-    &g_hmsc_req_mbx_hdl,    /* A mailbox handler for class request (via PIPE0) of USB HMSC */
-    &g_hcdc_mbx_hdl,        /* A mailbox handler of USB HCDC task */
-    &g_hhid_mbx_hdl,        /* A mailbox handler of USB HHID task */
-    &g_pmsc_mbx_hdl,        /* A mailbox handler of USB PMSC task */
-};
-
-/** Declare a memory handler for the created tasks **/
-static QueueHandle_t g_hcd_mpl_hdl;
-static QueueHandle_t g_mgr_mpl_hdl;
-static QueueHandle_t g_hub_mpl_hdl;
-static QueueHandle_t g_cls_mpl_hdl;
-static QueueHandle_t g_hmsc_mpl_hdl;
-static QueueHandle_t g_hmsc_req_mpl_hdl;
-static QueueHandle_t g_hcdc_mpl_hdl;
-static QueueHandle_t g_hhid_mpl_hdl;
-static QueueHandle_t g_pmsc_mpl_hdl;
-
-/** Declare an array of memory pool handlers. **/
-QueueHandle_t *g_mpl_table[] = {
-    NULL,                   /* Not used */
-    &g_hcd_mpl_hdl,         /* A memory pool handler of USB HCD task */
-    &g_mgr_mpl_hdl,         /* A memory pool handler of USB MGR task */
-    &g_hub_mpl_hdl,         /* A memory pool handler of USB HUB task */
-    &g_cls_mpl_hdl,         /* A memory pool handler of USB internal communication */
-    NULL,
-    &g_hmsc_mpl_hdl,        /* A memory pool handler of USB HMSC */
-    &g_hmsc_req_mpl_hdl,    /* A memory pool handler for class request (via PIPE0) of USB HMSC */
-    &g_hcdc_mpl_hdl,        /* A memory pool handler of USB HCDC task */
-    &g_hhid_mpl_hdl,        /* A memory pool handler of USB HHID task */
-    &g_pmsc_mpl_hdl,        /* A memory pool handler of USB PMSC task */
-};
+#if (BSP_CFG_RTOS_USED != 4)         /* Excluding Renesas RI600V4 & RI600PX */
+static usb_utr_t    g_usb_rtos_fixed_memblk[NUM_OF_BLOCK];
+#endif /* (BSP_CFG_RTOS_USED != 4) */
 
 /******************************************************************************
 * Function Name: usb_rtos_configuration
 * Description  : Create mailboxes, memory pool using for the created tasks
 *                in usb system.
 * Arguments    : None
-* Return Value : UsbRtos_Success -
+* Return Value : USB_RTOS_SUCCESS -
 *                   Successful.
 *                UsbRtos_Err_Init_Mbx -
 *                   Failed in mailbox allocation.
 *                UsbRtos_Err_Init_Mpl -
 *                   Failed in memory pool allocation.
 ******************************************************************************/
-usb_rtos_err_t usb_rtos_configuration(void)
+rtos_err_t usb_rtos_configuration(void)
 {
-    usb_rtos_err_t err = UsbRtos_Success;
-    BaseType_t  ret;
-    uint16_t ip_loop;
-    uint16_t pipe_loop;
-    uint16_t addr_loop;
+    rtos_err_t ret      = RTOS_SUCCESS;
+#if (BSP_CFG_RTOS_USED != 4)         /* Excluding Renesas RI600V4 & RI600PX */
+    rtos_mpf_info_t     mpf_info;
+    rtos_task_info_t    task_info;
+    rtos_mbx_info_t     mbx_info;
+#endif /* (BSP_CFG_RTOS_USED != 4) */
+
+#if     BSP_CFG_RTOS_USED == 1       /* FreeRTOS */
+    /* Fix Memory Pool Creation */
+    mpf_info.p_mempool      = (void *)g_usb_rtos_fixed_memblk;
+    mpf_info.block_number   = NUM_OF_BLOCK;
+    mpf_info.block_size     = sizeof(usb_utr_t);
+    rtos_create_fixed_memory(&g_rtos_usb_mpf_id, &mpf_info);
 
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
-    uint16_t i;
-    void *tmptr = NULL;
-
-    /** Create mailbox for each task. **/
-    /** USB HCD task **/
-    g_hcd_mbx_hdl = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-    if (NULL == g_hcd_mbx_hdl)
-    {
-        err = UsbRtos_Err_Init_Mbx;
-        return err;
-    }
-
-    /** USB MGR task **/
-    g_mgr_mbx_hdl = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-    if (NULL == g_mgr_mbx_hdl)
-    {
-        err = UsbRtos_Err_Init_Mbx;
-        return err;
-    }
-
-    /** USB HUB task **/
-    g_hub_mbx_hdl = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-    if (NULL == g_hub_mbx_hdl)
-    {
-        err = UsbRtos_Err_Init_Mbx;
-        return err;
-    }
-
-    /** USB Internal Communication mailbox **/
-    g_cls_mbx_hdl = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-    if (NULL == g_cls_mbx_hdl)
-    {
-        err = UsbRtos_Err_Init_Mbx;
-        return err;
-    }
-
+    /* Mailbox Creation*/
+    mbx_info.length         = QUEUE_SIZE;
+    rtos_create_mailbox(&g_rtos_usb_hcd_mbx_id, &mbx_info);             /* For HCD */
+    rtos_create_mailbox(&g_rtos_usb_hcd_sub_mbx_id, &mbx_info);         /* For HCD Sub */
+    rtos_create_mailbox(&g_rtos_usb_hcd_sub_addr_mbx_id, &mbx_info);    /* For HCD Sub ADDR */
+    rtos_create_mailbox(&g_rtos_usb_mgr_mbx_id, &mbx_info);             /* For MGR */
+    rtos_create_mailbox(&g_rtos_usb_hub_mbx_id, &mbx_info);             /* For HUB */
+    rtos_create_mailbox(&g_rtos_usb_cls_mbx_id, &mbx_info);             /* For CLS */
 #if defined(USB_CFG_HMSC_USE)
-    vSemaphoreCreateBinary(SemaphoreHandleRead); 
-
-    /** USB Host MSC **/
-    g_hmsc_mbx_hdl = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-    if (NULL == g_hmsc_mbx_hdl)
-    {
-        err = UsbRtos_Err_Init_Mbx;
-        return err;
-    }
-
-    /** USB Host MSC (for class request) **/
-    g_hmsc_req_mbx_hdl = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-    if (NULL == g_hmsc_req_mbx_hdl)
-    {
-        err = UsbRtos_Err_Init_Mbx;
-        return err;
-    }
+    rtos_create_mailbox(&g_rtos_usb_hmsc_mbx_id, &mbx_info);            /* For HMSC Mailbox */
+    rtos_create_mailbox(&g_rtos_usb_hmsc_req_mbx_id, &mbx_info);        /* For HMSC Req Mailbox */
+    rtos_create_semaphore(&g_rtos_usb_hmsc_sem_id, (rtos_sem_info_t *)NULL);    /* HMSC Semaphore */
 #endif /* defined(USB_CFG_HMSC_USE) */
 
-#if defined(USB_CFG_HCDC_USE)
-    /** USB Host CDC **/
-    g_hcdc_mbx_hdl = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-    if (NULL == g_hcdc_mbx_hdl)
-    {
-        err = UsbRtos_Err_Init_Mbx;
-        return err;
-    }
-#endif /* defined(USB_CFG_HCDC_USE) */
-
 #if defined(USB_CFG_HHID_USE)
-    /** USB Host HID **/
-    g_hhid_mbx_hdl = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-    if (NULL == g_hhid_mbx_hdl)
-    {
-        err = UsbRtos_Err_Init_Mbx;
-        return err;
-    }
-#endif /* defined(USB_CFG_HHID_USE) */
-
-    /** Create memory pool using for each task **/
-    /** USB HCD task **/
-    g_hcd_mpl_hdl = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-    if (NULL != g_hcd_mpl_hdl)
-    {
-        /* WAIT_LOOP */
-        for (i = 0; i < QUEUE_SIZE; i++)
-        {
-            tmptr = pvPortMalloc(sizeof(usb_utr_t));
-            if (NULL == tmptr)
-            {
-                err = UsbRtos_Err_Init_Mpl;
-                return err;
-            }
-            else
-            {
-                xQueueSend(g_hcd_mpl_hdl, &tmptr, 0);
-            }
-        }
-    }
-    else
-    {
-        err = UsbRtos_Err_Init_Mpl;
-        return err;
-    }
-
-    /** USB MGR task **/
-    g_mgr_mpl_hdl = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-    if (NULL != g_mgr_mpl_hdl)
-    {
-        /* WAIT_LOOP */
-        for (i = 0; i < QUEUE_SIZE; i++)
-        {
-            tmptr = pvPortMalloc(sizeof(usb_utr_t));
-            if (NULL == tmptr)
-            {
-                err = UsbRtos_Err_Init_Mpl;
-                return err;
-            }
-            else
-            {
-                xQueueSend(g_mgr_mpl_hdl, &tmptr, 0);
-            }
-        }
-    }
-    else
-    {
-        err = UsbRtos_Err_Init_Mpl;
-        return err;
-    }
-
-    /** USB HUB task **/
-    g_hub_mpl_hdl = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-    if (NULL != g_hub_mpl_hdl)
-    {
-        /* WAIT_LOOP */
-        for (i = 0; i < QUEUE_SIZE; i++)
-        {
-            tmptr = pvPortMalloc(sizeof(usb_utr_t));
-            if (NULL == tmptr)
-            {
-                err = UsbRtos_Err_Init_Mpl;
-                return err;
-            }
-            else
-            {
-                xQueueSend(g_hub_mpl_hdl, &tmptr, 0);
-            }
-        }
-    }
-    else
-    {
-        err = UsbRtos_Err_Init_Mpl;
-        return err;
-    }
-
-    /** USB Internal Communication **/
-    g_cls_mpl_hdl = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-    if (NULL != g_cls_mpl_hdl)
-    {
-        /* WAIT_LOOP */
-        for (i = 0; i < QUEUE_SIZE; i++)
-        {
-            tmptr = pvPortMalloc(sizeof(usb_utr_t));
-            if (NULL == tmptr)
-            {
-                err = UsbRtos_Err_Init_Mpl;
-                return err;
-            }
-            else
-            {
-                xQueueSend(g_cls_mpl_hdl, &tmptr, 0);
-            }
-        }
-    }
-    else
-    {
-        err = UsbRtos_Err_Init_Mpl;
-        return err;
-    }
-
-#if defined(USB_CFG_HMSC_USE)
-    /** USB Host MSC **/
-    g_hmsc_mpl_hdl = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-    if (NULL != g_hmsc_mpl_hdl)
-    {
-        /* WAIT_LOOP */
-        for (i = 0; i < QUEUE_SIZE; i++)
-        {
-            tmptr = pvPortMalloc(sizeof(usb_utr_t));
-            if (NULL == tmptr)
-            {
-                err = UsbRtos_Err_Init_Mpl;
-                return err;
-            }
-            else
-            {
-                xQueueSend(g_hmsc_mpl_hdl, &tmptr, 0);
-            }
-        }
-    }
-    else
-    {
-        err = UsbRtos_Err_Init_Mpl;
-        return err;
-    }
-
-    /** USB Host MSC (for class request) **/
-    g_hmsc_req_mpl_hdl = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-    if (NULL != g_hmsc_req_mpl_hdl)
-    {
-        /* WAIT_LOOP */
-        for (i = 0; i < QUEUE_SIZE; i++)
-        {
-            tmptr = pvPortMalloc(sizeof(usb_utr_t));
-            if (NULL == tmptr)
-            {
-                err = UsbRtos_Err_Init_Mpl;
-                return err;
-            }
-            else
-            {
-                xQueueSend(g_hmsc_req_mpl_hdl, &tmptr, 0);
-            }
-        }
-    }
-    else
-    {
-        err = UsbRtos_Err_Init_Mpl;
-        return err;
-    }
+    rtos_create_mailbox(&g_rtos_usb_hhid_mbx_id, &mbx_info);            /* For HHID */
 #endif /* defined(USB_CFG_HMSC_USE) */
 
-#if defined(USB_CFG_HCDC_USE)
-    /** USB Host CDC **/
-    g_hcdc_mpl_hdl = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-    if (NULL != g_hcdc_mpl_hdl)
-    {
-        /* WAIT_LOOP */
-        for (i = 0; i < QUEUE_SIZE; i++)
-        {
-            tmptr = pvPortMalloc(sizeof(usb_utr_t));
-            if (NULL == tmptr)
-            {
-                err = UsbRtos_Err_Init_Mpl;
-                return err;
-            }
-            else
-            {
-                xQueueSend(g_hcdc_mpl_hdl, &tmptr, 0);
-            }
-        }
-    }
-    else
-    {
-        err = UsbRtos_Err_Init_Mpl;
-        return err;
-    }
-#endif /* defined(USB_CFG_HCDC_USE) */
+    /* Task Creation */
+    /** For HCD **/
+    task_info.task_code     = (TaskFunction_t)usb_hstd_hcd_task;
+    task_info.p_name        = "HCD_TSK";
+    task_info.stack_depth   = STACK_SIZE;
+    task_info.p_parameter     = (void *)NULL;
+    task_info.priority      = HCD_TSK_PRI;
+    rtos_create_task(&g_rtos_usb_hcd_task_id, &task_info);
 
-#if defined(USB_CFG_HHID_USE)
-    /** USB Host HID **/
-    g_hhid_mpl_hdl = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-    if (NULL != g_hhid_mpl_hdl)
-    {
-        /* WAIT_LOOP */
-        for (i = 0; i < QUEUE_SIZE; i++)
-        {
-            tmptr = pvPortMalloc(sizeof(usb_utr_t));
-            if (NULL == tmptr)
-            {
-                err = UsbRtos_Err_Init_Mpl;
-                return err;
-            }
-            else
-            {
-                xQueueSend(g_hhid_mpl_hdl, &tmptr, 0);
-            }
-        }
-    }
-    else
-    {
-        err = UsbRtos_Err_Init_Mpl;
-        return err;
-    }
-#endif /* defined(USB_CFG_HHID_USE) */
+    /** For MGR **/
+    task_info.task_code     = (TaskFunction_t)usb_hstd_mgr_task;
+    task_info.p_name        = "MGR_TSK";
+    task_info.stack_depth   = STACK_SIZE;
+    task_info.p_parameter     = (void *)NULL;
+    task_info.priority      = MGR_TSK_PRI;
+    rtos_create_task(&g_rtos_usb_mgr_task_id, &task_info);
 
-    /** USB Tasks Creation **/
-    ret = xTaskCreate((TaskFunction_t)usb_hstd_hcd_task,    /** Entry function of USB HCD task  **/
-                     "HCD_TSK",             /** Name of USB HCD task            **/
-                     HCD_STACK_SIZE,        /** Stack size in words             **/
-                     NULL,                  /** Task's parameter                **/
-                     HCD_TSK_PRI,           /** Task's priority                 **/
-                     &g_hcd_tsk_hdl);       /** Task handler for use later      **/
-    if (pdPASS != ret)
-    {
-        err = UsbRtos_Err_Init_Tsk;
-        return err;
-    }
-
-  #if USB_CFG_HUB == USB_CFG_ENABLE
-    ret = xTaskCreate((TaskFunction_t)usb_hhub_task,        /** Entry function of USB HUB task  **/
-                     "HUB_TSK",             /** Name of USB HUB task            **/
-                     HUB_STACK_SIZE,        /** Stack size in words             **/
-                     NULL,                  /** Task's parameter                **/
-                     HUB_TSK_PRI,           /** Task's priority                 **/
-                     &g_hub_tsk_hdl);       /** Task handler for use later      **/
-    if (pdPASS != ret)
-    {
-        err = UsbRtos_Err_Init_Tsk;
-        return err;
-    }
-  #endif  /* USB_CFG_HUB == USB_CFG_ENABLE */
-
-    ret = xTaskCreate((TaskFunction_t)usb_hstd_mgr_task,    /** Entry function of USB MGR task  **/
-                     "MGR_TSK",             /** Name of USB MGR task            **/
-                     MGR_STACK_SIZE,        /** Stack size in words             **/
-                     NULL,                  /** Task's parameter                **/
-                     MGR_TSK_PRI,           /** Task's priority                 **/
-                     &g_mgr_tsk_hdl);       /** Task handler for use later      **/
-    if (pdPASS != ret)
-    {
-        err = UsbRtos_Err_Init_Tsk;
-        return err;
-    }
+    /** For Hub **/
+    task_info.task_code     = (TaskFunction_t)usb_hstd_hub_task;
+    task_info.p_name        = "HUB_TSK";
+    task_info.stack_depth   = STACK_SIZE;
+    task_info.p_parameter     = (void *)NULL;
+    task_info.priority      = HUB_TSK_PRI;
+    rtos_create_task(&g_rtos_usb_hub_task_id, &task_info);
 
 #endif /* ( (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST ) */
-    
-#if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
-    /** USB Tasks Creation **/
-    ret = xTaskCreate((TaskFunction_t)usb_pstd_pcd_task,    /** Entry function of USB HCD task  **/
-                     "PCD_TSK",             /** Name of USB HCD task            **/
-                     PCD_STACK_SIZE,        /** Stack size in words             **/
-                     NULL,                  /** Task's parameter                **/
-                     PCD_TSK_PRI,           /** Task's priority                 **/
-                     &g_pcd_tsk_hdl);       /** Task handler for use later      **/
-    if (pdPASS != ret)
-    {
-        err = UsbRtos_Err_Init_Tsk;
-        return err;
-    }
 
-    /** Create mailbox **/
-    /** USB PCD task **/
-    g_pcd_mbx_hdl = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-    if (NULL == g_pcd_mbx_hdl)
-    {
-        err = UsbRtos_Err_Init_Mbx;
-        return err;
-    }
+#if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
+    /* Mailbox Creation */
+    mbx_info.length         = QUEUE_SIZE;
+    rtos_create_mailbox(&g_rtos_usb_pcd_mbx_id, &mbx_info);             /* For PCD */
+    rtos_create_mailbox(&g_rtos_usb_pcd_sub_mbx_id, &mbx_info);         /* For PCD Sub */
+
+#if defined(USB_CFG_PMSC_USE)
+    task_info.task_code     = (TaskFunction_t)usb_pmsc_task;
+    task_info.p_name        = "PMSC_TSK";
+    task_info.stack_depth   = STACK_SIZE;
+    task_info.p_parameter   = (void *)NULL;
+    task_info.priority      = PMSC_TSK_PRI;
+    rtos_create_task(&g_rtos_usb_pmsc_task_id, &task_info);
+
+    /* Mailbox Creation */
+    mbx_info.length         = QUEUE_SIZE;
+    rtos_create_mailbox(&g_rtos_usb_pmsc_mbx_id, &mbx_info);             /* For PMSC */
+#endif /* defined(USB_CFG_PMSC_USE) */
+
+    /* Task Creation */
+    /** For PCD **/
+    task_info.task_code     = (TaskFunction_t)usb_pstd_pcd_task;
+    task_info.p_name        = "PCD_TSK";
+    task_info.stack_depth   = STACK_SIZE;
+    task_info.p_parameter     = (void *)NULL;
+    task_info.priority      = PCD_TSK_PRI;
+    rtos_create_task(&g_rtos_usb_pcd_task_id, &task_info);
 
 #endif /* ( (USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI ) */
 
+#elif   BSP_CFG_RTOS_USED == 2                                          /* SEGGER embOS */
+#elif   BSP_CFG_RTOS_USED == 3                                          /* Micrium MicroC/OS */
+#elif   BSP_CFG_RTOS_USED == 4                                          /* Renesas RI600V4 & RI600PX */
+    g_rtos_usb_mpf_id               = ID_USB_RTOS_DRIVER_MPF;
+
+#if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
+    g_rtos_usb_hcd_mbx_id           = ID_USB_RTOS_HCD_MBX;
+    g_rtos_usb_hcd_sub_mbx_id       = ID_USB_RTOS_HCD_SUB_MBX;
+    g_rtos_usb_hcd_sub_addr_mbx_id  = ID_USB_RTOS_HCD_SUB_ADDR_MBX;
+    g_rtos_usb_mgr_mbx_id           = ID_USB_RTOS_MGR_MBX;
+    g_rtos_usb_cls_mbx_id           = ID_USB_RTOS_CLS_MBX;
+#if defined(USB_CFG_HMSC_USE)
+    g_rtos_usb_hmsc_mbx_id          = ID_USB_RTOS_HMSC_MBX;
+    g_rtos_usb_hmsc_req_mbx_id      = ID_USB_RTOS_HMSC_REQ_MBX;
+    g_rtos_usb_hmsc_sem_id          = ID_USB_RTOS_HMSC_SEM;
+#endif /* defined(USB_CFG_HMSC_USE) */
+
+#if defined(USB_CFG_HHID_USE)
+    g_rtos_usb_hhid_mbx_id          = ID_USB_RTOS_HID_MBX;
+#endif /* defined(USB_CFG_HCDC_USE) */
+
+#if USB_CFG_HUB == USB_CFG_ENABLE
+    g_rtos_usb_hub_mbx_id           = ID_USB_RTOS_HUB_MBX;
+#endif /* USB_CFG_HUB == USB_CFG_ENABLE */
+
+    g_rtos_usb_hcd_task_id           = ID_USB_RTOS_HCD_TSK;
+    g_rtos_usb_mgr_task_id           = ID_USB_RTOS_MGR_TSK;
+    g_rtos_usb_hub_task_id           = ID_USB_RTOS_HUB_TSK;
+#endif  /* ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST) */
+
+#if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
+    g_rtos_usb_pcd_mbx_id           = ID_USB_RTOS_PCD_MBX;
+    g_rtos_usb_pcd_sub_mbx_id       = ID_USB_RTOS_PCD_SUB_MBX;
+
 #if defined(USB_CFG_PMSC_USE)
-    /** USB Tasks Creation **/
-    ret = xTaskCreate((TaskFunction_t)usb_pmsc_task,    /** Entry function of USB PMSC task  **/
-                     "PMSC_TSK",            /** Name of USB HCD task            **/
-                     PMSC_STACK_SIZE,       /** Stack size in words             **/
-                     NULL,                  /** Task's parameter                **/
-                     PMSC_TSK_PRI,          /** Task's priority                 **/
-                     &g_pmsc_tsk_hdl);      /** Task handler for use later      **/
-    if (pdPASS != ret)
-    {
-        err = UsbRtos_Err_Init_Tsk;
-        return err;
-    }
+    g_rtos_usb_pmsc_mbx_id          = ID_USB_RTOS_PMSC_MBX;
+    g_rtos_usb_pmsc_task_id         = ID_USB_RTOS_PMSC_TSK;
+#endif /* defined(USB_CFG_PMSC_USE) */
 
-    /** Create mailbox **/
-    /** USB PMSC task **/
-    g_pmsc_mbx_hdl = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-    if (NULL == g_pmsc_mbx_hdl)
-    {
-        err = UsbRtos_Err_Init_Mbx;
-        return err;
-    }
+    g_rtos_usb_pcd_task_id          = ID_USB_RTOS_PCD_TSK;
 
-#endif  /* defined(USB_CFG_PMSC_USE) */
+#endif  /* ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI) */
 
-    /* WAIT_LOOP */
-    for (ip_loop = 0; ip_loop <USB_NUM_USBIP; ip_loop++)
-    {
-        /** Create memory pool using for pipe process **/
-        /* WAIT_LOOP */
-        for (addr_loop = 0; addr_loop <USB_MAXDEVADDR; addr_loop++)
-        {
-            g_pipe0_hdl[ip_loop][addr_loop] = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-            if (NULL == g_pipe0_hdl[ip_loop][addr_loop])
-            {
-                err = UsbRtos_Err_Init_Mpl;
-                return err;
-            }
-        }
-        /* WAIT_LOOP */
-        for (pipe_loop = 0; pipe_loop <(USB_MAXPIPE_NUM+1); pipe_loop++)
-        {
-            g_pipe_hdl[ip_loop][pipe_loop] = xQueueCreate(QUEUE_SIZE, sizeof(void *));
-            if (NULL == g_pipe_hdl[ip_loop][pipe_loop])
-            {
-                err = UsbRtos_Err_Init_Mpl;
-                return err;
-            }
-        }
-    }
-    return err;
+#if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
+    rtos_start_task (&g_rtos_usb_hcd_task_id);
+    rtos_start_task (&g_rtos_usb_mgr_task_id);
+    rtos_start_task (&g_rtos_usb_hub_task_id);
+#endif /* ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST) */
+#if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
+    rtos_start_task (&g_rtos_usb_pcd_task_id);
+
+#if defined(USB_CFG_PMSC_USE)
+    rtos_start_task (&g_rtos_usb_pmsc_task_id);
+#endif /* defined(USB_CFG_PMSC_USE) */
+
+#endif  /* ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI) */
+#endif  /* BSP_CFG_RTOS_USED == 1 */
+
+    return ret;
 } /* End of function usb_rtos_configuration() */
 
 /******************************************************************************
- Function Name   : usb_cstd_rec_msg
- Description     : Receive a message to the specified id (mailbox).
- Argument        : uint8_t      id      : ID number (mailbox).
-                 : usb_msg_t**  mess    : Message pointer
-                 : usb_tm_t     tm      : Timeout Value
- Return          : uint16_t             : USB_OK / USB_ERROR
- ******************************************************************************/
-usb_er_t usb_cstd_rec_msg (uint8_t id, usb_msg_t** mess, usb_tm_t tm)
+* Function Name: usb_rtos_unconfiguration
+* Description  : Create mailboxes, memory pool using for the created tasks
+*                in usb system.
+* Arguments    : None
+* Return Value : USB_RTOS_SUCCESS -
+*                   Successful.
+*                UsbRtos_Err_Init_Mbx -
+*                   Failed in mailbox allocation.
+*                UsbRtos_Err_Init_Mpl -
+*                   Failed in memory pool allocation.
+******************************************************************************/
+rtos_err_t usb_rtos_unconfiguration(void)
 {
-    BaseType_t err;
-    QueueHandle_t handle;
+    rtos_err_t ret      = RTOS_SUCCESS;
 
-    (void *)tm;
+#if     BSP_CFG_RTOS_USED == 1                              /* FreeRTOS */
 
-    if (NULL == mess)
-    {
-        return USB_ERROR;
-    }
-
-    handle = (QueueHandle_t)( *(g_mbx_table[id]) );
-    *mess  = NULL;
-
-    if (0 == tm)
-    {
-        tm = USB_TMO_VAL;
-    }
-
-    /** Receive message from queue specified by *(mbx_table[id]) **/
-    err = xQueueReceive(handle, (void *)mess, (TickType_t)tm);
-    if ((pdTRUE == err) && (NULL != (*mess)))
-    {
-        return USB_OK;
-    }
-    else
-    {
-        return USB_ERROR;
-    }
-}
-/******************************************************************************
- End of function usb_cstd_rec_msg
- ******************************************************************************/
-
-/******************************************************************************
- Function Name   : usb_cstd_snd_msg
- Description     : Send a message to the specified id (mailbox).
- Argument        : uint8_t      id      : ID number (mailbox).
-                 : usb_msg_t*   mess    : Message pointer
- Return          : usb_er_t             : USB_OK / USB_ERROR
- ******************************************************************************/
-usb_er_t usb_cstd_snd_msg (uint8_t id, usb_msg_t* mess)
-{
-    BaseType_t err;
-    QueueHandle_t handle;
-
-    if (NULL == mess)
-    {
-        return USB_ERROR;
-    }
-
-    handle = (QueueHandle_t)( *(g_mbx_table[id]) );
-
-    /** Send message to queue specified by *(mbx_table[id]) **/
-    err = xQueueSend(handle, (const void *)&mess, (TickType_t)(0));
-    if (pdTRUE == err)
-    {
-        return USB_OK;
-    }
-    else
-    {
-        return USB_ERROR;
-    }
-}
-/******************************************************************************
- End of function usb_cstd_snd_msg
- ******************************************************************************/
-
-/******************************************************************************
- Function Name   : usb_cstd_isnd_msg
- Description     : Send a message to the specified id (mailbox) while executing 
-                 : an interrupt.
- Argument        : uint8_t      id      : ID number (mailbox).
-                 : usb_msg_t*   mess    : Message pointer
- Return          : usb_er_t             : USB_OK / USB_ERROR
- ******************************************************************************/
-usb_er_t usb_cstd_isnd_msg (uint8_t id, usb_msg_t* mess)
-{
-    BaseType_t err;
-    QueueHandle_t handle;
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-
-    if (NULL == mess)
-    {
-        return USB_ERROR;
-    }
-
-    handle = (QueueHandle_t)( *(g_mbx_table[id]) );
-
-    /** Send message to queue specified by *(mbx_table[id]) from ISR **/
-    err = xQueueSendFromISR(handle, (const void *)&mess, &xHigherPriorityTaskWoken);
-    if (pdTRUE == err)
-    {
-        portYIELD_FROM_ISR ( xHigherPriorityTaskWoken );
-        return USB_OK;
-    }
-    else
-    {
-        return USB_ERROR;
-    }
-}
-/******************************************************************************
- End of function usb_cstd_isnd_msg
- ******************************************************************************/
-
-/******************************************************************************
- Function Name   : usb_cstd_pget_blk
- Description     : Get a memory block for the caller.
- Argument        : uint8_t      id      : ID number (mailbox).
-                 : usb_utr_t**  blk     : Memory block pointer.
- Return          : usb_er_t             : USB_OK / USB_ERROR
- ******************************************************************************/
-usb_er_t usb_cstd_pget_blk (uint8_t id, usb_utr_t** blk)
-{
-    BaseType_t err;
-    QueueHandle_t handle;
-
-    if (NULL == blk)
-    {
-        return USB_ERR_NG;
-    }
-
-    handle = (QueueHandle_t)( *(g_mpl_table[id]) );
-    *blk  = NULL;
-
-    /* Look for a free memory block */
-    err = xQueueReceive(handle, (void *)blk, (TickType_t)(0));
-    if ((pdTRUE == err) && (NULL != (*blk)))
-    {
-        return USB_SUCCESS;
-    }
-    else
-    {
-        return USB_ERR_NG;
-    }
-}
-/******************************************************************************
- End of function usb_cstd_pget_blk
- ******************************************************************************/
-
-/******************************************************************************
- Function Name   : usb_cstd_rel_blk
- Description     : Release a memory block.
- Argument        : uint8_t      id      : ID number (mailbox).
-                 : usb_utr_t*   blk     : Memory block pointer.
- Return          : usb_er_t             : USB_OK / USB_ERROR
- ******************************************************************************/
-usb_er_t usb_cstd_rel_blk (uint8_t id, usb_utr_t* blk)
-{
-    BaseType_t err;
-    QueueHandle_t handle;
-
-    if (NULL == blk)
-    {
-        return USB_ERR_NG;
-    }
-
-    handle = (QueueHandle_t)( *(g_mpl_table[id]) );
-
-    /* Release a memory block specified by id */
-    err = xQueueSend(handle, (const void *)&blk, (TickType_t)(0));
-    if (pdTRUE == err)
-    {
-        return USB_SUCCESS;
-    }
-    else
-    {
-        return USB_ERR_NG;
-    }
-}
-/******************************************************************************
- End of function usb_cstd_rel_blk
- ******************************************************************************/
+    /* Fix Memory Pool */
+    rtos_delete_fixed_memory(&g_rtos_usb_mpf_id);
 
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
+    /* Delete Task */
+    rtos_delete_task(&g_rtos_usb_hcd_task_id);              /* For HCD */
+    rtos_delete_task(&g_rtos_usb_mgr_task_id);              /* For MGR */
+    rtos_delete_task(&g_rtos_usb_hub_task_id);              /* For HUB */
+
+    /* Delete Mailbox */
+    rtos_delete_mailbox(&g_rtos_usb_hcd_mbx_id);            /* For HCD */
+    rtos_delete_mailbox(&g_rtos_usb_hcd_sub_mbx_id);        /* For HCD Sub */
+    rtos_delete_mailbox(&g_rtos_usb_hcd_sub_addr_mbx_id);   /* For HCD Sub ADDR */
+    rtos_delete_mailbox(&g_rtos_usb_mgr_mbx_id);            /* For MGR */
+    rtos_delete_mailbox(&g_rtos_usb_hub_mbx_id);            /* For HUB */
+    rtos_delete_mailbox(&g_rtos_usb_cls_mbx_id);            /* For CLS */
+#if defined(USB_CFG_HMSC_USE)
+    /* Delete Mailbox */
+    rtos_delete_mailbox(&g_rtos_usb_hmsc_mbx_id);           /* For HMSC Mailbox */
+    rtos_delete_mailbox(&g_rtos_usb_hmsc_req_mbx_id);       /* For HMSC Req Mailbox */
+
+    /* Delete Semaphore */
+    rtos_delete_semaphore(&g_rtos_usb_hmsc_sem_id);         /* For HMSC Semaphore */
+#endif /* defined(USB_CFG_HMSC_USE) */
+
+#if defined(USB_CFG_HHID_USE)
+    rtos_delete_mailbox(&g_rtos_usb_hhid_mbx_id);            /* For HHID */
+#endif /* defined(USB_CFG_HMSC_USE) */
+
+#endif /* ( (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST ) */
+
+#if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
+    /* Delete Task */
+    rtos_delete_task(&g_rtos_usb_pcd_task_id);              /* For PCD */
+
+    /* Mailbox Creation */
+    rtos_delete_mailbox(&g_rtos_usb_pcd_mbx_id);            /* For PCD */
+    rtos_delete_mailbox(&g_rtos_usb_pcd_sub_mbx_id);        /* For PCD Sub */
+
+#if defined(USB_CFG_PMSC_USE)
+    /* Delete Task */
+    rtos_delete_task(&g_rtos_usb_pmsc_task_id);             /* For PMSC */
+
+    /* Delete Mailbox */
+    rtos_delete_mailbox(&g_rtos_usb_pmsc_mbx_id);           /* For PMSC */
+#endif /* defined(USB_CFG_PMSC_USE) */
+
+#endif /* ( (USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI ) */
+
+#elif   BSP_CFG_RTOS_USED == 2                              /* SEGGER embOS */
+#elif   BSP_CFG_RTOS_USED == 3                              /* Micrium MicroC/OS */
+#elif   BSP_CFG_RTOS_USED == 4                              /* Renesas RI600V4 & RI600PX */
+    g_rtos_usb_mpf_id               = USB_NULL;
+
+#if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
+    g_rtos_usb_hcd_mbx_id           = USB_NULL;
+    g_rtos_usb_hcd_sub_mbx_id       = USB_NULL;
+    g_rtos_usb_hcd_sub_addr_mbx_id  = USB_NULL;
+    g_rtos_usb_mgr_mbx_id           = USB_NULL;
+    g_rtos_usb_cls_mbx_id           = USB_NULL;
+#if defined(USB_CFG_HMSC_USE)
+    g_rtos_usb_hmsc_mbx_id          = USB_NULL;
+    g_rtos_usb_hmsc_req_mbx_id      = USB_NULL;
+    g_rtos_usb_hmsc_sem_id          = USB_NULL;
+#endif /* defined(USB_CFG_HMSC_USE) */
+
+#if defined(USB_CFG_HHID_USE)
+    g_rtos_usb_hhid_mbx_id          = USB_NULL;
+#endif /* defined(USB_CFG_HCDC_USE) */
+
+#endif  /* ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST) */
+
+#if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
+    g_rtos_usb_pcd_mbx_id           = USB_NULL;
+    g_rtos_usb_pcd_sub_mbx_id       = USB_NULL;
+
+#if defined(USB_CFG_PMSC_USE)
+    g_rtos_usb_pmsc_mbx_id          = USB_NULL;
+#endif /* defined(USB_CFG_PMSC_USE) */
+
+#endif  /* ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI) */
+#endif  /* BSP_CFG_RTOS_USED == 1 */
+
+    return ret;
+} /* End of function usb_rtos_unconfiguration() */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 /******************************************************************************
- Function Name   : usb_cstd_wai_msg
- Description     : Runs USB_SND_MSG after running the scheduler the specified 
-                 : number of times.
- Argument        : uint8_t      id      : ID number (mailbox).
-                 : usb_msg_t    *mess   : Message pointer.
-                 : uint16_t     times   : Timeout value.
- Return          : usb_er_t             : USB_OK / USB_ERROR.
- ******************************************************************************/
-usb_err_t usb_cstd_wai_msg (uint8_t id, usb_msg_t* mess, usb_tm_t times)
-{
-    usb_er_t err;
+ End  Of File
+ *****************************************************************************/
 
-    vTaskDelay((TickType_t)(times/portTICK_PERIOD_MS));
-    err = usb_cstd_snd_msg(id, mess);
-
-    if (USB_OK == err)
-    {
-        return USB_SUCCESS;
-    }
-    else
-    {
-        return USB_ERR_NG;
-    }
-}
-/******************************************************************************
- End of function usb_cstd_wai_msg
- ******************************************************************************/
-
-/******************************************************************************
- Function Name   : usb_cstd_wait_scheduler
- Description     : Schedules a wait request.
- Argument        : none
- Return          : none
- ******************************************************************************/
-void usb_cstd_wait_scheduler (void)
-{
-}
-/******************************************************************************
- End of function usb_cstd_wait_scheduler
- ******************************************************************************/
-
-/******************************************************************************
- Function Name   : usb_cstd_sche_init
- Description     : Scheduler initialization.
- Argument        : none
- Return          : none
- ******************************************************************************/
-void usb_cstd_sche_init (void)
-{
-}
-/******************************************************************************
- End of function usb_cstd_sche_init
- ******************************************************************************/
-
-/******************************************************************************
- Function Name   : usb_cstd_set_task_pri
- Description     : Set a task's priority.
- Argument        : uint8_t tasknum   : Task id.
-                 : uint8_t pri       : The task priority to be set.
- Return          : none
- ******************************************************************************/
-void usb_cstd_set_task_pri (uint8_t tasknum, uint8_t pri)
-{
-}
-/******************************************************************************
- End of function usb_cstd_set_task_pri
- ******************************************************************************/
-
-/******************************************************************************
- Function Name   : usb_cstd_check_schedule
- Description     : Check schedule flag to see if caller's "time has come", then 
-                 : clear it.
- Argument        : none
- Return          : flg   : usb_scheduler_schedule_flag
- ******************************************************************************/
-uint8_t usb_cstd_check_schedule (void)
-{
-    return USB_FLGSET;
-}
-/******************************************************************************
- End of function usb_cstd_check_schedule
- ******************************************************************************/
-
-#endif  /* (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST */
-
-/******************************************************************************
- Function Name   : usb_cstd_pipe_msg_clear
- Description     : Message clear for PIPE Transfer wait que.
- Arguments       : usb_utr_t *ptr       : Pointer to usb_utr_t structure.
-                 : uint16_t  pipe_no    : Pipe no.
- Return          : none
- ******************************************************************************/
-void usb_cstd_pipe_msg_clear (usb_utr_t *ptr, uint16_t pipe_no)
-{
-    BaseType_t  err;
-    usb_msg_t   *mess;
-    uint16_t    ip;
-
-    ip = ptr->ip;
-
-    vPortFree (ptr);
-    if ((USB_MIN_PIPE_NO > pipe_no) || (USB_MAXPIPE_NUM < pipe_no))
-    {
-        return;
-    }
-
-    /* WAIT_LOOP */
-    do
-    {
-        /** Receive message from queue specified by *(mbx_table[id]) **/
-        err = xQueueReceive(g_pipe_hdl[ip][pipe_no], (void *)&mess, (TickType_t)(0));
-        if ((pdTRUE == err) && (NULL != (mess)))
-        {
-            vPortFree (mess);
-        }
-        else
-        {
-            break;
-        }
-    } while (pdTRUE == err);
-}
-/******************************************************************************
- End of function usb_cstd_pipe_msg_clear
- ******************************************************************************/
-
-/******************************************************************************
- Function Name   : usb_cstd_pipe0_msg_clear
- Description     : Message clear for PIPE0 Transfer wait que.
- Arguments       : usb_utr_t *ptr       : Pointer to usb_utr_t structure.
-                 : uint16_t  dev_addr   : device address
- Return          : none
- ******************************************************************************/
-void usb_cstd_pipe0_msg_clear (usb_utr_t *ptr, uint16_t dev_addr)
-{
-    BaseType_t  err;
-    usb_msg_t   *mess;
-    uint16_t    ip;
-
-    ip = ptr->ip;
-
-    vPortFree (ptr);
-    if ((USB_DEVICEADDR > dev_addr) || (USB_MAXDEVADDR < dev_addr))
-    {
-        return;
-    }
-
-    /* WAIT_LOOP */
-    do
-    {
-        /** Receive message from queue specified by *(mbx_table[id]) **/
-        err = xQueueReceive(g_pipe0_hdl[ip][dev_addr], (void *)&mess, (TickType_t)(0));
-        if ((pdTRUE == err) && (NULL != (mess)))
-        {
-            vPortFree (mess);
-        }
-        else
-        {
-            break;
-        }
-    } while (pdTRUE == err);
-}
-/******************************************************************************
- End of function usb_cstd_pipe0_msg_clear
- ******************************************************************************/
-
-/******************************************************************************
- Function Name   : usb_cstd_pipe_msg_re_forward
- Description     : Get PIPE Transfer wait que and Message send to HCD/PCD
- Argument        : uint16_t  pipe_no    : Pipe no.
- Return          : none
- ******************************************************************************/
-void usb_cstd_pipe_msg_re_forward (uint16_t ip_no, uint16_t pipe_no)
-{
-    BaseType_t      err;
-    usb_msg_t       *mess;
-    QueueHandle_t   handle;
-    uint8_t         id;
-
-    if ((USB_MIN_PIPE_NO > pipe_no) || (USB_MAXPIPE_NUM < pipe_no))
-    {
-        return;
-    }
-
-    /** Receive message from queue specified by *(mbx_table[id]) **/
-    err = xQueueReceive(g_pipe_hdl[ip_no][pipe_no], (void *)&mess, (TickType_t)(0));
-    if ((pdTRUE == err) && (NULL != (mess)))
-    {
-        if (USB_HOST == g_usb_usbmode)
-        {
-            id = USB_HCD_MBX;
-        }
-        else
-        {
-            id = USB_PCD_MBX;
-        }
-
-        handle = (QueueHandle_t)(*(g_mbx_table[id]));
-
-        /** Send message to queue specified by *(mbx_table[id]) **/
-        xQueueSend(handle, (const void *)&mess, (TickType_t)(0));
-    }
-}
-/******************************************************************************
- End of function usb_cstd_pipe_msg_re_forward
- ******************************************************************************/
-
-/******************************************************************************
- Function Name   : usb_cstd_pipe0_msg_re_forward
- Description     : Get PIPE0 Transfer wait que and Message send to HCD/PCD
- Argument        : none
- Return          : none
- ******************************************************************************/
-void usb_cstd_pipe0_msg_re_forward (uint16_t ip_no)
-{
-    BaseType_t      err;
-    usb_msg_t       *mess;
-    QueueHandle_t   handle;
-    uint8_t         id;
-    uint8_t         dev_addr;
-
-    /* WAIT_LOOP */
-    for (dev_addr =0; dev_addr <USB_MAXDEVADDR; dev_addr++)
-    {
-        /** Receive message from queue specified by *(mbx_table[id]) **/
-        err = xQueueReceive(g_pipe0_hdl[ip_no][dev_addr], (void *)&mess, (TickType_t)(0));
-        if ((pdTRUE == err) && (NULL != (mess)))
-        {
-            if (USB_HOST == g_usb_usbmode)
-            {
-                id = USB_HCD_MBX;
-            }
-            else
-            {
-                id = USB_PCD_MBX;
-            }
-
-            handle = (QueueHandle_t)(*(g_mbx_table[id]));
-
-            /** Send message to queue specified by *(mbx_table[id]) **/
-            xQueueSend(handle, (const void *)&mess, (TickType_t)(0));
-            return;
-        }
-    }
-}
-/******************************************************************************
- End of function usb_cstd_pipe0_msg_re_forward
- ******************************************************************************/
-
-/******************************************************************************
- Function Name   : usb_cstd_pipe_msg_forward
- Description     : Message foward to PIPE Transfer wait que.
- Arguments       : usb_utr_t *ptr       : Pointer to usb_utr_t structure.
-                 : uint16_t  pipe_no    : Pipe no.
- Return          : none
- ******************************************************************************/
-void usb_cstd_pipe_msg_forward (usb_utr_t *ptr, uint16_t pipe_no)
-{
-    if ((USB_MIN_PIPE_NO > pipe_no) || (USB_MAXPIPE_NUM < pipe_no))
-    {
-        return;
-    }
-
-    /** Send message to queue specified by *(mbx_table[id]) **/
-    xQueueSend(g_pipe_hdl[ptr->ip][pipe_no], (const void *)&ptr, (TickType_t)(0));
-}
-/******************************************************************************
- End of function usb_cstd_pipe_msg_forward
- ******************************************************************************/
-
-/******************************************************************************
- Function Name   : usb_cstd_pipe0_msg_forward
- Description     : Message foward to PIPE0 Transfer wait que.
- Arguments       : usb_utr_t *ptr       : Pointer to usb_utr_t structure.
-                 : uint16_t  dev_addr   : device address
- Return          : none
- ******************************************************************************/
-void usb_cstd_pipe0_msg_forward (usb_utr_t *ptr, uint16_t dev_addr)
-{
-    if ((USB_DEVICEADDR > dev_addr) || (USB_MAXDEVADDR < dev_addr))
-    {
-        return;
-    }
-
-    /** Send message to queue specified by *(mbx_table[id]) **/
-    xQueueSend(g_pipe0_hdl[ptr->ip][dev_addr], (const void *)&ptr, (TickType_t)(0));
-}
-/******************************************************************************
- End of function usb_cstd_pipe0_msg_forward
- ******************************************************************************/
-
-#endif /* (BSP_CFG_RTOS_USED == 1) */

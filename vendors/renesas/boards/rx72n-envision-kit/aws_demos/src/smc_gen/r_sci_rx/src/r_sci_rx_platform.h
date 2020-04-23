@@ -29,6 +29,7 @@
 *           15.08.2019 3.20    Added RX72M support
 *           25.11.2019 3.30    Added support RX13T.
 *                              Removed support for Generation 1 devices.
+*           30.12.2019 3.40    Added support RX66N, RX72N.
 ************************************************************************************************************************/
 
 #ifndef SCI_RX_PLATFORM_H
@@ -67,6 +68,8 @@ Includes   <System Includes> , "Project Includes"
 #include "./targets/rx65n/r_sci_rx65n_private.h"  /* RX65N */
 #elif defined(BSP_MCU_RX66T)
 #include "./targets/rx66t/r_sci_rx66t_private.h"  /* RX66T */
+#elif defined(BSP_MCU_RX66N)
+#include "./targets/rx66n/r_sci_rx66n_private.h"  /* RX66N */
 #elif defined(BSP_MCU_RX71M)
 #include "./targets/rx71m/r_sci_rx71m_private.h"  /* RX71M */
 #elif defined(BSP_MCU_RX72T)
@@ -74,7 +77,7 @@ Includes   <System Includes> , "Project Includes"
 #elif defined(BSP_MCU_RX72M)
 #include "./targets/rx72m/r_sci_rx72m_private.h"  /* RX72M */
 #elif defined(BSP_MCU_RX72N)
-#include "./targets/rx72n/r_sci_rx72n_private.h"  /* RX72M */
+#include "./targets/rx72n/r_sci_rx72n_private.h"  /* RX72N */
 #else
 #error "ERROR - r_sci_rxXXX_private.h not included."
 #endif

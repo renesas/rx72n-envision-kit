@@ -13,12 +13,15 @@
 //  2009-03-17 MMa  added support for TES Display Controller
 //  2012-08-03 CSe  clearing interrupt before calling registered IRQ handler
 //  2018-01-24      added support for RX
+//  2020-02-28      added ICU_GROUPAL1 Enable/Disable Switch
 //--------------------------------------------------------------------------
 
 #include <stdlib.h>
 #include <stdbool.h>
 #include "dave_base.h"
 #include "dave_base_rx.h"
+
+#define ICU_GROUPAL1_ENABLE    (0) /*ICU_GROUPAL1 Enable/Disable*/
 
 #define DAVE_STAT        (0x0)  /* STATUS register offset              */
 #define DAVE_IRQ_CTRL    (0x30) /* IRQCTL register offset              */
@@ -50,9 +53,11 @@ static void d1_genal1_set(bool enable, int grp_num);
 
 static unsigned char d1_ipr_get(int vector);
 static unsigned long d1_genal1_get();
-static unsigned long d1_grpal1_get();
 
+#if ICU_GROUPAL1_ENABLE
+static unsigned long d1_grpal1_get();
 static void excep_icu_groupal1_isr(void);
+#endif
 
 static int d1_mapirq_intern(int irqtype)
 {
@@ -294,7 +299,7 @@ void drw_int_isr(void)
         }
     }
 }
-#if 0
+#if ICU_GROUPAL1_ENABLE
 #pragma interrupt excep_icu_groupal1_isr(vect=113)
 /***********************************************************************
  * Function Name: excep_icu_groupal1_isr
@@ -448,6 +453,7 @@ static unsigned long d1_genal1_get()
     return (*p_genal1_addr);
 } /* End of function d1_genal1_get() */
 
+#if ICU_GROUPAL1_ENABLE
 /***********************************************************************
  * Function Name: d1_grpal1_get
  * Description  : Read the GRPAL1 register.
@@ -463,4 +469,4 @@ static unsigned long d1_grpal1_get()
 
 	return (*p_grpal1_addr);
 } /* End of function d1_grpal1_get() */
-
+#endif

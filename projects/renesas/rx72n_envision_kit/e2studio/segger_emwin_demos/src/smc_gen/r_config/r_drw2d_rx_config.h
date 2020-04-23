@@ -1,3 +1,4 @@
+/* Generated configuration header file - do not edit */
 /***********************************************************************************************************************
 * DISCLAIMER
 * This software is supplied by Renesas Electronics Corporation and is only intended for use with Renesas products. No 
@@ -14,14 +15,14 @@
 * following link:
 * http://www.renesas.com/disclaimer 
 *
-* Copyright (C) 2019 Renesas Electronics Corporation. All rights reserved.    
+* Copyright (C) 2020 Renesas Electronics Corporation. All rights reserved.    
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
 * File Name     : r_drw2d_rx_config.h
 * Description   : Configures the drw2d driver
 ************************************************************************************************************************
 * History : DD.MM.YYYY Version Description
-*           01.01.2019 1.02    Initial Release.
+*           28.02.2020 1.00    Initial Release.
 ***********************************************************************************************************************/
 #ifndef DRW2D_CONFIG_H
 #define DRW2D_CONFIG_H

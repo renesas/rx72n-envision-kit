@@ -37,6 +37,9 @@
 *         : 20.05.2019 3.00    Added support for GNUC and ICCRX.
 *         : 28.06.2019 3.10    Added support RX23W
 *         : 15.08.2019 3.20    Added support RX72M
+*         : 25.11.2019 3.30    Added support RX13T
+*                              Modified comment of API function to Doxygen style.
+*         : 30.12.2019 3.40    Added support RX72N, RX66N.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -50,11 +53,11 @@ Includes   <System Includes> , "Project Includes"
 #include "r_gpio_rx_config.h"
 
 /***********************************************************************************************************************
-Macro definitions
+* Macro definitions
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-Typedef definitions
+* Typedef definitions
 ***********************************************************************************************************************/
 /* Different pin output options. */
 typedef enum
@@ -65,14 +68,14 @@ typedef enum
 } gpio_pin_output_t;
 
 /***********************************************************************************************************************
-Private global variables and functions
+* Private global variables and functions
 ***********************************************************************************************************************/
 uint8_t volatile * gpio_port_addr_get(uint8_t volatile * base_addr, uint16_t index);
 bool               gpio_pin_function_check(uint8_t const * check_array, uint8_t port_number, uint8_t pin_number);
 void               gpio_set_output_type(gpio_port_pin_t pin, gpio_pin_output_t out_type);
 
 /***********************************************************************************************************************
-Export global variables
+* Export global variables
 ***********************************************************************************************************************/
 #if (GPIO_CFG_PARAM_CHECKING_ENABLE == 1)
     extern const uint8_t g_gpio_open_drain_n_support[];
@@ -88,14 +91,17 @@ Export global variables
 
 /***********************************************************************************************************************
 * Function Name: R_GPIO_PortWrite
-* Description  : Writes the levels of all pins on a port.
-* Arguments    : port -
-*                    Which port to write to.
-*                value -
-*                    The value to write to the port. Each bit corresponds to a pin on the port (e.g. bit 0 of value
-*                    will be written to pin 0 on supplied port)
-* Return Value : none
-***********************************************************************************************************************/
+********************************************************************************************************************//**
+* @brief This function writes the levels of all pins on a port.
+* @param[in] port -  Which port to write to. See Section 2.10.1, Ports.
+* @param[in] value - The value to write to the port. Each bit corresponds to a pin on the port (e.g. bit 0 of value
+* will be written to pin 0 on supplied port)
+* @details The input value will be written to the specified port. Each bit in the value parameter corresponds to a pin
+* on the port. For example, bit 7 of write value corresponds to pin 7, bit 6 corresponds to pin 6, and so forth.
+* @note In the interest of performance, this function does not automatically check for non-existent pins when the
+* port-wide write function is called. It is up to the user’s application to insure that only valid pins are written to.
+*
+*/
 void R_GPIO_PortWrite (gpio_port_t port, uint8_t value)
 {
     uint8_t volatile * podr;
@@ -111,11 +117,14 @@ void R_GPIO_PortWrite (gpio_port_t port, uint8_t value)
 
 /***********************************************************************************************************************
 * Function Name: R_GPIO_PortRead
-* Description  : Reads the levels of all pins on a port.
-* Arguments    : port -
-*                    Which port to read.
-* Return Value : Value of the port
-***********************************************************************************************************************/
+********************************************************************************************************************//**
+* @brief This function reads the levels of all pins on a port.
+* @param[in] port - Which port to read. See Section 2.10.1, Ports.
+* @return The value of the port.
+* @details The specified port will be read, and the levels for all the pins will be returned. Each bit in the returned
+* value corresponds to a pin on the port. For example, bit 7 of read value corresponds to pin 7, bit 6 corresponds to
+* pin 6, and so forth.
+*/
 uint8_t R_GPIO_PortRead (gpio_port_t port)
 {
     /* PIDR register addresses are incremental in memory starting with PORT0.PIDR. Even if a port is not available
@@ -127,19 +136,18 @@ uint8_t R_GPIO_PortRead (gpio_port_t port)
 
 /***********************************************************************************************************************
 * Function Name: R_GPIO_PortDirectionSet
-* Description  : Sets multiple pins on a port to inputs or outputs at once. Each bit in the mask parameter corresponds
-*                to a pin on the port. For example, bit 7 of mask corresponds to pin 7, bit 6 corresponds to pin 6,
-*                and so forth. If a bit is set to 1 then the corresponding pin will be changed to an input or output
-*                as specified by the dir parameter. If a bit is set to 0 then the direction of the pin will not
-*                be changed.
-* Arguments    : port -
-*                    Which port to read.
-*                dir
-*                    Which direction to use.
-*                mask
-*                    Mask of which pins to set to change. 1 = set direction, 0 = do not change.
-* Return Value : none
-***********************************************************************************************************************/
+********************************************************************************************************************//**
+* @brief This function sets multiple pins on a port to inputs or outputs at once.
+* @param[in] port - Which port to use. See Section 2.10.1, Ports.
+* @param[in] dir - Which direction to use. See Section 2.10.5, Pin Direction.
+* @param[in] mask - Mask of which pins to change. 1 = set direction, 0 = do not change.
+* @details Multiple pins on a port can be set to inputs or outputs at once. Each bit in the mask parameter corresponds
+* to a pin on the port. For example, bit 7 of mask corresponds to pin 7, bit 6 corresponds to pin 6, and so forth.
+* If a bit is set to 1 then the corresponding pin will be changed to an input or output as specified by the dir
+* parameter. If a bit is set to 0 then the direction of the pin will not be changed.
+* @note This function does not allow the user to specify the use of special modes such as input pull-up resistors or
+* open-drain outputs. To enable these modes use the R_GPIO_PinControl() function.
+*/
 void R_GPIO_PortDirectionSet (gpio_port_t port, gpio_dir_t dir, uint8_t mask)
 {
     uint8_t volatile * pdr;
@@ -164,13 +172,12 @@ void R_GPIO_PortDirectionSet (gpio_port_t port, gpio_dir_t dir, uint8_t mask)
 
 /***********************************************************************************************************************
 * Function Name: R_GPIO_PinWrite
-* Description  : Sets the level of a pin.
-* Arguments    : pin -
-*                    Which pin to use.
-*                level
-*                    What level to the pin to.
-* Return Value : none
-***********************************************************************************************************************/
+********************************************************************************************************************//**
+* @brief This function sets the level of a pin.
+* @param[in] pin - Which pin to use. See Section 2.10.2, Pins.
+* @param[in] level - What level to set the pin to.
+* @details Pins can either be set as high (‘1’) or low (‘0’).
+*/
 void R_GPIO_PinWrite (gpio_port_pin_t pin, gpio_level_t level)
 {
     uint8_t volatile * podr;
@@ -195,11 +202,12 @@ void R_GPIO_PinWrite (gpio_port_pin_t pin, gpio_level_t level)
 
 /***********************************************************************************************************************
 * Function Name: R_GPIO_PinRead
-* Description  : Reads the level of a pin.
-* Arguments    : pin -
-*                    Which pin to read.
-* Return Value : Level of the pin.
-***********************************************************************************************************************/
+********************************************************************************************************************//**
+* @brief This function reads the level of a pin.
+* @param[in] pin - Which pin to use. See Section 2.10.2, Pins.
+* @return The level of the specified pin.
+* @details The specified pin will be read and the level returned.
+*/
 gpio_level_t R_GPIO_PinRead (gpio_port_pin_t pin)
 {
     uint8_t volatile * pidr;
@@ -222,13 +230,13 @@ gpio_level_t R_GPIO_PinRead (gpio_port_pin_t pin)
 
 /***********************************************************************************************************************
 * Function Name: R_GPIO_PinDirectionSet
-* Description  : Sets the direction of a pin.
-* Arguments    : pin -
-*                    Which pin to use
-*                dir -
-*                    Direction to set the pin to. Options are GPIO_DIRECTION_INPUT or GPIO_DIRECTION_OUTPUT.
-* Return Value : none
-***********************************************************************************************************************/
+********************************************************************************************************************//**
+* @brief This function sets the direction (input/output) of a pin.
+* @param[in] pin - Which pin to use. See Section 2.10.2, Pins.
+* @param[in] dir - Which direction to use for this pin. See Section 2.10.5, Pin Direction.
+* @details This function sets pins as inputs or outputs. For enabling other settings such as open-drain outputs or
+* internal pull-ups see the R_GPIO_PinControl() function.
+*/
 void R_GPIO_PinDirectionSet (gpio_port_pin_t pin, gpio_dir_t dir)
 {
     uint8_t volatile * pdr;
@@ -255,18 +263,17 @@ void R_GPIO_PinDirectionSet (gpio_port_pin_t pin, gpio_dir_t dir)
 
 /***********************************************************************************************************************
 * Function Name: R_GPIO_PinControl
-* Description  : Provides access to various other pin functions and settings.
-* Arguments    : pin -
-*                    Which pin to use
-*                cmd -
-*                    Which command to perform on pin.
-* Return Value : GPIO_SUCCESS -
-*                    Command executed successfully.
-*                GPIO_ERR_INVALID_MODE -
-*                    Pin does not support requested mode.
-*                GPIO_ERR_INVALID_CMD -
-*                    Command that was input is not supported.
-***********************************************************************************************************************/
+********************************************************************************************************************//**
+* @brief This function allows the user to control various settings of a pin.
+* @param[in] pin -Which pin to use. See Section 2.10.2, Pins
+* @param[in] cmd - Which command to execute for this pin. See Section 2.10.6, Control Commands for available commands.
+* @retval [GPIO_SUCCESS]            Successful; pin modified as specified by command.
+* @retval [GPIO_ERR_INVALID_MODE]   Error; this pin does not support the specified option.
+* @retval [GPIO_ERR_INVALID_CMD]    Error; the input command is not supported.
+* @details Depending on the MCU, pins have various settings that can be configured other than the direction and
+* output level. Some examples include enabling open-drain outputs, internal pull-ups, and changing drive capacity
+* levels. These features vary per chip which means that the options for this function will also vary.
+*/
 gpio_err_t R_GPIO_PinControl (gpio_port_pin_t pin, gpio_cmd_t cmd)
 {
     gpio_err_t         err;
@@ -458,12 +465,13 @@ gpio_err_t R_GPIO_PinControl (gpio_port_pin_t pin, gpio_cmd_t cmd)
 
 /***********************************************************************************************************************
 * Function Name: R_GPIO_GetVersion
-* Description  : Returns the current version of this module. The version number is encoded where the top 2 bytes are the
-*                major version number and the bottom 2 bytes are the minor version number. For example, Version 4.25
-*                would be returned as 0x00040019.
-* Arguments    : none
-* Return Value : Version of this module.
-***********************************************************************************************************************/
+********************************************************************************************************************//**
+* @brief Returns the current version of this API.
+* @return  Version of this API.
+* @details This function will return the version of the currently running API. The version number is encoded where
+* the top 2 bytes are the major version number and the bottom 2 bytes are the minor version number. For example,
+* Version 4.25 would be returned as 0x00040019.
+*/
 uint32_t R_GPIO_GetVersion (void)
 {
     /* These version macros are defined in r_gpio_rx_if.h. */
@@ -479,6 +487,7 @@ uint32_t R_GPIO_GetVersion (void)
 *                    Index off the base. (e.g. for PORT4 it would be 0x0400)
 * Return Value : Address of the register that was requested
 ***********************************************************************************************************************/
+
 R_BSP_PRAGMA_INLINE (gpio_port_addr_get)
 uint8_t volatile * gpio_port_addr_get (uint8_t volatile * base_addr, uint16_t index)
 {

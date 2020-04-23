@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2015(2018) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2015(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_reg_access.c
@@ -30,6 +30,7 @@
  *         :                 hw_usb_set_curpipe() is fixed.
  *         : 30.09.2017 1.22 RX62N/RX630/RX63T-H is added. and Add "__evenaccess" for I/O reg access local variable.
  *         : 31.03.2018 1.23 Supporting Smart Configurator
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 /******************************************************************************
@@ -620,6 +621,8 @@ void hw_usb_set_utst(usb_utr_t *ptr, uint16_t data)
 #endif  /* (BSP_MCU_RX71M) */
 
 #if defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX71M)
+#if (((USB_CFG_USE_USBIP == USB_CFG_IP1) && ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)) \
+     || ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST))
 /******************************************************************************
  Function Name   : hw_usb_read_fifo32
  Description     : Data is read from the specified pipemode's FIFO register, 32-bits 
@@ -737,6 +740,9 @@ void hw_usb_write_fifo32(usb_utr_t *ptr, uint16_t pipemode, uint32_t data)
 /******************************************************************************
  End of function hw_usb_write_fifo32
  ******************************************************************************/
+#endif /* (((USB_CFG_USE_USBIP == USB_CFG_IP1) && ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)) \
+     || ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)) */
+
 #endif  /* defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX71M) */
 
 /******************************************************************************

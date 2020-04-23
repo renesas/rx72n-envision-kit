@@ -23,6 +23,7 @@
 /**********************************************************************************************************************
 * History : DD.MM.YYYY Version  Description
 *         : 08.10.2019 1.00     First Release
+*         : 10.12.2019 1.01     Modified comment.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -769,8 +770,8 @@ static void bsp_swint_get_all_task_status(e_bsp_swint_unit_t unit, void * const 
  * @brief This function controls software interrupts.
  * @param[in] unit Software interrupt unit
  * @param[in] cmd Software interrupt control command
- * @param[in] p_args Pointer to arguments for software interrupt control commands. Set the argument type to match each 
- * software interrupt control command. For commands that do not require arguments, use the setting FIT_NO_PTR.
+ * @param[in, out] p_args Pointer to arguments for software interrupt control commands. Set the argument type to match 
+ * each software interrupt control command. For commands that do not require arguments, use the setting FIT_NO_PTR.
  * @retval BSP_SWINT_SUCCESS Success.
  * @retval BSP_SWINT_ERR_INVALID_UNIT Invalid unit specified.
  * @retval BSP_SWINT_ERR_INVALID_IPR Invalid interrupt priority level specified.

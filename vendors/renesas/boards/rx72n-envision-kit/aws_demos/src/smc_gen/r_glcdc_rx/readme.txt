@@ -5,12 +5,12 @@ r_glcdc_rx
 
 Document Number
 ---------------
-R01AN3609EJ0120 (English version)
-R01AN3609JJ0120 (Japanese version)
+R01AN3609EJ0130 (English version)
+R01AN3609JJ0130 (Japanese version)
 
 Version
 -------
-v1.20
+v1.30
 
 Overview
 --------
@@ -30,10 +30,13 @@ Supported MCUs
 --------------
 * RX65N Group
 * RX72M
+* RX72N
+* RX66N
 
 Boards Tested On
 ----------------
 * RSKRX65N_2MB
+* RSKRX72N
 
 Limitations
 -----------
@@ -58,8 +61,8 @@ Please refer to the Adding Firmware Integration Technology Modules to Projects.
 Toolchain(s) Used
 -----------------
 * Renesas RX v3.01.00
-* GCC for Renesas RX 4.8.4.201801
-* IAR C/C++ Compiler for Renesas RX version 4.10.1
+* GCC for Renesas RX 4.8.4.201902
+* IAR C/C++ Compiler for Renesas RX version 4.12.1
 
 File Structure
 --------------
@@ -70,10 +73,10 @@ r_glcdc_rx
 +---doc
 |   |
 |   +---en
-|   |   r01an3609ej0120-rx.pdf
+|   |   r01an3609ej0130-rx.pdf
 |   |
 |   \---ja
-|       r01an3609jj0120-rx.pdf
+|       r01an3609jj0130-rx.pdf
 |
 +---ref
 |       r_glcdc_rx_config_reference.h
@@ -88,5 +91,11 @@ r_glcdc_rx
         +---rx65n
         |    r_glcdc_rx65n.c
         |
-        \---rx72m
-             r_glcdc_rx72m.c
+        +---rx72m
+        |    r_glcdc_rx72m.c
+        |
+        +---rx72n
+        |    r_glcdc_rx72n.c
+        |
+        \---rx66n
+            r_glcdc_rx66n.c

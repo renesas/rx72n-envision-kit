@@ -14,7 +14,7 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2016(2018) Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2016(2020) Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
 * File Name    : r_usb_dmac.h
@@ -26,6 +26,7 @@
 *         : 26.01.2017 1.21 Support DMAC Technical Update for RX71M/RX64M USBA.
 *         : 30.09.2017 1.22    Change functions name "usb_dma_buf2fifo_restart"->"usb_cstd_dma_send_restart"
 *         : 31.03.2018 1.23 Supporting Smart Configurator
+*         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
 ***********************************************************************************************************************/
 
 #ifndef R_USB_DMAC_H

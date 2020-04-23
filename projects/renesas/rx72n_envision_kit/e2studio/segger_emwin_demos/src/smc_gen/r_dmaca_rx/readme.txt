@@ -5,12 +5,12 @@ r_dmaca_rx
 
 Document Number 
 ---------------
-R01AN2063EJ0220
-R01AN2063JJ0220
+R01AN2063EJ0230
+R01AN2063JJ0230
 
 Version
 -------
-v2.20
+v2.30
 
 Overview
 --------
@@ -33,10 +33,12 @@ Supported MCUs
 * RX64M Group
 * RX65N Group
 * RX651 Group
+* RX66N Group
 * RX66T Group
 * RX71M Group
 * RX72T Group
 * RX72M Group
+* RX72N Group
 
 Boards Tested On
 ----------------
@@ -46,10 +48,12 @@ Boards Tested On
 * RSKRX64M
 * RSKRX65N
 * RSKRX65N_2MB
+* RSKRX66N
 * RSKRX66T
 * RSKRX71M
 * RSKRX72T
 * RSKRX72M
+* RSKRX72N
 
 Limitations
 -----------
@@ -61,7 +65,7 @@ Peripherals Used Directly
 
 Required Packages
 -----------------
-* r_bsp v5.20
+* r_bsp v5.50
 
 How to add to your project
 --------------------------
@@ -93,9 +97,9 @@ Toolchain(s) Used
 -----------------
 * Renesas RX v3.01 release 00
 * GCC for Renesas
-RX 4.08.04.201803
+RX 4.08.04.201902
 * IAR C/C++ Compiler
-for Renesas RX 4.11.1
+for Renesas RX 4.12.1
 
 File Structure
 --------------
@@ -106,9 +110,9 @@ r_dmaca_rx
 +---doc
 |   |
 |   +---en
-|   |       r01an2063ej0220-rx-dmac.pdf
+|   |       r01an2063ej0230-rx-dmac.pdf
 |   +---ja
-|           r01an2063jj0220-rx-dmac.pdf
+|           r01an2063jj0230-rx-dmac.pdf
 |
 +---ref
 |       r_dmaca_rx_config_reference.h
@@ -127,6 +131,10 @@ r_dmaca_rx
         |       r_dmaca_rx_target.c
         |       r_dmaca_rx_target.h
         |
+        +---rx66n
+        |       r_dmaca_rx_target.c
+        |       r_dmaca_rx_target.h
+        |
         +---rx66t
         |       r_dmaca_rx_target.c
         |       r_dmaca_rx_target.h
@@ -140,6 +148,10 @@ r_dmaca_rx
         |       r_dmaca_rx_target.h
         |
         +---rx72m
+        |       r_dmaca_rx_target.c
+        |       r_dmaca_rx_target.h
+        |
+        +---rx72n
         |       r_dmaca_rx_target.c
         |       r_dmaca_rx_target.h
         |

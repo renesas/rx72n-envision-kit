@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2014(2019) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2014(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_hreg_abs.c
@@ -30,6 +30,7 @@
  *         : 31.03.2018 1.23 Supporting Smart Configurator
  *         : 31.05.2019 1.26 Added support for GNUC and ICCRX.
  *         : 30.07.2019 1.27 RX72M is added.
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 /******************************************************************************
@@ -41,6 +42,11 @@
 #include "r_usb_extern.h"
 #include "r_usb_bitdefine.h"
 #include "r_usb_reg_access.h"
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+#include "r_rtos_abstract.h"
+#include "r_usb_cstd_rtos.h"
+#endif /* (BSP_CFG_RTOS_USED != 0) */
+
 
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
 /******************************************************************************
@@ -539,10 +545,24 @@ void usb_hstd_bus_reset (usb_utr_t *ptr)
  ******************************************************************************/
 void usb_hstd_resume_process (usb_utr_t *ptr)
 {
+    uint16_t buf;
+
     usb_hstd_bchg_disable(ptr);
 
-    /* RESUME=1, RWUPE=0 */
-    hw_usb_rmw_dvstctr(ptr, USB_RESUME, (USB_RESUME | USB_RWUPE));
+    buf = hw_usb_read_dvstctr(ptr);
+
+    /* Reset handshake status get */
+
+    if (buf & USB_RESUME)
+    {
+        /* RWUPE=0 */
+        hw_usb_clear_dvstctr(ptr, USB_RWUPE);
+    }
+    else
+    {
+        /* RESUME=1, RWUPE=0 */
+        hw_usb_rmw_dvstctr(ptr, USB_RESUME, (USB_RESUME | USB_RWUPE));
+    }
 
     /* Wait */
     usb_cpu_delay_xms((uint16_t) 20);
@@ -587,13 +607,13 @@ uint16_t usb_hstd_support_speed_check (usb_utr_t *ptr)
         break;
         case USB_LSMODE :
 #if defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX72T)\
-    || defined (BSP_MCU_RX72M)
+    || defined (BSP_MCU_RX72M) || defined (BSP_MCU_RX72N) || defined (BSP_MCU_RX66N)
             conn_inf = USB_LSCONNECT;
 #else   /* defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX72T)\
-    || defined (BSP_MCU_RX72M) */
+    || defined (BSP_MCU_RX72M) || defined (BSP_MCU_RX72N) || defined (BSP_MCU_RX66N) */
             conn_inf = USB_NOCONNECT;
 #endif  /* defined(BSP_MCU_RX64M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX72T)\
-    || defined (BSP_MCU_RX72M) */
+    || defined (BSP_MCU_RX72M) || defined (BSP_MCU_RX72N) || defined (BSP_MCU_RX66N) */
         break;
         case USB_HSPROC :
             conn_inf = USB_NOCONNECT;
@@ -896,15 +916,15 @@ void usb_hstd_forced_termination (usb_utr_t *ptr, uint16_t pipe, uint16_t status
             (g_p_usb_hstd_pipe[ptr->ip][pipe]->complete)(g_p_usb_hstd_pipe[ptr->ip][pipe], 0, 0);
         }
 
-#if BSP_CFG_RTOS_USED == 1
-        vPortFree (g_p_usb_hstd_pipe[ptr->ip][pipe]);
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+        rtos_release_fixed_memory(&g_rtos_usb_mpf_id, (void *)g_p_usb_hstd_pipe[ptr->ip][pipe]);
         g_p_usb_hstd_pipe[ptr->ip][pipe] = (usb_utr_t*) USB_NULL;
-        usb_cstd_pipe_msg_re_forward (ptr->ip, pipe);    /* Get PIPE Transfer wait que and Message send to HCD */
+        usb_rtos_resend_msg_to_submbx (ptr->ip, pipe, USB_HOST);
 
-#else   /* BSP_CFG_RTOS_USED == 1 */
+#else   /* (BSP_CFG_RTOS_USED != 0) */
         g_p_usb_hstd_pipe[ptr->ip][pipe] = (usb_utr_t*) USB_NULL;
 
-#endif  /* BSP_CFG_RTOS_USED == 1 */
+#endif  /* (BSP_CFG_RTOS_USED != 0) */
     }
 }
 /******************************************************************************

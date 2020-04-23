@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2014(2019) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2014(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_hstorage_driver.c
@@ -29,6 +29,7 @@
  *         : 26.01.2017 1.21 usb_hmsc_strg_drive_search_act is fixed.(Add MBR(sect0) dummy read)
  *         : 31.03.2018 1.23 Supporting Smart Configurator 
  *         : 31.05.2019 1.26 Added support for GNUC and ICCRX.
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 /******************************************************************************
@@ -41,7 +42,7 @@
 #include "r_usb_extern.h"
 #include "r_usb_hmsc_if.h"
 #include "r_usb_hmsc.h"
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED == 1)        /* FreeRTOS */
 #include "FreeRTOS.h"
 #endif /*BSP_CFG_RTOS_USED == 1 */
 
@@ -59,7 +60,7 @@ uint16_t g_usb_hmsc_strg_process[USB_NUM_USBIP];
 
 /* static uint8_t g_usb_hmsc_data[USB_NUM_USBIP][64];*/     /* Full-Speed MAXPS */
 static uint8_t g_usb_hmsc_data[USB_NUM_USBIP][512];    /* Hi-Speed MAXPS */
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
 /* Partition */
 static uint16_t g_usb_hmsc_read_partition_retry_count[USB_NUM_USBIP];
 #endif  /* BSP_CFG_RTOS_USED == 0 */
@@ -80,7 +81,7 @@ extern uint8_t g_drive_search_que_cnt;
  Renesas Abstracted Peripheral Driver functions
  ******************************************************************************/
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
 /******************************************************************************
  Function Name   : usb_hmsc_strg_drive_search_act
  Description     : Storage drive search
@@ -292,7 +293,8 @@ void usb_hmsc_strg_check_result (usb_utr_t *mess, uint16_t data1, uint16_t data2
  End of function usb_hmsc_strg_check_result
  ******************************************************************************/
 #endif /* (BSP_CFG_RTOS_USED == 0) */
-#if (BSP_CFG_RTOS_USED == 0)
+
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
 /******************************************************************************
  Function Name   : usb_hmsc_strg_drive_task
  Description     : Storage drive task
@@ -597,7 +599,7 @@ uint16_t usb_hmsc_strg_drive_open (usb_utr_t *ptr, uint16_t addr, uint16_t *side
         return USB_ERROR;
     }
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
     g_drive_search_que[g_drive_search_que_cnt] = ip_addr;
     g_drive_search_que_cnt++;
 #endif  /* BSP_CFG_RTOS_USED == 0 */
@@ -903,7 +905,7 @@ void usb_hmsc_storage_driver_start (uint16_t ip_no)
 {
     g_usb_hmsc_strg_process[ip_no] = 0;
     memset((void *)&g_usb_hmsc_data[ip_no], 0, 512);
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
     g_usb_hmsc_read_partition_retry_count[ip_no] = 0;
 #endif /* BSP_CFG_RTOS_USED == 0 */
 

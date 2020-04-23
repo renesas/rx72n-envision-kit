@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2015(2018) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2015(2020) Renesas Electronics Corporation. All rights reserved.
  *********************************************************************************************************************/
 /**********************************************************************************************************************
  * File Name    : r_usb_extern.h
@@ -50,6 +50,7 @@
  *                           "R_USB_HmscStrgDriveSearch" is added.
  *         : 31.03.2018 1.23 Supporting Smart Configurator
  *         : 16.11.2018 1.24 Supporting RTOS Thread safe
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 #ifndef R_USB_EXTERN_H
@@ -154,11 +155,11 @@ extern usb_utr_t g_usb_pdata[USB_MAXPIPE_NUM + 1];
 
 
 
-#if (BSP_CFG_RTOS_USED == 1)
-extern  usb_ctrl_t      g_usb_cstd_event[];
-#else /* (BSP_CFG_RTOS_USED == 1) */
+#if (BSP_CFG_RTOS_USED == 0)                                    /* Non-OS */
 extern usb_event_t g_usb_cstd_event;
-#endif /*(BSP_CFG_RTOS_USED == 1)*/
+#else /* (BSP_CFG_RTOS_USED == 0) */
+extern  usb_ctrl_t      g_usb_cstd_event[];
+#endif /* (BSP_CFG_RTOS_USED == 0) */
 
 extern usb_pipe_table_t    g_usb_pipe_table[USB_NUM_USBIP][USB_MAXPIPE_NUM+1];
 extern uint16_t            g_usb_cstd_bemp_skip[USB_NUM_USBIP][USB_MAX_PIPE_NO + 1u];
@@ -170,11 +171,9 @@ extern uint16_t     g_usb_hstd_use_pipe[];
 #endif  /* (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST */
 
 
-#if (BSP_CFG_RTOS_USED == 1)
-extern SemaphoreHandle_t    g_usb_semaphore_hdl[];
-extern usb_utr_t            *get_usb_int_buf(void);
+#if (BSP_CFG_RTOS_USED != 0)                                    /* Use RTOS */
 extern usb_callback_t       *g_usb_apl_callback;
-#endif /*(BSP_CFG_RTOS_USED == 1)*/
+#endif /*(BSP_CFG_RTOS_USED != 0)*/
 
 /* r_usb_pbc.c */
 #if USB_CFG_BC == USB_CFG_ENABLE
@@ -353,7 +352,6 @@ void      usb_pstd_stop_clock (void);
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
 /* r_usb_cinthandler_usbip0.c */
 void      usb_hstd_usb_handler (void);
-void      usb_hstd_dma_handler (void);
 void      usb_hstd_init_usb_message (usb_utr_t *ptr);
 
 /* r_usb_cinthandler_usbip1.c */
@@ -398,10 +396,8 @@ void      usb_hstd_ovrcr0function (usb_utr_t *ptr);
 
 void      usb_hdriver_init (usb_utr_t *ptr, usb_cfg_t *cfg);
 void      usb_class_driver_start (usb_utr_t *ptr);
-#if (BSP_CFG_RTOS_USED == 1)
 void class_trans_result(usb_utr_t *ptr, uint16_t data1, uint16_t data2);
 uint16_t class_trans_wait_tmo(usb_utr_t *ptr, uint16_t tmo);
-#endif /* (BSP_CFG_RTOS_USED == 1) */
 
 /* r_usb_hreg_abs */
 void      usb_hstd_set_hub_port (usb_utr_t *ptr, uint16_t addr, uint16_t  upphub, uint16_t hubport);
@@ -455,15 +451,15 @@ void      usb_hstd_electrical_test_mode (usb_utr_t *ptr, uint16_t product_id);
 void      usb_hstd_mgr_task (usb_vp_int_t stacd);
 extern void      (*g_usb_hstd_enumaration_process[]) (usb_utr_t *, uint16_t, uint16_t);
 
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
 uint16_t  usb_hstd_get_string_desc (usb_utr_t *ptr, uint16_t addr, uint16_t string);
 uint16_t  usb_hstd_set_feature (usb_utr_t *ptr, uint16_t addr, uint16_t epnum);
 uint16_t  usb_hstd_get_config_desc (usb_utr_t *ptr, uint16_t addr, uint16_t length);
-#else /* (BSP_CFG_RTOS_USED == 1) */
+#else /* (BSP_CFG_RTOS_USED != 0) */
 uint16_t  usb_hstd_get_string_desc (usb_utr_t *ptr, uint16_t addr, uint16_t string, usb_cb_t complete);
 uint16_t  usb_hstd_set_feature (usb_utr_t *ptr, uint16_t addr, uint16_t epnum, usb_cb_t complete);
 uint16_t  usb_hstd_get_config_desc (usb_utr_t *ptr, uint16_t addr, uint16_t length, usb_cb_t complete);
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
 void      usb_hstd_submit_result (usb_utr_t *ptr, uint16_t data1, uint16_t data2);
 void      usb_hstd_mgr_suspend (usb_utr_t *ptr, uint16_t info);
@@ -482,7 +478,7 @@ void      usb_hhub_close (usb_utr_t *ptr, uint16_t hubaddr, uint16_t data2);
 void      usb_hhub_registration (usb_utr_t *ptr, usb_hcdreg_t *callback);
 uint16_t  usb_hhub_get_hub_information (usb_utr_t *ptr, uint16_t hubaddr, usb_cb_t complete);
 uint16_t  usb_hhub_get_port_information (usb_utr_t *ptr, uint16_t hubaddr, uint16_t port, usb_cb_t complete);
-void      usb_hhub_task (usb_vp_int_t stacd);
+void      usb_hstd_hub_task (usb_vp_int_t stacd);
 uint16_t  usb_hhub_get_string_descriptor1 (usb_utr_t *ptr, uint16_t devaddr, uint16_t index, usb_cb_t complete);
 uint16_t  usb_hhub_get_string_descriptor1check (uint16_t errcheck);
 uint16_t  usb_hhub_get_string_descriptor2 (usb_utr_t *ptr, uint16_t devaddr, uint16_t index, usb_cb_t complete);
@@ -505,8 +501,10 @@ void      usb_hstd_test_resume (usb_utr_t *ptr);
 /* r_usb_hscheduler.c */
 usb_err_t usb_cstd_wai_msg (uint8_t id, usb_msg_t* mess, usb_tm_t times);
 void      usb_cstd_wait_scheduler (void);
+#if (BSP_CFG_RTOS_USED == 0)    /* Non-OS */
 usb_er_t  usb_cstd_pget_blk (uint8_t id, usb_utr_t** blk);
 usb_er_t  usb_cstd_rel_blk (uint8_t id, usb_utr_t* blk);
+#endif /* (BSP_CFG_RTOS_USED == 0) */
 void      usb_cstd_sche_init (void);
 usb_err_t usb_cstd_check (usb_er_t err);
 uint8_t   usb_cstd_check_schedule (void);
@@ -524,8 +522,13 @@ usb_er_t  usb_cstd_isnd_msg (uint8_t id, usb_msg_t* mess);
 /* r_usb_pinthandler_usbip0.c */
 void      usb_pstd_usb_handler (void);
 
+#if (BSP_CFG_RTOS_USED == 4)    /* Renesas RI600V4 & RI600PX */
+/* r_usb_pdriver.c */
+void usb_pstd_pcd_task( VP_INT );
+#else /* (BSP_CFG_RTOS_USED == 4) */
 /* r_usb_pdriver.c */
 void      usb_pstd_pcd_task (void);
+#endif /* (BSP_CFG_RTOS_USED == 4) */
 usb_er_t  usb_pstd_set_submitutr (usb_utr_t * utrmsg);
 void      usb_pstd_clr_alt (void);
 void      usb_pstd_clr_mem (void);
@@ -616,7 +619,11 @@ extern void      usb_phid_write_complete(usb_utr_t *mess, uint16_t data1, uint16
 #endif /* defined(USB_CFG_PHID_USE) */
 
 #if defined(USB_CFG_PMSC_USE)
+#if (BSP_CFG_RTOS_USED == 4)    /* Renesas RI600V4 & RI600PX */
+extern  void usb_pmsc_task (VP_INT b);
+#else  /* (BSP_CFG_RTOS_USED == 4) */
 extern void      usb_pmsc_task (void);
+#endif /* (BSP_CFG_RTOS_USED == 4) */
 
 #endif /* defined(USB_CFG_PMSC_USE) */
 
@@ -696,18 +703,18 @@ void      usb_hstd_pddetint_process(usb_utr_t *ptr);
 void      usb_pstd_bc_detect_process(void);
 #endif /* USB_CFG_BC == USB_CFG_ENABLE */
 
-#if BSP_CFG_RTOS_USED == 1
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
 /* r_usb_cstd_rtos.c */
-void    usb_cstd_pipe_msg_clear (usb_utr_t *ptr, uint16_t pipe_no);
-void    usb_cstd_pipe0_msg_clear (usb_utr_t *ptr, uint16_t dev_addr);
-void    usb_cstd_pipe_msg_re_forward (uint16_t ip_no, uint16_t pipe_no);
-void    usb_cstd_pipe0_msg_re_forward (uint16_t ip_no);
-void    usb_cstd_pipe_msg_forward (usb_utr_t *ptr, uint16_t pipe_no);
-void    usb_cstd_pipe0_msg_forward (usb_utr_t *ptr, uint16_t dev_addr);
 
-#endif /* BSP_CFG_RTOS_USED == 1 */
+void usb_rtos_resend_msg_to_submbx (uint16_t ip, uint16_t pipe, uint16_t usb_mode);
+void usb_rtos_resend_msg_to_submbx_addr (usb_utr_t *p_ptr);
+void usb_rtos_send_msg_to_submbx (usb_utr_t *p_ptr, uint16_t pipe_no, uint16_t usb_mode);
+void usb_rtos_send_msg_to_submbx_addr (usb_utr_t *p_ptr, uint16_t dev_addr);
+void usb_rtos_delete_msg_submbx_addr (usb_utr_t *p_ptr);
+void usb_rtos_delete_msg_submbx (usb_utr_t *p_ptr, uint16_t usb_mode);
 
 
+#endif /* BSP_CFG_RTOS_USED != 0 */
 #endif  /* R_USB_EXTERN_H */
 /******************************************************************************
  End  Of File

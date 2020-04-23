@@ -17,12 +17,12 @@
 * Copyright (C) 2019 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
-* File Name    : r_gpio_rx72m.c
-* Description  : Data for r_gpio_rx driver specific to RX72M.
+* File Name    : r_gpio_rx72n.c
+* Description  : Data for r_gpio_rx driver specific to RX72N.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
 * History : DD.MM.YYYY Version Description
-*         : 15.08.2019 1.00    Initial Release.
+*         : 30.12.2019 1.00    Initial Release.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -57,7 +57,7 @@ Private global variables and functions
  * and ROM space.
  *
  * Note: These arrays are defined for the largest package part. For smaller packages where some pins do not exist,
- *       pin checking is filtered by the enumerated port_pin list for that package as defined in r_gpio_rx72m.h.
+ *       pin checking is filtered by the enumerated port_pin list for that package as defined in r_gpio_rx72n.h.
  */
 #if (GPIO_CFG_PARAM_CHECKING_ENABLE == 1)
 const uint8_t g_gpio_open_drain_n_support[GPIO_INFO_NUM_PORTS] =
@@ -202,5 +202,5 @@ const uint8_t g_gpio_dscr2_support[GPIO_INFO_NUM_PORTS] =
 
 #endif /* GPIO_CFG_PARAM_CHECKING_ENABLE */
 
-#endif /* BSP_MCU_RX72M */
+#endif /* BSP_MCU_RX72N */
 

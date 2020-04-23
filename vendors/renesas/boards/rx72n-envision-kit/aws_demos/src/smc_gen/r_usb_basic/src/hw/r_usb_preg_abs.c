@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2015(2019) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2015(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_preg_abs.c
@@ -30,6 +30,7 @@
  *         : 31.03.2018 1.23 Supporting Smart Configurator
  *         : 31.05.2019 1.26 Added support for GNUC and ICCRX.
  *         : 30.07.2019 1.27 RX72M is added.
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 /******************************************************************************
@@ -41,6 +42,10 @@
 #include "r_usb_extern.h"
 #include "r_usb_reg_access.h"
 #include "r_usb_bitdefine.h"
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+#include "r_rtos_abstract.h"
+#include "r_usb_cstd_rtos.h"
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
 #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
 
@@ -48,7 +53,6 @@
  Exported global variables (to be accessed by other files)
  ******************************************************************************/
 uint16_t g_usb_cstd_suspend_mode = USB_NORMAL_MODE;
-
 
 /******************************************************************************
  Function Name   : usb_pstd_interrupt_handler
@@ -710,15 +714,14 @@ void usb_pstd_forced_termination(uint16_t pipe, uint16_t status)
             (g_p_usb_pstd_pipe[pipe]->complete)(g_p_usb_pstd_pipe[pipe], USB_NULL, USB_NULL);
         }
 
-#if BSP_CFG_RTOS_USED == 1
-        vPortFree (g_p_usb_pstd_pipe[pipe]);
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+        rtos_release_fixed_memory(&g_rtos_usb_mpf_id, (void *)g_p_usb_pstd_pipe[pipe]);
         g_p_usb_pstd_pipe[pipe] = (usb_utr_t*)USB_NULL;
-        usb_cstd_pipe_msg_re_forward (USB_IP0, pipe);
-
-#else   /* BSP_CFG_RTOS_USED == 1 */
+        usb_rtos_resend_msg_to_submbx (USB_CFG_USE_USBIP, pipe, USB_PERI);
+#else   /* (BSP_CFG_RTOS_USED != 0) */
         g_p_usb_pstd_pipe[pipe] = (usb_utr_t*)USB_NULL;
 
-#endif  /* BSP_CFG_RTOS_USED == 1 */
+#endif  /* (BSP_CFG_RTOS_USED != 0) */
     }
 }
 /******************************************************************************

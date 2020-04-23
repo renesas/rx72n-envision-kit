@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2014(2018) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2014(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_reg_access.h
@@ -30,6 +30,7 @@
  *         : 30.09.2017 1.22 RX65N-2MB is added.
  *         : 20.12.2017 1.23 Delete support for Host 2port.
  *         : 31.03.2018 1.23 Supporting Smart Configurator
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 #ifndef HW_USB_REG_ACCESS_H
 #define HW_USB_REG_ACCESS_H

@@ -27,6 +27,7 @@
 *                               Fixed coding style.
 *                               Added definition for section of D_8, B_8, and C_8.
 *         : 08.10.2019 3.01     Added section for Renesas RTOS (RI600V4 or RI600PX).
+*         : 14.02.2020 3.02     Corrected pragma declaration of unpack.
 ***********************************************************************************************************************/
 
 #if defined(__CCRX__)
@@ -45,6 +46,10 @@ Macro definitions
 /***********************************************************************************************************************
 Typedef definitions
 ***********************************************************************************************************************/
+
+/* Preprocessor directive */
+#pragma unpack
+
 /* MCU ROM and RAM structure definition */
 typedef struct
 {
@@ -62,9 +67,6 @@ typedef struct
 /***********************************************************************************************************************
 Exported global variables (to be accessed by other files)
 ***********************************************************************************************************************/
-
-/* Preprocessor directive */
-#pragma unpack
 
 /* Section start */
 #pragma section C C$DSEC

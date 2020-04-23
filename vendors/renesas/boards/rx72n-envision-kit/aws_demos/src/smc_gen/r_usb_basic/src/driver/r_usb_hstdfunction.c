@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2014(2018) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2014(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_hstdfunction.c
@@ -29,6 +29,7 @@
  *         : 30.09.2017 1.22 Function Name change "class_driver_start()"->"usb_class_driver_start()"
  *         : 31.03.2018 1.23 Supporting Smart Configurator
  *         : 16.11.2018 1.24 Supporting RTOS Thread safe
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 /******************************************************************************
@@ -40,6 +41,11 @@
 #include "r_usb_extern.h"       /* USB register access function */
 #include "r_usb_bitdefine.h"
 #include "r_usb_reg_access.h"
+
+#if (BSP_CFG_RTOS_USED != 0)    /* Use RTOS */
+#include "r_rtos_abstract.h"
+#include "r_usb_cstd_rtos.h"
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
 #if defined(USB_CFG_HCDC_USE)
 #include "r_usb_hcdc_if.h"
@@ -60,7 +66,6 @@
  ******************************************************************************/
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
 static uint16_t g_usb_cstd_driver_open = USB_FALSE;
-
 
 /******************************************************************************
  Renesas Abstracted Host Standard functions
@@ -184,21 +189,21 @@ void usb_hdriver_init (usb_utr_t *ptr, usb_cfg_t *cfg)
 
     if (USB_FALSE == g_usb_cstd_driver_open)
     {
+#if (BSP_CFG_RTOS_USED == 0)                        /* Non-OS */
         usb_cstd_sche_init();                       /* Scheduler init */
-#if (BSP_CFG_RTOS_USED == 0)
         g_usb_cstd_event.write_pointer = USB_NULL;  /* Write pointer */
         g_usb_cstd_event.read_pointer = USB_NULL;   /* Read pointer */
-#endif
+#endif /* (BSP_CFG_RTOS_USED == 0) */
         /* WAIT_LOOP */
         for (i = 0; i < USB_EVENT_MAX; i++)
         {
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
             g_usb_cstd_event[i].event = USB_STS_NONE;
             g_usb_cstd_event[i].address = USB_NULL;
-#else
+#else /* (BSP_CFG_RTOS_USED != 0) */
             g_usb_cstd_event.code[i] = USB_STS_NONE;
             g_usb_cstd_event.ctrl[i].address = USB_NULL;
-#endif
+#endif /* (BSP_CFG_RTOS_USED != 0) */
         }
 
         g_usb_cstd_driver_open = USB_TRUE;
@@ -213,7 +218,9 @@ void usb_hdriver_init (usb_utr_t *ptr, usb_cfg_t *cfg)
         g_usb_hstd_hs_enable[ptr->ip] = USB_HS_DISABLE;
     }
 
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
     usb_hstd_init_usb_message(ptr); /* USB interrupt message initialize */
+#endif /* BSP_CFG_RTOS_USED == 0 */
 
     usb_hstd_mgr_open(ptr); /* Manager open */
     usb_hstd_hcd_open(ptr); /* Hcd open */
@@ -248,7 +255,6 @@ void usb_class_driver_start (usb_utr_t *ptr)
 
 } /* End of function usb_class_driver_start() */
 
-#if (BSP_CFG_RTOS_USED == 1)
 /******************************************************************************
  Function Name   : class_trans_result
  Description     : Send a message to notify the result of the class request.
@@ -259,15 +265,14 @@ void usb_class_driver_start (usb_utr_t *ptr)
  ******************************************************************************/
 void class_trans_result(usb_utr_t *ptr, uint16_t data1, uint16_t data2)
 {
-    usb_er_t err;
-
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
     /* Send an internal message */
-    err = USB_SND_MSG(USB_CLS_MBX, (usb_msg_t *)ptr);
-    if (USB_OK != err)
-    {
-        USB_PRINTF1("### class_trans_result sends message error (%ld)\n", err);
-    }
+    rtos_send_mailbox (&g_rtos_usb_cls_mbx_id, (void *)ptr);
+#else  /* BSP_CFG_RTOS_USED != 0 */
+    /* Send an internal message */
+    USB_SND_MSG(USB_CLS_MBX, (usb_msg_t *)ptr);
 
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 } /* End of function class_trans_result() */
 
 /******************************************************************************
@@ -280,11 +285,19 @@ void class_trans_result(usb_utr_t *ptr, uint16_t data1, uint16_t data2)
 uint16_t class_trans_wait_tmo(usb_utr_t *ptr, uint16_t tmo)
 {
     usb_utr_t *mess;
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+    rtos_err_t err;
+
+    /* Receive message with time out */
+    err = rtos_receive_mailbox (&g_rtos_usb_cls_mbx_id, (void **)&mess, (rtos_time_t)tmo);
+    if (RTOS_SUCCESS != err)
+#else  /* BSP_CFG_RTOS_USED != 0 */
     usb_er_t err;
 
     /* Receive message with time out */
     err = USB_TRCV_MSG(USB_CLS_MBX, (usb_msg_t **)&mess, (usb_tm_t)tmo);
     if (USB_OK != err)
+#endif /* BSP_CFG_RTOS_USED != 0 */
     {
         USB_PRINTF1("### class_trans_wait_tmo receives message error (%ld)\n", err);
         return USB_ERROR;
@@ -312,9 +325,6 @@ uint16_t class_trans_wait_tmo(usb_utr_t *ptr, uint16_t tmo)
     }
 
 } /* End of function class_trans_wait_tmo() */
-
-#endif /* (BSP_CFG_RTOS_USED == 1) */
-
 #endif  /* (USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST */
 
 /******************************************************************************

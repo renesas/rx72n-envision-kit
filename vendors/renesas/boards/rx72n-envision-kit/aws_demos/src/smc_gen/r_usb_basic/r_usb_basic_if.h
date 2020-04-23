@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2014(2018) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2014(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_basic_if.h
@@ -30,6 +30,7 @@
  *         : 30.09.2017 1.22 USB Standard request Macro added. and Move Typedef definitions for "r_usb_typedef.h"
  *         : 31.03.2018 1.23 Supporting Smart Configurator
  *         : 16.11.2018 1.24 Supporting RTOS Thread safe
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 #ifndef R_USB_BASIC_IF_H
 #define R_USB_BASIC_IF_H
@@ -40,6 +41,11 @@ Includes   <System Includes> , "Project Includes"
 #include "platform.h"
 #include "r_usb_basic_define.h"
 #include "r_usb_basic_config.h"
+#include "r_rtos_abstract.h"
+
+#if (BSP_CFG_RTOS_USED == 4)                    /* Renesas RI600V4 & RI600PX */
+#include "itron.h"
+#endif /* (BSP_CFG_RTOS_USED == 4) */
 
 /******************************************************************************
  Macro definitions
@@ -181,12 +187,12 @@ typedef enum usb_err
 
 typedef struct usb_descriptor
 {
-    uint8_t *p_device;            /* Pointer to the device descriptor */
-    uint8_t *p_config_f;          /* Pointer to the configuration descriptor for Full-speed */
-    uint8_t *p_config_h;          /* Pointer to the configuration descriptor for Hi-speed */
-    uint8_t *p_qualifier;         /* Pointer to the qualifier descriptor */
-    uint8_t **p_string;           /* Pointer to the string descriptor table */
-    uint8_t num_string;           /* Num entry String Descriptor */
+    uint8_t *p_device;          /* Pointer to the device descriptor */
+    uint8_t *p_config_f;        /* Pointer to the configuration descriptor for Full-speed */
+    uint8_t *p_config_h;        /* Pointer to the configuration descriptor for Hi-speed */
+    uint8_t *p_qualifier;       /* Pointer to the qualifier descriptor */
+    uint8_t **p_string;         /* Pointer to the string descriptor table */
+    uint8_t num_string;         /* Num entry String Descriptor */
 } usb_descriptor_t;
 
 typedef struct usb_cfg
@@ -206,19 +212,22 @@ typedef struct usb_setup
 
 typedef struct usb_ctrl
 {
+#if (BSP_CFG_RTOS_USED == 4)    /* Renesas RI600V4 & RI600PX */
+    T_MSG           msghead;    /* Message Header */
+#endif /* (BSP_CFG_RTOS_USED == 4) */
     uint8_t         module;     /* USB module number (USB_IP0/USB_IP1) */
     uint8_t         address;    /* USB device address */
     uint8_t         pipe;       /* USB pipe number */
     uint8_t         type;       /* USB device class etc */
     uint8_t         status;     /* USB device state etc */
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)    /* Use RTOS */
     uint8_t         event;      /* USB event */
-#endif /*(BSP_CFG_RTOS_USED == 1)*/
+#endif /*(BSP_CFG_RTOS_USED != 0)*/
     uint32_t        size;       /* Read data size */
     usb_setup_t     setup;      /* usb_setup_t structure area */
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)    /* Use RTOS */
     void            *p_data;    /* Other information */
-#endif /*(BSP_CFG_RTOS_USED == 1)*/
+#endif /*(BSP_CFG_RTOS_USED != 0)*/
 } usb_ctrl_t;
 
 typedef struct usb_pipe
@@ -230,29 +239,29 @@ typedef struct usb_pipe
 
 typedef struct usb_info
 {
-    uint8_t type;               /* USB device class type */
-    uint8_t speed;              /* USB speed */
-    uint8_t status;             /* USB device status */
-    uint8_t port;               /* Battery charging information */
+    uint8_t         type;       /* USB device class type */
+    uint8_t         speed;      /* USB speed */
+    uint8_t         status;     /* USB device status */
+    uint8_t         port;       /* Battery charging information */
 } usb_info_t;
 
 typedef enum usb_ct_status
 {
-    USB_CT_ATTACH,            /* Device Attach Detection */
-    USB_CT_DETACH,            /* Device Detach Detection */
-    USB_CT_TPL,               /* TPL device connect */
-    USB_CT_NOTTPL,            /* Not TPL device connect */
-    USB_CT_HUB,               /* USB Hub connect */
-    USB_CT_OVRC,              /* Over current */
-    USB_CT_NORES,             /* Response Time out for Control Read Transfer */
-    USB_CT_SETUP_ERR,         /* Setup Transaction Error */
+    USB_CT_ATTACH,              /* Device Attach Detection */
+    USB_CT_DETACH,              /* Device Detach Detection */
+    USB_CT_TPL,                 /* TPL device connect */
+    USB_CT_NOTTPL,              /* Not TPL device connect */
+    USB_CT_HUB,                 /* USB Hub connect */
+    USB_CT_OVRC,                /* Over current */
+    USB_CT_NORES,               /* Response Time out for Control Read Transfer */
+    USB_CT_SETUP_ERR,           /* Setup Transaction Error */
 } usb_ct_status_t;
 
 typedef struct usb_compliance
 {
-    usb_ct_status_t     status;         /* USB Status */
-    uint16_t            vid;            /* Vendor ID  */
-    uint16_t            pid;            /* Product ID */
+    usb_ct_status_t status;     /* USB Status */
+    uint16_t        vid;        /* Vendor ID  */
+    uint16_t        pid;        /* Product ID */
 } usb_compliance_t;
 
 
@@ -322,10 +331,14 @@ typedef enum usb_transfer
 {
     USB_BULK = 0, USB_INT, USB_ISO,
 } usb_transfer_t;
-#if (BSP_CFG_RTOS_USED == 1)
-typedef TaskHandle_t    usb_hdl_t;
-typedef void (usb_callback_t)(usb_ctrl_t *, usb_hdl_t, uint8_t);
-#endif /*(BSP_CFG_RTOS_USED == 1)*/
+#if (BSP_CFG_RTOS_USED == 1)        /* FreeRTOS */
+typedef void (usb_callback_t)(usb_ctrl_t *, rtos_task_id_t, uint8_t);
+#elif (BSP_CFG_RTOS_USED == 2)      /* SEGGER embOS */
+#elif (BSP_CFG_RTOS_USED == 3)      /* Micrium MicroC/OS */
+#elif (BSP_CFG_RTOS_USED == 4)      /* Renesas RI600V4 & RI600PX */
+typedef void (usb_callback_t)(usb_ctrl_t *, rtos_task_id_t, uint8_t);
+#endif /* (BSP_CFG_RTOS_USED == 1) */
+
 /******************************************************************************
  Export global functions
  ******************************************************************************/
@@ -343,13 +356,17 @@ usb_err_t       R_USB_PipeWrite (usb_ctrl_t *p_ctrl, uint8_t *p_buf, uint32_t si
 usb_err_t       R_USB_PipeStop (usb_ctrl_t *p_ctrl);
 usb_err_t       R_USB_GetUsePipe (usb_ctrl_t *p_ctrl, uint16_t *p_pipe);
 usb_err_t       R_USB_GetPipeInfo (usb_ctrl_t *p_ctrl, usb_pipe_t *p_info);
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
 usb_status_t    R_USB_GetEvent (usb_ctrl_t *p_ctrl);
 #endif /*(BSP_CFG_RTOS_USED == 0)*/
 uint32_t        R_USB_GetVersion (void);
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
 void            R_USB_Callback (usb_callback_t *);
-#endif /*(BSP_CFG_RTOS_USED == 1)*/
+#endif /*(BSP_CFG_RTOS_USED == 0)*/
 usb_err_t       R_USB_PullUp(uint8_t state);
 
 #endif /* R_USB_BASIC_IF_H */
+
+/***********************************************************************************************************************
+End  Of File
+***********************************************************************************************************************/

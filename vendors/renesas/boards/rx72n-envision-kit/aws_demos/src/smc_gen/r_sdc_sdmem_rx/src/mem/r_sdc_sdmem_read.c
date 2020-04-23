@@ -14,7 +14,7 @@
 * following link:
 * http://www.renesas.com/disclaimer 
 *
-* Copyright (C) 2014(2015-2017) Renesas Electronics Corporation. All rights reserved.    
+* Copyright (C) 2014(2015-2019) Renesas Electronics Corporation. All rights reserved.    
 **********************************************************************************************************************/
 /**********************************************************************************************************************
 * System Name  : SDHI Driver
@@ -34,6 +34,7 @@
 *              : 17.07.2015 1.10    Standardized by the combo.
 *              : 31.07.2017 2.00    SDHI FIT module separated into hardware low level layer and middleware layer.
 *              :                    Changed prefix from SDHI to SDC_SD.
+*              : 10.02.2020 3.00    Added comment "WAIT_LOOP".
 **********************************************************************************************************************/
 
 /**********************************************************************************************************************
@@ -427,6 +428,7 @@ static sdc_sd_status_t r_sdc_sdmem_read_sect(uint32_t card_no, sdc_sd_access_t *
         /* ---- Clear SDBLKCNTEN in order to disable SDHI_SDBLKCNT. ---- */
         R_SDHI_OutReg(p_hndl->channel, SDHI_SDSTOP, SDHI_SDSTOP_INIT);
 
+        /* WAIT_LOOP */
         for (j = p_sdc_sd_access->cnt; j > 0; j--, p_sdc_sd_access->lbn++,
              p_sdc_sd_access->p_buff = (p_sdc_sd_access->p_buff + SDC_SD_SECTOR_SIZE))
         {

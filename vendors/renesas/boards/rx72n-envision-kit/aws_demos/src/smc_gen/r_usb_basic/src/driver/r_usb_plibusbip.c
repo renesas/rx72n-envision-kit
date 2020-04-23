@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2014(2018) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2014(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_plibusbip.c
@@ -29,6 +29,7 @@
  *         : 26.01.2017 1.21 Support DMAC Technical Update for RX71M/RX64M USBA.
  *         : 30.09.2017 1.22 Rename "usb_pstd_buf2fifo"->"usb_pstd_buf_to_fifo" and Function move for"r_usb_pdriver.c"
  *         : 31.03.2018 1.23 Supporting Smart Configurator
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 /******************************************************************************
@@ -40,6 +41,11 @@
 #include "r_usb_extern.h"
 #include "r_usb_bitdefine.h"
 #include "r_usb_reg_access.h"
+
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+#include "r_rtos_abstract.h"
+#include "r_usb_cstd_rtos.h"
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
 #if defined(USB_CFG_PMSC_USE)
 #include "r_usb_pmsc_config.h"
@@ -289,6 +295,7 @@ uint16_t usb_pstd_write_data(uint16_t pipe, uint16_t pipemode)
     uint16_t buffer;
     uint16_t mxps;
     uint16_t end_flag;
+    uint16_t read_pid;
 
     if (USB_MAX_PIPE_NO < pipe)
     {
@@ -355,6 +362,9 @@ uint16_t usb_pstd_write_data(uint16_t pipe, uint16_t pipemode)
         count = size;
     }
 
+    read_pid = usb_cstd_get_pid(USB_NULL, pipe);
+    usb_cstd_set_nak(USB_NULL, pipe);
+
     gp_usb_pstd_data[pipe] = usb_pstd_write_fifo(count, pipemode, gp_usb_pstd_data[pipe]);
 
     /* Check data count to remain */
@@ -377,6 +387,13 @@ uint16_t usb_pstd_write_data(uint16_t pipe, uint16_t pipemode)
     {
         /* Total data count - count */
         g_usb_pstd_data_cnt[pipe] -= count;
+    }
+
+    hw_usb_clear_status_bemp(USB_NULL,pipe);
+    /* USB_PID_BUF ? */
+    if (USB_PID_BUF == (USB_PID & read_pid))
+    {
+        usb_cstd_set_buf(USB_NULL, pipe);
     }
 
     /* End or Err or Continue */
@@ -709,15 +726,13 @@ void usb_pstd_data_end(uint16_t pipe, uint16_t status)
         g_p_usb_pstd_pipe[pipe]->pipectr = hw_usb_read_pipectr(USB_NULL,pipe);
         g_p_usb_pstd_pipe[pipe]->keyword = pipe;
         ((usb_cb_t)g_p_usb_pstd_pipe[pipe]->complete)(g_p_usb_pstd_pipe[pipe], USB_NULL, USB_NULL);
-#if BSP_CFG_RTOS_USED == 1
-        vPortFree (g_p_usb_pstd_pipe[pipe]);
+#if (BSP_CFG_RTOS_USED == 0)    /* Non-OS */
         g_p_usb_pstd_pipe[pipe] = (usb_utr_t*)USB_NULL;
-        usb_cstd_pipe_msg_re_forward (USB_IP0, pipe);    /* Get PIPE Transfer wait que and Message send to PCD */
-
-#else   /* BSP_CFG_RTOS_USED == 1 */
+#else   /* BSP_CFG_RTOS_USED == 0 */
+        rtos_release_fixed_memory(&g_rtos_usb_mpf_id, (void *)g_p_usb_pstd_pipe[pipe]);
         g_p_usb_pstd_pipe[pipe] = (usb_utr_t*)USB_NULL;
-
-#endif  /* BSP_CFG_RTOS_USED == 1 */
+        usb_rtos_resend_msg_to_submbx (USB_CFG_USE_USBIP, pipe, USB_PERI);
+#endif  /* BSP_CFG_RTOS_USED == 0 */
     }
 }
 /******************************************************************************

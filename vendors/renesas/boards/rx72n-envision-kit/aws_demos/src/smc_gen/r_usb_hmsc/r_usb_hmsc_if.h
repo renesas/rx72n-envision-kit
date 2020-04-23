@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2014(2018) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2014(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_hmsc_if.h
@@ -28,6 +28,7 @@
  *         : 30.09.2016 1.20 RX65N/RX651 is added.
  *         : 30.09.2017 1.22 Add typedef "usb_csw_result_t", Delete not use API functions.
  *         : 31.03.2018 1.23 Supporting Smart Configurator 
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 #ifndef USB_HMSC_IF_H
@@ -78,3 +79,7 @@ void            R_USB_HmscGetSem (void);
 void            R_USB_HmscRelSem (void);
 
 #endif /* USB_HMSC_IF_H */
+
+/***********************************************************************************************************************
+End  Of File
+***********************************************************************************************************************/

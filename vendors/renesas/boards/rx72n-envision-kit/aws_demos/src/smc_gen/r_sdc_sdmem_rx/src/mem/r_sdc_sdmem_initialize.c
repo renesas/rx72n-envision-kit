@@ -14,7 +14,7 @@
 * following link:
 * http://www.renesas.com/disclaimer 
 *
-* Copyright (C) 2014(2015-2018) Renesas Electronics Corporation. All rights reserved.    
+* Copyright (C) 2014(2015-2019) Renesas Electronics Corporation. All rights reserved.    
 **********************************************************************************************************************/
 /**********************************************************************************************************************
 * System Name  : SDHI Driver
@@ -35,6 +35,8 @@
 *              : 31.07.2017 2.00    SDHI FIT module separated into hardware low level layer and middleware layer.
 *              :                    Changed prefix from SDHI to SDC_SD.
 *              : 29.06.2018 2.02    Corresponded to SD Specifications Part1 Physical Layer Simplified Specification.
+*              : 10.02.2020 3.00    Supported GCC and IAR compiler.
+*              :                    Added comment "WAIT_LOOP".
 **********************************************************************************************************************/
 
 /**********************************************************************************************************************
@@ -217,6 +219,7 @@ sdc_sd_status_t r_sdc_sdmem_init(uint32_t card_no)
     p_hndl->rca[0] = 0;
 
     /* ==== Set to idle state. (Issue CMD0.) ==== */
+    /* WAIT_LOOP */
     for (i = 0 ; i < SDC_SD_MAX_AGAIN_COUNT; i++)
     {
         ret = r_sdc_sd_send_cmd_arg(card_no, SDC_SD_CMD0, SDC_SD_RESP_NON, 0);
@@ -256,6 +259,7 @@ sdc_sd_status_t r_sdc_sdmem_init(uint32_t card_no)
     else
     {
         /* ==== Clear the illegal command error for CMD8. ==== */
+        /* WAIT_LOOP */
         for (i = 0 ; i < SDC_SD_MAX_AGAIN_COUNT; i++)
         {
             ret = r_sdc_sd_send_cmd_arg(card_no, SDC_SD_CMD0, SDC_SD_RESP_NON, 0);
@@ -311,6 +315,7 @@ static sdc_sd_status_t r_sdc_sdmem_init_rca(uint32_t card_no)
     /* ---- Get RCA. (Issue CMD3.) ---- */
     if (p_hndl->media_type & SDC_SD_MEDIA_COMBO)  /* SDIO or SD Memory */
     {
+        /* WAIT_LOOP */
         for (i = 0; i < SDC_SD_MAX_AGAIN_COUNT; i++)
         {
             if (r_sdc_sd_send_cmd_arg(card_no, SDC_SD_CMD3, SDC_SD_RESP_R6, 0) != SDC_SD_SUCCESS)
@@ -514,12 +519,13 @@ sdc_sd_status_t r_sdc_sdmem_card_get_sdstatus(uint32_t card_no)
 
     /* ---- Save SD STATUS. ---- */
     /* Expand the SD STATUS relevant fields. */
+    /* WAIT_LOOP */
     for (i = 0 ; i < 4 ; i++)
     {
 #if (SDC_SD_BIG_ENDIAN)
         p_hndl->sdstatus[i] = g_sdc_sdmem_stat_buff[i];
 #else
-        p_hndl->sdstatus[i] = revl(g_sdc_sdmem_stat_buff[i]);
+        p_hndl->sdstatus[i] = R_BSP_REVL(g_sdc_sdmem_stat_buff[i]);
 #endif
     }
 
@@ -573,12 +579,13 @@ sdc_sd_status_t r_sdc_sdmem_card_get_scr(uint32_t card_no)
     }
 
     /* ---- Save SCR register. ---- */
+    /* WAIT_LOOP */
     for (i = 0 ; i < 2 ; i++)
     {
 #if (SDC_SD_BIG_ENDIAN)
         p_hndl->scr[i] = g_sdc_sdmem_stat_buff[i];
 #else
-        p_hndl->scr[i] = revl(g_sdc_sdmem_stat_buff[i]);
+        p_hndl->scr[i] = R_BSP_REVL(g_sdc_sdmem_stat_buff[i]);
 #endif
     }
 

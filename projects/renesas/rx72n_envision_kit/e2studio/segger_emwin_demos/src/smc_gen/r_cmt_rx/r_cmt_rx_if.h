@@ -43,6 +43,8 @@
 *         : 20.05.2019 4.00    Added support for GNUC and ICCRX.
 *         : 28.06.2019 4.10    Added support for RX23W.
 *         : 15.08.2019 4.20    Added support for RX72M.
+*         : 25.11.2019 4.30    Added support RX13T, RX66N, RX72N.
+*         : 29.11.2019 4.31    Fixed issues in power_on() and power_off().
 ***********************************************************************************************************************/
 #ifndef CMT_HEADER_FILE
 #define CMT_HEADER_FILE
@@ -61,7 +63,7 @@ Macro definitions
 
 /* Version Number of API. */
 #define CMT_RX_VERSION_MAJOR            (4)
-#define CMT_RX_VERSION_MINOR            (20)
+#define CMT_RX_VERSION_MINOR            (31)
 
 /* This define is used with the R_CMT_Control() function if not channel needs to input. */
 #define CMT_RX_NO_CHANNEL               (0xFFFFFFFF)

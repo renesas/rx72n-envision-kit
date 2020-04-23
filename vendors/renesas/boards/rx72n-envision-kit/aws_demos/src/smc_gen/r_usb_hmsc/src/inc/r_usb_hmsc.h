@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2014(2019) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2014(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_hmsc.h
@@ -30,6 +30,7 @@
  *         : 30.09.2017 1.22 Add HMSC driver use API functions.
  *         : 31.03.2018 1.23 Supporting Smart Configurator 
  *         : 31.05.2019 1.26 Added support for GNUC and ICCRX.
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 #ifndef R_USB_HMSC_LOCAL_H
@@ -44,7 +45,7 @@
  Macro definitions
  ******************************************************************************/
 /* Host Sample Task */
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)                      /* Non-OS */
 #define USB_HMSC_TSK        (USB_TID_4)           /* Task ID */
 #define USB_HMSC_MBX        (USB_HMSC_TSK)        /* Mailbox ID */
 #define USB_HMSC_MPL        (USB_HMSC_TSK)        /* Memorypool ID */
@@ -116,6 +117,7 @@
 
 #define R_usb_hmsc_ref_drv_no  usb_hmsc_ref_drvno
 #define R_USB_HmscGetDevSts    usb_hmsc_get_dev_sts
+#define usb_hhub_task          usb_hstd_hub_task
 
 /*****************************************************************************
  Typedef definitions

@@ -23,6 +23,9 @@
 /**********************************************************************************************************************
 * History : DD.MM.YYYY Version  Description
 *         : 08.10.2019 1.00     First Release
+*         : 10.12.2019 1.01     Removed unnecessary processing from the clock_source_select fucntion.
+*         : 17.12.2019 1.02     Fixed warning of clock_source_select function with IAR compiler.
+*         : 14.02.2020 1.03     Fixed warning of clock_source_select function with CCRX and IAR compiler.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -554,7 +557,9 @@ static void clock_source_select (void)
 {
     volatile uint8_t i;
     volatile uint8_t dummy;
-    volatile uint8_t tmp;
+#if (BSP_PRV_SUB_CLK_OPERATING == 1) || (BSP_CFG_RTC_ENABLE == 1)
+    uint8_t tmp;
+#endif
     volatile uint16_t tmp_packcr;
 
     /* Main clock will be not oscillate in software standby or deep software standby modes. */
@@ -1011,12 +1016,8 @@ static void clock_source_select (void)
         R_BSP_NOP();
     }
 
-    #if (BSP_CFG_ESCCLK_SRC == 1) && (BSP_CFG_PPLCK_DIV != 2)
-        #error "Error! Invalid setting for BSP_CFG_PPLCK_DIV in r_bsp_config.h"
-    #else
     /* Set PPLCK Input Divisor. */
     SYSTEM.PPLLCR3.BIT.PPLCK = BSP_CFG_PPLCK_DIV - 1;
-    #endif
 #endif
 
     /* LOCO is saved for last since it is what is running by default out of reset. This means you do not want to turn

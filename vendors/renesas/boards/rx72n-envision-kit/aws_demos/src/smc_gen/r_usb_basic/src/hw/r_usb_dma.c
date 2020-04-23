@@ -14,7 +14,7 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2015(2018) Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2015(2020) Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
 * File Name    : r_usb_dma.c
@@ -29,6 +29,7 @@
  *                              "usb_pstd_buf2fifo"->"usb_pstd_buf_to_fifo"
  *                              "usb_dma_buf2fifo_restart"->"usb_cstd_dma_send_restart"
  *         : 31.03.2018 1.23 Supporting Smart Configurator
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 /*******************************************************************************
@@ -39,6 +40,11 @@ Includes   <System Includes>, "Project Includes"
 #include "r_usb_extern.h"
 #include "r_usb_bitdefine.h"
 #include "r_usb_reg_access.h"
+
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+#include "r_rtos_abstract.h"
+#include "r_usb_cstd_rtos.h"
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
 #define ACTIVE_CNT_NUMBER       (100)
 
@@ -61,7 +67,7 @@ dtc_transfer_data_t        g_usb_dtc_transfer_data[USB_DMA_USE_CH_MAX];
 
 #endif  /* USB_CFG_DTC == USB_CFG_ENABLE */
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)    /* Non-OS */
 usb_dma_int_t   gs_usb_cstd_dma_int;
 #endif /* (BSP_CFG_RTOS_USED == 0) */
 
@@ -392,7 +398,7 @@ void usb_cstd_dfifo_end(usb_utr_t *ptr, uint16_t useport)
 End of function usb_cstd_dfifo_end
 ******************************************************************************/
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)    /* Non-OS */
 /******************************************************************************
 Function Name   : usb_cstd_dma_driver
 Description     : USB DMA transfer complete process.
@@ -851,7 +857,8 @@ Return value    : none
 ******************************************************************************/
 void usb_cstd_dma_send_complete(uint16_t ip_no, uint16_t use_port)
 {
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)                    /* Use RTOS */
+    rtos_err_t      ret;
 
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
     usb_utr_t   *p_host;
@@ -871,14 +878,24 @@ void usb_cstd_dma_send_complete(uint16_t ip_no, uint16_t use_port)
 
         hw_usb_clear_dreqe(&utr, use_port);     /* DMA Transfer request disable */
 
-        p_host          = (usb_utr_t *)get_usb_int_buf();
+        ret = rtos_get_fixed_memory_isr(&g_rtos_usb_mpf_id, (void **)&p_host);
+        if (RTOS_ERROR == ret)
+        {
+            return; /* Error */
+        }
+
         p_host->ip      = ip_no;
         p_host->msginfo = USB_MSG_HCD_INT;
         p_host->keyword = USB_INT_DXFIFO;
         p_host->status  = use_port;
 
         p_host->ipp     = utr.ipp;
-        USB_ISND_MSG(USB_HCD_MBX, (usb_msg_t *)p_host);
+        ret = rtos_send_mailbox_isr (&g_rtos_usb_hcd_mbx_id, (void *)p_host);
+        if (RTOS_SUCCESS != ret)
+        {
+            USB_PRINTF1("### lib_UsbHandler DEF2 isnd_msg error (%ld)\n", err);
+        }
+
 #endif  /* ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST) */
     }
     else
@@ -887,18 +904,28 @@ void usb_cstd_dma_send_complete(uint16_t ip_no, uint16_t use_port)
         usb_cstd_dma_stop(USB_CFG_USE_USBIP, use_port); /* Stop DMA,FIFO access */
         hw_usb_clear_dreqe(USB_NULL, use_port);         /* DMA Transfer request disable */
 
-        p_peri              = (usb_utr_t *)get_usb_int_buf();
+        ret = rtos_get_fixed_memory_isr(&g_rtos_usb_mpf_id, (void **)&p_peri);
+        if (RTOS_ERROR == ret)
+        {
+            return; /* Error */
+        }
+
         p_peri->ip          = ip_no;
         p_peri->msginfo     = USB_MSG_PCD_INT;
         p_peri->keyword     = USB_INT_DXFIFO;
         p_peri->status      = use_port;
 
-        USB_ISND_MSG(USB_PCD_MBX, (usb_msg_t *)p_peri);
+        ret = rtos_send_mailbox_isr (&g_rtos_usb_pcd_mbx_id, (void *)p_peri);
+        if (RTOS_SUCCESS != ret)
+        {
+            USB_PRINTF1("### lib_UsbHandler DEF2 isnd_msg error (%ld)\n", err);
+        }
+
 #endif  /* ( (USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI ) */
     }
 
 
-#else   /* (BSP_CFG_RTOS_USED == 1) */
+#else   /* (BSP_CFG_RTOS_USED != 0) */
 
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
     usb_utr_t   utr;
@@ -928,7 +955,7 @@ void usb_cstd_dma_send_complete(uint16_t ip_no, uint16_t use_port)
 
 #endif  /* ( (USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI ) */
     }
-#endif  /* (BSP_CFG_RTOS_USED == 1) */
+#endif  /* (BSP_CFG_RTOS_USED != 0) */
 }
 /******************************************************************************
 End of function usb_cstd_dma_send_complete

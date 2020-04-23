@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2014(2019) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2014(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_basic_define.h
@@ -32,6 +32,7 @@
  *         : 16.11.2018 1.24 Supporting RTOS Thread safe
  *         : 31.05.2019 1.26 Added support for GNUC and ICCRX.
  *         : 30.07.2019 1.27 RX72M is added.
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 #ifndef R_USB_BASIC_DEFINE_H
@@ -93,15 +94,15 @@
  **********************************************************************************************************************/
 /* Version Number of API. */
 #define USB_VERSION_MAJOR   (1)
-#define USB_VERSION_MINOR   (27)
+#define USB_VERSION_MINOR   (30)
 
 #define CLSDATASIZE         (512u)              /* Transfer data size for Standard Request */
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED != 0)                    /* Use RTOS */
     /* The buffer size of interrupt info is increased to avoid overlapping interrupt events. */
     #define USB_INT_BUFSIZE     (64u)           /* Size of Interrupt info buffer */
-#else /* (BSP_CFG_RTOS_USED == 1) */
+#else /* (BSP_CFG_RTOS_USED != 0) */
     #define USB_INT_BUFSIZE     (10u)           /* Size of Interrupt info buffer */
-#endif /* (BSP_CFG_RTOS_USED == 1) */
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 #define USB_EVENT_MAX       (10)
 
 /* Scheduler use define */
@@ -148,7 +149,6 @@
 #define USB_HUB_MBX         (USB_HUB_TSK)        /* Mailbox ID */
 #define USB_HUB_MPL         (USB_HUB_TSK)        /* Memory pool ID */
 
-#if (BSP_CFG_RTOS_USED == 1)
 /* Class Request for Internal Communication  */
 #define USB_CLS_TSK         (USB_TID_4)          /* Task ID */
 #define USB_CLS_MBX         (USB_CLS_TSK)        /* Mailbox ID */
@@ -157,7 +157,6 @@
 /* Peripheral Control Driver Task */
 #define USB_PCD_TSK         (USB_TID_5)          /* Task ID */
 #define USB_PCD_MBX         (USB_PCD_TSK)        /* Mailbox ID */
-#endif /* (BSP_CFG_RTOS_USED == 1) */
 
 /* Error discrimination */
 #define USB_DEBUG_HOOK_HWR      (0x0100)
@@ -601,7 +600,7 @@
 #define USB_INT_BRDY                        (0x0001u)
 #define USB_INT_BEMP                        (0x0002u)
 #define USB_INT_NRDY                        (0x0003u)
-#define USB_INT_DXFIFO                      (0x0004u)   /* BSP_CFG_RTOS_USED == 1 */
+#define USB_INT_DXFIFO                      (0x0004u)   /* BSP_CFG_RTOS_USED == 1 (FreeRTOS) */
 
 /* USB interrupt type (PERI)*/
 #define USB_INT_VBINT                       (0x0011u)

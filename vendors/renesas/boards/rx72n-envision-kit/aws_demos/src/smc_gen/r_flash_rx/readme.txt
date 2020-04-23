@@ -5,12 +5,12 @@ r_flash_rx
 
 Document Number 
 ---------------
-r01an2184ej0420
-r01an2184jj0420
+r01an2184ej0450
+r01an2184jj0450
 
 Version
 -------
-v4.20
+v4.50
 
 Overview
 --------
@@ -37,18 +37,22 @@ Supported MCUs
 * RX111 Group
 * RX113 Group
 * RX130 Group
+* RX13T Group
 * RX230 Group
 * RX231 Group
+* RX23E-A Group
 * RX23T Group
 * RX23W Group
 * RX24T Group
 * RX24U Group
 * RX64M Group
 * RX651, RX65N Group
+* RX66N Group
 * RX66T Group
 * RX71M Group
-* RX72T Group
 * RX72M Group
+* RX72N Group
+* RX72T Group
 
 
 Boards Tested On
@@ -57,18 +61,21 @@ Boards Tested On
 * RSKRX111
 * RSKRX113
 * RSKRX130
+* RX13T CPU Card
 * RSKRX231
+* RSSKRX23E-A
 * RSKRX23T
 * RSSKRX23W
 * RSKRX24T
 * RSKRX24U
 * RSKRX64M
 * RSKRX65N
-* RSKRX65N-2
+* RSKRX65N-2MB
 * RSKRX66T
 * RSKRX71M
-* RSKRX72T
 * RSKRX72M
+* RSKRX72N
+* RSKRX72T
 
 
 Limitations
@@ -87,7 +94,7 @@ Peripherals Used Directly
 
 Required Packages
 -----------------
-* r_bsp      V5.20
+* r_bsp      V5.50
 
 How to add to your project
 --------------------------
@@ -131,9 +138,9 @@ r_flash_rx
 |
 +---doc
 |   +-- en
-|   |   +-- r01an2184ej0420-rx-flash.pdf
+|   |   +-- r01an2184ej0450-rx-flash.pdf
 |   +-- ja
-|       +-- r01an2184jj0420-rx-flash.pdf
+|       +-- r01an2184jj0450-rx-flash.pdf
 |
 +---ref
 |   +-- r_flash_rx_config_reference.h
@@ -183,8 +190,14 @@ r_flash_rx
         +--rx130
              +-- r_flash_rx130.h
         |
+        +--rx13t
+             +-- r_flash_rx13t.h
+        |
         +--rx231
              +-- r_flash_rx231.h
+        |
+        +--rx23e-a
+             +-- r_flash_rx23e-a.h
         |
         +--rx23t
              +-- r_flash_rx23t.h
@@ -204,17 +217,23 @@ r_flash_rx
         +--rx65n
              +-- r_flash_rx65n.h
         |
+        +--rx66n
+             +-- r_flash_rx66n.h
+        |
         +--rx66t
              +-- r_flash_rx66t.h
         |
         +--rx71m
              +-- r_flash_rx71m.h
         |    
-        +--rx72t
-             +-- r_flash_rx72t.h
-        |    
         +--rx72m
              +-- r_flash_rx72m.h
+        |    
+        +--rx72n
+             +-- r_flash_rx72n.h
+        |    
+        +--rx72t
+             +-- r_flash_rx72t.h
 
 r_config
     r_flash_rx_config.h

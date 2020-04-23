@@ -39,6 +39,7 @@
 *         : 20.05.2019 2.00    Added support for GNUC and ICCRX.
 *         : 28.06.2019 2.10    Supported RX23W.
 *         : 15.08.2019 2.20    Supported RX72M.
+*         : 30.12.2019 2.30    Supported RX66N, RX72N.
 *******************************************************************************/
 #ifndef DMACA_RX_IF_H
 #define DMACA_RX_IF_H
@@ -62,7 +63,7 @@ Macro definitions
 
 /* Version Number of API */
 #define DMACA_VERSION_MAJOR  (2)
-#define DMACA_VERSION_MINOR  (20)
+#define DMACA_VERSION_MINOR  (30)
 
 /* DMAC activation is disabled. */
 #define DMACA_ACTIVE_DISABLE              (0x00u)

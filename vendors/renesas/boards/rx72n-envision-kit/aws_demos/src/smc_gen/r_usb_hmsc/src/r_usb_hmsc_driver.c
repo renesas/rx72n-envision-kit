@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2014(2019) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2014(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_hmsc_driver.c
@@ -30,6 +30,7 @@
  *                           usb_hmsc_get_csw_check(),usb_hmsc_strg_cmd_complete().
  *         : 31.03.2018 1.23 Supporting Smart Configurator 
  *         : 31.05.2019 1.26 Added support for GNUC and ICCRX.
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 /******************************************************************************
@@ -44,6 +45,11 @@
 #include "r_usb_hmsc.h"
 #include "r_usb_bitdefine.h"
 #include "r_usb_reg_access.h"
+
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+#include "r_rtos_abstract.h"
+#include "r_usb_cstd_rtos.h"
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
 #if defined(USB_CFG_HMSC_USE)
 /******************************************************************************
@@ -90,7 +96,7 @@ static usb_utr_t usb_hmsc_receive_data[USB_NUM_USBIP][USB_MAXSTRAGE]; /* Receive
 static uint32_t usb_hmsc_trans_size[USB_NUM_USBIP];
 static uint8_t *pusb_hmsc_buff[USB_NUM_USBIP];
 static uint16_t usb_shmsc_process[USB_NUM_USBIP];
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
 static uint16_t usb_shmsc_data_seq[USB_NUM_USBIP];
 static uint16_t usb_shmsc_stall_err_seq[USB_NUM_USBIP];
 static uint16_t usb_hmsc_csw_err_loop[USB_NUM_USBIP];
@@ -107,9 +113,6 @@ uint32_t    g_usb_hmsc_cmd_data_length[USB_NUM_USBIP];
 /******************************************************************************
  Exported global variables
  ******************************************************************************/
-#if (BSP_CFG_RTOS_USED == 1)
-extern SemaphoreHandle_t    SemaphoreHandleRead;
-#endif /*BSP_CFG_RTOS_USED == 1 */
 
 /******************************************************************************
  Exported global variables (to be accessed by other files)
@@ -148,7 +151,7 @@ uint8_t g_usb_hmsc_class_data[USB_NUM_USBIP][USB_HMSC_CLSDATASIZE];
 uint16_t g_usb_shmsc_data_stall_seq[USB_NUM_USBIP];
 uint16_t g_usb_hmsc_speed[USB_NUM_USBIP];
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
 uint8_t g_drive_search_que[USB_MAXSTRAGE];
 uint8_t g_drive_search_que_cnt;
 uint8_t g_drive_search_lock;
@@ -158,7 +161,7 @@ uint8_t g_drive_search_lock;
  Renesas Abstracted HMSC Driver functions
  ******************************************************************************/
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
 /******************************************************************************
  Function Name   : usb_hmsc_task
  Description     : USB HMSC Task
@@ -952,7 +955,7 @@ static uint16_t usb_hmsc_data_act (usb_utr_t *mess)
  End of function usb_hmsc_data_act
  ******************************************************************************/
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
 /******************************************************************************
  Function Name   : usb_hmsc_stall_err
  Description     : HMSC Stall Error
@@ -1261,6 +1264,11 @@ static uint16_t usb_hmsc_send_cbw (usb_utr_t *ptr, uint16_t side)
     uint16_t pipe;
 
     pipe = g_usb_hmsc_out_pipe[ptr->ip][side];
+    if (USB_NOPORT == pipe)
+    {
+        return USB_HMSC_SUBMIT_ERR;
+    }
+
     /* Set CBW TAG usb_hmsc_CbwTagCount()*/
     g_usb_hmsc_csw_tag_no[ptr->ip][side]++;
     if ((uint16_t) 0 == g_usb_hmsc_csw_tag_no[ptr->ip][side])
@@ -1355,7 +1363,7 @@ static uint16_t usb_hmsc_send_cbw (usb_utr_t *ptr, uint16_t side)
  End of function usb_hmsc_send_cbw
  ******************************************************************************/
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
 /******************************************************************************
  Function Name   : usb_hmsc_send_cbw_check
  Description     : Check send CBW 
@@ -1411,6 +1419,10 @@ static uint16_t usb_hmsc_get_data (usb_utr_t *ptr, uint16_t side, uint8_t *buff,
     uint16_t pipe;
 
     pipe = g_usb_hmsc_in_pipe[ptr->ip][side];
+    if (USB_NOPORT == pipe)
+    {
+        return USB_HMSC_SUBMIT_ERR;
+    }
     /* pipe number */
     usb_hmsc_receive_data[ptr->ip][side].keyword = pipe;
 
@@ -1492,7 +1504,7 @@ static uint16_t usb_hmsc_get_data (usb_utr_t *ptr, uint16_t side, uint8_t *buff,
  End of function usb_hmsc_get_data
  ******************************************************************************/
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
 /******************************************************************************
  Function Name   : usb_hmsc_get_data_check
  Description     : Check Get Data 
@@ -1530,7 +1542,7 @@ static uint16_t usb_hmsc_get_data_check (usb_utr_t *ptr, uint16_t side, uint16_t
 
     return USB_HMSC_DAT_RD_ERR;
 }
-#endif /* (BSP_CFG_RTOS_USED) */
+#endif /* (BSP_CFG_RTOS_USED == 0) */
 /******************************************************************************
  End of function usb_hmsc_get_data_check
  ******************************************************************************/
@@ -1554,6 +1566,10 @@ static uint16_t usb_hmsc_send_data (usb_utr_t *ptr, uint16_t side, uint8_t *buff
     uint16_t pipe;
 
     pipe = g_usb_hmsc_out_pipe[ptr->ip][side];
+    if (USB_NOPORT == pipe)
+    {
+        return USB_HMSC_SUBMIT_ERR;
+    }
     /* pipe number */
     usb_hmsc_trans_data[ptr->ip][side].keyword = pipe;
 
@@ -1631,7 +1647,7 @@ static uint16_t usb_hmsc_send_data (usb_utr_t *ptr, uint16_t side, uint8_t *buff
  End of function usb_hmsc_send_data
  ******************************************************************************/
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
 /******************************************************************************
  Function Name   : usb_hmsc_send_data_check
  Description     : Check Send Data
@@ -1685,6 +1701,10 @@ static uint16_t usb_hmsc_get_csw (usb_utr_t *ptr, uint16_t side)
     uint16_t pipe;
 
     pipe = g_usb_hmsc_in_pipe[ptr->ip][side];
+    if (USB_NOPORT == pipe)
+    {
+        return USB_HMSC_SUBMIT_ERR;
+    }
     /* pipe number */
     usb_hmsc_receive_data[ptr->ip][side].keyword = pipe;
 
@@ -1829,7 +1849,7 @@ static uint16_t usb_hmsc_get_csw (usb_utr_t *ptr, uint16_t side)
  End of function usb_hmsc_get_csw
  ******************************************************************************/
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
 /******************************************************************************
  Function Name   : usb_hmsc_get_csw_check
  Description     : Check Receive CSW
@@ -1945,7 +1965,7 @@ static usb_er_t usb_hmsc_clear_stall (usb_utr_t *ptr, uint16_t pipe, usb_cb_t co
  End of function usb_hmsc_clear_stall
  ******************************************************************************/
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
 /******************************************************************************
  Function Name   : usb_hmsc_std_req_check
  Description     : Sample Standard Request Check
@@ -2112,11 +2132,13 @@ static void usb_hmsc_configured (usb_utr_t *ptr, uint16_t devadr, uint16_t data2
         usb_hstd_connect_err_event_set(ptr->ip);
     }
     
-#if (BSP_CFG_RTOS_USED == 1)
-    xSemaphoreTake(SemaphoreHandleRead, portMAX_DELAY);
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+    rtos_get_semaphore (&g_rtos_usb_hmsc_sem_id, RTOS_FOREVER);
+
     usb_hmsc_strg_drive_search(ptr, devadr, (usb_cb_t)usb_hmsc_drive_complete);
-    xSemaphoreGive(SemaphoreHandleRead);
-#endif  /* BSP_CFG_RTOS_USED == 1 */
+    rtos_release_semaphore (&g_rtos_usb_hmsc_sem_id);
+    
+#endif  /* BSP_CFG_RTOS_USED != 0 */
     
 }
 /******************************************************************************
@@ -2133,7 +2155,7 @@ static void usb_hmsc_configured (usb_utr_t *ptr, uint16_t devadr, uint16_t data2
  ******************************************************************************/
 static void usb_hmsc_detach (usb_utr_t *ptr, uint16_t addr, uint16_t data2)
 {
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
     uint16_t i;
     uint16_t j;
     uint16_t side;
@@ -2219,7 +2241,7 @@ static void usb_hmsc_detach (usb_utr_t *ptr, uint16_t addr, uint16_t data2)
 void usb_hmsc_drive_complete (usb_utr_t *ptr, uint16_t addr, uint16_t data2)
 {
     usb_ctrl_t  ctrl;
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
     uint16_t    que_cnt;
     uint16_t    i;
 
@@ -2243,7 +2265,7 @@ void usb_hmsc_drive_complete (usb_utr_t *ptr, uint16_t addr, uint16_t data2)
     usb_set_event(USB_STS_CONFIGURED, &ctrl); /* Set Event()  */
 } /* End of function usb_hmsc_drive_complete() */
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
 /******************************************************************************
  Function Name   : usb_registration
  Description     : sample registration.
@@ -2310,7 +2332,7 @@ void usb_hmsc_registration (usb_utr_t *ptr)
     {
         usb_hstd_driver_registration(ptr, &driver); /* Host MSC class driver registration. */
     }
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
     usb_cstd_set_task_pri(USB_HUB_TSK, USB_PRI_3); /* Hub Task Priority set */
 #endif  /* BSP_CFG_RTOS_USED == 0 */
 
@@ -2323,7 +2345,7 @@ void usb_hmsc_registration (usb_utr_t *ptr)
  End of function usb_hmsc_registration
  ******************************************************************************/
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
 /******************************************************************************
  Function Name   : usb_hmsc_message_retry
  Description     : Message transfer retry for Que Over
@@ -2406,7 +2428,7 @@ void usb_hmsc_smp_drive2_addr (uint16_t side, usb_utr_t *devadr)
  ******************************************************************************/
 void usb_hmsc_strg_cmd_complete (usb_utr_t *mess, uint16_t devadr, uint16_t data2)
 {
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
     usb_ctrl_t ctrl;
 
     ctrl.module = mess->ip; /* Module number setting */
@@ -2433,9 +2455,6 @@ void usb_hmsc_strg_cmd_complete (usb_utr_t *mess, uint16_t devadr, uint16_t data
             ctrl.status = USB_CSW_FAIL;
         break;
     }
-#if (BSP_CFG_RTOS_USED == 1)
-    ctrl.p_data = (void *)mess->cur_task_hdl;
-#endif /* (BSP_CFG_RTOS_USED == 1) */
 
     usb_set_event(USB_STS_MSC_CMD_COMPLETE, &ctrl); /* Set Event(USB receive complete)  */
 #endif  /* BSP_CFG_RTOS_USED == 0 */
@@ -2483,15 +2502,11 @@ void usb_hmsc_req_trans_result(usb_utr_t *mess, uint16_t data1, uint16_t data2)
 {
     usb_er_t err;
 
-#if BSP_CFG_RTOS_USED == 1
     gs_usb_hmsc_req_tran_result_msg = *mess;
 
     /* Send a message to HMSC mailbox */
-    err = USB_SND_MSG(USB_HMSC_REQ_MBX, (usb_msg_t *)&gs_usb_hmsc_req_tran_result_msg);
-#else  /* BSP_CFG_RTOS_USED == 1 */
-    err = USB_SND_MSG(USB_HMSC_REQ_MBX, (usb_msg_t *)mess);
-#endif /* BSP_CFG_RTOS_USED == 1 */
-    if (USB_OK != err)
+    err = rtos_send_mailbox (&g_rtos_usb_hmsc_req_mbx_id, (void *)&gs_usb_hmsc_req_tran_result_msg);
+    if (RTOS_SUCCESS != err)
     {
         USB_PRINTF1("### HMSC snd_msg error (%ld)\n", err);
     }
@@ -2510,8 +2525,8 @@ uint16_t usb_hmsc_req_trans_wait_tmo(uint16_t tmo)
     usb_er_t err;
 
     /* Receive message from HMSC_REQ mailbox with time-out */
-    err = USB_TRCV_MSG(USB_HMSC_REQ_MBX, (usb_msg_t **)&mess, (usb_tm_t)tmo);
-    if (USB_OK != err)
+    err = rtos_receive_mailbox (&g_rtos_usb_hmsc_req_mbx_id, (void **)&mess, (rtos_time_t)tmo );
+    if (RTOS_SUCCESS != err)
     {
         USB_PRINTF1("### HMSC trcv_msg error (%ld)\n", err);
         return USB_ERROR;
@@ -2531,16 +2546,11 @@ uint16_t usb_hmsc_req_trans_wait_tmo(uint16_t tmo)
 void usb_hmsc_trans_result(usb_utr_t *mess, uint16_t data1, uint16_t data2)
 {
     usb_er_t err;
-
-#if BSP_CFG_RTOS_USED == 1
     gs_usb_hmsc_tran_result_msg = *mess;
 
     /* Send a message to HMSC mailbox */
-    err = USB_SND_MSG(USB_HMSC_MBX, (usb_msg_t *)&gs_usb_hmsc_tran_result_msg);
-#else  /* BSP_CFG_RTOS_USED == 1 */
-    err = USB_SND_MSG(USB_HMSC_MBX, (usb_msg_t *)mess);
-#endif /* BSP_CFG_RTOS_USED == 1 */
-    if (USB_OK != err)
+    err = rtos_send_mailbox (&g_rtos_usb_hmsc_mbx_id, (void *)&gs_usb_hmsc_tran_result_msg);
+    if (RTOS_SUCCESS != err)
     {
         USB_PRINTF1("### HMSC snd_msg error (%ld)\n", err);
     }
@@ -2556,11 +2566,11 @@ void usb_hmsc_trans_result(usb_utr_t *mess, uint16_t data1, uint16_t data2)
 uint16_t usb_hmsc_trans_wait_tmo(uint16_t tmo)
 {
     usb_utr_t *mess;
-    usb_er_t err;
+    rtos_err_t err;
 
     /* Receive message from HMSC mailbox with time-out */
-    err = USB_TRCV_MSG(USB_HMSC_MBX, (usb_msg_t **)&mess, (usb_tm_t)tmo);
-    if (USB_OK != err)
+    err = rtos_receive_mailbox (&g_rtos_usb_hmsc_mbx_id, (void **)&mess, (rtos_time_t)tmo );
+    if (RTOS_SUCCESS != err)
     {
         USB_PRINTF1("### HMSC trcv_msg error (%ld)\n", err);
         return USB_ERROR;
@@ -2636,7 +2646,7 @@ void usb_hmsc_driver_start (uint16_t ip_no)
         g_usb_hmsc_cbw[ip_no][i].cbwcb[15] = 0;
     }
 
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
     usb_cstd_set_task_pri(USB_HMSC_TSK, USB_PRI_3);
     usb_cstd_set_task_pri(USB_HSTRG_TSK, USB_PRI_3);
 #endif /* (BSP_CFG_RTOS_USED == 0) */

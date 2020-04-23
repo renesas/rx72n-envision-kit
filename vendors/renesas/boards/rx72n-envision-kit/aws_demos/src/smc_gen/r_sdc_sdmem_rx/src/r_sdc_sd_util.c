@@ -14,7 +14,7 @@
 * following link:
 * http://www.renesas.com/disclaimer 
 *
-* Copyright (C) 2014(2015-2017) Renesas Electronics Corporation. All rights reserved.    
+* Copyright (C) 2014(2015-2019) Renesas Electronics Corporation. All rights reserved.    
 **********************************************************************************************************************/
 /**********************************************************************************************************************
 * System Name  : SDHI Driver
@@ -34,6 +34,8 @@
 *              : 17.07.2015 1.10    Standardized by the combo.
 *              : 31.07.2017 2.00    SDHI FIT module separated into hardware low level layer and middleware layer.
 *              :                    Changed prefix from SDHI to SDC_SD.
+*              : 10.02.2020 3.00    Added comment "WAIT_LOOP".
+*                                   Added support for GNUC and ICCRX.
 **********************************************************************************************************************/
 
 /**********************************************************************************************************************
@@ -109,6 +111,7 @@ int32_t r_sdc_sd_bit_search(uint32_t data)
 {
     int32_t i = 0;
 
+    /* WAIT_LOOP */
     for (i = 15; 0 <= i; i--)
     {
         if (data & 1u)
@@ -341,17 +344,21 @@ sdc_sd_status_t r_sdc_sd_GetCardInfo(uint32_t card_no, sdc_sd_card_reg_t * p_sdc
 #endif /* SDC_SD_CFG_DRIVER_MODE & SDC_SD_MODE_IO */
     p_sdc_sd_card_reg->ocr[0] = p_hndl->ocr[0];
     p_sdc_sd_card_reg->dsr[0] = p_hndl->dsr[0];
+    
+    /* WAIT_LOOP */
     for (i = 0; i < 2; ++i)
     {
         p_sdc_sd_card_reg->rca[i] = p_hndl->rca[i];
         p_sdc_sd_card_reg->scr[i] = p_hndl->scr[i];
     }
+    /* WAIT_LOOP */
     for (i = 0; i < 4; ++i)
     {
         p_sdc_sd_card_reg->cid[i] = p_hndl->cid[i];
         p_sdc_sd_card_reg->csd[i] = p_hndl->csd[i];
         p_sdc_sd_card_reg->sdstatus[i] = p_hndl->sdstatus[i];
     }
+    /* WAIT_LOOP */
     for (i = 0; i < 5; ++i)
     {
         p_sdc_sd_card_reg->switch_func_status[i] = p_hndl->status_data[i];
@@ -529,6 +536,7 @@ sdc_sd_status_t r_sdc_sd_Control(uint32_t card_no, sdc_sd_cmd_t * p_sdc_sd_cmd)
 **********************************************************************************************************************/
 sdc_sd_status_t r_sdc_sdmemset(uint8_t * p_ptr, uint8_t data, uint32_t cnt)
 {
+    /* WAIT_LOOP */
     while (cnt--)
     {
         *p_ptr++ = data;
@@ -550,6 +558,7 @@ sdc_sd_status_t r_sdc_sdmemset(uint8_t * p_ptr, uint8_t data, uint32_t cnt)
 **********************************************************************************************************************/
 sdc_sd_status_t r_sdc_sdmemcpy(uint8_t * p_dst, uint8_t * p_src, uint32_t cnt)
 {
+    /* WAIT_LOOP */
     while (cnt--)
     {
         *p_dst++ = *p_src++;
@@ -611,6 +620,7 @@ sdc_sd_status_t r_sdc_sd_wait_rbusy(uint32_t card_no, uint32_t time)
 
     p_hndl = SDC_SD_GET_HNDL(card_no);
 
+    /* WAIT_LOOP */
     for (i = 0; i < time; ++i) 
     {
         if (r_sdc_sd_send_cmd_arg(card_no, SDC_SD_CMD13, SDC_SD_RESP_R1, p_hndl->rca[0]) == SDC_SD_SUCCESS)
@@ -809,6 +819,7 @@ sdc_sd_status_t r_sdc_sd_read_data(uint8_t * p_buff, uint32_t reg_addr, int32_t 
 
     if ((uint32_t)p_buff & 0x3)
     {
+        /* WAIT_LOOP */
         for (i = num ; i > 0 ; i--)
         {
 #if (SDC_SD_BIG_ENDIAN)
@@ -828,6 +839,7 @@ sdc_sd_status_t r_sdc_sd_read_data(uint8_t * p_buff, uint32_t reg_addr, int32_t 
     }
     else
     {
+        /* WAIT_LOOP */
         for (i = num ; i > 0 ; i--)
         {
             *p_ptr++ = *p_reg;
@@ -860,6 +872,7 @@ sdc_sd_status_t r_sdc_sd_write_data(uint8_t * p_buff, uint32_t reg_addr, int32_t
 
     if ((uint32_t)p_buff & 0x3)
     {
+        /* WAIT_LOOP */
         for (i = num ; i > 0 ; i--)
         {
 #if (SDC_SD_BIG_ENDIAN)
@@ -879,6 +892,7 @@ sdc_sd_status_t r_sdc_sd_write_data(uint8_t * p_buff, uint32_t reg_addr, int32_t
     }
     else
     {
+        /* WAIT_LOOP */
         for (i = num ; i > 0 ; i--)
         {
             *p_reg = *p_ptr++;
@@ -914,6 +928,7 @@ sdc_sd_status_t r_sdc_sd_read_data_byte(uint8_t * p_buff, uint32_t reg_addr, int
     {
         if ((uint32_t)p_buff & 0x3)
         {
+            /* WAIT_LOOP */
             for (i = num ; i > 0 ; i--)
             {
 #if (SDC_SD_BIG_ENDIAN)
@@ -933,6 +948,7 @@ sdc_sd_status_t r_sdc_sd_read_data_byte(uint8_t * p_buff, uint32_t reg_addr, int
         }
         else
         {
+            /* WAIT_LOOP */
             for (i = num ; i > 0 ; i--)
             {
                 *p_ptr++ = *p_reg;
@@ -1005,6 +1021,7 @@ sdc_sd_status_t r_sdc_sd_write_data_byte(uint8_t * p_buff, uint32_t reg_addr, in
     {
         if ((uint32_t)p_buff & 0x3)
         {
+            /* WAIT_LOOP */
             for (i = num ; i > 0 ; i--)
             {
 #if (SDC_SD_BIG_ENDIAN)
@@ -1024,6 +1041,7 @@ sdc_sd_status_t r_sdc_sd_write_data_byte(uint8_t * p_buff, uint32_t reg_addr, in
         }
         else
         {
+            /* WAIT_LOOP */
             for (i = num ; i > 0 ; i--)
             {
                 *p_reg = *p_ptr++;
@@ -1101,6 +1119,7 @@ void r_sdc_sd_1msInterval(void)
 {
     uint32_t card_no = 0;
 
+    /* WAIT_LOOP */
     for (card_no = 0; card_no < SDC_SD_TIMER_CARD_MAX_NUM; card_no++)
     {
         if (0 != g_sdc_sd_timer_cnt_out[card_no][SDC_SD_TIMER_CARD_FLG])
@@ -1207,7 +1226,7 @@ bool r_sdc_sd_api_lock(int32_t * p_lock)
     int32_t is_locked = true;
 
     /* Try to acquire semaphore to obtain lock */
-    xchg(&is_locked, p_lock);
+    R_BSP_EXCHANGE(&is_locked, p_lock);
 
     /* Check to see if semaphore was successfully taken */
     if (is_locked == false)

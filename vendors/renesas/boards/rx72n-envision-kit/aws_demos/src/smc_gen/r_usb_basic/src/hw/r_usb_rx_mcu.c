@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2015(2019) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2015(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_rx_mcu.c
@@ -31,6 +31,7 @@
  *         : 31.03.2018 1.23 Supporting Smart Configurator
  *         : 31.05.2019 1.26 Added support for GNUC and ICCRX.
  *         : 30.07.2019 1.27 RX72M is added.
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 /******************************************************************************
@@ -171,7 +172,7 @@
 R_BSP_PRAGMA_STATIC_INTERRUPT(usbfs_usbi_isr, VECT(USB0, USBI0))
 
 #if defined (BSP_MCU_RX64M) || defined(BSP_MCU_RX71M)
-    R_BSP_PRAGMA_STATIC_INTERRUPT(usbhs_usbir_isr, VECT(USBA, USBAR))
+    R_BSP_PRAGMA_STATIC_INTERRUPT(usbhs_usbar_isr, VECT(USBA, USBAR))
 
 #endif  /* defined (BSP_MCU_RX64M) || defined(BSP_MCU_RX71M) */
 
@@ -180,19 +181,19 @@ R_BSP_PRAGMA_STATIC_INTERRUPT(usbfs_usbi_isr, VECT(USB0, USBI0))
 #endif /* defined (BSP_MCU_RX63N) || defined (BSP_MCU_RX62N) || defined (BSP_MCU_RX630) || defined (BSP_MCU_RX63T) */
 
 #if defined (BSP_MCU_RX63N) || defined (BSP_MCU_RX62N)
-        R_BSP_PRAGMA_STATIC_INTERRUPT(usbhs_usbir_isr, VECT(USB1, USBI1))
+        R_BSP_PRAGMA_STATIC_INTERRUPT(usbhs_usbar_isr, VECT(USB1, USBI1))
     #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
         R_BSP_PRAGMA_INTERRUPT(usb2_cpu_usb_int_hand_isr, VECT(USB, USBR1))
     #endif /* ( (USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI ) */
 #endif  /* defined (BSP_MCU_RX63N) || defined (BSP_MCU_RX62N) */
 
 #if defined (BSP_MCU_RX64M) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX72T)\
-    || defined (BSP_MCU_RX72M)
+    || defined (BSP_MCU_RX72M) || defined (BSP_MCU_RX72N) || defined (BSP_MCU_RX66N)
     #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
         R_BSP_PRAGMA_STATIC_INTERRUPT(usb_cpu_usb_int_hand_isr, VECT(USB0, USBR0))
     #endif /* ( (USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI ) */
 #endif /* defined (BSP_MCU_RX64M) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX72T)\
-    || defined (BSP_MCU_RX72M) */
+    || defined (BSP_MCU_RX72M) || defined (BSP_MCU_RX72N) || defined (BSP_MCU_RX66N) */
 
 #if USB_CFG_DTC == USB_CFG_ENABLE
 R_BSP_PRAGMA_STATIC_INTERRUPT(usb_cpu_d0fifo_int_hand, VECT(USB0, D0FIFO0))
@@ -224,6 +225,9 @@ R_BSP_PRAGMA_INTERRUPT(usb2_cpu_d1fifo_int_hand, VECT(USB1, D1FIFO1))
  ******************************************************************************/
 usb_err_t usb_module_start (uint8_t ip_type)
 {
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) 
+bsp_int_ctrl_t int_ctrl;
+#endif  /* ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6)  */
 
     if (USB_IP0 == ip_type)
     {
@@ -239,8 +243,16 @@ usb_err_t usb_module_start (uint8_t ip_type)
         /* Enable writing to MSTP registers */
         R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_CGC_SWR);
 
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) 
+        R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_DISABLE, &int_ctrl);
+#endif  /* ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) */
+
         /* Enable power for USB0 */
         MSTP(USB0) = 0;
+
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) 
+        R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_ENABLE, &int_ctrl);
+#endif  /* ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) */
 
         /* Disable writing to MSTP registers */
         R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_LPC_CGC_SWR);
@@ -256,8 +268,16 @@ usb_err_t usb_module_start (uint8_t ip_type)
         /* Enable writing to MSTP registers */
         R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_CGC_SWR);
 
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) 
+        R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_DISABLE, &int_ctrl);
+#endif  /* ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) */
+
         /* Enable power for USBA */
         MSTP(USBA) = 0;
+
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) 
+        R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_ENABLE, &int_ctrl);
+#endif  /* ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) */
 
         /* Disable writing to MSTP registers */
         R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_LPC_CGC_SWR);
@@ -272,8 +292,16 @@ usb_err_t usb_module_start (uint8_t ip_type)
         /* Enable writing to MSTP registers */
         R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_CGC_SWR);
 
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) 
+        R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_DISABLE, &int_ctrl);
+#endif  /* ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) */
+
         /* Enable power for USB1 */
         MSTP(USB1) = 0;
+
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) 
+        R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_ENABLE, &int_ctrl);
+#endif  /* ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) */
 
         /* Disable writing to MSTP registers */
         R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_LPC_CGC_SWR);
@@ -294,6 +322,10 @@ End of function usb_module_start
  ******************************************************************************/
 usb_err_t usb_module_stop (uint8_t ip_type)
 {
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) 
+bsp_int_ctrl_t int_ctrl;
+#endif  /* ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6)  */
+
     if (USB_IP0 == ip_type)
     {
         if (0 != MSTP(USB0))
@@ -332,8 +364,16 @@ usb_err_t usb_module_stop (uint8_t ip_type)
         /* Enable writing to MSTP registers */
         R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_CGC_SWR);
 
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) 
+        R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_DISABLE, &int_ctrl);
+#endif  /* ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) */
+
         /* Disable power for USB0 */
         MSTP(USB0) = 1;
+
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) 
+        R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_ENABLE, &int_ctrl);
+#endif  /* ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) */
 
         /* Disable writing to MSTP registers */
         R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_LPC_CGC_SWR);
@@ -373,8 +413,16 @@ usb_err_t usb_module_stop (uint8_t ip_type)
         /* Enable writing to MSTP registers */
         R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_CGC_SWR);
 
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) 
+        R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_DISABLE, &int_ctrl);
+#endif  /* ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) */
+
         /* Disable power for USBA */
         MSTP(USBA) = 1;
+
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) 
+        R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_ENABLE, &int_ctrl);
+#endif  /* ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) */
 
         /* Disable writing to MSTP registers */
         R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_LPC_CGC_SWR);
@@ -416,8 +464,16 @@ usb_err_t usb_module_stop (uint8_t ip_type)
         /* Enable writing to MSTP registers */
         R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_CGC_SWR);
 
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) 
+        R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_DISABLE, &int_ctrl);
+#endif  /* ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) */
+
         /* Disable power for USB1 */
         MSTP(USB1) = 1;
+
+#if ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) 
+        R_BSP_InterruptControl(BSP_INT_SRC_EMPTY, BSP_INT_CMD_FIT_INTERRUPT_ENABLE, &int_ctrl);
+#endif  /* ((R_BSP_VERSION_MAJOR == 5) && (R_BSP_VERSION_MINOR >= 30)) || (R_BSP_VERSION_MAJOR >= 6) */
 
         /* Disable writing to MSTP registers */
         R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_LPC_CGC_SWR);
@@ -489,11 +545,11 @@ void usb_cpu_usbint_init (uint8_t ip_type)
 #endif  /* ((USB_CFG_DTC == USB_CFG_ENABLE) || (USB_CFG_DMA == USB_CFG_ENABLE)) */
 
 #if defined (BSP_MCU_RX64M) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX72T)\
-    || defined (BSP_MCU_RX72M)
+    || defined (BSP_MCU_RX72M) || defined (BSP_MCU_RX72N) || defined (BSP_MCU_RX66N)
         R_BSP_InterruptRequestEnable(VECT(USB0, USBR0)); /* USBR0 enable */
 
 #endif  /* defined (BSP_MCU_RX64M) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX72T)\
-    || defined (BSP_MCU_RX72M) */
+    || defined (BSP_MCU_RX72M) || defined (BSP_MCU_RX72N) || defined (BSP_MCU_RX66N) */
 
 #if defined (BSP_MCU_RX63N) || defined (BSP_MCU_RX62N)
         R_BSP_InterruptRequestEnable(VECT(USB, USBR0)); /* USBR0 enable */
@@ -505,11 +561,11 @@ void usb_cpu_usbint_init (uint8_t ip_type)
          b7-b4 Reserved 0
          */
 #if defined (BSP_MCU_RX64M) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX72T)\
-    || defined (BSP_MCU_RX72M)
+    || defined (BSP_MCU_RX72M) || defined (BSP_MCU_RX72N) || defined (BSP_MCU_RX66N)
         IPR (USB0, USBR0)= 0x00; /* USBR0 */
 
 #endif  /* defined (BSP_MCU_RX64M) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX65N) || defined(BSP_MCU_RX72T)\
-    || defined (BSP_MCU_RX72M) */
+    || defined (BSP_MCU_RX72M) || defined (BSP_MCU_RX72N) || defined (BSP_MCU_RX66N) */
 
 #if defined (BSP_MCU_RX63N) || defined (BSP_MCU_RX62N)
         IPR (USB, USBR0) = 0x00; /* USBR0 */
@@ -640,12 +696,14 @@ void usb_cpu_delay_1us (uint16_t time)
  ******************************************************************************/
 void usb_cpu_delay_xms (uint16_t time)
 {
-#if (BSP_CFG_RTOS_USED == 0)
+#if (BSP_CFG_RTOS_USED == 0)        /* Non-OS */
     R_BSP_SoftwareDelay((uint32_t)time, BSP_DELAY_MILLISECS);
 #endif /* (BSP_CFG_RTOS_USED == 0) */
 
-#if (BSP_CFG_RTOS_USED == 1)
+#if (BSP_CFG_RTOS_USED == 1)        /* FreeRTOS */
     vTaskDelay((TickType_t)(time/portTICK_PERIOD_MS));
+#elif (BSP_CFG_RTOS_USED == 4)      /* Renesas RI600V4 & RI600PX */
+    dly_tsk((RELTIM)time);
 #endif /* (BSP_CFG_RTOS_USED == 1) */
 }
 /******************************************************************************
@@ -801,7 +859,7 @@ End of function usb_chattaring
  * Arguments    : none
  * Return Value : none
  *******************************************************************************/
-R_BSP_ATTRIB_STATIC_INTERRUPT void usbfs_usbi_isr (void)
+R_BSP_ATTRIB_INTERRUPT void usbfs_usbi_isr (void)
 {
     /* Call USB interrupt routine */
     if (USB_HOST == g_usb_usbmode)
@@ -830,12 +888,12 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void usbfs_usbi_isr (void)
 
 #if defined (BSP_MCU_RX64M) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX63N) || defined (BSP_MCU_RX62N)
 /*******************************************************************************
- * Function Name: usbhs_usbir_isr
+ * Function Name: usbhs_usbar_isr
  * Description  : Interrupt service routine of USBF
  * Arguments    : none
  * Return Value : none
  *******************************************************************************/
-R_BSP_ATTRIB_STATIC_INTERRUPT void usbhs_usbir_isr (void)
+R_BSP_ATTRIB_STATIC_INTERRUPT void usbhs_usbar_isr (void)
 {
     /* Condition compilation by the difference of USB function */
     if (USB_HOST == g_usb_usbmode)
@@ -856,14 +914,14 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void usbhs_usbir_isr (void)
     }
 }
 /******************************************************************************
- End of function usbhs_usbir_isr
+ End of function usbhs_usbar_isr
  ******************************************************************************/
 #endif /* defined (BSP_MCU_RX64M) || defined(BSP_MCU_RX71M) || defined(BSP_MCU_RX63N) || defined (BSP_MCU_RX62N) */
 
 #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
 
 #if defined (BSP_MCU_RX64M) || defined (BSP_MCU_RX71M) || defined (BSP_MCU_RX65N) || defined (BSP_MCU_RX72T)\
-    || defined (BSP_MCU_RX72M)
+    || defined (BSP_MCU_RX72M) || defined (BSP_MCU_RX72N) || defined (BSP_MCU_RX66N)
 /******************************************************************************
  Function Name   : usb_cpu_usb_int_hand_isr
  Description     :
@@ -878,7 +936,7 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void usb_cpu_usb_int_hand_isr (void)
 } /* End of function usb_cpu_usb_int_hand_isr */
 
 #else  /* defined (BSP_MCU_RX64M) || defined (BSP_MCU_RX71M) || defined (BSP_MCU_RX65N) || defined (BSP_MCU_RX72T)\
-    || defined (BSP_MCU_RX72M) */
+    || defined (BSP_MCU_RX72M) || defined (BSP_MCU_RX72N) || defined (BSP_MCU_RX66N) */
 /******************************************************************************
  Function Name   : usb_cpu_usb_int_hand_isr
  Description     :
@@ -893,7 +951,7 @@ R_BSP_ATTRIB_STATIC_INTERRUPT void usb_cpu_usb_int_hand_isr (void)
 } /* End of function usb_cpu_usb_int_hand_isr */
 
 #endif /* defined (BSP_MCU_RX64M) || defined (BSP_MCU_RX71M) || defined (BSP_MCU_RX65N) || defined (BSP_MCU_RX72T)\
-    || defined (BSP_MCU_RX72M) */
+    || defined (BSP_MCU_RX72M) || defined (BSP_MCU_RX72N) || defined (BSP_MCU_RX66N) */
 
 #if defined (BSP_MCU_RX63N) || defined (BSP_MCU_RX62N)
 /******************************************************************************

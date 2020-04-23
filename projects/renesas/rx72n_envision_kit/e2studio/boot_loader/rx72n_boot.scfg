@@ -546,8 +546,27 @@
 <Item id="PERIA_INTA255" priority="15"/>
 </tool>
 <tool id="SWComponent" version="1.0.0.0">
+<configuration inuse="true" name="r_byteq">
+<component description="依存モジュール: r_bsp バージョン 3.10&#10;This module allocates a queue control block in an Open() call to handle indexing for buffers provided by the user application. Additional functions are provided to put and get data from the buffer queue, inspect the number of bytes available or in use, and to flush the queue. There is no limit to the number of queues supported, and queue control blocks can be allocated statically at build time or dynamically at run time." detailDescription="Byte-based circular buffer library." display="r_byteq" id="r_byteq1.80" version="1.80">
+<gridItem id="BYTEQ_CFG_PARAM_CHECKING_ENABLE" selectedIndex="0"/>
+<gridItem id="BYTEQ_CFG_USE_HEAP_FOR_CTRL_BLKS" selectedIndex="0"/>
+<gridItem id="BYTEQ_CFG_MAX_CTRL_BLKS" selectedIndex="32"/>
+</component>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+</configuration>
+<configuration inuse="true" name="r_simple_graphic_rx">
+<component description="依存モジュール: r_cmt_rx バージョン 3.21&#10;-" detailDescription="simple graphic configuration driver" display="r_simple_graphic_rx" id="r_simple_graphic_rx0.80" version="0.80"/>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+</configuration>
+<configuration inuse="true" name="r_simple_glcdc_config_rx">
+<component description="依存モジュール: r_glcdc_rx バージョン 1.00&#10;-" detailDescription="GLCDC configuration driver" display="r_simple_glcdc_config_rx" id="r_simple_glcdc_config_rx0.81" version="0.81"/>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+</configuration>
 <configuration inuse="true" name="r_bsp">
-<component description="依存モジュール: なし&#10;The r_bsp package provides a foundation for code to be built on top of. It provides startup code, iodefines, and MCU information for different boards. There are 2 folders that make up the r_bsp package. The 'mcu' folder contains files that are common to a MCU group. These files provide functionality such as easy register access, CPU functions, and a file named 'mcu_info.h' for each MCU group. The 'mcu_info.h' file has information about the MCU on the board and is configured based on the information given in r_bsp_config.h. The information in 'mcu_info.h' is used to help configure Renesas middleware that uses the r_bsp package. The 'board' folder has a folder with startup code for each supported board.  Which MCU and board is chosen is decided by the settings in 'platform.h'. The user can choose which board they are using by uncommenting the include path that applies to their board. For example, if you are using the RSK+RX64M then you would uncomment the #include &quot;./board/generic_rx64m/r_bsp.h&quot; include path. Users are encouraged to add their own boards to the 'board' directory. BSPs are configured by using the r_bsp_config.h file. Each board will have a reference configuration file named r_bsp_config_reference.h. The user should copy this file to their project, rename it to r_bsp_config.h, and use the options inside the file to configure the BSP for their project." detailDescription="Board Support Packages." display="r_bsp" id="r_bsp5.50" version="5.50">
+<component description="依存モジュール: なし&#10;The r_bsp package provides a foundation for code to be built on top of. It provides startup code, iodefines, and MCU information for different boards. There are 2 folders that make up the r_bsp package. The 'mcu' folder contains files that are common to a MCU group. These files provide functionality such as easy register access, CPU functions, and a file named 'mcu_info.h' for each MCU group. The 'mcu_info.h' file has information about the MCU on the board and is configured based on the information given in r_bsp_config.h. The information in 'mcu_info.h' is used to help configure Renesas middleware that uses the r_bsp package. The 'board' folder has a folder with startup code for each supported board.  Which MCU and board is chosen is decided by the settings in 'platform.h'. The user can choose which board they are using by uncommenting the include path that applies to their board. For example, if you are using the RSK+RX64M then you would uncomment the #include &quot;./board/generic_rx64m/r_bsp.h&quot; include path. Users are encouraged to add their own boards to the 'board' directory. BSPs are configured by using the r_bsp_config.h file. Each board will have a reference configuration file named r_bsp_config_reference.h. The user should copy this file to their project, rename it to r_bsp_config.h, and use the options inside the file to configure the BSP for their project." detailDescription="Board Support Packages." display="r_bsp" id="r_bsp5.52" version="5.52">
 <gridItem id="BSP_CFG_STARTUP_DISABLE" selectedIndex="0"/>
 <gridItem id="BSP_CFG_USER_STACK_ENABLE" selectedIndex="1"/>
 <gridItem id="BSP_CFG_USTACK_BYTES" selectedIndex="0x1000"/>
@@ -607,17 +626,8 @@
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 </configuration>
-<configuration inuse="true" name="r_byteq">
-<component description="依存モジュール: r_bsp バージョン 3.10&#10;This module allocates a queue control block in an Open() call to handle indexing for buffers provided by the user application. Additional functions are provided to put and get data from the buffer queue, inspect the number of bytes available or in use, and to flush the queue. There is no limit to the number of queues supported, and queue control blocks can be allocated statically at build time or dynamically at run time." detailDescription="Byte-based circular buffer library." display="r_byteq" id="r_byteq1.80" version="1.80">
-<gridItem id="BYTEQ_CFG_PARAM_CHECKING_ENABLE" selectedIndex="0"/>
-<gridItem id="BYTEQ_CFG_USE_HEAP_FOR_CTRL_BLKS" selectedIndex="0"/>
-<gridItem id="BYTEQ_CFG_MAX_CTRL_BLKS" selectedIndex="32"/>
-</component>
-<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-</configuration>
 <configuration inuse="true" name="r_flash_rx">
-<component description="依存モジュール: r_bsp バージョン 5.20&#10;This module allows the user to program, erase, write and blankcheck the Code and/or Data flash." detailDescription="Flash API for RX100, RX200, RX600. and RX700." display="r_flash_rx" id="r_flash_rx4.20" version="4.20">
+<component description="依存モジュール: r_bsp バージョン 5.20, 5.30, 5.40, 5.50&#10;This module allows the user to program, erase, write and blankcheck the Code and/or Data flash." detailDescription="Flash API for RX100, RX200, RX600. and RX700." display="r_flash_rx" id="r_flash_rx4.50" version="4.50">
 <gridItem id="FLASH_CFG_PARAM_CHECKING_ENABLE" selectedIndex="1"/>
 <gridItem id="FLASH_CFG_CODE_FLASH_ENABLE" selectedIndex="1"/>
 <gridItem id="FLASH_CFG_DATA_FLASH_BGO" selectedIndex="1"/>
@@ -628,7 +638,7 @@
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 </configuration>
 <configuration inuse="true" name="r_sci_rx">
-<component description="依存モジュール: r_bsp バージョン 5.40&#10;依存モジュール: r_byteq バージョン 1.40, 1.50, 1.60, 1.70, 1.71, 1.80&#10;This module allows any number of SCI channels on the MCU to run in full duplex Asynchronous mode, single master Simple SPI mode, or master Synchronous mode simultaneously. The driver is interrupt driven and non-blocking. Transmit and receive buffer queues are used in Asynchronous mode and their sizes may be configured independently for each channel. Resources for unused channels or modes may be removed via settings in the driver's config.h file." detailDescription="Multi-Channel Multi-Mode SCI Driver." display="r_sci_rx" id="r_sci_rx3.30" version="3.30">
+<component description="依存モジュール: r_bsp バージョン 5.50&#10;依存モジュール: r_byteq バージョン 1.40, 1.50, 1.60, 1.70, 1.71, 1.80&#10;This module allows any number of SCI channels on the MCU to run in full duplex Asynchronous mode, single master Simple SPI mode, or master Synchronous mode simultaneously. The driver is interrupt driven and non-blocking. Transmit and receive buffer queues are used in Asynchronous mode and their sizes may be configured independently for each channel. Resources for unused channels or modes may be removed via settings in the driver's config.h file." detailDescription="Multi-Channel Multi-Mode SCI Driver." display="r_sci_rx" id="r_sci_rx3.40" version="3.40">
 <gridItem id="SCK0" selectedIndex="0"/>
 <gridItem id="RXD0/SMISO0" selectedIndex="0"/>
 <gridItem id="TXD0/SMOSI0" selectedIndex="0"/>
@@ -674,6 +684,30 @@
 <gridItem id="TXD8/SMOSI8/SSDA8" selectedIndex="0"/>
 <gridItem id="CTS8#/RTS8#/SS8#" selectedIndex="0"/>
 <gridItem id="SCI8" selectedIndex="0"/>
+<gridItem id="SCK9" selectedIndex="0"/>
+<gridItem id="RXD9/SMISO9/SSCL9" selectedIndex="0"/>
+<gridItem id="TXD9/SMOSI9/SSDA9" selectedIndex="0"/>
+<gridItem id="CTS9#/RTS9#/SS9#" selectedIndex="0"/>
+<gridItem id="SCI9" selectedIndex="0"/>
+<gridItem id="SCK10" selectedIndex="0"/>
+<gridItem id="RXD10/SMISO10/SSCL10" selectedIndex="0"/>
+<gridItem id="TXD10/SMOSI10/SSDA10" selectedIndex="0"/>
+<gridItem id="SS10#" selectedIndex="0"/>
+<gridItem id="CTS10#" selectedIndex="0"/>
+<gridItem id="RTS10#" selectedIndex="0"/>
+<gridItem id="SCI10" selectedIndex="0"/>
+<gridItem id="SCK11" selectedIndex="0"/>
+<gridItem id="RXD11/SMISO11" selectedIndex="0"/>
+<gridItem id="TXD11/SMOSI11" selectedIndex="0"/>
+<gridItem id="CTS11#/RTS11#/SS11#" selectedIndex="0"/>
+<gridItem id="SCI11" selectedIndex="0"/>
+<gridItem id="SCK11" selectedIndex="0"/>
+<gridItem id="RXD11/SMISO11/SSCL11" selectedIndex="0"/>
+<gridItem id="TXD11/SMOSI11/SSDA11" selectedIndex="0"/>
+<gridItem id="SS11#" selectedIndex="0"/>
+<gridItem id="CTS11#" selectedIndex="0"/>
+<gridItem id="RTS11#" selectedIndex="0"/>
+<gridItem id="SCI11" selectedIndex="0"/>
 <gridItem id="SCK12" selectedIndex="0"/>
 <gridItem id="RXD12/SMISO12" selectedIndex="0"/>
 <gridItem id="TXD12/SMOSI12" selectedIndex="0"/>
@@ -757,7 +791,7 @@
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 </configuration>
 <configuration inuse="true" name="r_glcdc_rx">
-<component description="依存モジュール: r_bsp バージョン 5.50&#10;The GLCDC FIT module provides the method to output image data read from memory to the LCD panel. " detailDescription="Graphics LCD Controller Module." display="r_glcdc_rx" id="r_glcdc_rx1.20" version="1.20">
+<component description="依存モジュール: r_bsp バージョン 5.20, 5.50&#10;The GLCDC FIT module provides the method to output image data read from memory to the LCD panel. " detailDescription="Graphics LCD Controller Module." display="r_glcdc_rx" id="r_glcdc_rx1.30" version="1.30">
 <gridItem id="LCD_CLK" selectedIndex="1"/>
 <gridItem id="LCD_TCON0" selectedIndex="1"/>
 <gridItem id="LCD_TCON1" selectedIndex="0"/>
@@ -795,19 +829,9 @@
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 </configuration>
 <configuration inuse="true" name="r_cmt_rx">
-<component description="依存モジュール: r_bsp バージョン 5.20&#10;This module creates a timer tick using a CMT channel based on a frequency input by the user." detailDescription="Simple CMT driver for creating timer tick." display="r_cmt_rx" id="r_cmt_rx4.20" version="4.20">
+<component description="依存モジュール: r_bsp バージョン 5.50&#10;This module creates a timer tick using a CMT channel based on a frequency input by the user." detailDescription="Simple CMT driver for creating timer tick." display="r_cmt_rx" id="r_cmt_rx4.31" version="4.31">
 <gridItem id="CMT_RX_CFG_IPR" selectedIndex="5"/>
 </component>
-<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-</configuration>
-<configuration inuse="true" name="r_simple_graphic_rx">
-<component description="依存モジュール: r_cmt_rx バージョン 3.21&#10;-" detailDescription="simple graphic configuration driver" display="r_simple_graphic_rx" id="r_simple_graphic_rx0.80" version="0.80"/>
-<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-<source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-</configuration>
-<configuration inuse="true" name="r_simple_glcdc_config_rx">
-<component description="依存モジュール: r_glcdc_rx バージョン 1.00&#10;-" detailDescription="GLCDC configuration driver" display="r_simple_glcdc_config_rx" id="r_simple_glcdc_config_rx0.81" version="0.81"/>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
 </configuration>

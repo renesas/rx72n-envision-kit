@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2014(2018) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2014(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_hcontrolrw.c
@@ -28,6 +28,7 @@
  *         : 30.09.2016 1.20 RX65N/RX651 is added.
  *         : 31.03.2018 1.23 Supporting Smart Configurator
  *         : 16.11.2018 1.24 Supporting RTOS Thread safe
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 /******************************************************************************
@@ -39,6 +40,11 @@
 #include "r_usb_extern.h"
 #include "r_usb_bitdefine.h"
 #include "r_usb_reg_access.h"
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+#include "r_rtos_abstract.h"
+#include "r_usb_cstd_rtos.h"
+#endif /* (BSP_CFG_RTOS_USED != 0) */
+
 
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
 /******************************************************************************
@@ -294,6 +300,10 @@ void usb_hstd_status_start (usb_utr_t *ptr)
  ******************************************************************************/
 void usb_hstd_ctrl_end (usb_utr_t *ptr, uint16_t status)
 {
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+    usb_ctrl_trans_t temp_request;
+#endif /* (BSP_CFG_RTOS_USED != 0) */
+
     /* Interrupt Disable */
     hw_usb_clear_bempenb(ptr, (uint16_t) USB_PIPE0); /* BEMP0 Disable */
     hw_usb_clear_brdyenb(ptr, (uint16_t) USB_PIPE0); /* BRDY0 Disable */
@@ -353,15 +363,19 @@ void usb_hstd_ctrl_end (usb_utr_t *ptr, uint16_t status)
             (g_p_usb_hstd_pipe[ptr->ip][USB_PIPE0]->complete)(g_p_usb_hstd_pipe[ptr->ip][USB_PIPE0], USB_NULL, USB_NULL);
         }
     }
-#if BSP_CFG_RTOS_USED == 1
-    vPortFree (g_p_usb_hstd_pipe[ptr->ip][USB_PIPE0]);
-    g_p_usb_hstd_pipe[ptr->ip][USB_PIPE0] = (usb_utr_t*) USB_NULL;
-    usb_cstd_pipe0_msg_re_forward (ptr->ip);   /* Get PIPE0 Transfer wait que and Message send to HCD */
-
-#else   /* BSP_CFG_RTOS_USED == 1 */
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+    rtos_release_fixed_memory(&g_rtos_usb_mpf_id, (void *)g_p_usb_hstd_pipe[ptr->ip][USB_PIPE0]);
     g_p_usb_hstd_pipe[ptr->ip][USB_PIPE0] = (usb_utr_t*) USB_NULL;
 
-#endif /* BSP_CFG_RTOS_USED == 1 */
+    temp_request.address = usb_hstd_get_devsel(ptr, USB_PIPE0) >> 12;
+    ptr->p_setup = (uint16_t *)&temp_request;
+
+    usb_rtos_resend_msg_to_submbx_addr(ptr);
+
+#else   /* (BSP_CFG_RTOS_USED != 0) */
+    g_p_usb_hstd_pipe[ptr->ip][USB_PIPE0] = (usb_utr_t*) USB_NULL;
+
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
 #if USB_CFG_COMPLIANCE == USB_CFG_ENABLE
     hw_usb_clear_enb_sofe( ptr );

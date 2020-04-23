@@ -14,7 +14,7 @@
  * following link:
  * http://www.renesas.com/disclaimer
  *
- * Copyright (C) 2015(2018) Renesas Electronics Corporation. All rights reserved.
+ * Copyright (C) 2015(2020) Renesas Electronics Corporation. All rights reserved.
  ***********************************************************************************************************************/
 /***********************************************************************************************************************
  * File Name    : r_usb_creg_abs.c
@@ -28,6 +28,7 @@
  *         : 30.09.2016 1.20 RX65N/RX651 is added.
  *         : 26.01.2017 1.22 usb_cstd_chg_curpipe is fixed.(Add process for USB_D0USE/USB_D1USE.)
  *         : 31.03.2018 1.23 Supporting Smart Configurator
+ *         : 01.03.2020 1.30 RX72N/RX66N is added and uITRON is supported.
  ***********************************************************************************************************************/
 
 /******************************************************************************
@@ -39,6 +40,11 @@
 #include "r_usb_extern.h"
 #include "r_usb_bitdefine.h"
 #include "r_usb_reg_access.h"
+
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
+#include "r_rtos_abstract.h"
+#include "r_usb_cstd_rtos.h"
+#endif /* (BSP_CFG_RTOS_USED != 0) */
 
 /******************************************************************************
  Exported global variables (to be accessed by other files)
@@ -126,13 +132,13 @@ void usb_cstd_pipe_init (usb_utr_t *ptr, uint16_t pipe)
     {
 #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
 
-#if BSP_CFG_RTOS_USED == 1
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
         if (USB_NULL != g_p_usb_pstd_pipe[pipe])
         {
-            vPortFree (g_p_usb_pstd_pipe[pipe]);
+            rtos_release_fixed_memory(&g_rtos_usb_mpf_id, (void *)g_p_usb_pstd_pipe[pipe]);
         }
 
-#endif  /* BSP_CFG_RTOS_USED == 1 */
+#endif  /* (BSP_CFG_RTOS_USED != 0) */
 
 
         g_p_usb_pstd_pipe[pipe] = (usb_utr_t *)USB_NULL;
@@ -144,13 +150,13 @@ void usb_cstd_pipe_init (usb_utr_t *ptr, uint16_t pipe)
     {
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
 
-#if BSP_CFG_RTOS_USED == 1
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
         if (USB_NULL != g_p_usb_hstd_pipe[ptr->ip][pipe])
         {
-            vPortFree (g_p_usb_hstd_pipe[ptr->ip][pipe]);
+            rtos_release_fixed_memory(&g_rtos_usb_mpf_id, (void *)g_p_usb_hstd_pipe[ptr->ip][pipe]);
         }
 
-#endif  /* BSP_CFG_RTOS_USED == 1 */
+#endif  /* (BSP_CFG_RTOS_USED != 0) */
 
 
         g_p_usb_hstd_pipe[ptr->ip][pipe] = (usb_utr_t*) USB_NULL;
@@ -243,13 +249,13 @@ void usb_cstd_clr_pipe_cnfg (usb_utr_t *ptr, uint16_t pipe_no)
     {
 #if ((USB_CFG_MODE & USB_CFG_PERI) == USB_CFG_PERI)
 
-#if BSP_CFG_RTOS_USED == 1
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
         if (USB_NULL != g_p_usb_pstd_pipe[pipe_no])
         {
-            vPortFree (g_p_usb_pstd_pipe[pipe_no]);
+            rtos_release_fixed_memory(&g_rtos_usb_mpf_id, (void *)g_p_usb_pstd_pipe[pipe_no]);
         }
 
-#endif  /* BSP_CFG_RTOS_USED == 1 */
+#endif  /* (BSP_CFG_RTOS_USED != 0) */
 
         g_p_usb_pstd_pipe[pipe_no] = (usb_utr_t *)USB_NULL;
 
@@ -259,13 +265,13 @@ void usb_cstd_clr_pipe_cnfg (usb_utr_t *ptr, uint16_t pipe_no)
     {
 #if ((USB_CFG_MODE & USB_CFG_HOST) == USB_CFG_HOST)
 
-#if BSP_CFG_RTOS_USED == 1
+#if (BSP_CFG_RTOS_USED != 0)        /* Use RTOS */
         if (USB_NULL != g_p_usb_hstd_pipe[ptr->ip][pipe_no])
         {
-            vPortFree (g_p_usb_hstd_pipe[ptr->ip][pipe_no]);
+            rtos_release_fixed_memory(&g_rtos_usb_mpf_id, (void *)g_p_usb_hstd_pipe[ptr->ip][pipe_no]);
         }
 
-#endif  /* BSP_CFG_RTOS_USED == 1 */
+#endif  /* (BSP_CFG_RTOS_USED != 0) */
 
         g_p_usb_hstd_pipe[ptr->ip][pipe_no] = (usb_utr_t*) USB_NULL;
 
@@ -374,7 +380,7 @@ uint16_t usb_cstd_is_set_frdy (usb_utr_t *ptr, uint16_t pipe, uint16_t fifosel, 
     usb_cstd_chg_curpipe(ptr, pipe, fifosel, isel);
 
     /* WAIT_LOOP */
-    for (i = 0; i < 4; i++)
+    for (i = 0; i < 4000; i++)
     {
         buffer = hw_usb_read_fifoctr(ptr, fifosel);
 

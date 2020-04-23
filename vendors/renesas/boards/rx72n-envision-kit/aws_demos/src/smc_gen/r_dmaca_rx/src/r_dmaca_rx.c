@@ -49,6 +49,8 @@
 *         : 28.06.2019 2.10    Supported RX23W.
 *         : 15.08.2019 2.20    Supported RX72M.
 *                              Fixed warnings in IAR.
+*         : 30.12.2019 2.30    Modified comment of API function to Doxygen style.
+*                              Fixed to comply with GSCE Coding Standards Rev.6.00.
 *******************************************************************************/
 
 /*******************************************************************************
@@ -88,18 +90,22 @@ void *g_pdmaci_handlers[DMACA_NUM_CHANNELS];
 uint8_t g_locking_sw[DMACA_NUM_CHANNELS];
 
 
-/*******************************************************************************
+/***********************************************************************************************************************
 * Function Name: R_DMACA_Open
-* Description  : Initializes the DMACA driver and locks the specified channel.
-* Arguments    : channel -
-*                    Which channel to use
-* Return Value : DMACA_SUCCESS -
-*                    Successful operation
-*                DMACA_ERR_INVALID_CH -
-*                    Channel is invalid.
-*                DMACA_ERR_BUSY -
-*                    Resource has been locked by other process already.
-*******************************************************************************/
+********************************************************************************************************************//**
+* @brief This function is run after calling R_DMACA_Init() when using the APIs of the DMACA FIT module.
+* @param[in] channel DMAC channel number.
+* @retval DMACA_SUCCESS Successful operation
+* @retval DMACA_ERR_INVALID_CH Channel is invalid.
+* @retval DMACA_ERR_BUSY Resource has been locked by other process.
+* @details Locks*1 the DMAC channel specified by the argument channel, then makes initial settings.
+* Releases the DMAC from the module stop state, then activates the DMAC. Also, initializes the activation
+* source selection register for the specified DMAC channel.\n
+* Note: 1. The DMACA FIT module uses the r_bsp default lock function. As a result, the specified DMAC
+* channel is in the locked state after a successful end.
+* @note
+* None.
+*/
 dmaca_return_t R_DMACA_Open(uint8_t channel)
 {
 #if (1 == DMACA_CFG_PARAM_CHECKING_ENABLE)
@@ -146,25 +152,22 @@ dmaca_return_t R_DMACA_Open(uint8_t channel)
 * End of function R_DMACA_Open
 *************************************************************************/
 
-/*******************************************************************************
+/***********************************************************************************************************************
 * Function Name: R_DMACA_Close
-* Description  : Unlocks the specified channel and sets to module stop state.
-* Arguments    : channel -
-*                    Which channel to use
-* Return Value : DMACA_SUCCESS -
-*                    Successful operation
-*                    Set both DMAC and DTC to module stop state. 
-*                DMACA_ERR_INVALID_CH -
-*                    Channel is invalid.
-*                DMACA_SUCCESS_OTHER_CH_BUSY -
-*                    Successful operation
-*                    Other DMAC channels are locked, so that cannot set to module stop state. 
-*                DMACA_SUCCESS_DTC_BUSY -
-*                    Successful operation
-*                    DTC is locked, so that cannot set to module stop state. 
-*                DMACA_ERR_INTERNAL -
-*                    DMACA driver internal error
-*******************************************************************************/
+********************************************************************************************************************//**
+* @brief This function is used to release the resources of the DMAC channel currently in use.
+* @param[in] channel DMAC channel number.
+* @retval DMACA_SUCCESS Successful operation
+* @retval DMACA_SUCCESS_OTHER_CH_BUSY Successful operation. Other DMAC channels are locked.
+* @retval DMACA_SUCCESS_DTC_BUSY Successful operation. DTC is locked.
+* @retval DMACA_ERR_INVALID_CH Channel is invalid.
+* @retval DMACA_ERR_INTERNAL DMACA driver internal error.
+* @details See Section 3 in the application note for details.
+* @note When controlling the DTC without using the DTC FIT module, make sure to monitor the usage of the DTC and
+* control locking and unlocking of the DTC so that calling this function does not set the DTC to the module stop
+* state. Note that even if the DTC has not been activated, it is necessary to keep it in the locked state when not
+* making DTC transfer settings.
+*/
 dmaca_return_t R_DMACA_Close(uint8_t channel)
 {
     dmaca_chk_locking_sw_t result_chk_locking_sw = DMACA_ALL_CH_UNLOCKED_AND_DTC_UNLOCKED;
@@ -216,7 +219,7 @@ dmaca_return_t R_DMACA_Close(uint8_t channel)
             #if (1 == DMACA_CFG_USE_DTC_FIT_MODULE)
             R_BSP_HardwareUnlock((mcu_lock_t)BSP_LOCK_DTC);
             #endif
-        break;
+            break;
         }
         case DMACA_ALL_CH_UNLOCKED_BUT_DTC_LOCKED: /* All DMAC channels are unlocked. DTC is locked. */
         {
@@ -229,17 +232,17 @@ dmaca_return_t R_DMACA_Close(uint8_t channel)
                 /* do nothing */
             }
             return DMACA_SUCCESS_DTC_BUSY;
-        break;
+            break;
         }
         case DMACA_LOCKED_CH_EXIST: /* Other DMAC channels are locked. */
         {
             return DMACA_SUCCESS_OTHER_CH_BUSY;
-        break;
+            break;
         }
         default:
         {
             return DMACA_ERR_INTERNAL;
-        break;
+            break;
         }
     }
 
@@ -249,22 +252,21 @@ dmaca_return_t R_DMACA_Close(uint8_t channel)
 * End of function R_DMACA_Close
 *************************************************************************/
 
-/*******************************************************************************
+/***********************************************************************************************************************
 * Function Name: R_DMACA_Create
-* Description  : Sets registers of the specified channel and the interrupt source.
-* Arguments    : channel -
-*                    Which channel to use
-*                *p_data_cfg -
-*                    Pointer to information of transfer data
-* Return Value : DMACA_SUCCESS -
-*                    Successful operation
-*                DMACA_ERR_INVALID_CH -
-*                    Channel is invalid.
-*                DMACA_ERR_INVALID_ARG -
-*                    Parameters are invalid.
-*                DMACA_ERR_NULL_PTR -
-*                    Argument pointers are NULL.
-*******************************************************************************/
+********************************************************************************************************************//**
+* @brief This function is used to make DMAC register settings and to specify the activation source.
+* @param[in] channel DMAC channel number.
+* @param[in] p_data_cfg Pointer to dmaca_transfer_data_cfg_t DMAC transfer information structure.
+* See Section 3 in the application note for details.
+* @retval DMACA_SUCCESS Successful operation
+* @retval DMACA_ERR_INVALID_CH Channel is invalid.
+* @retval DMACA_ERR_INVALID_ARG Parameters are invalid.
+* @retval DMACA_ERR_NULL_PTR Argument pointers are NULL.
+* @details References the dmaca_transfer_data_cfg_t DMAC transfer information structure passed as an argument and makes
+* register settings for the specified DMAC channel. Also specifies the activation source for the DMAC channel.
+* @note None.
+*/
 dmaca_return_t R_DMACA_Create(uint8_t channel, dmaca_transfer_data_cfg_t *p_data_cfg)
 {
 #if (1 == DMACA_CFG_PARAM_CHECKING_ENABLE)
@@ -294,31 +296,26 @@ dmaca_return_t R_DMACA_Create(uint8_t channel, dmaca_transfer_data_cfg_t *p_data
 * End of function R_DMACA_Create
 *************************************************************************/
 
-/*******************************************************************************
+/***********************************************************************************************************************
 * Function Name: R_DMACA_Control
-* Description  : Starts/Stops DMACA and checks an interrupt source as DMACA activation.
-* Arguments    : channel -
-*                    Which channel to use
-*                command -
-*                Control command
-*                *p_stat -
-*                    Pointer information of DMACA driver status
-*                    When a command is DMACA_CMD_STATUS_GET, casts to void *.
-* Return Value : DMACA_SUCCESS -
-*                    Successful operation
-*                DMACA_ERR_INVALID_CH -
-*                    Channel is invalid.
-*                DMACA_ERR_INVALID_COMMAND -
-*                    Command is invalid.
-*                DMACA_ERR_NULL_PTR -
-*                    Argument pointers are NULL.
-*                DMACA_ERR_SOFTWARE_REQUESTED -
-*                    DMA transfer request by software is generated (DMREQ.SWREQ=1b) already.
-*                    So that cannot execute command. 
-*                DMACA_ERR_SOFTWARE_REQUEST_DISABLED -
-*                    Transfer Request Source is not Software (DMTMD.DCTG[1:0]=01b).
-*                    So that cannot execute command. 
-*******************************************************************************/
+********************************************************************************************************************//**
+* @brief This function is used to control the operation of the DMAC. This function is run after calling R_DMACA_Open().
+* @param[in] channel DMAC channel number.
+* @param[in] command DMAC control command.
+* See Section 3 in the application note for details.
+* @param[in] p_stat Pointer to dmaca_stat_t DMAC status information structure.
+* See Section 3 in the application note for details.
+* @retval DMACA_SUCCESS Successful operation
+* @retval DMACA_ERR_INVALID_CH Channel is invalid.
+* @retval DMACA_ERR_INVALID_COMMAND Command is invalid.
+* @retval DMACA_ERR_NULL_PTR Argument pointers are NULL.
+* @retval DMACA_ERR_SOFTWARE_REQUESTED DMA transfer request by software has been generated already. See Section 3 in the application note for details.
+* @retval DMACA_ERR_SOFTWARE_REQUEST_DISABLED Transfer Request Source is not Software. See Section 3 in the application note for details.
+* @details See Section 3 in the application note for details.
+* @note In the case of waiting for the transfer end by using DMAC channel 4-7 and an interrupt, please clear a transfer
+*  escape interrupt flag (ESIF) or a transfer end interrupt flag (DTIF) using a callback function for transfer end
+*  interrupts/transfer escape end interrupts.
+*/
 dmaca_return_t R_DMACA_Control(uint8_t channel, dmaca_command_t command, dmaca_stat_t *p_stat)
 {
     uint8_t dmaca_interrupt_status = 0x00;
@@ -347,7 +344,7 @@ dmaca_return_t R_DMACA_Control(uint8_t channel, dmaca_command_t command, dmaca_s
             {
                 /* do nothing */
             }
-        break;
+            break;
         }
         case DMACA_CMD_DISABLE: /* Disable DMA transfer of the specified channel. */
         {
@@ -359,7 +356,7 @@ dmaca_return_t R_DMACA_Control(uint8_t channel, dmaca_command_t command, dmaca_s
             {
                 /* do nothing */
             }
-        break;
+            break;
         }
         case DMACA_CMD_ALL_ENABLE: /* Enable DMAC activation. */
         {
@@ -371,7 +368,7 @@ dmaca_return_t R_DMACA_Control(uint8_t channel, dmaca_command_t command, dmaca_s
             {
                 /* do nothing */
             }
-        break;
+            break;
         }
         case DMACA_CMD_ALL_DISABLE: /* Disable DMAC activation. */
         {
@@ -383,7 +380,7 @@ dmaca_return_t R_DMACA_Control(uint8_t channel, dmaca_command_t command, dmaca_s
             {
                 /* do nothing */
             }
-        break;
+            break;
         }
         case DMACA_CMD_SOFT_REQ_WITH_AUTO_CLR_REQ: /* DMA transfer by Software using DMREQ.SWREQ bit Auto Clear mode */
         {
@@ -411,7 +408,7 @@ dmaca_return_t R_DMACA_Control(uint8_t channel, dmaca_command_t command, dmaca_s
             {
                 /* do nothing */
             }
-        break;
+            break;
         }
         case DMACA_CMD_SOFT_REQ_NOT_CLR_REQ: /* DMA transfer by Software */
         {
@@ -429,7 +426,7 @@ dmaca_return_t R_DMACA_Control(uint8_t channel, dmaca_command_t command, dmaca_s
             {
                 /* do nothing */
             }
-        break;
+            break;
         }
         case DMACA_CMD_SOFT_REQ_CLR: /* Clear DMREQ.SWREQ bit. */
         {
@@ -524,7 +521,7 @@ dmaca_return_t R_DMACA_Control(uint8_t channel, dmaca_command_t command, dmaca_s
                 /* Get transfer count from the corresponding channel */
                 p_stat->transfer_count = (DMACA_INVALID_LOWER_BIT_MASK & DMACA_DMCRA(channel));
             }
-        break;
+            break;
         }
         case DMACA_CMD_ESIF_STATUS_CLR:
         {
@@ -536,7 +533,7 @@ dmaca_return_t R_DMACA_Control(uint8_t channel, dmaca_command_t command, dmaca_s
             {
                 /* do nothing */
             }
-        break;
+            break;
         }
         case DMACA_CMD_DTIF_STATUS_CLR:
         {
@@ -548,12 +545,12 @@ dmaca_return_t R_DMACA_Control(uint8_t channel, dmaca_command_t command, dmaca_s
             {
                 /* do nothing */
             }
-        break;
+            break;
         }
         default:
         {
             return DMACA_ERR_INVALID_COMMAND;
-        break;
+            break;
         }
     }
 
@@ -563,13 +560,18 @@ dmaca_return_t R_DMACA_Control(uint8_t channel, dmaca_command_t command, dmaca_s
 * End of function R_DMACA_Control
 *************************************************************************/
 
-/*******************************************************************************
+/***********************************************************************************************************************
 * Function Name: R_DMACA_Init
-* Description  : Initializes a callback function array for DMACmI interrupt.
-*                                                          (m = 0 to 3, or 74)
-* Arguments    : None
-* Return Value : None
-*******************************************************************************/
+********************************************************************************************************************//**
+* @brief This function is used to initialize the DMAC's internal information.
+* @details Initializes the usage status of each DMA channel (internal information). Also, cancels the registered
+* callback functions for all DMAC transfer end interrupts/transfer escape end interrupts (DMAC0I, DMAC1I, DMAC2I,
+* DMAC3I, and DMAC74I). If DMAC transfer end interrupts/transfer escape end interrupts will be used, run the
+* R_DMACA_Init() function beforehand, and then use the R_DMACA_Int_Callback() function (described below) to register
+* the callback functions.
+* @note When using the DMACA driver, run the R_DMACA_Init() function first. It is recommended to run at hardware setup
+* operation.
+*/
 void R_DMACA_Init(void)
 {
     uint32_t i;
@@ -587,24 +589,24 @@ void R_DMACA_Init(void)
 * End of function R_DMACA_Init
 *************************************************************************/
 
-/********************************************************************************
+/***********************************************************************************************************************
 * Function Name: R_DMACA_Int_Callback
-* Description  : Registers a callback function for DMACmI interrupts. 
-*                                                     (m = 0 to 3, or 74)
-*                If 'FIT_NO_FUNC' or 'NULL' is specified for argument *p_callback then
-                 any previously registered callback is unregistered.
-* Arguments    : channel -
-*                    Which channel to use
-*                *p_callback -
-*                    Pointer to function to call when DMACmI interrupt occurs.
-* Return Value : DMACA_SUCCESS -
-*                    Callback function is registered.
-*                DMACA_ERR_INVALID_CH -
-*                    Channel is invalid.
-*                DMACA_ERR_INVALID_HANDLER_ADDR -
-*                    Invalid function address is set and any previous function
-*                    has been unregistered.
-*******************************************************************************/
+********************************************************************************************************************//**
+* @brief This function is used to register the callback function for the DMAC transfer end interrupt/transfer escape end
+*  interrupt.
+* @param[in] channel DMAC channel number.
+* @param[in] p_callback Pointer to function that is called when a DMAC transfer end interrupt/transfer escape end
+* interrupt occurs.
+* @retval DMACA_SUCCESS Successful operation
+* @retval DMACA_ERR_INVALID_CH Channel is invalid.
+* @retval DMACA_ERR_INVALID_HANDLER_ADDR Invalid function address is set.
+* @details Registers the callback function for the DMAC transfer end interrupt/transfer escape end interrupt of the
+* specified channel. The registration of an already-registered callback function is canceled if FIT_NO_FUNC or NULL
+* is passed as the callback argument. Also, the registration of an already-registered callback function is canceled
+* if DMACA_ERR_INVALID_HANDLER_ADDR is returned.\n
+* Note: The callback function arguments and return values should be of void type
+* @note None
+*/
 dmaca_return_t R_DMACA_Int_Callback(uint8_t channel,  void * p_callback)
 {
 #if (1 == DMACA_CFG_PARAM_CHECKING_ENABLE)
@@ -631,18 +633,17 @@ dmaca_return_t R_DMACA_Int_Callback(uint8_t channel,  void * p_callback)
 * End of function R_DMACA_Int_Callback
 *************************************************************************/
 
-/*******************************************************************************
+/***********************************************************************************************************************
 * Function Name: R_DMACA_Int_Enable
-* Description  : Enables DMACmI interrupt. (m = 0 to 3, or 74)
-* Arguments    : channel -
-*                    Which channel to use
-*              : priority -
-*                    DMACmI interrupt priority level
-* Return Value : DMACA_SUCCESS -
-*                    Successful operation
-*                DMACA_ERR_INVALID_CH -
-*                    Channel is invalid.
-*******************************************************************************/
+********************************************************************************************************************//**
+* @brief This function is used to enable DMAC transfer end interrupts/transfer escape end interrupts.
+* @param[in] channel DMAC channel number.
+* @param[in] priority DMAC transfer end interrupt/transfer escape end interrupt priority level.
+* @retval DMACA_SUCCESS Successful operation
+* @retval DMACA_ERR_INVALID_CH Channel is invalid.
+* @details Enables the DMAC transfer end interrupt/transfer escape end interrupt for the specified channel.
+* @note None
+*/
 dmaca_return_t R_DMACA_Int_Enable(uint8_t channel, uint8_t priority)
 {
 #if (1 == DMACA_CFG_PARAM_CHECKING_ENABLE)
@@ -667,16 +668,16 @@ dmaca_return_t R_DMACA_Int_Enable(uint8_t channel, uint8_t priority)
 * End of function R_DMACA_Int_Enable
 *************************************************************************/
 
-/*******************************************************************************
+/***********************************************************************************************************************
 * Function Name: R_DMACA_Int_Disable
-* Description  : Disables DMACmI interrupt. (m = 0 to 3, or 74)
-* Arguments    : channel -
-*                    Which channel to use
-* Return Value : DMACA_SUCCESS -
-*                    Successful operation
-*                DMACA_ERR_INVALID_CH -
-*                    Channel is invalid.
-*******************************************************************************/
+********************************************************************************************************************//**
+* @brief This function is used to disable the DMAC transfer end interrupt/transfer escape end interrupt.
+* @param[in] channel DMAC channel number.
+* @retval DMACA_SUCCESS Successful operation
+* @retval DMACA_ERR_INVALID_CH Channel is invalid.
+* @details Disables the DMAC transfer end interrupt/transfer escape end interrupt for the specified channel.
+* @note None
+*/
 dmaca_return_t R_DMACA_Int_Disable(uint8_t channel)
 {
 #if (1 == DMACA_CFG_PARAM_CHECKING_ENABLE)
@@ -701,14 +702,14 @@ dmaca_return_t R_DMACA_Int_Disable(uint8_t channel)
 * End of function R_DMACA_Int_Disable
 *************************************************************************/
 
-/*******************************************************************************
+/***********************************************************************************************************************
 * Function Name: R_DMACA_GetVersion
-* Description  : Returns the version of this module. The version number is 
-*                encoded such that the top two bytes are the major version
-*                number and the bottom two bytes are the minor version number.
-* Arguments    : none
-* Return Value : version number
-*******************************************************************************/
+********************************************************************************************************************//**
+* @brief This function is used to fetch the driver version information.
+* @return Version number Upper 2 bytes: major version, lower 2 bytes: minor version.
+* @details Returns the version information.
+* @note None
+*/
 uint32_t R_DMACA_GetVersion(void)
 {
     uint32_t version = 0;
@@ -741,6 +742,7 @@ static bool r_dmaca_set_transfer_data(uint8_t channel, dmaca_transfer_data_cfg_t
 
     /* Check source address value. */
     if ((0x00000000 != ((uint32_t)p_cfg->p_src_addr & DMACA_INVALID_SRC_ADDR_MASK)) &&
+
                 /* Check source address value. */
                 (DMACA_INVALID_SRC_ADDR_MASK != ((uint32_t)p_cfg->p_src_addr & DMACA_INVALID_SRC_ADDR_MASK)))
     {
@@ -749,6 +751,7 @@ static bool r_dmaca_set_transfer_data(uint8_t channel, dmaca_transfer_data_cfg_t
 
     /* Check destination address value. */
     if ((0x00000000 != ((uint32_t)p_cfg->p_des_addr & DMACA_INVALID_DES_ADDR_MASK)) &&
+
                 /* Check destination address value. */
                 (DMACA_INVALID_DES_ADDR_MASK != ((uint32_t)p_cfg->p_des_addr & DMACA_INVALID_DES_ADDR_MASK)))
     {
@@ -786,7 +789,7 @@ static bool r_dmaca_set_transfer_data(uint8_t channel, dmaca_transfer_data_cfg_t
                 /* The value of the 16bit counter is over the maximum. */
                 return false;
             }
-        break;
+            break;
         }
         case DMACA_TRANSFER_MODE_REPEAT: /* Repeat transfer mode */
         case DMACA_TRANSFER_MODE_BLOCK: /* Block transfer mode */
@@ -839,12 +842,12 @@ static bool r_dmaca_set_transfer_data(uint8_t channel, dmaca_transfer_data_cfg_t
                 return false;
             }
 
-        break;
+            break;
         }
         default:
         {
             return false;
-        break;
+            break;
         }
     }
 #endif /* DMACA_CFG_PARAM_CHECKING_ENABLE */
@@ -860,6 +863,7 @@ static bool r_dmaca_set_transfer_data(uint8_t channel, dmaca_transfer_data_cfg_t
     {
         /* Set ICU.DMRSR register to Activation Source */
         ICU_DMRSR(channel) = (uint8_t)p_cfg->act_source;
+
         /* Check Activation Source */
         if ((uint8_t)p_cfg->act_source == ICU_DMRSR(channel))
         {
@@ -877,6 +881,7 @@ static bool r_dmaca_set_transfer_data(uint8_t channel, dmaca_transfer_data_cfg_t
 
     /* Set DMSAR register. */
     DMACA_DMSAR(channel) = (volatile void R_BSP_EVENACCESS_SFR *)p_cfg->p_src_addr;
+
     /* Set DMSAR register. */
     DMACA_DMDAR(channel) = (volatile void R_BSP_EVENACCESS_SFR*)p_cfg->p_des_addr;
     switch (p_cfg->transfer_mode) /* DMACA transfer mode */
@@ -885,7 +890,7 @@ static bool r_dmaca_set_transfer_data(uint8_t channel, dmaca_transfer_data_cfg_t
         {
             /* Set DMCRA register. */
             DMACA_DMCRA(channel) = p_cfg->transfer_count;
-        break;
+            break;
         }
         case DMACA_TRANSFER_MODE_REPEAT: /* Repeat transfer mode */
         case DMACA_TRANSFER_MODE_BLOCK: /* Block transfer mode */
@@ -895,12 +900,12 @@ static bool r_dmaca_set_transfer_data(uint8_t channel, dmaca_transfer_data_cfg_t
 
             /* Set DMCRB register. */
             DMACA_DMCRB(channel) = (uint16_t)p_cfg->transfer_count;
-        break;
+            break;
         }
         default:
         {
             return false;
-        break;
+            break;
         }
     }
 
