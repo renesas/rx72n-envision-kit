@@ -765,7 +765,7 @@ NOTE: The RAM areas are not contiguous.It is separated by 512 KB each.
 
 /* This macro is used to select which SCI channel used for debug serial terminal.
    RX72N-Envision-Kit Default: SCI2 - G1CUSB0(RL78/G1C), bit rate 115200bps.
-   RX72N-Envision-Kit Default: SCI7 - external of PMOD2, bit rate ~912600bps if user would attach FTDI chip.
+   RX72N-Envision-Kit Default: SCI7 - external of PMOD2, bit rate ~921600bps if user would attach FTDI chip.
  */
 #define MY_BSP_CFG_SERIAL_TERM_SCI                  (2)
 
