@@ -70,6 +70,7 @@ Typedef definitions
 #define COMMAND_FREERTOS 1
 #define COMMAND_VERSION 2
 #define COMMAND_TIMEZONE 3
+#define COMMAND_RESET 4
 
 #if !defined(MY_BSP_CFG_AFR_TERM_SCI)
 #error "Error! Need to define MY_BSP_CFG_SERIAL_TERM_SCI in r_bsp_config.h"
@@ -223,14 +224,14 @@ void serial_terminal_task( void * pvParameters )
 		        switch(get_command_code(command))
 		        {
 		        	case COMMAND_FREERTOS:
-		        		if(!strcmp(arg1, "cpuload"))
+		        		if(!strcmp((const char *)arg1, "cpuload"))
 		        		{
-		        			if(!strcmp(arg2, "read"))
+		        			if(!strcmp((const char *)arg2, "read"))
 		        			{
 		        				vTaskGetCombinedRunTimeStats(stats_buffer, 0);	/* 0 means read */
 				        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, stats_buffer);
 		        			}
-		        			if(!strcmp(arg2, "reset"))
+		        			if(!strcmp((const char *)arg2, "reset"))
 		        			{
 		        				vTaskGetCombinedRunTimeStats(stats_buffer, 1);	/* 1 means read->reset */
 		        				vTaskGetCombinedRunTimeStats(stats_buffer, 0);	/* 0 means read */
@@ -255,6 +256,9 @@ void serial_terminal_task( void * pvParameters )
 			            {
 			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, "timezone is not accepted.\r\n");
 			            }
+		        		break;
+		        	case COMMAND_RESET:
+		        		software_reset();
 		        		break;
 		        	default:
 		        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, COMMAND_NOT_FOUND);
@@ -298,6 +302,10 @@ static int32_t get_command_code(uint8_t *command)
     else if(!strcmp((char*)command, "timezone"))
     {
     	return_code = COMMAND_TIMEZONE;
+    }
+    else if(!strcmp((char*)command, "reset"))
+    {
+    	return_code = COMMAND_RESET;
     }
     else
     {
