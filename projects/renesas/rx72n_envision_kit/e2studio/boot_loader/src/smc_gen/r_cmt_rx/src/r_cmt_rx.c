@@ -1547,7 +1547,8 @@ void cmt_isr_common (uint32_t channel)
 R_BSP_PRAGMA_STATIC_INTERRUPT (cmt0_isr,VECT(CMT0, CMI0))
 R_BSP_ATTRIB_STATIC_INTERRUPT void cmt0_isr (void)
 {
-    cmt_isr_common(0);
+	R_BSP_InterruptsEnable();
+	cmt_isr_common(0);
 }
 #elif BSP_CFG_RTOS_USED == 1    /* FreeRTOS */
     #if (BSP_CFG_RTOS_SYSTEM_TIMER != 0)
