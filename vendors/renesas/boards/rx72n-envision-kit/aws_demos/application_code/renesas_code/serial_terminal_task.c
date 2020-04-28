@@ -71,6 +71,7 @@ Typedef definitions
 #define COMMAND_VERSION 2
 #define COMMAND_TIMEZONE 3
 #define COMMAND_RESET 4
+#define COMMAND_DATAFLASH 5
 
 #if !defined(MY_BSP_CFG_AFR_TERM_SCI)
 #error "Error! Need to define MY_BSP_CFG_SERIAL_TERM_SCI in r_bsp_config.h"
@@ -132,7 +133,7 @@ static int32_t get_command_code(uint8_t *command);
 static sci_hdl_t sci_handle;
 static QueueHandle_t xQueue;
 static char *stats_buffer;
-static uint32_t _1us_timer_count;
+static uint32_t _10us_timer_count;
 
 /******************************************************************************
  External functions
@@ -149,7 +150,7 @@ extern void firmware_version_read(char **ver_str);
  global variables and functions
 ********************************************************************************/
 void serial_terminal_task( void * pvParameters );
-void _1us_timer_tick(void *arg);
+void _10us_timer_tick(void *arg);
 void vConfigureTimerForRunTimeStats(void);
 uint32_t ulGetRunTimeCounterValue(void);
 
@@ -172,7 +173,7 @@ void serial_terminal_task( void * pvParameters )
     uint8_t *command, *arg1, *arg2, *arg3, *arg4;
 
 	uint8_t timezone_label[] = "timezone";
-	SFD_HANDLE sfd_handle_timezone;
+	SFD_HANDLE sfd_handle_timezone, sfd_handle_tmp;
 	uint8_t *timezone;
 	uint32_t timezone_length;
 
@@ -260,6 +261,19 @@ void serial_terminal_task( void * pvParameters )
 		        	case COMMAND_RESET:
 		        		software_reset();
 		        		break;
+		        	case COMMAND_DATAFLASH:
+		        		if(!strcmp((const char *)arg1, "info"))
+		        		{
+		        			char tmp[256];
+		        			R_SFD_Open();
+		        			sprintf(tmp, "physical size = %d bytes.\n", R_SFD_ReadPysicalSize());
+			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, tmp);
+		        			sprintf(tmp, "allocated size = %d bytes.\n", R_SFD_ReadAllocatedStorageSize());
+			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, tmp);
+		        			sprintf(tmp, "free size = %d bytes.\n", R_SFD_ReadFreeSize());
+			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, tmp);
+		        		}
+		        		break;
 		        	default:
 		        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, COMMAND_NOT_FOUND);
 		        		break;
@@ -306,6 +320,10 @@ static int32_t get_command_code(uint8_t *command)
     else if(!strcmp((char*)command, "reset"))
     {
     	return_code = COMMAND_RESET;
+    }
+    else if(!strcmp((char*)command, "dataflash"))
+    {
+    	return_code = COMMAND_DATAFLASH;
     }
     else
     {
@@ -405,16 +423,16 @@ static void sci_callback(void *pArgs)
 void vConfigureTimerForRunTimeStats(void)
 {
 	uint32_t channel;
-	/* 1us tick timer start */
-	R_CMT_CreatePeriodic(1000000, _1us_timer_tick, &channel);
+	/* 10us tick timer start */
+	R_CMT_CreatePeriodic(100000, _10us_timer_tick, &channel);
 }
 
 uint32_t ulGetRunTimeCounterValue(void)
 {
-	return _1us_timer_count;
+	return _10us_timer_count;
 }
 
-void _1us_timer_tick(void *arg)
+void _10us_timer_tick(void *arg)
 {
-	_1us_timer_count++;
+	_10us_timer_count++;
 }

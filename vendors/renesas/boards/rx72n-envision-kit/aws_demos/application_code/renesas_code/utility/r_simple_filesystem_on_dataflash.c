@@ -41,6 +41,8 @@
 
 #define MAX_CHECK_DATAFLASH_AREA_RETRY_COUNT 3
 
+#define SFD_LOCAL_STORAGE_SIZE (SFD_CONTROL_BLOCK_SIZE - (sizeof(SFD_DESCRIPTOR) * SFD_OBJECT_HANDLES_NUM) - SFD_SHA256_LENGTH)
+
 typedef struct _sfd_descriptor
 {
     uint8_t label[SFD_HANDLES_LABEL_MAX_LENGTH];
@@ -78,7 +80,7 @@ typedef struct _sfd_descriptor
 
 typedef struct _pkcs_storage_control_block_sub
 {
-    uint8_t local_storage[SFD_LOCAL_STORAGE_SIZE - (sizeof(SFD_DESCRIPTOR) * SFD_OBJECT_HANDLES_NUM) - SFD_SHA256_LENGTH];
+    uint8_t local_storage[SFD_LOCAL_STORAGE_SIZE];
     SFD_DESCRIPTOR sfd_data[SFD_OBJECT_HANDLES_NUM];
 } SFD_STORAGE_CONTROL_BLOCK_SUB;
 
@@ -236,41 +238,48 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
         }
 	}
 
-	strncpy((char * )sfd_control_block_data_image.data.sfd_data[xHandle].label, (char * )label, SFD_HANDLES_LABEL_MAX_LENGTH);
-	sfd_control_block_data_image.data.sfd_data[xHandle].label_length = label_length;
-	sfd_control_block_data_image.data.sfd_data[xHandle].local_storage_index = total_stored_data_size;
-	sfd_control_block_data_image.data.sfd_data[xHandle].data_length = data_length;
-	sfd_control_block_data_image.data.sfd_data[xHandle].status = SFD_DATA_STATUS_REGISTERED;
-	sfd_control_block_data_image.data.sfd_data[xHandle].xHandle = xHandle;
-	memcpy(&sfd_control_block_data_image.data.local_storage[total_stored_data_size], data, data_length);
+    if(data_length + total_stored_data_size < SFD_LOCAL_STORAGE_SIZE)
+    {
+		strncpy((char * )sfd_control_block_data_image.data.sfd_data[xHandle].label, (char * )label, SFD_HANDLES_LABEL_MAX_LENGTH);
+		sfd_control_block_data_image.data.sfd_data[xHandle].label_length = label_length;
+		sfd_control_block_data_image.data.sfd_data[xHandle].local_storage_index = total_stored_data_size;
+		sfd_control_block_data_image.data.sfd_data[xHandle].data_length = data_length;
+		sfd_control_block_data_image.data.sfd_data[xHandle].status = SFD_DATA_STATUS_REGISTERED;
+		sfd_control_block_data_image.data.sfd_data[xHandle].xHandle = xHandle;
+		memcpy(&sfd_control_block_data_image.data.local_storage[total_stored_data_size], data, data_length);
 
-	/* update the hash */
-    mbedtls_sha256_starts_ret(&ctx, 0); /* 0 means SHA256 context */
-    mbedtls_sha256_update_ret(&ctx, (unsigned char *)&sfd_control_block_data_image.data, sizeof(sfd_control_block_data.data));
-    mbedtls_sha256_finish_ret(&ctx, hash_sha256);
-	memcpy(sfd_control_block_data_image.hash_sha256, hash_sha256, sizeof(hash_sha256));
+		/* update the hash */
+		mbedtls_sha256_starts_ret(&ctx, 0); /* 0 means SHA256 context */
+		mbedtls_sha256_update_ret(&ctx, (unsigned char *)&sfd_control_block_data_image.data, sizeof(sfd_control_block_data.data));
+		mbedtls_sha256_finish_ret(&ctx, hash_sha256);
+		memcpy(sfd_control_block_data_image.hash_sha256, hash_sha256, sizeof(hash_sha256));
 
-	/* update data from ram to storage */
-	data_flash_update_status_initialize();
-	while ( update_data_flash_control_block.status < SFD_DATA_FLASH_UPDATE_STATE_FINALIZE_COMPLETED )
-	{
-		update_dataflash_data_from_image();
-	}
-	if (update_data_flash_control_block.status == SFD_DATA_FLASH_UPDATE_STATE_ERROR)
-	{
-		SFD_DEBUG_PRINT(("ERROR: Update data flash data from image\r\n"));
-		while(1);
-	}
-	data_flash_update_status_initialize();
-	while ( update_data_flash_control_block.status < SFD_DATA_FLASH_UPDATE_STATE_FINALIZE_COMPLETED )
-	{
-		update_dataflash_data_mirror_from_image();
-	}
-	if (update_data_flash_control_block.status == SFD_DATA_FLASH_UPDATE_STATE_ERROR)
-	{
-		SFD_DEBUG_PRINT(("ERROR: Update data flash data mirror from image\r\n"));
-		while(1);
-	}
+		/* update data from ram to storage */
+		data_flash_update_status_initialize();
+		while ( update_data_flash_control_block.status < SFD_DATA_FLASH_UPDATE_STATE_FINALIZE_COMPLETED )
+		{
+			update_dataflash_data_from_image();
+		}
+		if (update_data_flash_control_block.status == SFD_DATA_FLASH_UPDATE_STATE_ERROR)
+		{
+			SFD_DEBUG_PRINT(("ERROR: Update data flash data from image\r\n"));
+			while(1);
+		}
+		data_flash_update_status_initialize();
+		while ( update_data_flash_control_block.status < SFD_DATA_FLASH_UPDATE_STATE_FINALIZE_COMPLETED )
+		{
+			update_dataflash_data_mirror_from_image();
+		}
+		if (update_data_flash_control_block.status == SFD_DATA_FLASH_UPDATE_STATE_ERROR)
+		{
+			SFD_DEBUG_PRINT(("ERROR: Update data flash data mirror from image\r\n"));
+			while(1);
+		}
+    }
+    else
+    {
+    	xHandle = SFD_HANDLE_INVALID;
+    }
 
     return xHandle;
 
@@ -312,6 +321,30 @@ sfd_err_t R_SFD_GetObjectValue( SFD_HANDLE xHandle,
         *data_size = sfd_control_block_data_image.data.sfd_data[xHandle].data_length;
     }
     return xReturn;
+}
+
+uint32_t R_SFD_ReadPysicalSize(void)
+{
+	return (FLASH_DF_BLOCK_SIZE * FLASH_NUM_BLOCKS_DF);
+}
+
+uint32_t R_SFD_ReadAllocatedStorageSize(void)
+{
+	return SFD_LOCAL_STORAGE_SIZE;
+}
+
+uint32_t R_SFD_ReadFreeSize(void)
+{
+	SFD_HANDLE xHandle = SFD_HANDLE_INVALID;
+    int i;
+    uint32_t total_size = 0;
+
+    for(i = 0; i < SFD_OBJECT_HANDLES_NUM; i++)
+    {
+    	total_size += sfd_control_block_data_image.data.sfd_data[i].data_length;
+    }
+
+	return (SFD_LOCAL_STORAGE_SIZE - total_size);
 }
 
 static void update_dataflash_data_from_image(void)
