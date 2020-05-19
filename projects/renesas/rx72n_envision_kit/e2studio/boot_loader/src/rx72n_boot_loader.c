@@ -16,6 +16,7 @@
 #include "r_simple_glcdc_config_rx_if.h"
 #include "r_simple_filesystem_on_dataflash_if.h"
 #include "r_sci_rx_pinset.h"
+#include "r_cmt_rx_if.h"
 
 #include "base64_decode.h"
 #include "code_signer_public_key.h"
@@ -214,9 +215,14 @@ static void software_reset(void);
 static const uint8_t *get_status_string(uint8_t status);
 static void my_sci_callback(void *pArgs);
 static void my_flash_callback(void *event);
+static void reset_10us_counter(void);
+static void start_10us_counter(void);
+static void stop_10us_counter(void);
+static uint32_t read_10us_counter(void);
 
 extern void my_sw_charget_function(void);
 extern void my_sw_charput_function(uint8_t data);
+extern void bootloader_software_timer_handler(void *arg);
 
 static FIRMWARE_UPDATE_CONTROL_BLOCK *firmware_update_control_block_bank0 = (FIRMWARE_UPDATE_CONTROL_BLOCK*)BOOT_LOADER_UPDATE_EXECUTE_AREA_LOW_ADDRESS;
 static FIRMWARE_UPDATE_CONTROL_BLOCK *firmware_update_control_block_bank1 = (FIRMWARE_UPDATE_CONTROL_BLOCK*)BOOT_LOADER_UPDATE_TEMPORARY_AREA_LOW_ADDRESS;
@@ -224,6 +230,8 @@ static LOAD_FIRMWARE_CONTROL_BLOCK load_firmware_control_block;
 static LOAD_CONST_DATA_CONTROL_BLOCK load_const_data_control_block;
 static uint32_t secure_boot_state = BOOT_LOADER_STATE_INITIALIZING;
 static uint32_t flash_error_code;
+static uint32_t _10us_counter;
+static uint32_t _10us_counter_start_flag;
 
 /* Handle storage. */
 sci_hdl_t     my_sci_handle;
@@ -294,6 +302,8 @@ static int32_t secure_boot(void)
 	int32_t verification_result = -1;
 	uint8_t *local_code_signer_public_key;
 	uint32_t local_code_signer_public_key_size;
+	uint32_t sha256_time;
+	uint32_t ecdsa_time;
 
     switch(secure_boot_state)
     {
@@ -303,6 +313,7 @@ static int32_t secure_boot(void)
     	    sci_cfg_t   my_sci_config;
     	    sci_err_t   my_sci_err;
     	    SFD_HANDLE sfd_handle;
+    	    uint32_t my_cmt_channel;
 
     	    /* Set up the configuration data structure for asynchronous (UART) operation. */
     	    my_sci_config.async.baud_rate    = MY_BSP_CFG_SERIAL_TERM_SCI_BITRATE;
@@ -388,6 +399,10 @@ static int32_t secure_boot(void)
     		cb_func_info.pcallback = my_flash_callback;
     		cb_func_info.int_priority = FLASH_INTERRUPT_PRIORITY;
     	    R_FLASH_Control(FLASH_CMD_SET_BGO_CALLBACK, (void *)&cb_func_info);
+
+    	    /* make software timer handler for measuring performance. timer resolution is 100KHz(10us time tick). */
+    	    R_CMT_CreatePeriodic(100000, bootloader_software_timer_handler, &my_cmt_channel);
+    	    printf("started 10us software timer using CMT channel %d.\r\n", my_cmt_channel);
 
     	    secure_boot_state = BOOT_LOADER_STATE_BANK1_CHECK;
     		break;
@@ -1110,21 +1125,29 @@ static int32_t secure_boot(void)
 							    /* Hash message */
 								uint8_t hash_sha256[TC_SHA256_DIGEST_SIZE];
 							    struct tc_sha256_state_struct xCtx;
+			    	            reset_10us_counter();
+			    	            start_10us_counter();
 							    tc_sha256_init(&xCtx);
 							    tc_sha256_update(&xCtx,
 							    		(uint8_t*)BOOT_LOADER_UPDATE_EXECUTE_AREA_LOW_ADDRESS + BOOT_LOADER_USER_FIRMWARE_HEADER_LENGTH,
 										(FLASH_CF_MEDIUM_BLOCK_SIZE * BOOT_LOADER_UPDATE_TARGET_BLOCK_NUMBER) - BOOT_LOADER_USER_FIRMWARE_HEADER_LENGTH);
 							    tc_sha256_final(hash_sha256, &xCtx);
+			    	            stop_10us_counter();
+			    	            sha256_time = read_10us_counter() * 10;
 				    	        verification_result = memcmp(firmware_update_control_block_bank0->signature, hash_sha256, sizeof(hash_sha256));
 				    	    }
 				    	    else if (!strcmp((const char *)firmware_update_control_block_bank0->signature_type, INTEGRITY_CHECK_SCHEME_SIG_SHA256_ECDSA_STANDALONE))
 				    	    {
+			    	            reset_10us_counter();
+			    	            start_10us_counter();
 								verification_result = firmware_verification_sha256_ecdsa(
 																	(const uint8_t *)BOOT_LOADER_UPDATE_EXECUTE_AREA_LOW_ADDRESS + BOOT_LOADER_USER_FIRMWARE_HEADER_LENGTH,
 																	(FLASH_CF_MEDIUM_BLOCK_SIZE * BOOT_LOADER_UPDATE_TARGET_BLOCK_NUMBER) - BOOT_LOADER_USER_FIRMWARE_HEADER_LENGTH,
 																	firmware_update_control_block_bank0->signature,
 																	firmware_update_control_block_bank0->signature_size,
 																	local_code_signer_public_key);
+			    	            stop_10us_counter();
+			    	            ecdsa_time = read_10us_counter() * 10;
 							}
 							else
 							{
@@ -1134,6 +1157,9 @@ static int32_t secure_boot(void)
 							if(0 == verification_result)
 		    	            {
 		    	                printf("OK\r\n");
+								printf("integrity check(parts of SHA256 process) needs %d us.\r\n", sha256_time);
+								printf("integrity check(parts of ECDSA process) needs %d us.\r\n", ecdsa_time);
+
 		    	            	if(firmware_update_control_block_bank1->image_flag != LIFECYCLE_STATE_BLANK)
 		    	            	{
 		    	                    printf("erase install area (code flash): ");
@@ -1579,3 +1605,30 @@ static int32_t firmware_verification_sha256_ecdsa(const uint8_t * pucData, uint3
     return xResult;
 }
 
+void bootloader_software_timer_handler(void *arg)
+{
+	if(_10us_counter_start_flag)
+	{
+		_10us_counter++;
+	}
+}
+
+static void reset_10us_counter(void)
+{
+	_10us_counter = 0;
+}
+
+static uint32_t read_10us_counter(void)
+{
+	return _10us_counter;
+}
+
+static void start_10us_counter(void)
+{
+	_10us_counter_start_flag = 1;
+}
+
+static void stop_10us_counter(void)
+{
+	_10us_counter_start_flag = 0;
+}
