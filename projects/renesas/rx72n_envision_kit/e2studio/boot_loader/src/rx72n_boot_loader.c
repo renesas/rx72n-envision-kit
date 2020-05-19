@@ -232,6 +232,8 @@ static uint32_t secure_boot_state = BOOT_LOADER_STATE_INITIALIZING;
 static uint32_t flash_error_code;
 static uint32_t _10us_counter;
 static uint32_t _10us_counter_start_flag;
+static uint32_t sha256_time;
+static uint32_t ecdsa_time;
 
 /* Handle storage. */
 sci_hdl_t     my_sci_handle;
@@ -302,8 +304,6 @@ static int32_t secure_boot(void)
 	int32_t verification_result = -1;
 	uint8_t *local_code_signer_public_key;
 	uint32_t local_code_signer_public_key_size;
-	uint32_t sha256_time;
-	uint32_t ecdsa_time;
 
     switch(secure_boot_state)
     {
@@ -1125,29 +1125,21 @@ static int32_t secure_boot(void)
 							    /* Hash message */
 								uint8_t hash_sha256[TC_SHA256_DIGEST_SIZE];
 							    struct tc_sha256_state_struct xCtx;
-			    	            reset_10us_counter();
-			    	            start_10us_counter();
 							    tc_sha256_init(&xCtx);
 							    tc_sha256_update(&xCtx,
 							    		(uint8_t*)BOOT_LOADER_UPDATE_EXECUTE_AREA_LOW_ADDRESS + BOOT_LOADER_USER_FIRMWARE_HEADER_LENGTH,
 										(FLASH_CF_MEDIUM_BLOCK_SIZE * BOOT_LOADER_UPDATE_TARGET_BLOCK_NUMBER) - BOOT_LOADER_USER_FIRMWARE_HEADER_LENGTH);
 							    tc_sha256_final(hash_sha256, &xCtx);
-			    	            stop_10us_counter();
-			    	            sha256_time = read_10us_counter() * 10;
 				    	        verification_result = memcmp(firmware_update_control_block_bank0->signature, hash_sha256, sizeof(hash_sha256));
 				    	    }
 				    	    else if (!strcmp((const char *)firmware_update_control_block_bank0->signature_type, INTEGRITY_CHECK_SCHEME_SIG_SHA256_ECDSA_STANDALONE))
 				    	    {
-			    	            reset_10us_counter();
-			    	            start_10us_counter();
 								verification_result = firmware_verification_sha256_ecdsa(
 																	(const uint8_t *)BOOT_LOADER_UPDATE_EXECUTE_AREA_LOW_ADDRESS + BOOT_LOADER_USER_FIRMWARE_HEADER_LENGTH,
 																	(FLASH_CF_MEDIUM_BLOCK_SIZE * BOOT_LOADER_UPDATE_TARGET_BLOCK_NUMBER) - BOOT_LOADER_USER_FIRMWARE_HEADER_LENGTH,
 																	firmware_update_control_block_bank0->signature,
 																	firmware_update_control_block_bank0->signature_size,
 																	local_code_signer_public_key);
-			    	            stop_10us_counter();
-			    	            ecdsa_time = read_10us_counter() * 10;
 							}
 							else
 							{
@@ -1157,8 +1149,6 @@ static int32_t secure_boot(void)
 							if(0 == verification_result)
 		    	            {
 		    	                printf("OK\r\n");
-								printf("integrity check(parts of SHA256 process) needs %d us.\r\n", sha256_time);
-								printf("integrity check(parts of ECDSA process) needs %d us.\r\n", ecdsa_time);
 
 		    	            	if(firmware_update_control_block_bank1->image_flag != LIFECYCLE_STATE_BLANK)
 		    	            	{
@@ -1176,6 +1166,8 @@ static int32_t secure_boot(void)
 								}
 								else
 								{
+									printf("integrity check(parts of SHA256 process) needs %d us.\r\n", sha256_time);
+									printf("integrity check(parts of ECDSA process) needs %d us.\r\n", ecdsa_time);
 									secure_boot_state = BOOT_LOADER_STATE_FINALIZE;
 								}
 		    	            }
@@ -1555,13 +1547,19 @@ static int32_t firmware_verification_sha256_ecdsa(const uint8_t * pucData, uint3
     uint8_t data_length;
     uint8_t public_key[64];
     uint8_t binary[256];
-    uint8_t *head_pointer, *current_pointer, *tail_pointer;;
+    uint8_t *head_pointer, *current_pointer, *tail_pointer;
 
     /* Hash message */
+    reset_10us_counter();
+    start_10us_counter();
+
     struct tc_sha256_state_struct xCtx;
     tc_sha256_init(&xCtx);
     tc_sha256_update(&xCtx, pucData, ulSize);
     tc_sha256_final(pucHash, &xCtx);
+
+    stop_10us_counter();
+    sha256_time = read_10us_counter() * 10;
 
     /* extract public key from code_signer_public_key (pem format) */
     head_pointer = (uint8_t*)strstr((char *)local_code_signer_public_key, "-----BEGIN PUBLIC KEY-----");
@@ -1584,10 +1582,14 @@ static int32_t firmware_verification_sha256_ecdsa(const uint8_t * pucData, uint3
         			{
         				memcpy(public_key, current_pointer + 4, 64);
 						/* Verify signature */
+        			    reset_10us_counter();
+        			    start_10us_counter();
 						if(uECC_verify(public_key, pucHash, TC_SHA256_DIGEST_SIZE, pucSignature, uECC_secp256r1()))
 						{
 							xResult = 0;
 						}
+					    stop_10us_counter();
+					    ecdsa_time = read_10us_counter() * 10;
         			}
     				current_pointer += *(current_pointer + 1) + 2;
 					break;
@@ -1602,6 +1604,7 @@ static int32_t firmware_verification_sha256_ecdsa(const uint8_t * pucData, uint3
 			}
     	}
     }
+
     return xResult;
 }
 
