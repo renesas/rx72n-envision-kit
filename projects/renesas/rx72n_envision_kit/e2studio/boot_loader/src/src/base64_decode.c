@@ -70,7 +70,7 @@ uint32_t base64_decode(uint8_t *source, uint8_t *result, uint32_t size)
 		tmp[1] = (uint8_t)( ((ind2 & 0x0f) << 4) | ((ind3 & 0x3c) >> 2) );
 		tmp[2] = (uint8_t)( ((ind3 & 0x03) << 6) | ((ind4 & 0x3f) >> 0) );
 
-		ptr = strstr(source, "==");
+		ptr = (uint8_t *)strstr((const char *)source, "==");
 		if(ptr == (source + i))
 		{
 			/* nothing to do */

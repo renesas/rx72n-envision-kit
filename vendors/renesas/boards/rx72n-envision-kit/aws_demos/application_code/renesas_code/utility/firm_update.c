@@ -38,6 +38,7 @@
 #include "r_flash_rx_if.h"
 #include "r_cryptogram.h"
 #include "code_signer_public_key.h"
+#include "base64_decode.h"
 
 /***********************************************************************************************************************
  Macro definitions

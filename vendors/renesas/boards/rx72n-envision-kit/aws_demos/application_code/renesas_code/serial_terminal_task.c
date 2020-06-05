@@ -145,6 +145,7 @@ extern void vTaskClearUsage(void);
 extern void vTaskClearUsageSingleList(List_t *pxList);
 
 extern void firmware_version_read(char **ver_str);
+extern void software_reset(void);
 
 /*******************************************************************************
  global variables and functions
@@ -162,7 +163,7 @@ uint32_t ulGetRunTimeCounterValue(void);
  ******************************************************************************/
 void serial_terminal_task( void * pvParameters )
 {
-	TASK_INFO *task_info = (WM_HWIN *)pvParameters;
+	TASK_INFO *task_info = (TASK_INFO *)pvParameters;
 
     sci_cfg_t   sci_config;
     char tmp[2];
