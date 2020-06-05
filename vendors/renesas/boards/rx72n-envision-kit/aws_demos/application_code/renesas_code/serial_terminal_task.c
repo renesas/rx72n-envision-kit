@@ -63,8 +63,11 @@ Typedef definitions
 #define SERIAL_BUFFER_SIZE 1
 #define SCI_BUFFER_SIZE 2048
 #define COMMAND_SIZE 16
-#define ARGUMENT_SIZE 256
-#define STATS_BUFFER_SIZE 1024 * 8
+#define ARGUMENT1_SIZE 256
+#define ARGUMENT2_SIZE 256
+#define ARGUMENT3_SIZE 4096
+#define ARGUMENT4_SIZE 4096
+#define MESSAGE_BUFFER_SIZE 1024 * 8
 
 #define COMMAND_UNKNOWN -1
 #define COMMAND_FREERTOS 1
@@ -132,7 +135,7 @@ static int32_t get_command_code(uint8_t *command);
 
 static sci_hdl_t sci_handle;
 static QueueHandle_t xQueue;
-static char *stats_buffer;
+static char *message_buffer;
 static uint32_t _10us_timer_count;
 
 /******************************************************************************
@@ -174,6 +177,9 @@ void serial_terminal_task( void * pvParameters )
     uint8_t *command, *arg1, *arg2, *arg3, *arg4;
 
 	uint8_t timezone_label[] = "timezone";
+	uint8_t client_private_key_label[] = "client_private_key";
+	uint8_t client_certificate_label[] = "client_certificate";
+
 	SFD_HANDLE sfd_handle_timezone, sfd_handle_tmp;
 	uint8_t *timezone;
 	uint32_t timezone_length;
@@ -183,19 +189,19 @@ void serial_terminal_task( void * pvParameters )
 
     sci_buffer = pvPortMalloc(SCI_BUFFER_SIZE);
     command = pvPortMalloc(COMMAND_SIZE);
-    arg1 = pvPortMalloc(ARGUMENT_SIZE);
-    arg2 = pvPortMalloc(ARGUMENT_SIZE);
-    arg3 = pvPortMalloc(ARGUMENT_SIZE);
-    arg4 = pvPortMalloc(ARGUMENT_SIZE);
-    stats_buffer = pvPortMalloc(STATS_BUFFER_SIZE);
+    arg1 = pvPortMalloc(ARGUMENT1_SIZE);
+    arg2 = pvPortMalloc(ARGUMENT2_SIZE);
+    arg3 = pvPortMalloc(ARGUMENT3_SIZE);
+    arg4 = pvPortMalloc(ARGUMENT4_SIZE);
+    message_buffer = pvPortMalloc(MESSAGE_BUFFER_SIZE);
 
     memset(sci_buffer, 0, SCI_BUFFER_SIZE);
     memset(command, 0, COMMAND_SIZE);
-    memset(arg1, 0, ARGUMENT_SIZE);
-    memset(arg2, 0, ARGUMENT_SIZE);
-    memset(arg3, 0, ARGUMENT_SIZE);
-    memset(arg4, 0, ARGUMENT_SIZE);
-    memset(stats_buffer, 0, STATS_BUFFER_SIZE);
+    memset(arg1, 0, ARGUMENT1_SIZE);
+    memset(arg2, 0, ARGUMENT2_SIZE);
+    memset(arg3, 0, ARGUMENT3_SIZE);
+    memset(arg4, 0, ARGUMENT4_SIZE);
+    memset(message_buffer, 0, MESSAGE_BUFFER_SIZE);
 
     R_SCI_PinSet_serial_term();
 
@@ -221,7 +227,7 @@ void serial_terminal_task( void * pvParameters )
 		if((tmp[0] == 0x0a) && (sci_buffer[current_buffer_pointer - 2] == 0x0d))
 		{
 		    /* command execution */
-		    if ( 0 != sscanf((char*)sci_buffer, "%16s %256s %256s %256s %256s", command, arg1, arg2, arg3, arg4))
+		    if ( 0 != sscanf((char*)sci_buffer, "%16s %256s %256s %4096s %4096s", command, arg1, arg2, arg3, arg4))
 		    {
 		        switch(get_command_code(command))
 		        {
@@ -230,14 +236,14 @@ void serial_terminal_task( void * pvParameters )
 		        		{
 		        			if(!strcmp((const char *)arg2, "read"))
 		        			{
-		        				vTaskGetCombinedRunTimeStats(stats_buffer, 0);	/* 0 means read */
-				        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, stats_buffer);
+		        				vTaskGetCombinedRunTimeStats(message_buffer, 0);	/* 0 means read */
+				        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 		        			}
 		        			if(!strcmp((const char *)arg2, "reset"))
 		        			{
-		        				vTaskGetCombinedRunTimeStats(stats_buffer, 1);	/* 1 means read->reset */
-		        				vTaskGetCombinedRunTimeStats(stats_buffer, 0);	/* 0 means read */
-				        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, stats_buffer);
+		        				vTaskGetCombinedRunTimeStats(message_buffer, 1);	/* 1 means read->reset */
+		        				vTaskGetCombinedRunTimeStats(message_buffer, 0);	/* 0 means read */
+				        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 		        			}
 		        		}
 		        		break;
@@ -247,6 +253,7 @@ void serial_terminal_task( void * pvParameters )
 		        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, "\r\n");
 		        		break;
 		        	case COMMAND_TIMEZONE:
+	        			R_SFD_Open();
 		        		sfd_handle_timezone = R_SFD_SaveObject(timezone_label, strlen((char *)timezone_label), arg1, strlen((char *)arg1));
 		        		R_SFD_GetObjectValue(sfd_handle_timezone, (uint8_t **)&timezone, &timezone_length);
 			            if(SYS_TIME_SUCCESS == R_SYS_TIME_ConvertUnixTimeToSystemTime(task_info->sys_time.unix_time, &task_info->sys_time, timezone))
@@ -258,6 +265,7 @@ void serial_terminal_task( void * pvParameters )
 			            {
 			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, "timezone is not accepted.\r\n");
 			            }
+	        			R_SFD_Close();
 		        		break;
 		        	case COMMAND_RESET:
 		        		software_reset();
@@ -265,14 +273,71 @@ void serial_terminal_task( void * pvParameters )
 		        	case COMMAND_DATAFLASH:
 		        		if(!strcmp((const char *)arg1, "info"))
 		        		{
-		        			char tmp[256];
 		        			R_SFD_Open();
-		        			sprintf(tmp, "physical size = %d bytes.\n", R_SFD_ReadPysicalSize());
-			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, tmp);
-		        			sprintf(tmp, "allocated size = %d bytes.\n", R_SFD_ReadAllocatedStorageSize());
-			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, tmp);
-		        			sprintf(tmp, "free size = %d bytes.\n", R_SFD_ReadFreeSize());
-			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, tmp);
+		        			sprintf(message_buffer, "physical size = %d bytes.\n", R_SFD_ReadPysicalSize());
+			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+		        			sprintf(message_buffer, "allocated size = %d bytes.\n", R_SFD_ReadAllocatedStorageSize());
+			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+		        			sprintf(message_buffer, "free size = %d bytes.\n", R_SFD_ReadFreeSize());
+			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+		        			R_SFD_Close();
+		        		}
+		        		if(!strcmp((const char *)arg1, "write"))
+		        		{
+			        		if(!strcmp((const char *)arg2, "aws"))
+			        		{
+				        		if((!strcmp((const char *)arg3, "clientprivatekey")) || (!strcmp((const char *)arg3, "clientcertificate")))
+				        		{
+				        			R_SFD_Open();
+				        			if(SFD_HANDLE_INVALID != R_SFD_SaveObject(client_private_key_label, strlen((const char *)client_private_key_label), arg4, strlen((const char *)arg4)))
+				        			{
+					        			sprintf(message_buffer, "stored data into dataflash correctly.\n");
+						        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+				        			}
+				        			else
+				        			{
+					        			sprintf(message_buffer, "could not store data into dataflash.\n");
+						        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+				        			}
+				        			R_SFD_Close();
+				        		}
+			        		}
+		        		}
+		        		if(!strcmp((const char *)arg1, "read"))
+		        		{
+	        				R_SFD_ResetScan();
+		        			while(1)
+		        			{
+	        				    uint8_t *label, *data;
+	        				    uint32_t label_length, data_length;
+	        				    label = pvPortMalloc(SFD_HANDLES_LABEL_MAX_LENGTH);
+	        				    data = pvPortMalloc(SFD_LOCAL_STORAGE_SIZE);
+	        				    memset(label, 0, SFD_HANDLES_LABEL_MAX_LENGTH);
+	        				    memset(data, 0, SFD_LOCAL_STORAGE_SIZE);
+		        				if(SFD_SUCCESS == R_SFD_Scan(&label, &label_length, &data, &data_length))
+		        				{
+				        			sprintf(message_buffer, "label = ");
+					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+				        			memcpy(message_buffer, label, label_length);
+				        			message_buffer[label_length] = 0;
+					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+				        			sprintf(message_buffer, "\n");
+					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+				        			sprintf(message_buffer, "data = ");
+					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+				        			memcpy(message_buffer, data, data_length);
+				        			message_buffer[data_length] = 0;
+					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+				        			sprintf(message_buffer, "\n\n");
+					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+		        				}
+		        				else
+		        				{
+		        					break;
+		        				}
+		        				vPortFree(label);
+		        				vPortFree(data);
+		        			}
 		        		}
 		        		break;
 		        	default:
@@ -288,11 +353,11 @@ void serial_terminal_task( void * pvParameters )
 		    current_buffer_pointer = 0;
 		    memset(sci_buffer, 0, SCI_BUFFER_SIZE);
 		    memset(command, 0, COMMAND_SIZE);
-		    memset(arg1, 0, ARGUMENT_SIZE);
-		    memset(arg2, 0, ARGUMENT_SIZE);
-		    memset(arg3, 0, ARGUMENT_SIZE);
-		    memset(arg4, 0, ARGUMENT_SIZE);
-		    memset(stats_buffer, 0, STATS_BUFFER_SIZE);
+		    memset(arg1, 0, ARGUMENT1_SIZE);
+		    memset(arg2, 0, ARGUMENT2_SIZE);
+		    memset(arg3, 0, ARGUMENT3_SIZE);
+		    memset(arg4, 0, ARGUMENT4_SIZE);
+		    memset(message_buffer, 0, MESSAGE_BUFFER_SIZE);
 		}
 		else if(current_buffer_pointer == SCI_BUFFER_SIZE)
 		{

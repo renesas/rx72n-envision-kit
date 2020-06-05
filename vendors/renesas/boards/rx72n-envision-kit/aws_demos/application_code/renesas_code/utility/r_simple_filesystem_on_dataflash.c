@@ -35,23 +35,7 @@
 #define SFD_DATA_STATUS_REGISTERED 1
 #define SFD_DATA_STATUS_HIT 2
 
-#define SFD_HANDLES_LABEL_MAX_LENGTH 40
-#define SFD_OBJECT_HANDLES_NUM 5
-#define SFD_SHA256_LENGTH 32
-
 #define MAX_CHECK_DATAFLASH_AREA_RETRY_COUNT 3
-
-#define SFD_LOCAL_STORAGE_SIZE (SFD_CONTROL_BLOCK_SIZE - (sizeof(SFD_DESCRIPTOR) * SFD_OBJECT_HANDLES_NUM) - SFD_SHA256_LENGTH)
-
-typedef struct _sfd_descriptor
-{
-    uint8_t label[SFD_HANDLES_LABEL_MAX_LENGTH];
-    uint32_t label_length;
-    uint32_t local_storage_index;
-    uint32_t data_length;
-    uint32_t status;
-    SFD_HANDLE xHandle;
-} SFD_DESCRIPTOR;
 
 #if defined (BSP_MCU_RX72N)
 #define SFD_CONTROL_BLOCK_INITIAL_DATA \
@@ -91,6 +75,7 @@ typedef struct _SFD_CONTROL_BLOCK
 } SFD_CONTROL_BLOCK;
 
 static SFD_CONTROL_BLOCK sfd_control_block_data_image;        /* RX72N case: 1KB  */
+static int current_handle_index = 0;
 
 R_BSP_ATTRIB_SECTION_CHANGE(C, _SYSTEM_CONFIG , 1)
 static const SFD_CONTROL_BLOCK sfd_control_block_data = {SFD_CONTROL_BLOCK_INITIAL_DATA};
@@ -311,16 +296,60 @@ SFD_HANDLE R_SFD_FindObject( uint8_t *label, uint8_t label_length )
 
 sfd_err_t R_SFD_GetObjectValue( SFD_HANDLE xHandle,
                                  uint8_t **data,
-                                 uint32_t *data_size)
+                                 uint32_t *data_length)
 {
 	sfd_err_t xReturn = SFD_FATAL_ERROR;
 
     if (xHandle != SFD_HANDLE_INVALID)
     {
         *data = &sfd_control_block_data_image.data.local_storage[sfd_control_block_data_image.data.sfd_data[xHandle].local_storage_index];
-        *data_size = sfd_control_block_data_image.data.sfd_data[xHandle].data_length;
+        *data_length = sfd_control_block_data_image.data.sfd_data[xHandle].data_length;
     }
     return xReturn;
+}
+
+sfd_err_t R_SFD_Scan(uint8_t **label, uint32_t *label_length, uint8_t **data, uint32_t *data_length)
+{
+	int i;
+	sfd_err_t xReturn = SFD_FATAL_ERROR;
+
+	if(current_handle_index == -1)
+	{
+		xReturn = SFD_END_OF_LIST;
+	}
+	else
+	{
+		while(1)
+		{
+			if(sfd_control_block_data_image.data.sfd_data[current_handle_index].status == SFD_DATA_STATUS_REGISTERED)
+			{
+				*label = &sfd_control_block_data_image.data.sfd_data[current_handle_index].label;
+				*label_length = sfd_control_block_data_image.data.sfd_data[current_handle_index].label_length;
+				*data = &sfd_control_block_data_image.data.local_storage[sfd_control_block_data_image.data.sfd_data[current_handle_index].local_storage_index];
+				*data_length = sfd_control_block_data_image.data.sfd_data[current_handle_index].data_length;
+				current_handle_index++;
+				xReturn = SFD_SUCCESS;
+				break;
+			}
+			else
+			{
+				current_handle_index++;
+			}
+			if(current_handle_index == SFD_OBJECT_HANDLES_NUM)
+			{
+				current_handle_index = -1;
+				break;
+			}
+		}
+	}
+
+	return xReturn;
+}
+
+sfd_err_t R_SFD_ResetScan(void)
+{
+	current_handle_index = 0;
+	return SFD_SUCCESS;
 }
 
 uint32_t R_SFD_ReadPysicalSize(void)
