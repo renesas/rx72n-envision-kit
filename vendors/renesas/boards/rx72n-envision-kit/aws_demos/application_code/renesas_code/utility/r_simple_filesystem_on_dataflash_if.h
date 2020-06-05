@@ -29,7 +29,7 @@ typedef enum sfd_err_t
 
 typedef uint32_t SFD_HANDLE;
 
-#define SFD_CONTROL_BLOCK_SIZE 2048
+#define SFD_CONTROL_BLOCK_SIZE 4096
 
 #define SFD_HANDLE_INVALID 0xffffffff
 

@@ -74,7 +74,7 @@ typedef struct _SFD_CONTROL_BLOCK
     uint8_t hash_sha256[SFD_SHA256_LENGTH];
 } SFD_CONTROL_BLOCK;
 
-static SFD_CONTROL_BLOCK sfd_control_block_data_image;        /* RX72N case: 1KB  */
+static SFD_CONTROL_BLOCK sfd_control_block_data_image;        /* RX72N case: 4KB  */
 static int current_handle_index = 0;
 
 R_BSP_ATTRIB_SECTION_CHANGE(C, _SYSTEM_CONFIG , 1)

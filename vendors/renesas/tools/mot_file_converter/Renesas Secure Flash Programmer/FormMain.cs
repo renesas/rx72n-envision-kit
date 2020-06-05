@@ -269,7 +269,7 @@ namespace Renesas_Secure_Flash_Programmer
             { MCUROM_RX66T_256K_SB_64KB,                new AddressMap(0x00000006, 0,0,0,0,0,0,0,0,0,0,0,0,0,0/* under construction */) },
             { MCUROM_RX72T_1M_SB_64KB,                  new AddressMap(0x00000007, 0,0,0,0,0,0,0,0,0,0,0,0,0,0/* under construction */) },
             { MCUROM_RX72T_512K_SB_64KB,                new AddressMap(0x00000008, 0,0,0,0,0,0,0,0,0,0,0,0,0,0/* under construction */) },
-            { MCUROM_RX72N_4M_SB_256KB,                 new AddressMap(0x00000009, 0xffe00300, 0xfffbffff, 0xffc00300, 0xffdbffff, 0xfffc0000, 0xffffffff, 0xffc00000, 0xffffffff, 0x00100000, 0x001007ff, 0x00100800, 0x001057ff, 0x00100000, 0x00107fff) },
+            { MCUROM_RX72N_4M_SB_256KB,                 new AddressMap(0x00000009, 0xffe00300, 0xfffbffff, 0xffc00300, 0xffdbffff, 0xfffc0000, 0xffffffff, 0xffc00000, 0xffffffff, 0x00100000, 0x001007ff, 0x00100800, 0x001067ff, 0x00100000, 0x00107fff) },
         };
 
         public static readonly Dictionary<string, uint> InitialFirmVerificationType = new Dictionary<string, uint>()

@@ -81,42 +81,55 @@ Typedef definitions
 #elif MY_BSP_CFG_SERIAL_TERM_SCI == (0)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI0()
 #define SCI_CH_serial_term          SCI_CH0
+#define SCI_TX_buffer_size          SCI_CFG_CH0_TX_BUFSIZ
 #elif MY_BSP_CFG_SERIAL_TERM_SCI == (1)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI1()
 #define SCI_CH_serial_term          SCI_CH1
+#define SCI_TX_buffer_size          SCI_CFG_CH1_TX_BUFSIZ
 #elif MY_BSP_CFG_SERIAL_TERM_SCI == (2)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI2()
 #define SCI_CH_serial_term          SCI_CH2
+#define SCI_TX_buffer_size          SCI_CFG_CH2_TX_BUFSIZ
 #elif MY_BSP_CFG_SERIAL_TERM_SCI == (3)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI3()
 #define SCI_CH_serial_term          SCI_CH3
+#define SCI_TX_buffer_size          SCI_CFG_CH3_TX_BUFSIZ
 #elif MY_BSP_CFG_SERIAL_TERM_SCI == (4)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI4()
 #define SCI_CH_serial_term          SCI_CH4
+#define SCI_TX_buffer_size          SCI_CFG_CH4_TX_BUFSIZ
 #elif MY_BSP_CFG_SERIAL_TERM_SCI == (5)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI5()
 #define SCI_CH_serial_term          SCI_CH5
+#define SCI_TX_buffer_size          SCI_CFG_CH5_TX_BUFSIZ
 #elif MY_BSP_CFG_SERIAL_TERM_SCI == (6)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI6()
 #define SCI_CH_serial_term          SCI_CH6
+#define SCI_TX_buffer_size          SCI_CFG_CH6_TX_BUFSIZ
 #elif MY_BSP_CFG_SERIAL_TERM_SCI == (7)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI7()
 #define SCI_CH_serial_term          SCI_CH7
+#define SCI_TX_buffer_size          SCI_CFG_CH7_TX_BUFSIZ
 #elif MY_BSP_CFG_SERIAL_TERM_SCI == (8)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI8()
 #define SCI_CH_serial_term          SCI_CH8
+#define SCI_TX_buffer_size          SCI_CFG_CH8_TX_BUFSIZ
 #elif MY_BSP_CFG_SERIAL_TERM_SCI == (9)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI9()
 #define SCI_CH_serial_term          SCI_CH9
+#define SCI_TX_buffer_size          SCI_CFG_CH9_TX_BUFSIZ
 #elif MY_BSP_CFG_SERIAL_TERM_SCI == (10)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI10()
 #define SCI_CH_serial_term          SCI_CH10
+#define SCI_TX_buffer_size          SCI_CFG_CH10_TX_BUFSIZ
 #elif MY_BSP_CFG_SERIAL_TERM_SCI == (11)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI11()
 #define SCI_CH_serial_term          SCI_CH11
+#define SCI_TX_buffer_size          SCI_CFG_CH11_TX_BUFSIZ
 #elif MY_BSP_CFG_SERIAL_TERM_SCI == (12)
 #define R_SCI_PinSet_serial_term()  R_SCI_PinSet_SCI12()
 #define SCI_CH_serial_term          SCI_CH12
+#define SCI_TX_buffer_size          SCI_CFG_CH12_TX_BUFSIZ
 #else
 #error "Error! Invalid setting for MY_BSP_CFG_SERIAL_TERM_SCI in r_bsp_config.h"
 #endif
@@ -135,6 +148,7 @@ static int32_t get_command_code(uint8_t *command);
 
 static sci_hdl_t sci_handle;
 static QueueHandle_t xQueue;
+static SemaphoreHandle_t xSemaphore;
 static char *message_buffer;
 static uint32_t _10us_timer_count;
 
@@ -176,9 +190,9 @@ void serial_terminal_task( void * pvParameters )
     uint32_t current_buffer_pointer = 0;
     uint8_t *command, *arg1, *arg2, *arg3, *arg4;
 
-	uint8_t timezone_label[] = "timezone";
-	uint8_t client_private_key_label[] = "client_private_key";
-	uint8_t client_certificate_label[] = "client_certificate";
+    char timezone_label[] = "timezone";
+	char client_private_key_label[] = "client_private_key";
+	char client_certificate_label[] = "client_certificate";
 
 	SFD_HANDLE sfd_handle_timezone, sfd_handle_tmp;
 	uint8_t *timezone;
@@ -218,6 +232,9 @@ void serial_terminal_task( void * pvParameters )
     /* create queue */
 	xQueue = xQueueCreate(SERIAL_BUFFER_QUEUE_NUMBER, SERIAL_BUFFER_SIZE);
 
+    /* create semaphore */
+	xSemaphore = xSemaphoreCreateBinary();
+
 	display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, PROMPT);
 	while(1)
 	{
@@ -254,7 +271,7 @@ void serial_terminal_task( void * pvParameters )
 		        		break;
 		        	case COMMAND_TIMEZONE:
 	        			R_SFD_Open();
-		        		sfd_handle_timezone = R_SFD_SaveObject(timezone_label, strlen((char *)timezone_label), arg1, strlen((char *)arg1));
+		        		sfd_handle_timezone = R_SFD_SaveObject((uint8_t *)timezone_label, strlen(timezone_label), arg1, strlen((char *)arg1));
 		        		R_SFD_GetObjectValue(sfd_handle_timezone, (uint8_t **)&timezone, &timezone_length);
 			            if(SYS_TIME_SUCCESS == R_SYS_TIME_ConvertUnixTimeToSystemTime(task_info->sys_time.unix_time, &task_info->sys_time, timezone))
 			            {
@@ -282,28 +299,75 @@ void serial_terminal_task( void * pvParameters )
 			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 		        			R_SFD_Close();
 		        		}
-		        		if(!strcmp((const char *)arg1, "write"))
+		        		else if(!strcmp((const char *)arg1, "write"))
 		        		{
 			        		if(!strcmp((const char *)arg2, "aws"))
 			        		{
 				        		if((!strcmp((const char *)arg3, "clientprivatekey")) || (!strcmp((const char *)arg3, "clientcertificate")))
 				        		{
-				        			R_SFD_Open();
-				        			if(SFD_HANDLE_INVALID != R_SFD_SaveObject(client_private_key_label, strlen((const char *)client_private_key_label), arg4, strlen((const char *)arg4)))
+				        			current_buffer_pointer = 0;
+								    memset(sci_buffer, 0, SCI_BUFFER_SIZE);
+				        			while(1)
 				        			{
-					        			sprintf(message_buffer, "stored data into dataflash correctly.\n");
-						        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+										xQueueReceive(xQueue, &tmp, portMAX_DELAY);
+										display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, tmp);
+										sci_buffer[current_buffer_pointer++] = tmp[0];
+										if((strstr(sci_buffer, "-----END RSA PRIVATE KEY-----\n")) || (strstr(sci_buffer, "-----END CERTIFICATE-----\n")))
+										{
+											char *target;
+											if((!strcmp((const char *)arg3, "clientprivatekey")) && strstr(sci_buffer, "-----END RSA PRIVATE KEY-----\n"))
+											{
+												target = client_private_key_label;
+											}
+											else if((!strcmp((const char *)arg3, "clientcertificate")) && strstr(sci_buffer, "-----END CERTIFICATE-----\n"))
+											{
+												target = client_certificate_label;
+											}
+											else
+											{
+							        			sprintf(message_buffer, "could not store data into dataflash.\n");
+								        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+												break;
+											}
+
+						        			R_SFD_Open();
+						        			if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)target, strlen(target), (uint8_t *)sci_buffer, strlen((const char *)sci_buffer)))
+						        			{
+							        			sprintf(message_buffer, "stored data into dataflash correctly.\n");
+								        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+						        			}
+						        			else
+						        			{
+							        			sprintf(message_buffer, "could not store data into dataflash.\n");
+								        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+						        			}
+						        			R_SFD_Close();
+											break;
+										}
+										if((strstr(sci_buffer, "quit")) || (strstr(sci_buffer, "exit")))
+										{
+											break;
+										}
+										if(current_buffer_pointer == SCI_BUFFER_SIZE)
+										{
+										    memset(sci_buffer, 0, SCI_BUFFER_SIZE);
+										    current_buffer_pointer = 0;
+										}
 				        			}
-				        			else
-				        			{
-					        			sprintf(message_buffer, "could not store data into dataflash.\n");
-						        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
-				        			}
-				        			R_SFD_Close();
+				        		}
+				        		else
+				        		{
+				        			sprintf(message_buffer, "unknown argument3 = %s.\n", arg3);
+					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 				        		}
 			        		}
+			        		else
+			        		{
+			        			sprintf(message_buffer, "unknown argument2 = %s.\n", arg2);
+				        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+			        		}
 		        		}
-		        		if(!strcmp((const char *)arg1, "read"))
+		        		else if(!strcmp((const char *)arg1, "read"))
 		        		{
 	        				R_SFD_ResetScan();
 		        			while(1)
@@ -328,16 +392,24 @@ void serial_terminal_task( void * pvParameters )
 				        			memcpy(message_buffer, data, data_length);
 				        			message_buffer[data_length] = 0;
 					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+					        		vTaskDelay(100); /* 長い文字列をSCI(UART)出力した際に最後のほうが出力されない。完了待ちの方法が不明なためとりあえず時間待ち */
 				        			sprintf(message_buffer, "\n\n");
 					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+			        				vPortFree(label);
+			        				vPortFree(data);
 		        				}
 		        				else
 		        				{
+			        				vPortFree(label);
+			        				vPortFree(data);
 		        					break;
 		        				}
-		        				vPortFree(label);
-		        				vPortFree(data);
 		        			}
+		        		}
+		        		else
+		        		{
+		        			sprintf(message_buffer, "unknown argument1 = %s.\n", arg1);
+			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 		        		}
 		        		break;
 		        	default:
@@ -401,7 +473,7 @@ static int32_t get_command_code(uint8_t *command)
 static void display_serial_terminal_putstring_with_uart(WM_HWIN hWin_handle, sci_hdl_t sci_handle, char *string)
 {
     uint16_t str_length = 0;
-    uint16_t transmit_length = 0;
+    volatile uint16_t transmit_length = 0;
     sci_err_t sci_err;
     uint32_t retry = 0xFFFF;
 
@@ -411,8 +483,7 @@ static void display_serial_terminal_putstring_with_uart(WM_HWIN hWin_handle, sci
 
     while ((retry > 0) && (str_length > 0))
     {
-
-        R_SCI_Control(sci_handle, SCI_CMD_TX_Q_BYTES_FREE, &transmit_length);
+        R_SCI_Control(sci_handle, SCI_CMD_TX_Q_BYTES_FREE, (void *)&transmit_length);
 
         if(transmit_length > str_length)
         {
@@ -430,12 +501,16 @@ static void display_serial_terminal_putstring_with_uart(WM_HWIN hWin_handle, sci
 
         str_length -= transmit_length;
         string += transmit_length;
+
+        xSemaphoreTake(xSemaphore, portMAX_DELAY);
+
     }
 
     if (SCI_SUCCESS != sci_err)
     {
     	R_BSP_NOP(); //TODO error handling code
     }
+
 }
 
 static void sci_callback(void *pArgs)
@@ -443,6 +518,7 @@ static void sci_callback(void *pArgs)
     sci_cb_args_t   *args;
     sci_err_t   sci_err;
     uint8_t tmp;
+    static BaseType_t xHigherPriorityTaskWoken;
 
     args = (sci_cb_args_t *)pArgs;
 
@@ -482,8 +558,9 @@ static void sci_callback(void *pArgs)
     }
     else if (args->event == SCI_EVT_TEI)
     {
-        nop();
+    	xSemaphoreGiveFromISR( xSemaphore, &xHigherPriorityTaskWoken );
     }
+    portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
 }
 
 void vConfigureTimerForRunTimeStats(void)
