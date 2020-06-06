@@ -198,6 +198,9 @@ void serial_terminal_task( void * pvParameters )
 	uint8_t *timezone;
 	uint32_t timezone_length;
 
+    uint8_t *label, *data;
+    uint32_t label_length, data_length;
+
     /* wait completing gui initializing */
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
@@ -372,12 +375,6 @@ void serial_terminal_task( void * pvParameters )
 	        				R_SFD_ResetScan();
 		        			while(1)
 		        			{
-	        				    uint8_t *label, *data;
-	        				    uint32_t label_length, data_length;
-	        				    label = pvPortMalloc(SFD_HANDLES_LABEL_MAX_LENGTH);
-	        				    data = pvPortMalloc(SFD_LOCAL_STORAGE_SIZE);
-	        				    memset(label, 0, SFD_HANDLES_LABEL_MAX_LENGTH);
-	        				    memset(data, 0, SFD_LOCAL_STORAGE_SIZE);
 		        				if(SFD_SUCCESS == R_SFD_Scan(&label, &label_length, &data, &data_length))
 		        				{
 				        			sprintf(message_buffer, "label = ");
@@ -395,13 +392,9 @@ void serial_terminal_task( void * pvParameters )
 					        		vTaskDelay(100); /* 長い文字列をSCI(UART)出力した際に最後のほうが出力されない。完了待ちの方法が不明なためとりあえず時間待ち */
 				        			sprintf(message_buffer, "\n\n");
 					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
-			        				vPortFree(label);
-			        				vPortFree(data);
 		        				}
 		        				else
 		        				{
-			        				vPortFree(label);
-			        				vPortFree(data);
 		        					break;
 		        				}
 		        			}

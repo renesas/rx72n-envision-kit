@@ -327,6 +327,9 @@ SFD_HANDLE R_SFD_FindObject( uint8_t *label, uint8_t label_length )
 	SFD_HANDLE xHandle = SFD_HANDLE_INVALID;
     int i;
 
+    /* copy data from storage to ram */
+    memcpy(&sfd_control_block_data_image, (void *)&sfd_control_block_data, sizeof(sfd_control_block_data_image));
+
     for(i = 0; i < SFD_OBJECT_HANDLES_NUM; i++)
     {
         if(!strncmp((char *)&sfd_control_block_data_image.data.sfd_data[i].label, (char *)label, label_length))
@@ -346,6 +349,9 @@ sfd_err_t R_SFD_GetObjectValue( SFD_HANDLE xHandle,
 {
 	sfd_err_t xReturn = SFD_FATAL_ERROR;
 
+    /* copy data from storage to ram */
+    memcpy(&sfd_control_block_data_image, (void *)&sfd_control_block_data, sizeof(sfd_control_block_data_image));
+
     if (xHandle != SFD_HANDLE_INVALID)
     {
         *data = &sfd_control_block_data_image.data.local_storage[sfd_control_block_data_image.data.sfd_data[xHandle].local_storage_index];
@@ -358,6 +364,9 @@ sfd_err_t R_SFD_Scan(uint8_t **label, uint32_t *label_length, uint8_t **data, ui
 {
 	int i;
 	sfd_err_t xReturn = SFD_FATAL_ERROR;
+
+    /* copy data from storage to ram */
+    memcpy(&sfd_control_block_data_image, (void *)&sfd_control_block_data, sizeof(sfd_control_block_data_image));
 
 	if(current_handle_index == -1)
 	{
@@ -413,6 +422,9 @@ uint32_t R_SFD_ReadFreeSize(void)
 	SFD_HANDLE xHandle = SFD_HANDLE_INVALID;
     int i;
     uint32_t total_size = 0;
+
+    /* copy data from storage to ram */
+    memcpy(&sfd_control_block_data_image, (void *)&sfd_control_block_data, sizeof(sfd_control_block_data_image));
 
     for(i = 0; i < SFD_OBJECT_HANDLES_NUM; i++)
     {
