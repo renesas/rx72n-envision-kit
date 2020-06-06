@@ -342,6 +342,20 @@ static int32_t secure_boot(void)
     	    load_firmware_control_block.progress = 0;
     	    load_firmware_control_block.offset = 0;
 
+    	    /* startup flash */
+    	    flash_api_error_code = R_FLASH_Open();
+    	    if (FLASH_SUCCESS == flash_api_error_code)
+    	    {
+    	        /* nothing to do */
+    	    }
+    	    else
+    	    {
+    	        printf("R_FLASH_Open() returns error. %d.\r\n", flash_error_code);
+    	        printf("system error.\r\n");
+				secure_boot_state = BOOT_LOADER_STATE_FATAL_ERROR;
+				secure_boot_error_code = BOOT_LOADER_FAIL;
+    	    }
+
     	    /* startup system */
     	    printf("-------------------------------------------------\r\n");
     	    printf("RX72N secure boot program\r\n");
@@ -377,18 +391,6 @@ static int32_t secure_boot(void)
     	    R_SFD_Close();
 
     	    printf("Checking code flash ROM status.\r\n");
-    	    flash_api_error_code = R_FLASH_Open();
-    	    if (FLASH_SUCCESS == flash_api_error_code)
-    	    {
-    	        /* nothing to do */
-    	    }
-    	    else
-    	    {
-    	        printf("R_FLASH_Open() returns error. %d.\r\n", flash_error_code);
-    	        printf("system error.\r\n");
-				secure_boot_state = BOOT_LOADER_STATE_FATAL_ERROR;
-				secure_boot_error_code = BOOT_LOADER_FAIL;
-    	    }
 
     	    printf("bank 0 status = 0x%x [%s]\r\n", firmware_update_control_block_bank0->image_flag, get_status_string(firmware_update_control_block_bank0->image_flag));
     	    printf("bank 1 status = 0x%x [%s]\r\n", firmware_update_control_block_bank1->image_flag, get_status_string(firmware_update_control_block_bank1->image_flag));

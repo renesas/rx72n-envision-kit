@@ -22,14 +22,39 @@
 typedef enum sfd_err_t
 {
     SFD_SUCCESS = 0,
+	SFD_INVALID_ARGUMENT,
+	SFD_END_OF_LIST,
     SFD_FATAL_ERROR
 } sfd_err_t;
 
 typedef uint32_t SFD_HANDLE;
 
-#define SFD_LOCAL_STORAGE_SIZE 1024
+#define SFD_CONTROL_BLOCK_SIZE 1024
 
 #define SFD_HANDLE_INVALID 0xffffffff
+
+#define SFD_HANDLES_LABEL_MAX_LENGTH 40
+#define SFD_OBJECT_HANDLES_NUM 5
+
+#define SFD_SHA256_LENGTH 32
+
+//#define USE_MBEDTLS
+#define USE_TINYCRYPT
+
+typedef struct _sfd_descriptor
+{
+    uint8_t label[SFD_HANDLES_LABEL_MAX_LENGTH];
+    uint32_t label_length;
+    uint32_t local_storage_index;
+    uint32_t data_length;
+    uint32_t status;
+    SFD_HANDLE xHandle;
+} SFD_DESCRIPTOR;
+
+#define SFD_LOCAL_STORAGE_SIZE (SFD_CONTROL_BLOCK_SIZE - (sizeof(SFD_DESCRIPTOR) * SFD_OBJECT_HANDLES_NUM) - SFD_SHA256_LENGTH)
+
+#define SFD_SECTION_NAME _BOOTLOADER_KEY_STORAGE
+#define SFD_MIRROR_SECTION_NAME _BOOTLOADER_KEY_STORAGE_MIRROR
 
 /******************************************************************************
  Interface funcsions
@@ -37,5 +62,10 @@ typedef uint32_t SFD_HANDLE;
 sfd_err_t R_SFD_Open(void);
 SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data, uint32_t data_length);
 SFD_HANDLE R_SFD_FindObject( uint8_t *label, uint8_t label_length );
-sfd_err_t R_SFD_GetObjectValue(SFD_HANDLE xHandle, uint8_t **data, uint32_t *data_size);
+sfd_err_t R_SFD_GetObjectValue(SFD_HANDLE xHandle, uint8_t **data, uint32_t *data_length);
+sfd_err_t R_SFD_Scan(uint8_t **label, uint32_t *label_length, uint8_t **data, uint32_t *data_length);
+sfd_err_t R_SFD_ResetScan(void);
+uint32_t R_SFD_ReadPysicalSize(void);
+uint32_t R_SFD_ReadAllocatedStorageSize(void);
+uint32_t R_SFD_ReadFreeSize(void);
 sfd_err_t R_SFD_Close(void);

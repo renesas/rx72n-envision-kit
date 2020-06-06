@@ -38,6 +38,9 @@ typedef uint32_t SFD_HANDLE;
 
 #define SFD_SHA256_LENGTH 32
 
+#define USE_MBEDTLS
+//#define USE_TINYCRYPT
+
 typedef struct _sfd_descriptor
 {
     uint8_t label[SFD_HANDLES_LABEL_MAX_LENGTH];
@@ -49,6 +52,9 @@ typedef struct _sfd_descriptor
 } SFD_DESCRIPTOR;
 
 #define SFD_LOCAL_STORAGE_SIZE (SFD_CONTROL_BLOCK_SIZE - (sizeof(SFD_DESCRIPTOR) * SFD_OBJECT_HANDLES_NUM) - SFD_SHA256_LENGTH)
+
+#define SFD_SECTION_NAME _SYSTEM_CONFIG
+#define SFD_MIRROR_SECTION_NAME _SYSTEM_CONFIG_MIRROR
 
 /******************************************************************************
  Interface funcsions

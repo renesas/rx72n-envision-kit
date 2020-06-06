@@ -18,9 +18,6 @@
 * Copyright (C) 2020 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
-/* mbedtls */
-#include "mbedtls/sha256.h"	/* this will change to Renesas SHA256 library to improve more easy to integrate by using FIT mechanism. */
-
 /* C runtime includes. */
 #include <stdio.h>
 #include <string.h>
@@ -30,6 +27,15 @@
 #include "r_flash_rx_if.h"
 #include "r_simple_filesystem_on_dataflash_if.h"
 
+#if defined USE_MBEDTLS
+/* mbedtls */
+#include "mbedtls/sha256.h"	/* this will change to Renesas SHA256 library to improve more easy to integrate by using FIT mechanism. */
+#elif  defined USE_TINYCRYPT
+/* tinycrypt */
+#include "tinycrypt/sha256.h"	/* this will change to Renesas SHA256 library to improve more easy to integrate by using FIT mechanism. */
+#else
+#endif
+
 /* define the word "Simple Filesystem on Dataflash" as "SFD". */
 #define SFD_DATA_STATUS_EMPTY 0
 #define SFD_DATA_STATUS_REGISTERED 1
@@ -38,6 +44,17 @@
 #define MAX_CHECK_DATAFLASH_AREA_RETRY_COUNT 3
 
 #if defined (BSP_MCU_RX72N)
+#if SFD_CONTROL_BLOCK_SIZE == 1024
+#define SFD_CONTROL_BLOCK_INITIAL_DATA \
+    {\
+        /* uint8_t local_storage[((FLASH_DF_BLOCK_SIZE * FLASH_NUM_BLOCKS_DF) / 4) - (sizeof(SFD_DATA) * SFD_OBJECT_HANDLES_NUM) - SFD_SHA256_LENGTH]; */\
+        {0x00},\
+        /* SFD_DATA sfd_data[SFD_OBJECT_HANDLES_NUM]; */\
+        {0x00},\
+    },\
+    /* uint8_t hash_sha256[SFD_SHA256_LENGTH]; */\
+    {0x5f, 0x51, 0xd9, 0xe5, 0x7c, 0x05, 0x1c, 0xc5, 0x16, 0x38, 0x83, 0x46, 0xd8, 0x60, 0x97, 0x6b, 0xff, 0x35, 0x31, 0xda, 0x95, 0x61, 0xf6, 0x57, 0x0c, 0x19, 0xb2, 0xca, 0x2d, 0xa4, 0x8e, 0xab},
+#elif SFD_CONTROL_BLOCK_SIZE == 2048
 #define SFD_CONTROL_BLOCK_INITIAL_DATA \
     {\
         /* uint8_t local_storage[((FLASH_DF_BLOCK_SIZE * FLASH_NUM_BLOCKS_DF) / 4) - (sizeof(SFD_DATA) * SFD_OBJECT_HANDLES_NUM) - SFD_SHA256_LENGTH]; */\
@@ -47,6 +64,18 @@
     },\
     /* uint8_t hash_sha256[SFD_SHA256_LENGTH]; */\
     {0xd2, 0x63, 0xc7, 0xc6, 0x0b, 0x6f, 0x98, 0x06, 0x23, 0x51, 0x0b, 0x23, 0xa0, 0x22, 0x28, 0xfd, 0x66, 0x9b, 0x55, 0x8f, 0x19, 0x57, 0xdb, 0x78, 0x83, 0xb7, 0x06, 0xb2, 0x47, 0x13, 0x3c, 0x92},
+#elif SFD_CONTROL_BLOCK_SIZE == 4096
+#define SFD_CONTROL_BLOCK_INITIAL_DATA \
+    {\
+        /* uint8_t local_storage[((FLASH_DF_BLOCK_SIZE * FLASH_NUM_BLOCKS_DF) / 4) - (sizeof(SFD_DATA) * SFD_OBJECT_HANDLES_NUM) - SFD_SHA256_LENGTH]; */\
+        {0x00},\
+        /* SFD_DATA sfd_data[SFD_OBJECT_HANDLES_NUM]; */\
+        {0x00},\
+    },\
+    /* uint8_t hash_sha256[SFD_SHA256_LENGTH]; */\
+    {0x81, 0xac, 0x48, 0xa9, 0xd4, 0xa7, 0x8e, 0xbe, 0xd4, 0x62, 0x83, 0x74, 0x53, 0x9d, 0xbb, 0x2f, 0xc1, 0x63, 0x37, 0x9c, 0x39, 0x40, 0x99, 0x5e, 0x8b, 0x8f, 0x7b, 0x31, 0x61, 0x4b, 0x8c, 0xde},
+#endif
+
 #else
 #error "Simple Filesystem on Dataflash (SFD) does not support your MCU"
 #endif
@@ -77,11 +106,11 @@ typedef struct _SFD_CONTROL_BLOCK
 static SFD_CONTROL_BLOCK sfd_control_block_data_image;        /* RX72N case: 4KB  */
 static int current_handle_index = 0;
 
-R_BSP_ATTRIB_SECTION_CHANGE(C, _SYSTEM_CONFIG , 1)
+R_BSP_ATTRIB_SECTION_CHANGE(C, SFD_SECTION_NAME , 1)
 static const SFD_CONTROL_BLOCK sfd_control_block_data = {SFD_CONTROL_BLOCK_INITIAL_DATA};
 R_BSP_ATTRIB_SECTION_CHANGE_END
 
-R_BSP_ATTRIB_SECTION_CHANGE(C, _SYSTEM_CONFIG_MIRROR , 1)
+R_BSP_ATTRIB_SECTION_CHANGE(C, SFD_MIRROR_SECTION_NAME , 1)
 static const SFD_CONTROL_BLOCK sfd_control_block_data_mirror = {SFD_CONTROL_BLOCK_INITIAL_DATA};
 R_BSP_ATTRIB_SECTION_CHANGE_END
 
@@ -126,9 +155,20 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
     uint32_t i;
     uint8_t hash_sha256[SFD_SHA256_LENGTH];
     SFD_HANDLE xHandle = SFD_HANDLE_INVALID;
-    mbedtls_sha256_context ctx;
 
+#if defined USE_MBEDTLS
+    mbedtls_sha256_context ctx;
+#elif  defined USE_TINYCRYPT
+    TCSha256State_t s;
+    struct tc_sha256_state_struct tc_sha256_state;
+    s = &tc_sha256_state;
+#endif
+
+#if defined USE_MBEDTLS
     mbedtls_sha256_init(&ctx);
+#elif  defined USE_TINYCRYPT
+    tc_sha256_init(s);
+#endif
 
     /* check the hash */
     check_dataflash_area(0);
@@ -234,9 +274,15 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
 		memcpy(&sfd_control_block_data_image.data.local_storage[total_stored_data_size], data, data_length);
 
 		/* update the hash */
+#if defined USE_MBEDTLS
 		mbedtls_sha256_starts_ret(&ctx, 0); /* 0 means SHA256 context */
 		mbedtls_sha256_update_ret(&ctx, (unsigned char *)&sfd_control_block_data_image.data, sizeof(sfd_control_block_data.data));
 		mbedtls_sha256_finish_ret(&ctx, hash_sha256);
+#elif  defined USE_TINYCRYPT
+		tc_sha256_init(s);
+		tc_sha256_update(s, (unsigned char *)&sfd_control_block_data_image.data, sizeof(sfd_control_block_data.data));
+		tc_sha256_final(hash_sha256, s);
+#endif
 		memcpy(sfd_control_block_data_image.hash_sha256, hash_sha256, sizeof(hash_sha256));
 
 		/* update data from ram to storage */
@@ -526,9 +572,19 @@ static void update_dataflash_data_mirror_from_image(void)
 static void check_dataflash_area(uint32_t retry_counter)
 {
     uint8_t hash_sha256[SFD_SHA256_LENGTH];
+#if defined USE_MBEDTLS
     mbedtls_sha256_context ctx;
+#elif  defined USE_TINYCRYPT
+    TCSha256State_t s;
+    struct tc_sha256_state_struct tc_sha256_state;
+    s = &tc_sha256_state;
+#endif
 
+#if defined USE_MBEDTLS
     mbedtls_sha256_init(&ctx);
+#elif  defined USE_TINYCRYPT
+    tc_sha256_init(s);
+#endif
 
     if(retry_counter)
     {
@@ -540,16 +596,28 @@ static void check_dataflash_area(uint32_t retry_counter)
         }
     }
     SFD_DEBUG_PRINT(("data flash(main) hash check..."));
+#if defined USE_MBEDTLS
     mbedtls_sha256_starts_ret(&ctx, 0); /* 0 means SHA256 context */
     mbedtls_sha256_update_ret(&ctx, (unsigned char *)&sfd_control_block_data.data, sizeof(sfd_control_block_data.data));
     mbedtls_sha256_finish_ret(&ctx, hash_sha256);
+#elif  defined USE_TINYCRYPT
+    tc_sha256_init(s);
+    tc_sha256_update(s, (unsigned char *)&sfd_control_block_data.data, sizeof(sfd_control_block_data.data));
+    tc_sha256_final(hash_sha256, s);
+#endif
     if(!memcmp(sfd_control_block_data.hash_sha256, hash_sha256, sizeof(hash_sha256)))
     {
         SFD_DEBUG_PRINT(("OK\r\n"));
         SFD_DEBUG_PRINT(("data flash(mirror) hash check..."));
+#if defined USE_MBEDTLS
         mbedtls_sha256_starts_ret(&ctx, 0); /* 0 means SHA256 context */
         mbedtls_sha256_update_ret(&ctx, (unsigned char *)&sfd_control_block_data_mirror.data, sizeof(sfd_control_block_data_mirror.data));
         mbedtls_sha256_finish_ret(&ctx, hash_sha256);
+#elif  defined USE_TINYCRYPT
+        tc_sha256_init(s);
+        tc_sha256_update(s, (unsigned char *)&sfd_control_block_data_mirror.data, sizeof(sfd_control_block_data_mirror.data));
+        tc_sha256_final(hash_sha256, s);
+#endif
         if(!memcmp(sfd_control_block_data_mirror.hash_sha256, hash_sha256, sizeof(hash_sha256)))
         {
             SFD_DEBUG_PRINT(("OK\r\n"));
@@ -577,9 +645,15 @@ static void check_dataflash_area(uint32_t retry_counter)
     {
         SFD_DEBUG_PRINT(("NG\r\n"));
         SFD_DEBUG_PRINT(("data flash(mirror) hash check..."));
+#if defined USE_MBEDTLS
         mbedtls_sha256_starts_ret(&ctx, 0); /* 0 means SHA256 context */
         mbedtls_sha256_update_ret(&ctx, (unsigned char *)&sfd_control_block_data_mirror.data, sizeof(sfd_control_block_data_mirror.data));
         mbedtls_sha256_finish_ret(&ctx, hash_sha256);
+#elif  defined USE_TINYCRYPT
+        tc_sha256_init(s);
+        tc_sha256_update(s, (unsigned char *)&sfd_control_block_data_mirror.data, sizeof(sfd_control_block_data_mirror.data));
+        tc_sha256_final(hash_sha256, s);
+#endif
         if(!memcmp(sfd_control_block_data_mirror.hash_sha256, hash_sha256, sizeof(hash_sha256)))
         {
             SFD_DEBUG_PRINT(("OK\r\n"));
@@ -606,10 +680,16 @@ static void check_dataflash_area(uint32_t retry_counter)
 			SFD_DEBUG_PRINT(("------------------------------------------------\r\n"));
 
 			memset(&sfd_control_block_data_image.data, 0, sizeof(sfd_control_block_data_image.data));
+#if defined USE_MBEDTLS
 	        mbedtls_sha256_starts_ret(&ctx, 0); /* 0 means SHA256 context */
 	        mbedtls_sha256_update_ret(&ctx, (unsigned char *)&sfd_control_block_data_image.data, sizeof(sfd_control_block_data_image.data));
 	        mbedtls_sha256_finish_ret(&ctx, sfd_control_block_data_image.hash_sha256);
-            data_flash_update_status_initialize();
+#elif  defined USE_TINYCRYPT
+	        tc_sha256_init(s);
+	        tc_sha256_update(s, (unsigned char *)&sfd_control_block_data_image.data, sizeof(sfd_control_block_data_mirror.data));
+	        tc_sha256_final(hash_sha256, s);
+#endif
+	        data_flash_update_status_initialize();
             while ( update_data_flash_control_block.status < SFD_DATA_FLASH_UPDATE_STATE_FINALIZE_COMPLETED )
             {
                 update_dataflash_data_from_image();
