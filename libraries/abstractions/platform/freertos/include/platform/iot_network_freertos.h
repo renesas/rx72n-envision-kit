@@ -82,7 +82,8 @@ typedef struct _networkConnection IotNetworkConnectionAfr_t;
  */
 #define AWS_IOT_NETWORK_SERVER_INFO_AFR_INITIALIZER        \
     {                                                      \
-        .pHostName = clientcredentialMQTT_BROKER_ENDPOINT, \
+/*      .pHostName = clientcredentialMQTT_BROKER_ENDPOINT,*/\
+        .pHostName = "dummy", \
         .port = clientcredentialMQTT_BROKER_PORT           \
     }
 

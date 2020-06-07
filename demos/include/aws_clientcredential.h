@@ -31,14 +31,16 @@
  *
  * @todo Set this to the fully-qualified DNS name of your MQTT broker.
  */
-#define clientcredentialMQTT_BROKER_ENDPOINT         NULL
+//#define clientcredentialMQTT_BROKER_ENDPOINT         NULL
+extern char *clientcredentialMQTT_BROKER_ENDPOINT;
 
 /*
  * @brief Host name.
  *
  * @todo Set this to the unique name of your IoT Thing.
  */
-#define clientcredentialIOT_THING_NAME               NULL
+//#define clientcredentialIOT_THING_NAME               NULL
+extern char *clientcredentialIOT_THING_NAME;
 
 /*
  * @brief Port number the MQTT broker is using.
