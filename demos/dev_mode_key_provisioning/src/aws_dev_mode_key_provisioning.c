@@ -1229,7 +1229,7 @@ CK_RV vDevModeKeyProvisioning( void )
     ProvisioningParams_t xParams;
 
     xParams.pucJITPCertificate = ( uint8_t * ) keyJITR_DEVICE_CERTIFICATE_AUTHORITY_PEM;
-#if 1
+#if 0
     xParams.pucClientPrivateKey = ( uint8_t * ) keyCLIENT_PRIVATE_KEY_PEM;
     xParams.pucClientCertificate = ( uint8_t * ) keyCLIENT_CERTIFICATE_PEM;
 #else

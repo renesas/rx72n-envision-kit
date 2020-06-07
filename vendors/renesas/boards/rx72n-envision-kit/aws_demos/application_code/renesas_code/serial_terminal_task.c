@@ -334,7 +334,9 @@ void serial_terminal_task( void * pvParameters )
 											}
 
 						        			R_SFD_Open();
-						        			if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)target, strlen(target), (uint8_t *)sci_buffer, strlen((const char *)sci_buffer)))
+						        			sci_buffer[current_buffer_pointer] = 0;
+						        			/* +1 means '\0' as a string terminator */
+						        			if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)target, strlen(target), (uint8_t *)sci_buffer, strlen((const char *)sci_buffer) + 1))
 						        			{
 							        			sprintf(message_buffer, "stored data into dataflash correctly.\n");
 								        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
