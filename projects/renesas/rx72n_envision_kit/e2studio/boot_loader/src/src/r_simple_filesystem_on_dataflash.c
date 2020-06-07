@@ -356,6 +356,7 @@ sfd_err_t R_SFD_GetObjectValue( SFD_HANDLE xHandle,
     {
         *data = &sfd_control_block_data_image.data.local_storage[sfd_control_block_data_image.data.sfd_data[xHandle].local_storage_index];
         *data_length = sfd_control_block_data_image.data.sfd_data[xHandle].data_length;
+        xReturn = SFD_SUCCESS;
     }
     return xReturn;
 }
