@@ -193,7 +193,7 @@ void serial_terminal_task( void * pvParameters )
     char timezone_label[] = "timezone";
 	char client_private_key_label[] = "client_private_key";
 	char client_certificate_label[] = "client_certificate";
-	char iot_things_name_label[] = "iot_things_name";
+	char iot_things_name_label[] = "iot_thing_name";
 	char mqtt_broker_endpoint_label[] = "mqtt_broker_endpoint";
 
 	SFD_HANDLE sfd_handle_timezone, sfd_handle_tmp;
@@ -378,7 +378,7 @@ void serial_terminal_task( void * pvParameters )
 				        			}
 				        			R_SFD_Close();
 				        		}
-				        		else if((!strcmp((const char *)arg3, "iotthingsname")))
+				        		else if((!strcmp((const char *)arg3, "iotthingname")))
 				        		{
 				        			R_SFD_Open();
 				        			/* +1 means '\0' as a string terminator */
