@@ -276,7 +276,7 @@ void serial_terminal_task( void * pvParameters )
 		        		break;
 		        	case COMMAND_TIMEZONE:
 	        			R_SFD_Open();
-		        		sfd_handle_timezone = R_SFD_SaveObject((uint8_t *)timezone_label, strlen(timezone_label), arg1, strlen((char *)arg1));
+		        		sfd_handle_timezone = R_SFD_SaveObject((uint8_t *)timezone_label, strlen(timezone_label), arg1, strlen((char *)arg1) + 1); /* +1 means string terminator '\0' */
 		        		R_SFD_GetObjectValue(sfd_handle_timezone, (uint8_t **)&timezone, &timezone_length);
 			            if(SYS_TIME_SUCCESS == R_SYS_TIME_ConvertUnixTimeToSystemTime(task_info->sys_time.unix_time, &task_info->sys_time, timezone))
 			            {

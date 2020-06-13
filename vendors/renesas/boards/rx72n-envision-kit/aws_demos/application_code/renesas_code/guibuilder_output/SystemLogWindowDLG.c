@@ -164,7 +164,6 @@ WM_HWIN CreateSystemLogWindow(void) {
 void display_syslog_putstring(WM_HWIN hWin_handle, char *string);
 void display_syslog_putstring(WM_HWIN hWin_handle, char *string)
 {
-#if 0
   WM_HWIN hItem;
   hItem = WM_GetDialogItem(hWin_handle, ID_MULTIEDIT_0);
   if((MULTIEDIT_GetTextSize(hItem) + strlen(string)) > MULTIEDIT_MAX_NUM_CHARS)
@@ -173,7 +172,6 @@ void display_syslog_putstring(WM_HWIN hWin_handle, char *string)
   }
   MULTIEDIT_AddText(hItem, string);
   MULTIEDIT_SetCursorOffset(hItem, MULTIEDIT_GetTextSize(hItem));
-#endif
 }
 // USER END
 
