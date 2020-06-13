@@ -34,5 +34,6 @@
  * "...base64 data...\n"
  * "-----END CERTIFICATE-----\n";
  */
-static const char signingcredentialSIGNING_CERTIFICATE_PEM[] = "";
+//static const char signingcredentialSIGNING_CERTIFICATE_PEM[] = "";
+extern char *signingcredentialSIGNING_CERTIFICATE_PEM;
 #endif
