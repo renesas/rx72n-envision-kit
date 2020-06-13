@@ -584,7 +584,7 @@ static uint8_t * prvPAL_ReadAndAssumeCertificate( const uint8_t * const pucCertN
                     ( const char * ) pucCertName );
 
         /* Allocate memory for the signer certificate plus a terminating zero so we can copy it and return to the caller. */
-        ulCertSize = sizeof( signingcredentialSIGNING_CERTIFICATE_PEM );
+        ulCertSize = strlen( signingcredentialSIGNING_CERTIFICATE_PEM );
         pucSignerCert = pvPortMalloc( ulCertSize + 1 );                       /*lint !e9029 !e9079 !e838 malloc proto requires void*. */
         pucCertData = ( uint8_t * ) signingcredentialSIGNING_CERTIFICATE_PEM; /*lint !e9005 we don't modify the cert but it could be set by PKCS11 so it's not const. */
 

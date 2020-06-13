@@ -29,12 +29,12 @@ typedef enum sfd_err_t
 
 typedef uint32_t SFD_HANDLE;
 
-#define SFD_CONTROL_BLOCK_SIZE 4096
+#define SFD_CONTROL_BLOCK_SIZE 6144
 
 #define SFD_HANDLE_INVALID 0xffffffff
 
 #define SFD_HANDLES_LABEL_MAX_LENGTH 40
-#define SFD_OBJECT_HANDLES_NUM 6
+#define SFD_OBJECT_HANDLES_NUM 10
 
 #define SFD_SHA256_LENGTH 32
 
@@ -57,7 +57,7 @@ typedef struct _sfd_descriptor
 #define SFD_MIRROR_SECTION_NAME _SYSTEM_CONFIG_MIRROR
 
 /******************************************************************************
- Interface funcsions
+ Interface functions
  ******************************************************************************/
 sfd_err_t R_SFD_Open(void);
 SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data, uint32_t data_length);

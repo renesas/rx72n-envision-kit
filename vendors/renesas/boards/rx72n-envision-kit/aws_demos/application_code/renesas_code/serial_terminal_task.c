@@ -190,11 +190,12 @@ void serial_terminal_task( void * pvParameters )
     uint32_t current_buffer_pointer = 0;
     uint8_t *command, *arg1, *arg2, *arg3, *arg4;
 
-    char timezone_label[] = "timezone";
-	char client_private_key_label[] = "client_private_key";
-	char client_certificate_label[] = "client_certificate";
-	char iot_things_name_label[] = "iot_thing_name";
-	char mqtt_broker_endpoint_label[] = "mqtt_broker_endpoint";
+    static const char timezone_label[] = "timezone";
+    static const char client_private_key_label[] = "client_private_key";
+    static const char client_certificate_label[] = "client_certificate";
+    static const char iot_thing_name_label[] = "iot_thing_name";
+    static const char mqtt_broker_endpoint_label[] = "mqtt_broker_endpoint";
+	static const char code_signer_certificate_label[] = "code_signer_certificate";
 
 	SFD_HANDLE sfd_handle_timezone, sfd_handle_tmp;
 	uint8_t *timezone;
@@ -308,7 +309,7 @@ void serial_terminal_task( void * pvParameters )
 		        		{
 			        		if(!strcmp((const char *)arg2, "aws"))
 			        		{
-				        		if((!strcmp((const char *)arg3, "clientprivatekey")) || (!strcmp((const char *)arg3, "clientcertificate")))
+				        		if((!strcmp((const char *)arg3, "clientprivatekey")) || (!strcmp((const char *)arg3, "clientcertificate"))  || (!strcmp((const char *)arg3, "codesignercertificate")))
 				        		{
 				        			current_buffer_pointer = 0;
 								    memset(sci_buffer, 0, SCI_BUFFER_SIZE);
@@ -322,11 +323,15 @@ void serial_terminal_task( void * pvParameters )
 											char *target;
 											if((!strcmp((const char *)arg3, "clientprivatekey")) && strstr(sci_buffer, "-----END RSA PRIVATE KEY-----\n"))
 											{
-												target = client_private_key_label;
+												target = (char *)client_private_key_label;
 											}
 											else if((!strcmp((const char *)arg3, "clientcertificate")) && strstr(sci_buffer, "-----END CERTIFICATE-----\n"))
 											{
-												target = client_certificate_label;
+												target = (char *)client_certificate_label;
+											}
+											else if((!strcmp((const char *)arg3, "codesignercertificate")) && strstr(sci_buffer, "-----END CERTIFICATE-----\n"))
+											{
+												target = (char *)code_signer_certificate_label;
 											}
 											else
 											{
@@ -382,7 +387,7 @@ void serial_terminal_task( void * pvParameters )
 				        		{
 				        			R_SFD_Open();
 				        			/* +1 means '\0' as a string terminator */
-				        			if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)iot_things_name_label, strlen(iot_things_name_label), (uint8_t *)arg4, strlen((const char *)arg4) + 1))
+				        			if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)iot_thing_name_label, strlen(iot_thing_name_label), (uint8_t *)arg4, strlen((const char *)arg4) + 1))
 				        			{
 					        			sprintf(message_buffer, "stored data into dataflash correctly.\n");
 						        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
@@ -426,6 +431,10 @@ void serial_terminal_task( void * pvParameters )
 				        			message_buffer[data_length] = 0;
 					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 					        		vTaskDelay(100); /* 長い文字列をSCI(UART)出力した際に最後のほうが出力されない。完了待ちの方法が不明なためとりあえず時間待ち */
+				        			sprintf(message_buffer, "\n");
+					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+				        			sprintf(message_buffer, "data_length(includes string terminator 1byte zero) = %d", data_length);
+					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 				        			sprintf(message_buffer, "\n\n");
 					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 		        				}
