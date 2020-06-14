@@ -124,6 +124,7 @@ R_BSP_ATTRIB_SECTION_CHANGE(C, SFD_MIRROR_SECTION_NAME , 1)
 static const SFD_CONTROL_BLOCK sfd_control_block_data_mirror = {SFD_CONTROL_BLOCK_INITIAL_DATA};
 R_BSP_ATTRIB_SECTION_CHANGE_END
 
+static void update_dataflash_data(void);
 static void update_dataflash_data_from_image(void);
 static void update_dataflash_data_mirror_from_image(void);
 static void check_dataflash_area(uint32_t retry_counter);
@@ -283,39 +284,8 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
 		sfd_control_block_data_image.data.sfd_data[xHandle].xHandle = xHandle;
 		memcpy(&sfd_control_block_data_image.data.local_storage[total_stored_data_size], data, data_length);
 
-		/* update the hash */
-#if defined USE_MBEDTLS
-		mbedtls_sha256_starts_ret(&ctx, 0); /* 0 means SHA256 context */
-		mbedtls_sha256_update_ret(&ctx, (unsigned char *)&sfd_control_block_data_image.data, sizeof(sfd_control_block_data.data));
-		mbedtls_sha256_finish_ret(&ctx, hash_sha256);
-#elif  defined USE_TINYCRYPT
-		tc_sha256_init(s);
-		tc_sha256_update(s, (unsigned char *)&sfd_control_block_data_image.data, sizeof(sfd_control_block_data.data));
-		tc_sha256_final(hash_sha256, s);
-#endif
-		memcpy(sfd_control_block_data_image.hash_sha256, hash_sha256, sizeof(hash_sha256));
-
-		/* update data from ram to storage */
-		data_flash_update_status_initialize();
-		while ( update_data_flash_control_block.status < SFD_DATA_FLASH_UPDATE_STATE_FINALIZE_COMPLETED )
-		{
-			update_dataflash_data_from_image();
-		}
-		if (update_data_flash_control_block.status == SFD_DATA_FLASH_UPDATE_STATE_ERROR)
-		{
-			SFD_DEBUG_PRINT(("ERROR: Update data flash data from image\r\n"));
-			while(1);
-		}
-		data_flash_update_status_initialize();
-		while ( update_data_flash_control_block.status < SFD_DATA_FLASH_UPDATE_STATE_FINALIZE_COMPLETED )
-		{
-			update_dataflash_data_mirror_from_image();
-		}
-		if (update_data_flash_control_block.status == SFD_DATA_FLASH_UPDATE_STATE_ERROR)
-		{
-			SFD_DEBUG_PRINT(("ERROR: Update data flash data mirror from image\r\n"));
-			while(1);
-		}
+		/* update dataflash data */
+		update_dataflash_data();
     }
     else
     {
@@ -418,6 +388,26 @@ sfd_err_t R_SFD_ResetScan(void)
 	return SFD_SUCCESS;
 }
 
+sfd_err_t R_SFD_EraseAll(void)
+{
+	sfd_err_t xReturn = SFD_FATAL_ERROR;
+
+    /* copy data from storage to ram */
+    memcpy(&sfd_control_block_data_image, (void *)&sfd_control_block_data, sizeof(sfd_control_block_data_image));
+
+    for (int i = 0; i < SFD_OBJECT_HANDLES_NUM; i++)
+    {
+    	sfd_control_block_data_image.data.sfd_data[i].data_length = 0;
+    	memset(sfd_control_block_data_image.data.sfd_data[i].label, 0, sizeof(sfd_control_block_data_image.data.sfd_data[i].label));
+    	sfd_control_block_data_image.data.sfd_data[i].label_length = 0;
+    	sfd_control_block_data_image.data.sfd_data[i].local_storage_index = 0;
+    	sfd_control_block_data_image.data.sfd_data[i].status = SFD_DATA_STATUS_EMPTY;
+    	sfd_control_block_data_image.data.sfd_data[i].xHandle = 0;
+    }
+	/* update dataflash data */
+	update_dataflash_data();
+}
+
 uint32_t R_SFD_ReadPysicalSize(void)
 {
 	return (FLASH_DF_BLOCK_SIZE * FLASH_NUM_BLOCKS_DF);
@@ -443,6 +433,58 @@ uint32_t R_SFD_ReadFreeSize(void)
     }
 
 	return (SFD_LOCAL_STORAGE_SIZE - total_size);
+}
+
+static void update_dataflash_data(void)
+{
+    uint8_t hash_sha256[SFD_SHA256_LENGTH];
+#if defined USE_MBEDTLS
+    mbedtls_sha256_context ctx;
+#elif  defined USE_TINYCRYPT
+    TCSha256State_t s;
+    struct tc_sha256_state_struct tc_sha256_state;
+    s = &tc_sha256_state;
+#endif
+
+#if defined USE_MBEDTLS
+    mbedtls_sha256_init(&ctx);
+#elif  defined USE_TINYCRYPT
+    tc_sha256_init(s);
+#endif
+
+	/* update the hash */
+#if defined USE_MBEDTLS
+	mbedtls_sha256_starts_ret(&ctx, 0); /* 0 means SHA256 context */
+	mbedtls_sha256_update_ret(&ctx, (unsigned char *)&sfd_control_block_data_image.data, sizeof(sfd_control_block_data.data));
+	mbedtls_sha256_finish_ret(&ctx, hash_sha256);
+#elif  defined USE_TINYCRYPT
+	tc_sha256_init(s);
+	tc_sha256_update(s, (unsigned char *)&sfd_control_block_data_image.data, sizeof(sfd_control_block_data.data));
+	tc_sha256_final(hash_sha256, s);
+#endif
+	memcpy(sfd_control_block_data_image.hash_sha256, hash_sha256, sizeof(hash_sha256));
+
+	/* update data from ram to storage */
+	data_flash_update_status_initialize();
+	while ( update_data_flash_control_block.status < SFD_DATA_FLASH_UPDATE_STATE_FINALIZE_COMPLETED )
+	{
+		update_dataflash_data_from_image();
+	}
+	if (update_data_flash_control_block.status == SFD_DATA_FLASH_UPDATE_STATE_ERROR)
+	{
+		SFD_DEBUG_PRINT(("ERROR: Update data flash data from image\r\n"));
+		while(1);
+	}
+	data_flash_update_status_initialize();
+	while ( update_data_flash_control_block.status < SFD_DATA_FLASH_UPDATE_STATE_FINALIZE_COMPLETED )
+	{
+		update_dataflash_data_mirror_from_image();
+	}
+	if (update_data_flash_control_block.status == SFD_DATA_FLASH_UPDATE_STATE_ERROR)
+	{
+		SFD_DEBUG_PRINT(("ERROR: Update data flash data mirror from image\r\n"));
+		while(1);
+	}
 }
 
 static void update_dataflash_data_from_image(void)

@@ -444,6 +444,12 @@ void serial_terminal_task( void * pvParameters )
 		        				}
 		        			}
 		        		}
+		        		else if(!strcmp((const char *)arg1, "erase"))
+		        		{
+		        			R_SFD_EraseAll();
+		        			sprintf(message_buffer, "completed erasing all flash.\n");
+			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+		        		}
 		        		else
 		        		{
 		        			sprintf(message_buffer, "unknown argument1 = %s.\n", arg1);
