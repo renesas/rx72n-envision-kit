@@ -84,6 +84,8 @@ extern void sdcard_task( void * pvParameters );
 extern void gui_task( void * pvParameters );
 extern void task_manager_task( void * pvParameters );
 extern void sntp_task( void * pvParameters );
+extern void tcp_send_performance_task( void * pvParameters );
+extern void tcp_receive_performance_task( void * pvParameters );
 extern void serial_flash_task( void * pvParameters );
 
 extern void display_syslog_putstring(WM_HWIN hWin_handle, char *string);
@@ -133,7 +135,7 @@ void main_task(void)
     xTaskCreate(serial_terminal_task, "terminal", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.serial_terminal_task_handle);
 
     /* GUI task creation */
-    xTaskCreate(gui_task, "gui", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, configMAX_PRIORITIES, &task_info.gui_task_handle);
+    xTaskCreate(gui_task, "gui", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.gui_task_handle);
 
     /* sdcard task creation */
     xTaskCreate(sdcard_task, "sdcard", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.sdcard_task_handle);
@@ -145,6 +147,12 @@ void main_task(void)
 
     /* sntp task creation */
     xTaskCreate(sntp_task, "sntp", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.sntp_task_handle);
+
+    /* tcp send performance task creation */
+    xTaskCreate(tcp_send_performance_task, "tcp_send_performance", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, configMAX_PRIORITIES, &task_info.tcp_send_performance_task_handle);
+
+    /* tcp receive performance task creation */
+    xTaskCreate(tcp_receive_performance_task, "tcp_receive_performance", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, configMAX_PRIORITIES, &task_info.tcp_receive_performance_task_handle);
 
     /* serial flash task creation */
     xTaskCreate(serial_flash_task, "serial_flash", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.serial_flash_task_handle);
