@@ -44,6 +44,7 @@
 
 /* Renesas includes */
 #include "r_simple_filesystem_on_dataflash_if.h"
+#include "rx72n_envision_kit_system.h"
 
 /* PKCS#11 includes. */
 #include "iot_pkcs11_config.h"
@@ -1237,11 +1238,6 @@ CK_RV vDevModeKeyProvisioning( void )
     xParams.pucClientPrivateKey = ( uint8_t * ) keyCLIENT_PRIVATE_KEY_PEM;
     xParams.pucClientCertificate = ( uint8_t * ) keyCLIENT_CERTIFICATE_PEM;
 #else
-    static const char client_private_key_label[] = "client_private_key";
-    static const char client_certificate_label[] = "client_certificate";
-	static const char iot_thing_name_label[] = "iot_thing_name";
-	static const char mqtt_broker_endpoint_label[] = "mqtt_broker_endpoint";
-	static const char code_signer_certificate_label[] = "code_signer_certificate";
     uint8_t *client_private_key, *client_certificate;
     uint8_t *tmp;
     uint32_t data_length;
@@ -1249,7 +1245,6 @@ CK_RV vDevModeKeyProvisioning( void )
 	xParams.pucClientPrivateKey = NULL;
 	xParams.pucClientCertificate = NULL;
 
-    R_SFD_Open();
     if(SFD_SUCCESS == R_SFD_GetObjectValue(
     		R_SFD_FindObject((uint8_t *)client_private_key_label, strlen(client_private_key_label)),
 			&tmp,

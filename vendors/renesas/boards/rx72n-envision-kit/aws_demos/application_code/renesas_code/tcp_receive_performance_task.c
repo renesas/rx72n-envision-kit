@@ -50,6 +50,7 @@
 
 /* for RX72N Envision Kit system common header */
 #include "rx72n_envision_kit_system.h"
+#include "r_simple_filesystem_on_dataflash_if.h"
 
 /* for RX Family FIT */
 #include "r_sys_time_rx_if.h"

@@ -75,3 +75,21 @@ typedef struct _task_info
 	/* for demo system time */
 	SYS_TIME sys_time;
 }TASK_INFO;
+
+#define DATAFLASH_LABEL_NAME_TIMEZONE "timezone"
+#define DATAFLASH_LABEL_NAME_CLIENT_PRIVATE_KEY "client_private_key"
+#define DATAFLASH_LABEL_NAME_CLIENT_CERTIFICATE "client_certificate"
+#define DATAFLASH_LABEL_NAME_IOT_THING_NAME "iot_thing_name"
+#define DATAFLASH_LABEL_NAME_MQTT_BROKER_ENDPOINT "mqtt_broker_endpoint"
+#define DATAFLASH_LABEL_NAME_CODE_SIGNER_CERTIFICATE "code_signer_certificate"
+#define DATAFLASH_LABEL_NAME_TCP_SEND_PERFORMANCE_SERVER_IP_ADDRESS "tcp_send_performance_server_ip_address"
+#define DATAFLASH_LABEL_NAME_TCP_SEND_PERFORMANCE_SERVER_PORT_NUMBER "tcp_send_performance_server_port_number"
+
+extern const char timezone_label[];
+extern const char client_private_key_label[];
+extern const char client_certificate_label[];
+extern const char iot_thing_name_label[];
+extern const char mqtt_broker_endpoint_label[];
+extern const char code_signer_certificate_label[];
+extern const char tcp_send_performance_server_ip_address_label[];
+extern const char tcp_send_performance_server_port_number_label[];

@@ -190,13 +190,6 @@ void serial_terminal_task( void * pvParameters )
     uint32_t current_buffer_pointer = 0;
     uint8_t *command, *arg1, *arg2, *arg3, *arg4;
 
-    static const char timezone_label[] = "timezone";
-    static const char client_private_key_label[] = "client_private_key";
-    static const char client_certificate_label[] = "client_certificate";
-    static const char iot_thing_name_label[] = "iot_thing_name";
-    static const char mqtt_broker_endpoint_label[] = "mqtt_broker_endpoint";
-	static const char code_signer_certificate_label[] = "code_signer_certificate";
-
 	SFD_HANDLE sfd_handle_timezone, sfd_handle_tmp;
 	uint8_t *timezone;
 	uint32_t timezone_length;
@@ -276,7 +269,6 @@ void serial_terminal_task( void * pvParameters )
 		        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, "\r\n");
 		        		break;
 		        	case COMMAND_TIMEZONE:
-	        			R_SFD_Open();
 		        		sfd_handle_timezone = R_SFD_SaveObject((uint8_t *)timezone_label, strlen(timezone_label), arg1, strlen((char *)arg1) + 1); /* +1 means string terminator '\0' */
 		        		R_SFD_GetObjectValue(sfd_handle_timezone, (uint8_t **)&timezone, &timezone_length);
 			            if(SYS_TIME_SUCCESS == R_SYS_TIME_ConvertUnixTimeToSystemTime(task_info->sys_time.unix_time, &task_info->sys_time, timezone))
@@ -288,7 +280,6 @@ void serial_terminal_task( void * pvParameters )
 			            {
 			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, "timezone is not accepted.\r\n");
 			            }
-	        			R_SFD_Close();
 		        		break;
 		        	case COMMAND_RESET:
 		        		software_reset();
@@ -296,14 +287,12 @@ void serial_terminal_task( void * pvParameters )
 		        	case COMMAND_DATAFLASH:
 		        		if(!strcmp((const char *)arg1, "info"))
 		        		{
-		        			R_SFD_Open();
 		        			sprintf(message_buffer, "physical size = %d bytes.\n", R_SFD_ReadPysicalSize());
 			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 		        			sprintf(message_buffer, "allocated size = %d bytes.\n", R_SFD_ReadAllocatedStorageSize());
 			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 		        			sprintf(message_buffer, "free size = %d bytes.\n", R_SFD_ReadFreeSize());
 			        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
-		        			R_SFD_Close();
 		        		}
 		        		else if(!strcmp((const char *)arg1, "write"))
 		        		{
@@ -340,7 +329,6 @@ void serial_terminal_task( void * pvParameters )
 												break;
 											}
 
-						        			R_SFD_Open();
 						        			sci_buffer[current_buffer_pointer] = 0;
 						        			/* +1 means '\0' as a string terminator */
 						        			if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)target, strlen(target), (uint8_t *)sci_buffer, strlen((const char *)sci_buffer) + 1))
@@ -353,7 +341,6 @@ void serial_terminal_task( void * pvParameters )
 							        			sprintf(message_buffer, "could not store data into dataflash.\n");
 								        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 						        			}
-						        			R_SFD_Close();
 											break;
 										}
 										if((strstr(sci_buffer, "quit")) || (strstr(sci_buffer, "exit")))
@@ -369,7 +356,6 @@ void serial_terminal_task( void * pvParameters )
 				        		}
 				        		else if((!strcmp((const char *)arg3, "mqttbrokerendpoint")))
 				        		{
-				        			R_SFD_Open();
 				        			/* +1 means '\0' as a string terminator */
 				        			if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)mqtt_broker_endpoint_label, strlen(mqtt_broker_endpoint_label), (uint8_t *)arg4, strlen((const char *)arg4) + 1))
 				        			{
@@ -381,11 +367,9 @@ void serial_terminal_task( void * pvParameters )
 					        			sprintf(message_buffer, "could not store data into dataflash.\n");
 						        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 				        			}
-				        			R_SFD_Close();
 				        		}
 				        		else if((!strcmp((const char *)arg3, "iotthingname")))
 				        		{
-				        			R_SFD_Open();
 				        			/* +1 means '\0' as a string terminator */
 				        			if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)iot_thing_name_label, strlen(iot_thing_name_label), (uint8_t *)arg4, strlen((const char *)arg4) + 1))
 				        			{
@@ -397,13 +381,40 @@ void serial_terminal_task( void * pvParameters )
 					        			sprintf(message_buffer, "could not store data into dataflash.\n");
 						        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 				        			}
-				        			R_SFD_Close();
 				        		}
 				        		else
 				        		{
 				        			sprintf(message_buffer, "unknown argument3 = %s.\n", arg3);
 					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 				        		}
+			        		}
+			        		else if((!strcmp((const char *)arg2, "tcpsendperformanceserveripaddress")))
+			        		{
+			        			/* +1 means '\0' as a string terminator */
+			        			if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)tcp_send_performance_server_ip_address_label, strlen(tcp_send_performance_server_ip_address_label), (uint8_t *)arg3, strlen((const char *)arg3) + 1))
+			        			{
+				        			sprintf(message_buffer, "stored data into dataflash correctly.\n");
+					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+			        			}
+			        			else
+			        			{
+				        			sprintf(message_buffer, "could not store data into dataflash.\n");
+					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+			        			}
+			        		}
+			        		else if((!strcmp((const char *)arg2, "tcpsendperformanceserverportnumber")))
+			        		{
+			        			/* +1 means '\0' as a string terminator */
+			        			if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)tcp_send_performance_server_port_number_label, strlen(tcp_send_performance_server_port_number_label), (uint8_t *)arg3, strlen((const char *)arg3) + 1))
+			        			{
+				        			sprintf(message_buffer, "stored data into dataflash correctly.\n");
+					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+			        			}
+			        			else
+			        			{
+				        			sprintf(message_buffer, "could not store data into dataflash.\n");
+					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+			        			}
 			        		}
 			        		else
 			        		{

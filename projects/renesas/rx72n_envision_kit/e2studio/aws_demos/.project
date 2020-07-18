@@ -155,6 +155,11 @@
 			<locationURI>AFR_HOME/vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code/main_task.c</locationURI>
 		</link>
 		<link>
+			<name>application_code/renesas_code/rx72n_envision_kit_system.c</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code/rx72n_envision_kit_system.c</locationURI>
+		</link>
+		<link>
 			<name>application_code/renesas_code/rx72n_envision_kit_system.h</name>
 			<type>1</type>
 			<locationURI>AFR_HOME/vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code/rx72n_envision_kit_system.h</locationURI>

@@ -50,6 +50,7 @@
 
 /* for RX72N Envision Kit system common header */
 #include "rx72n_envision_kit_system.h"
+#include "r_simple_filesystem_on_dataflash_if.h"
 
 /* for RX Family FIT */
 #include "r_sys_time_rx_if.h"
@@ -74,11 +75,47 @@ static uint8_t send_buffer[SEND_DATA_UNIT_LENGTH];
 void tcp_send_performance_task( void * pvParameters )
 {
 	Socket_t xSocket;
-	uint32_t iperf_server_ip_address;
+	uint32_t tcp_send_performance_server_ip_address;
 	struct freertos_sockaddr xIperfServerAddress;
 	BaseType_t return_value;
+	SFD_HANDLE sfd_handle_tcp_send_performance_server_ip_address;
+	uint8_t *tcp_send_performance_server_ip_address_string;
+	uint32_t tcp_send_performance_server_ip_address_string_length;
 
-    while(1)
+	SFD_HANDLE sfd_handle_tcp_send_performance_server_port_number;
+	uint8_t *tcp_send_performance_server_port_number_string;
+	uint32_t tcp_send_performance_server_port_number_string_length;
+	uint16_t tcp_send_performance_server_port_number;
+	uint32_t ip_address1, ip_address2, ip_address3, ip_address4;
+
+	uint8_t parameter_not_found_flag = 0;
+
+	sfd_handle_tcp_send_performance_server_ip_address = R_SFD_FindObject(tcp_send_performance_server_ip_address_label, strlen((char *)tcp_send_performance_server_ip_address_label));
+	if(sfd_handle_tcp_send_performance_server_ip_address == SFD_HANDLE_INVALID)
+	{
+        configPRINTF( ( "no parameter exist: %s\r\n", tcp_send_performance_server_ip_address_label ) );
+		parameter_not_found_flag++;
+	}
+	else
+	{
+		R_SFD_GetObjectValue(sfd_handle_tcp_send_performance_server_ip_address, (uint8_t **)&tcp_send_performance_server_ip_address_string, &tcp_send_performance_server_ip_address_string_length);
+        configPRINTF( ( "parameter found: %s = %s\r\n", tcp_send_performance_server_ip_address_label, tcp_send_performance_server_ip_address_string ) );
+	}
+
+	sfd_handle_tcp_send_performance_server_port_number = R_SFD_FindObject(tcp_send_performance_server_port_number_label, strlen((char *)tcp_send_performance_server_port_number_label));
+	if(sfd_handle_tcp_send_performance_server_port_number == SFD_HANDLE_INVALID)
+	{
+        configPRINTF( ( "no parameter exist: %s\r\n", tcp_send_performance_server_port_number_label ) );
+		parameter_not_found_flag++;
+	}
+	else
+	{
+		R_SFD_GetObjectValue(sfd_handle_tcp_send_performance_server_port_number, (uint8_t **)&tcp_send_performance_server_port_number_string, &tcp_send_performance_server_port_number_string_length);
+		sscanf((char *)tcp_send_performance_server_port_number_string, "%d", &tcp_send_performance_server_port_number);
+        configPRINTF( ( "parameter found: %s = %d\r\n", tcp_send_performance_server_port_number_label, tcp_send_performance_server_port_number ) );
+	}
+
+    if(!parameter_not_found_flag)
     {
         /* We should wait for the network to be up before getting time. */
         while( FreeRTOS_IsNetworkUp() == pdFALSE )
@@ -93,9 +130,10 @@ void tcp_send_performance_task( void * pvParameters )
         configASSERT( xSocket != FREERTOS_INVALID_SOCKET );
 
         /* Connect to the iperf server. */
-        iperf_server_ip_address = FreeRTOS_inet_addr_quick( 192, 168, 1, 6 );
-        xIperfServerAddress.sin_port = FreeRTOS_htons( 5001 );
-        xIperfServerAddress.sin_addr = iperf_server_ip_address;
+        sscanf(tcp_send_performance_server_ip_address_string, "%d.%d.%d.%d", &ip_address1, &ip_address2, &ip_address3, &ip_address4);
+        tcp_send_performance_server_ip_address = FreeRTOS_inet_addr_quick(ip_address1, ip_address2, ip_address3, ip_address4);
+        xIperfServerAddress.sin_port = FreeRTOS_htons( tcp_send_performance_server_port_number );
+        xIperfServerAddress.sin_addr = tcp_send_performance_server_ip_address;
 
         if( FreeRTOS_connect( xSocket, &xIperfServerAddress, sizeof( xIperfServerAddress ) ) == 0 )
         {
@@ -120,11 +158,10 @@ void tcp_send_performance_task( void * pvParameters )
         }
         configPRINTF( ( "Shutting down connection to iperf server.\r\n" ) );
         SOCKETS_Shutdown( xSocket, SOCKETS_SHUT_RDWR );
-
-        /* finish */
-        while(1)
-        {
-        	vTaskDelay(0xffffffff);
-        }
+    }
+    /* finish */
+    while(1)
+    {
+    	vTaskDelay(0xffffffff);
     }
 }
