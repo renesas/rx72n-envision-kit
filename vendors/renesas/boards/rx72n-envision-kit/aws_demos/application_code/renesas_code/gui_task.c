@@ -53,6 +53,7 @@
 /**********************************************************************************************************************
 Typedef definitions
 **********************************************************************************************************************/
+#define DEMO_NAME_D2_AUDIO_RECORD_AND_PLAY "D2 Audio Record And Play"
 #define DEMO_NAME_FIRMWARE_UPDATE_VIA_SD_CARD "Firmware Update via SD Card"
 #define DEMO_NAME_SYSTEM_LOG "Amazon FreeRTOS Log"
 #define DEMO_NAME_TITLE_LOGO "Title Logo"
@@ -148,6 +149,9 @@ void gui_task( void * pvParameters )
 	task_info->hWin_frame = CreateFrameWindow();
 
 	/* generate sub windows */
+	task_info->hWin_d2_audio = CreateD2AudioDemo();
+	demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_d2_audio, task_info->hWin_frame, DEMO_NAME_D2_AUDIO_RECORD_AND_PLAY);
+
 	task_info->hWin_system_log = CreateSystemLogWindow();
 	demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_system_log, task_info->hWin_frame, DEMO_NAME_SYSTEM_LOG);
 

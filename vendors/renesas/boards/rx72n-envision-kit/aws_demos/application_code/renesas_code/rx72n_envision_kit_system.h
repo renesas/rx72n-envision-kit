@@ -66,6 +66,7 @@ typedef struct _task_info
 
 	/* for emWin */
 	WM_HWIN hWin_serial_terminal;
+	WM_HWIN hWin_d2_audio;
 	WM_HWIN hWin_firmware_update_via_sd_card;
 	WM_HWIN hWin_task_manager;
 	WM_HWIN hWin_system_log;
