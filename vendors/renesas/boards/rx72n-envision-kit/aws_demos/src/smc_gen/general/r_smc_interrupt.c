@@ -19,16 +19,32 @@
 
 /***********************************************************************************************************************
 * File Name    : r_smc_interrupt.c
-* Version      : 1.1.0
+* Version      : 1.2.0
 * Device(s)    : R5F572NNHxFB
-* Description  : This file implements interrupt setting
-* Creation Date: 2020-04-24
+* Description  : This file implements interrupt setting.
+* Creation Date: 2020-11-20
 ***********************************************************************************************************************/
+
+/***********************************************************************************************************************
+Pragma directive
+***********************************************************************************************************************/
+/* Start user code for pragma. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
+
 /***********************************************************************************************************************
 Includes
 ***********************************************************************************************************************/
+#include "r_cg_macrodriver.h"
 #include "r_smc_interrupt.h"
-#include "platform.h"
+/* Start user code for include. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
+#include "r_cg_userdefine.h"
+
+/***********************************************************************************************************************
+Global variables and functions
+***********************************************************************************************************************/
+/* Start user code for global. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
 * Function Name: R_Interrupt_Create
@@ -50,3 +66,5 @@ void R_Interrupt_Create(void)
     IEN(ICU,GROUPAL1) = 1U;
 }
 
+/* Start user code for adding. Do not edit comment generated here */
+/* End user code. Do not edit comment generated here */

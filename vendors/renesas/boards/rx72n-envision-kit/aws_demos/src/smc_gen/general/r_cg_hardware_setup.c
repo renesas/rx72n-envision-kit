@@ -19,10 +19,10 @@
 
 /***********************************************************************************************************************
 * File Name    : r_cg_hardware_setup.c
-* Version      : 1.0.0
+* Version      : 1.0.101
 * Device(s)    : R5F572NNHxFB
 * Description  : Initialization file for code generation configurations.
-* Creation Date: 2020-04-24
+* Creation Date: 2020-11-20
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -76,6 +76,9 @@ void R_Systeminit(void)
     MPC.PWPR.BIT.B0WI = 0U;
     MPC.PWPR.BIT.PFSWE = 1U;
 
+    /* Write 0 to the target bits in the POECR2 registers */
+    POE3.POECR2.WORD = 0x0000U;
+
     /* Initialize clocks settings */
     R_CGC_Create();
 
@@ -94,5 +97,5 @@ void R_Systeminit(void)
 }
 
 /* Start user code for adding. Do not edit comment generated here */
-/* End user code. Do not edit comment generated here */   
+/* End user code. Do not edit comment generated here */
 

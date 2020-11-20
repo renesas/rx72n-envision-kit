@@ -19,10 +19,10 @@
 
 /***********************************************************************************************************************
 * File Name    : r_smc_cgc.h
-* Version      : 1.6.0
+* Version      : 1.6.102
 * Device(s)    : R5F572NNHxFB
 * Description  : CGC setting header file.
-* Creation Date: 2020-04-24
+* Creation Date: 2020-11-20
 ***********************************************************************************************************************/
 
 #ifndef SMC_CGC_H
@@ -169,7 +169,7 @@ Typedef definitions
 Global functions
 ***********************************************************************************************************************/
 void R_CGC_Create(void);
-void R_CGC_Create_UserInit();
+void R_CGC_Create_UserInit(void);
 /* Start user code for function. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 #endif
