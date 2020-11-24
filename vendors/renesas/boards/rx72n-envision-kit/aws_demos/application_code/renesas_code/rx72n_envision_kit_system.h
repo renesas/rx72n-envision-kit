@@ -63,6 +63,7 @@ typedef struct _task_info
 	TaskHandle_t tcp_send_performance_task_handle;
 	TaskHandle_t tcp_receive_performance_task_handle;
 	TaskHandle_t serial_flash_task_handle;
+	TaskHandle_t audio_task_handle;
 
 	/* for emWin */
 	WM_HWIN hWin_serial_terminal;

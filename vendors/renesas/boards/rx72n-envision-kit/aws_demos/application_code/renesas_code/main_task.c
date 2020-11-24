@@ -87,6 +87,7 @@ extern void sntp_task( void * pvParameters );
 extern void tcp_send_performance_task( void * pvParameters );
 extern void tcp_receive_performance_task( void * pvParameters );
 extern void serial_flash_task( void * pvParameters );
+extern void audio_task( void * pvParameters );
 
 extern void display_syslog_putstring(WM_HWIN hWin_handle, char *string);
 
@@ -156,6 +157,9 @@ void main_task(void)
 
     /* serial flash task creation */
     xTaskCreate(serial_flash_task, "serial_flash", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.serial_flash_task_handle);
+
+    /* audio task creation */
+    xTaskCreate(audio_task, "audio_task", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.audio_task_handle);
 
     /* wait completing gui initializing */
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
