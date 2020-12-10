@@ -1640,5 +1640,35 @@
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
         </configuration>
+        <configuration inuse="true" name="r_cmtw_rx">
+            <component description="依存モジュール: r_bsp バージョン 5.50&#10;This software provides a unified, abstracted interface for setting up the CMTW peripheral generating timer ticks. The sofware also allows output compare and input capture operations on CMTW." detailDescription="CMTW Driver" display="r_cmtw_rx" id="r_cmtw_rx2.20" version="2.20">
+                <gridItem id="TIC0" selectedIndex="0"/>
+                <gridItem id="TIC1" selectedIndex="0"/>
+                <gridItem id="TOC0" selectedIndex="0"/>
+                <gridItem id="TOC1" selectedIndex="0"/>
+                <gridItem id="CMTW0" selectedIndex="0"/>
+                <gridItem id="TIC2" selectedIndex="0"/>
+                <gridItem id="TIC3" selectedIndex="0"/>
+                <gridItem id="TOC2" selectedIndex="0"/>
+                <gridItem id="TOC3" selectedIndex="0"/>
+                <gridItem id="CMTW1" selectedIndex="0"/>
+                <gridItem id="CMTW_CFG_PARAM_CHECKING_ENABLE" selectedIndex="0"/>
+                <gridItem id="CMTW_CGF_REQUIRE_LOCK" selectedIndex="1"/>
+                <gridItem id="CMTW_CFG_USE_CH0" selectedIndex="1"/>
+                <gridItem id="CMTW_CFG_USE_CH1" selectedIndex="0"/>
+                <gridItem id="CMTW_CFG_IPR_CM_CH0" selectedIndex="3"/>
+                <gridItem id="CMTW_CFG_IPR_OC0_CH0" selectedIndex="3"/>
+                <gridItem id="CMTW_CFG_IPR_OC1_CH0" selectedIndex="3"/>
+                <gridItem id="CMTW_CFG_IPR_IC0_CH0" selectedIndex="3"/>
+                <gridItem id="CMTW_CFG_IPR_IC1_CH0" selectedIndex="3"/>
+                <gridItem id="CMTW_CFG_IPR_CM_CH1" selectedIndex="3"/>
+                <gridItem id="CMTW_CFG_IPR_OC0_CH1" selectedIndex="3"/>
+                <gridItem id="CMTW_CFG_IPR_OC1_CH1" selectedIndex="3"/>
+                <gridItem id="CMTW_CFG_IPR_IC0_CH1" selectedIndex="3"/>
+                <gridItem id="CMTW_CFG_IPR_IC1_CH1" selectedIndex="3"/>
+            </component>
+            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+        </configuration>
     </tool>
 </smc>
