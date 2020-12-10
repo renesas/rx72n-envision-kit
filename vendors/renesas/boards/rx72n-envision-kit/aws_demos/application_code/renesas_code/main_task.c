@@ -159,7 +159,7 @@ void main_task(void)
     xTaskCreate(serial_flash_task, "serial_flash", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.serial_flash_task_handle);
 
     /* audio task creation */
-    xTaskCreate(audio_task, "audio_task", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.audio_task_handle);
+    xTaskCreate(audio_task, "audio_task", 2048, &task_info, tskIDLE_PRIORITY, &task_info.audio_task_handle);
 
     /* wait completing gui initializing */
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
@@ -169,6 +169,7 @@ void main_task(void)
 	xTaskNotifyGive(task_info.sdcard_task_handle);
 	xTaskNotifyGive(task_info.task_manager_task_handle);
 	xTaskNotifyGive(task_info.serial_flash_task_handle);
+	xTaskNotifyGive(task_info.audio_task_handle);
 
     /* main loop */
     while(1)

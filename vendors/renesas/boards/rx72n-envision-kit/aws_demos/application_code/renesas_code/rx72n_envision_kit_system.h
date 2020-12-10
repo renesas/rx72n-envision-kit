@@ -78,6 +78,9 @@ typedef struct _task_info
 	SYS_TIME sys_time;
 }TASK_INFO;
 
+extern uint8_t g_d2audio_play_status;
+extern uint8_t g_d2audio_play_request;
+
 #define DATAFLASH_LABEL_NAME_TIMEZONE "timezone"
 #define DATAFLASH_LABEL_NAME_CLIENT_PRIVATE_KEY "client_private_key"
 #define DATAFLASH_LABEL_NAME_CLIENT_CERTIFICATE "client_certificate"

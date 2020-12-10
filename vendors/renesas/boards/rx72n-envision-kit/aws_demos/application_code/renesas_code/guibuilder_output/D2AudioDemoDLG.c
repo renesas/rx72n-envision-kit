@@ -100,6 +100,10 @@ extern void firmware_update_request(char *string);
 extern bool is_firmupdating(void);
 extern void SetSwbankchangeRebootBotton(void);
 extern void firmware_update_request(char *string);
+extern void d2audio_play_start(void);
+extern void d2audio_play_stop(void);
+extern void d2audio_record_start(void);
+extern void d2audio_record_stop(void);
 
 WM_HWIN hWinD2AudioRecordAndPlayWindow;
 // USER END
@@ -147,7 +151,8 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         break;
       case WM_NOTIFICATION_RELEASED:
         // USER START (Optionally insert code for reacting on notification message)
-          //bank_swap_with_software_reset();	// for initial firmware
+        d2audio_play_stop();
+        d2audio_record_stop();
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)
@@ -198,6 +203,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         break;
       case WM_NOTIFICATION_RELEASED:
         // USER START (Optionally insert code for reacting on notification message)
+        d2audio_play_start();
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)
@@ -212,6 +218,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         break;
       case WM_NOTIFICATION_RELEASED:
         // USER START (Optionally insert code for reacting on notification message)
+        d2audio_record_start();
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)
