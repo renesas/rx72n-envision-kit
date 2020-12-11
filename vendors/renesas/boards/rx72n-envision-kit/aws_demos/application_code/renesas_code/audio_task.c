@@ -50,8 +50,8 @@
  *********************************************************************************************************************/
 #define MEMS_MIC            (1)                 /* Output signal from microphone */
 #define SINE_WAVE           (0)                 /* Output signal sine wave data */
-//#define OUTPUT_SIGNAL_FROM  SINE_WAVE
-#define OUTPUT_SIGNAL_FROM  MEMS_MIC
+#define OUTPUT_SIGNAL_FROM  SINE_WAVE
+//#define OUTPUT_SIGNAL_FROM  MEMS_MIC
 
 /* PCM Buffer definition */
 #define BUFSIZE             (1024)              /* PCM Buffer Size (1sample = stareo) */
@@ -195,6 +195,7 @@ static volatile stop_flag_t stop_flag_record;
 /* request flag for GUI */
 uint8_t g_d2audio_play_request = 0;
 uint8_t g_d2audio_record_request = 0;
+int32_t g_previous_sd_detect_status = -1;
 
 /**********************************************************************************************************************
  Exported global variables
@@ -210,6 +211,9 @@ static void set_buf_info( const buf_info_t * p_buf_info, const int32_t * p_buf, 
 static void audio_trap( audio_error_t error_code );
 static void led_blink( void );
 
+extern void d2audio_list_add(char *pstring);
+extern void d2audio_file_search(void);
+extern int32_t get_sdc_sd_detection(void);
 
 /**********************************************************************************************************************
  * Function Name: audio_task
@@ -222,11 +226,14 @@ void audio_task( void * pvParameters )
     cmtw_channel_settings_t cmtw_config;
     uint32_t volatile buf_size;
     ssi_regs_t *p_ssi_reg;
+    int32_t sd_detect_status;
 
     /* PCM buffer size initialization. */
     buf_size = (BUFSIZE*CHANNELS)*4;
     g_pcmbuf_tx_malloc = NOT_EXECUTE;
+#if OUTPUT_SIGNAL_FROM == MEMS_MIC
     g_pcmbuf_rx_malloc = NOT_EXECUTE;
+#endif
 
     /* Initialize port for LED */
     PORT4.PDR.BYTE = 1;
@@ -237,6 +244,12 @@ void audio_task( void * pvParameters )
     /*** PCM data transfer operation ***/
     while(1)
     {
+    	sd_detect_status = get_sdc_sd_detection();
+    	if (g_previous_sd_detect_status != sd_detect_status)
+    	{
+    		g_previous_sd_detect_status = sd_detect_status;
+    	    d2audio_file_search();
+    	}
         if (FLAG_STOP == stop_flag_play )
         {
             if (1 == g_d2audio_play_request)
@@ -598,12 +611,13 @@ static void ssi_read( void )
  *********************************************************************************************************************/
 static void ssi_stop(void)
 {
+#if OUTPUT_SIGNAL_FROM == MEMS_MIC
     /*** PCM data transfer stop operation ***/
     if ( SSI_SUCCESS != R_SSI_Stop( SSI_CH0 ) )
     {
         audio_trap(SSI_STOP_ERROR_CH0);
     }
-
+#endif
     if ( SSI_SUCCESS != R_SSI_Stop( SSI_CH1 ) )
     {
         audio_trap(SSI_STOP_ERROR_CH1);
@@ -613,10 +627,12 @@ static void ssi_stop(void)
 //    init_port_ssi0();
 
     /* SSI close operation */
+#if OUTPUT_SIGNAL_FROM == MEMS_MIC
     if ( SSI_SUCCESS != R_SSI_Close( SSI_CH0 ) )
     {
         audio_trap(SSI_CLOSE_ERROR_CH0);
     }
+#endif
 
     if ( SSI_SUCCESS != R_SSI_Close( SSI_CH1 ) )
     {

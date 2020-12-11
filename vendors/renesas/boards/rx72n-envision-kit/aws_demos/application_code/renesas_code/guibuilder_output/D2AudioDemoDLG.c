@@ -62,9 +62,11 @@ static const char reboot_string2[] = "Reboot";
 char buff2[350];
 char text2[13];
 TEXT_Handle hText2;
-FATFS fatfs2;
 FILINFO filinfo2;
 DIR dir2;
+FIL g_file = {0};
+uint8_t g_riff_data[44];
+
 // USER END
 
 /*********************************************************************
@@ -105,6 +107,11 @@ extern void d2audio_play_stop(void);
 extern void d2audio_record_start(void);
 extern void d2audio_record_stop(void);
 
+void d2audio_log_string(char *pstring);
+void d2audio_file_search(void);
+int32_t d2audio_get_riff_data(char *filename);
+int32_t d2audio_read_data(uint8_t *read_buff, uint16_t request_read_size, uint16_t *read_size);
+
 WM_HWIN hWinD2AudioRecordAndPlayWindow;
 // USER END
 
@@ -119,6 +126,7 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
   // USER START (Optionally insert additional variables)
   WM_HWIN hWin;
   int select_id;
+  int ret_code;
   // USER END
 
   switch (pMsg->MsgId) {
@@ -203,7 +211,23 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
         break;
       case WM_NOTIFICATION_RELEASED:
         // USER START (Optionally insert code for reacting on notification message)
-        d2audio_play_start();
+          hWin = hWinD2AudioRecordAndPlayWindow;
+          hItem = WM_GetDialogItem(hWin, ID_LISTBOX_0);
+          select_id = LISTBOX_GetSel(hItem);
+          if(select_id == -1)
+          {
+        	  d2audio_log_string("No file selected.\r\n");
+              return;
+          }
+          LISTBOX_GetItemText(hItem, select_id, selected_file_name2, 256);
+          hItem = WM_GetDialogItem(pMsg->hWin, ID_MULTIEDIT_0);
+          ret_code = d2audio_get_riff_data(selected_file_name2);
+          if (ret_code != 0)
+          {
+              d2audio_log_string("D2 Audio wav File Format Error!!\r\n");
+          }
+          d2audio_log_string("D2 Audio wav File Play Start\r\n");
+          d2audio_play_start();
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)
@@ -252,10 +276,127 @@ WM_HWIN CreateD2AudioDemo(void) {
   WM_HWIN hWin;
 
   hWin = GUI_CreateDialogBox(_aDialogCreate, GUI_COUNTOF(_aDialogCreate), _cbDialog, WM_HBKWIN, 0, 0);
+  hWinD2AudioRecordAndPlayWindow = hWin;
   return hWin;
 }
 
 // USER START (Optionally insert additional public code)
+void d2audio_log_string(char *pstring)
+{
+    WM_HWIN hItem;
+    WM_HWIN hWin;
+
+    hWin = hWinD2AudioRecordAndPlayWindow;
+    hItem = WM_GetDialogItem(hWin, ID_MULTIEDIT_0);
+    MULTIEDIT_AddText(hItem, pstring);
+    MULTIEDIT_SetCursorOffset(hItem, MULTIEDIT_GetTextSize(hItem));
+}
+
+void d2audio_list_add(char *pstring)
+{
+    WM_HWIN hItem;
+    WM_HWIN hWin;
+
+    hWin = hWinD2AudioRecordAndPlayWindow;
+    hItem = WM_GetDialogItem(hWin, ID_LISTBOX_0);
+
+    LISTBOX_AddString(hItem, pstring);
+}
+
+void d2audio_list_clear(void)
+{
+    WM_HWIN hItem;
+    WM_HWIN hWin;
+    U32 list_num;
+    I32 i;
+
+    hWin = hWinD2AudioRecordAndPlayWindow;
+    hItem = WM_GetDialogItem(hWin, ID_LISTBOX_0);
+
+    list_num = LISTBOX_GetNumItems(hItem);
+    for(i = list_num-1;i>=0;i--)
+    {
+        LISTBOX_DeleteItem(hItem, i);
+    }
+}
+
+void d2audio_file_search(void)
+{
+    FRESULT tfat_ret;
+    int32_t i;
+
+    d2audio_list_clear();
+    tfat_ret = R_tfat_f_opendir (&dir2,"0:");
+    if(tfat_ret == TFAT_FR_OK)
+    {
+        while(1)
+        {
+            tfat_ret = R_tfat_f_readdir (&dir2,  &filinfo2 );
+            if(tfat_ret == TFAT_FR_OK)
+            {
+                if(filinfo2.fname[0] == '\0')
+                {
+                    break;
+                }
+                if(TFAT_AM_DIR == (filinfo2.fattrib & TFAT_AM_DIR) )
+                {
+                    continue;
+                }
+                for(i= 0;i<sizeof(filinfo2.fname);i++)
+                {
+                    if('A' <=  filinfo2.fname[i] && filinfo2.fname[i] <= 'Z' )
+                    {
+                    	filinfo2.fname[i] += 0x20;
+                    }
+                }
+                if(0 != strstr(filinfo2.fname,".wav"))
+                {
+                	d2audio_list_add(filinfo2.fname);
+                }
+            }
+            else
+            {
+                break;
+            }
+            vTaskDelay(1);
+        }
+    }
+}
+
+int32_t d2audio_get_riff_data(char *filename)
+{
+    FRESULT ret = TFAT_FR_OK;
+    int32_t ret_code;
+    uint16_t read_size = 0;
+    static uint32_t previous_file_position;
+
+    ret = R_tfat_f_open(&g_file, filename, TFAT_FA_READ | TFAT_FA_OPEN_EXISTING);
+    if (TFAT_RES_OK == ret)
+    {
+        memset(g_riff_data, 0x00, sizeof(g_riff_data));
+        ret_code = d2audio_read_data(g_riff_data, sizeof(g_riff_data), &read_size);
+    }
+    else
+    {
+    	ret_code = -1;
+    }
+    return ret_code;
+}
+
+int32_t d2audio_read_data(uint8_t *read_buff, uint16_t request_read_size, uint16_t *read_size)
+{
+    FRESULT ret = TFAT_FR_OK;
+	int32_t ret_code = 0;
+
+    ret = R_tfat_f_read(&g_file, read_buff, request_read_size, read_size);
+    if (ret != TFAT_RES_OK || *read_size < request_read_size)
+    {
+        R_tfat_f_close(&g_file);
+        ret_code = -1;
+    }
+	return ret_code;
+}
+
 // USER END
 
 /*************************** End of file ****************************/

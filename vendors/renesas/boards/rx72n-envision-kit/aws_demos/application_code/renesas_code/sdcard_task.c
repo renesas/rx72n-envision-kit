@@ -64,6 +64,7 @@ Exported global variables and functions (to be accessed by other files)
 *******************************************************************************/
 uint32_t g_sdc_sd_work[200];
 uint32_t g_sdc_sd_card_no;
+int32_t g_sd_sd_detect_status = -1;
 
 extern FATFS fatfs;
 
@@ -75,6 +76,7 @@ sdc_sd_status_t r_sdc_sd_callback(int32_t channel);
 static void TFAT_sample(void);
 static void R_error(uint8_t err_code);
 static void trap(void);
+int32_t get_sdc_sd_detection(void);
 
 extern void firmware_update_list_add(char *pstring);
 extern void firmware_update_list_clear(void);
@@ -131,6 +133,7 @@ void sdcard_task( void * pvParameters )
                 {
                     trap();
                 }
+                g_sd_sd_detect_status = 0;
                 R_tfat_f_mount(TFAT_DRIVE_NUM_0, &fatfs);
                 firmware_update_update_file_search();
             }
@@ -279,3 +282,8 @@ static void trap(void)
 
     while(err_code);
 } /* End of function trap() */
+
+int32_t get_sdc_sd_detection(void)
+{
+	return g_sd_sd_detect_status;
+}
