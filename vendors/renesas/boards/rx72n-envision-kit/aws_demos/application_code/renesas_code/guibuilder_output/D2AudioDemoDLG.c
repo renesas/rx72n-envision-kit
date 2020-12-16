@@ -66,7 +66,7 @@ FILINFO filinfo2;
 DIR dir2;
 FIL g_file = {0};
 uint8_t g_riff_data[44];
-
+uint32_t g_chunk_size = 0;
 // USER END
 
 /*********************************************************************
@@ -226,8 +226,11 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
           {
               d2audio_log_string("D2 Audio wav File Format Error!!\r\n");
           }
-          d2audio_log_string("D2 Audio wav File Play Start\r\n");
-          d2audio_play_start();
+          else
+          {
+              d2audio_log_string("D2 Audio wav File Play Start\r\n");
+              d2audio_play_start();
+          }
         // USER END
         break;
       // USER START (Optionally insert additional code for further notification handling)
@@ -369,12 +372,51 @@ int32_t d2audio_get_riff_data(char *filename)
     int32_t ret_code;
     uint16_t read_size = 0;
     static uint32_t previous_file_position;
+	uint8_t chunk_id[] = "data";
+	uint8_t i;
+	uint8_t red_data;
+	uint8_t get_chunk_size = 0;
+	uint32_t w_chunk = 0;
 
     ret = R_tfat_f_open(&g_file, filename, TFAT_FA_READ | TFAT_FA_OPEN_EXISTING);
     if (TFAT_RES_OK == ret)
     {
         memset(g_riff_data, 0x00, sizeof(g_riff_data));
         ret_code = d2audio_read_data(g_riff_data, sizeof(g_riff_data), &read_size);
+    	for (i=0; i<4; i++)
+    	{
+    		red_data = *(g_riff_data + 36 + i);
+    		if (red_data != chunk_id[i])
+    		{
+    			ret_code = -1;
+    			break;
+    		}
+    	}
+		get_chunk_size = *(g_riff_data + 40);
+		w_chunk = (w_chunk | get_chunk_size);
+		w_chunk = w_chunk & 0x000000FF;
+		g_chunk_size = g_chunk_size | w_chunk;
+
+		get_chunk_size = *(g_riff_data + 41);
+		w_chunk = 0;
+		w_chunk = (w_chunk | get_chunk_size);
+		w_chunk = w_chunk << 8;
+		w_chunk = w_chunk & 0x0000FF00;
+		g_chunk_size = g_chunk_size | w_chunk;
+
+		get_chunk_size = *(g_riff_data + 42);
+		w_chunk = 0;
+		w_chunk = (w_chunk | get_chunk_size);
+		w_chunk = w_chunk << 16;
+		w_chunk = w_chunk & 0x00FF0000;
+		g_chunk_size = g_chunk_size | w_chunk;
+
+		get_chunk_size = *(g_riff_data + 43);
+		w_chunk = 0;
+		w_chunk = (w_chunk | get_chunk_size);
+		w_chunk = w_chunk << 24;
+		w_chunk = w_chunk & 0xFF000000;
+		g_chunk_size = g_chunk_size | w_chunk;
     }
     else
     {
@@ -396,7 +438,6 @@ int32_t d2audio_read_data(uint8_t *read_buff, uint16_t request_read_size, uint16
     }
 	return ret_code;
 }
-
 // USER END
 
 /*************************** End of file ****************************/

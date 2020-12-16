@@ -38,9 +38,11 @@
 #include "r_ssi_api_rx_config.h"
 #include "r_ssi_api_rx_if.h"
 #include "r_ssi_api_rx_pinset.h"
+#include "r_byteq_if.h"
 
 /* for using Amazon FreeRTOS */
 #include "FreeRTOS.h"
+#include "semphr.h"
 
 /* for RX72N Envision Kit system common header */
 #include "rx72n_envision_kit_system.h"
@@ -57,6 +59,12 @@
 #define BUFSIZE             (1024)              /* PCM Buffer Size (1sample = stareo) */
 #define BUFNUM              (3)                 /* number of PCM Buffer */
 #define CHANNELS            (2)                 /* number of PCM data channel */
+#define READ_SIZE           (512)
+#define READ_SECTOR_NUM     (6)
+#define QUIE_NUM            (24)
+#define READ_NUM            (24)
+#define PCM_WIDTH           (3)
+#define I2S_PCM_WIDTH       (4)
 
 /* index for PCM buffer information array */
 #define CURRENT             (0)                 /* index 0 : current information */
@@ -97,6 +105,8 @@ typedef enum {
 typedef enum {
     NO_ERROR = 0x00,
     MALLOC_FAILED,
+	BYTEQ_OPEN_ERROR,
+	BYTEQ_GET_ERROR,
     CMT_CH_GET_ERROR,
     CMT_START_ERROR,
     SSI_OPEN_ERROR_CH0,
@@ -138,6 +148,9 @@ void d2audio_play_start( void );
 void d2audio_play_stop( void );
 void d2audio_record_start( void );
 void d2audio_record_stop( void );
+uint32_t d2audio_Initial_data_set(uint8_t *read_buff, uint16_t read_size);
+int32_t d2audio_data_set(uint8_t *read_buff, uint16_t read_size);
+int32_t d2audio_data_read(void);
 
 /**********************************************************************************************************************
  Private (static) variables and functions
@@ -149,7 +162,6 @@ static buf_info_t buf_info_rx[BUFINFONUM];      /* information for receive opera
 #endif
 
 /* variables to request PCM buffer information */
-static volatile buf_info_request_t buf_info_request_tx;  /* request for transmit operation */
 #if OUTPUT_SIGNAL_FROM == MEMS_MIC
 static volatile buf_info_request_t buf_info_request_rx;  /* request for receive operation */
 #endif
@@ -174,7 +186,11 @@ malloc_flag_t g_pcmbuf_rx_malloc = NOT_EXECUTE;
 static volatile ssi_ret_t g_ssi_ret = SSI_ERR_PARAM;
 static volatile cmtw_err_t cmtw_ret = CMTW_ERR_BAD_CHAN;
 
-/* Error code */
+uint32_t g_pcm_buf_size;
+uint8_t *g_pcm_buf_ptr;
+uint32_t g_que_index;
+byteq_hdl_t g_byte_que;
+uint8_t g_read_buff[READ_SIZE];
 static volatile audio_error_t g_error_code = NO_ERROR;
 
 /* callback counter */
@@ -194,8 +210,10 @@ static volatile stop_flag_t stop_flag_record;
 
 /* request flag for GUI */
 uint8_t g_d2audio_play_request = 0;
+uint8_t g_d2audio_play_stop_request = 0;
 uint8_t g_d2audio_record_request = 0;
 int32_t g_previous_sd_detect_status = -1;
+SemaphoreHandle_t g_xSemaphore;
 
 /**********************************************************************************************************************
  Exported global variables
@@ -213,6 +231,7 @@ static void led_blink( void );
 
 extern void d2audio_list_add(char *pstring);
 extern void d2audio_file_search(void);
+extern int32_t d2audio_read_data(uint8_t *read_buff, uint16_t request_read_size, uint16_t *read_size);
 extern int32_t get_sdc_sd_detection(void);
 
 /**********************************************************************************************************************
@@ -225,8 +244,12 @@ void audio_task( void * pvParameters )
 {
     cmtw_channel_settings_t cmtw_config;
     uint32_t volatile buf_size;
+    uint32_t file_read_size;
     ssi_regs_t *p_ssi_reg;
     int32_t sd_detect_status;
+    int32_t ret_code;
+	uint16_t que_no_used_size;
+    uint16_t que_space;
 
     /* PCM buffer size initialization. */
     buf_size = (BUFSIZE*CHANNELS)*4;
@@ -240,12 +263,19 @@ void audio_task( void * pvParameters )
 
     stop_flag_play = FLAG_STOP;
     stop_flag_record = FLAG_STOP;
+    memset(&g_read_buff, sizeof(g_read_buff), 0x00);
+    g_que_index = 0;
+    g_pcm_buf_size = READ_SIZE * READ_SECTOR_NUM * QUIE_NUM;
+    g_pcm_buf_ptr = (uint8_t *)pvPortMalloc(g_pcm_buf_size);
+    que_space = READ_SIZE * READ_SECTOR_NUM;
+    g_xSemaphore = xSemaphoreCreateMutex();
 
     /*** PCM data transfer operation ***/
     while(1)
     {
     	sd_detect_status = get_sdc_sd_detection();
-    	if (g_previous_sd_detect_status != sd_detect_status)
+    	if ((sd_detect_status == 0 ) &&
+    		(g_previous_sd_detect_status != sd_detect_status))
     	{
     		g_previous_sd_detect_status = sd_detect_status;
     	    d2audio_file_search();
@@ -294,17 +324,18 @@ void audio_task( void * pvParameters )
 
         if (FLAG_RUN == stop_flag_play )
         {
-            /* SSI data transmit information setting */
-            if ( DATA_REQUEST == buf_info_request_tx )  /* checks PCM buffer information request */
-            {
-               /* the next transmit PCM buffer information setting */
-#if OUTPUT_SIGNAL_FROM == SINE_WAVE
-                memcpy( g_pcmbuf_tx[g_idx_buf_tx].pcm_buffer, test_wave, buf_size );
-#endif
-                set_buf_info( &buf_info_tx[NEXT], g_pcmbuf_tx[g_idx_buf_tx++].pcm_buffer, BUFSIZE );
-                buf_info_request_tx = NO_REQUEST;
-                g_idx_buf_tx %= BUFNUM;
-            }
+        	if (g_d2audio_play_stop_request == 0)
+        	{
+        		R_BYTEQ_Unused(g_byte_que, &que_no_used_size);
+                if (que_no_used_size > que_space)
+                {
+                	ret_code = d2audio_data_read();
+                	if (ret_code != 0)
+                	{
+                		g_d2audio_play_stop_request = 1;
+                	}
+                }
+        	}
 
             if (0 == g_d2audio_play_request)
             {
@@ -320,9 +351,12 @@ void audio_task( void * pvParameters )
                 }
 
                 ssi_stop();
-
+                R_BYTEQ_Close(g_byte_que);
                 stop_flag_play = FLAG_STOP;
                 stop_flag_record = FLAG_STOP;
+                g_d2audio_play_stop_request = 0;
+                g_previous_sd_detect_status = -1;
+                vPortFree(g_pcm_buf_ptr);
             }
         }
 
@@ -350,7 +384,6 @@ void audio_task( void * pvParameters )
                 /* copy operation for PCM data loopback */
                 memcpy( g_pcmbuf_tx[g_idx_buf_tx].pcm_buffer, g_pcmbuf_rx[g_idx_buf_rx].pcm_buffer, buf_size );
             }
-#endif /* OUTPUT_SIGNAL_FROM == MEMS_MIC */
 
             if (0 == g_d2audio_record_request)
             {
@@ -370,6 +403,7 @@ void audio_task( void * pvParameters )
                 stop_flag_play = FLAG_STOP;
                 stop_flag_record = FLAG_STOP;
             }
+#endif /* OUTPUT_SIGNAL_FROM == MEMS_MIC */
         }
     }
 
@@ -444,7 +478,6 @@ static void ssi_start_for_speakers( void )
     uint32_t malloc_size;
     uint8_t i;
 
-
     if (NOT_EXECUTE == g_pcmbuf_tx_malloc)
     {
         /* PCM buffer initialization. */
@@ -476,9 +509,6 @@ static void ssi_start_for_speakers( void )
         set_buf_info( &buf_info_tx[CURRENT], g_pcmbuf_tx[g_idx_buf_tx++].pcm_buffer, BUFSIZE );
         g_idx_buf_tx %= BUFNUM;
 
-        /* request for the next PCM buffer information, just for the start operation */
-        buf_info_request_tx = DATA_REQUEST; /* the next PCM buffer information request */
-
         /* configures SSI1 pins SSI functions */
         R_SSI_PinSet_SSIE1();
 
@@ -505,45 +535,27 @@ static void ssi_write( void )
 {
     int8_t ssi_ret;
     uint16_t samples;   /* 1sample = stareo */
+    uint8_t write_buff_index;
+    byteq_err_t err_code;
+    uint8_t write_buf[I2S_PCM_WIDTH];
+    const void *write_buff;
 
-    /* gets the number to write from buf_info_tx[CURRENT]. */
-    samples = buf_info_tx[CURRENT].pcm_samples;
-
-    /* checks "samples" if larger than limit, limits the number. */
-    if ( samples >= 4u )    /* case 24 bit PCM data */
+    write_buf[0] = 0x00;
+    for(write_buff_index = 0; write_buff_index < (I2S_PCM_WIDTH -1); write_buff_index++)
     {
-        samples = 4u;
-    }
-
-    /* write PCM data to TX FIFO */
-    if ( samples > 0 )
-    {
-        ssi_ret = R_SSI_Write(SSI_CH1, (const void *)buf_info_tx[CURRENT].p_buf_start, (uint8_t)samples );
-
-        /* update PCM buffer information */
-        if ( ssi_ret >= 0 )
+        err_code = R_BYTEQ_Get(g_byte_que, &write_buf[write_buff_index]);
+        if (err_code == BYTEQ_ERR_QUEUE_EMPTY)
         {
-            buf_info_tx[CURRENT].p_buf_start += (ssi_ret * CHANNELS);
-            buf_info_tx[CURRENT].pcm_samples -= (uint16_t)ssi_ret;
-        }
-        else
-        {
-            audio_trap(SSI_WRITE_FAILED);
+        	g_d2audio_play_request = 0;
+        	break;
         }
     }
-
-    /* checks remaind samples,
-        if no sample remains, sets next buffer, and requests next buffer information */
-    if ( 0 == buf_info_tx[CURRENT].pcm_samples )     /* are all samples transferred ? */
+    if (err_code == BYTEQ_SUCCESS)
     {
-        if ( NO_REQUEST == buf_info_request_tx )     /* is PCM buffer information updated ? */
+        ssi_ret = R_SSI_Write(SSI_CH1, (const void *)&write_buf[0], (uint8_t)I2S_PCM_WIDTH );
+        if ( ssi_ret <= 0 )
         {
-            buf_info_tx[CURRENT] = buf_info_tx[NEXT];/* loads next buffer information */
-            buf_info_request_tx = DATA_REQUEST;      /* requests next PCM buffer information */
-        }
-        else
-        {
-            audio_trap(PCM_BUFFER_ERROR);
+        	g_d2audio_play_request = 0;
         }
     }
 } /* End of function ssi_write */
@@ -652,11 +664,14 @@ void cmt_callback( void *arg )
 
     led_blink();
 
-    /* Check Transmit Data Empty Flag. */
-    p_ssi_reg = (ssi_regs_t *)&SSIE1;
-    if(1 == p_ssi_reg->SSIFSR.BIT.TDE)
+    if (g_d2audio_play_request == 1)
     {
-        ssi_write();
+        /* Check Transmit Data Empty Flag. */
+        p_ssi_reg = (ssi_regs_t *)&SSIE1;
+        if(1 == p_ssi_reg->SSIFSR.BIT.TDE)
+        {
+            ssi_write();
+        }
     }
 } /* End of function cmt_callback */
 
@@ -724,11 +739,99 @@ static void led_blink( void )
  *********************************************************************************************************************/
 void d2audio_play_start(void)
 {
+	uint16_t read_size = 0;
+	uint32_t ret_code;
+	uint8_t buff_count;
+    byteq_err_t err_code;
+
     if (g_d2audio_play_request == 0)
     {
-        g_d2audio_play_request = 1;
+        err_code = R_BYTEQ_Open(g_pcm_buf_ptr, g_pcm_buf_size, &g_byte_que);
+    	if (err_code != BYTEQ_SUCCESS)
+    	{
+    		audio_trap(BYTEQ_OPEN_ERROR);
+    	}
+    	for (buff_count = 0; buff_count<READ_NUM; buff_count++)
+    	{
+        	ret_code = d2audio_read_data(&g_read_buff[0], (READ_SIZE), &read_size);
+        	if (ret_code == 0)
+        	{
+            	ret_code = d2audio_Initial_data_set(&g_read_buff[0], read_size);
+            	if (ret_code != 0)
+            	{
+            		break;
+            	}
+        	}
+    	}
+    	if ((read_size > 0) && (ret_code == 0))
+    	{
+            g_d2audio_play_request = 1;
+    	}
     }
 } /* End of function d2audio_play_start */
+
+uint32_t d2audio_Initial_data_set(uint8_t *read_buff, uint16_t read_size)
+{
+	uint32_t ret_code = 0;
+	uint16_t read_count;
+	byteq_err_t err_code;
+	uint8_t set_data;
+	uint8_t surplus;
+
+	err_code = BYTEQ_SUCCESS;
+	for (read_count = 0; read_count < read_size; read_count++ )
+	{
+		set_data = *(read_buff + read_count);
+		err_code = R_BYTEQ_Put(g_byte_que, set_data);
+		if (err_code == BYTEQ_ERR_QUEUE_FULL)
+		{
+			ret_code = 1;
+			break;
+		}
+	}
+	return ret_code;
+}
+
+int32_t d2audio_data_read(void)
+{
+	uint16_t read_size = 0;
+	uint16_t que_no_used_size;
+	int32_t ret_code = 0;
+	uint8_t buff_count;
+    byteq_err_t err_code;
+    uint16_t que_space;
+
+	ret_code = d2audio_read_data(&g_read_buff[0], (READ_SIZE), &read_size);
+	if ((ret_code == 0) || (read_size > 0))
+	{
+    	ret_code = d2audio_data_set(&g_read_buff[0], read_size);
+	}
+	return ret_code;
+
+} /* End of function d2audio_play_start */
+
+int32_t d2audio_data_set(uint8_t *read_buff, uint16_t read_size)
+{
+	int32_t ret_code = 0;
+	uint16_t read_count;
+	byteq_err_t err_code;
+	uint8_t set_data;
+	uint8_t surplus;
+
+	for (read_count = 0; read_count < read_size; read_count++ )
+	{
+		set_data = *(read_buff + read_count);
+		err_code = R_BYTEQ_Put(g_byte_que, set_data);
+		if (err_code == BYTEQ_ERR_QUEUE_FULL)
+		{
+			ret_code = -1;
+			break;
+		}
+	}
+	return ret_code;
+}
+
+
 
 /**********************************************************************************************************************
  * Function Name: d2audio_play_stop
