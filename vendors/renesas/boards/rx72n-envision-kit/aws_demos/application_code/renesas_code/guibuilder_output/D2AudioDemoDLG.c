@@ -66,7 +66,7 @@ FILINFO filinfo2;
 DIR dir2;
 FIL g_file = {0};
 uint8_t g_riff_data[44];
-uint32_t g_chunk_size = 0;
+uint32_t g_chunk_size;
 // USER END
 
 /*********************************************************************
@@ -437,6 +437,11 @@ int32_t d2audio_read_data(uint8_t *read_buff, uint16_t request_read_size, uint16
         ret_code = -1;
     }
 	return ret_code;
+}
+
+void d2audio_get_chunck_size(uint32_t *get_chunk_size)
+{
+	*get_chunk_size = g_chunk_size;
 }
 // USER END
 
