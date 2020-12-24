@@ -59,14 +59,15 @@
 #define BUFSIZE             (1024)              /* PCM Buffer Size (1sample = stareo) */
 #define BUFNUM              (3)                 /* number of PCM Buffer */
 #define CHANNELS            (2)                 /* number of PCM data channel */
-#define READ_SIZE           (480)
-#define READ_SECTOR_NUM     (6)
-#define QUIE_NUM            (15)
-#define READ_NUM            (24)
-#define PCM_WIDTH           (3)
-#define I2S_PCM_WIDTH       (4)
-#define PCM_SAMPLE_NUM      (4)
+#define FILE_READ_SIZE              (480)
+#define INITIAL_READ_SECTOR_NUM     (24)
+#define PCM_WIDTH_BIT_24            (3)
+#define I2S_PCM_WIDTH               (4)
+#define PCM_SAMPLE_NUM              (4)
 #define PCM_WRITE_BUF_SIZE  (I2S_PCM_WIDTH * CHANNELS * PCM_SAMPLE_NUM)
+#define NUM_SAMPLE_PER_READ_SIZE     (READ_SIZE / (PCM_WIDTH *CHANNELS))
+#define PCM_UNUSED_BUF_LOW_LIMIT_NUM (20)
+
 
 /* index for PCM buffer information array */
 #define CURRENT             (0)                 /* index 0 : current information */
@@ -190,12 +191,15 @@ static volatile cmtw_err_t cmtw_ret = CMTW_ERR_BAD_CHAN;
 uint32_t g_pcm_buf_size;
 uint8_t *g_pcm_buf_ptr;
 byteq_hdl_t g_byte_que;
-uint8_t g_read_buff[READ_SIZE];
+uint8_t g_read_buff[FILE_READ_SIZE];
 uint8_t g_ssi_write_data[PCM_WRITE_BUF_SIZE];
 uint32_t g_ssi_write_count = 0;
 uint32_t g_before_ssi_write_count = 0;
 uint16_t g_ssi_write_call_count = 20;
+uint16_t g_pcm_data_width = 0;
+uint16_t g_pcm_read_size = 0;
 uint32_t g_ssi_write_call_count_clone = 0;
+
 static volatile audio_error_t g_error_code = NO_ERROR;
 
 /* callback counter */
@@ -217,8 +221,11 @@ static volatile stop_flag_t stop_flag_record;
 uint8_t g_d2audio_play_request = 0;
 uint8_t g_d2audio_read_stop_request = 0;
 uint8_t g_d2audio_record_request = 0;
+uint16_t g_pcm_bit_per_sample_num = 0;
+uint16_t g_pcm_buf_num = 0;
 int32_t g_previous_sd_detect_status = -1;
 uint32_t g_read_pcm_size = 0;
+
 
 /**********************************************************************************************************************
  Exported global variables
@@ -239,6 +246,7 @@ extern void d2audio_file_search(void);
 extern int32_t d2audio_read_data(uint8_t *read_buff, uint16_t request_read_size, uint16_t *read_size);
 extern int32_t get_sdc_sd_detection(void);
 extern void d2audio_get_chunck_size(uint32_t *get_chunk_size);
+extern void d2audio_get_bit_per_sample(uint16_t *bit_per_sample);
 
 /**********************************************************************************************************************
  * Function Name: audio_task
@@ -256,8 +264,7 @@ void audio_task( void * pvParameters )
     ssi_regs_t *p_ssi_reg;
     int32_t sd_detect_status;
     int32_t ret_code;
-	uint16_t que_no_used_size;
-    uint32_t read_flag = 0;
+	uint16_t queue_no_used_size;
 
     /* PCM buffer size initialization. */
 #if OUTPUT_SIGNAL_FROM == MEMS_MIC
@@ -273,10 +280,11 @@ void audio_task( void * pvParameters )
     stop_flag_record = FLAG_STOP;
     memset(&g_read_buff, sizeof(g_read_buff), 0x00);
     memset(&g_ssi_write_data, sizeof(g_ssi_write_data), 0x00);
+#if 0
     g_pcm_buf_size = READ_SIZE * READ_SECTOR_NUM;
     g_pcm_buf_size = g_pcm_buf_size / 6;
     g_pcm_buf_size = g_pcm_buf_size * CHANNELS * I2S_PCM_WIDTH * QUIE_NUM;
-    g_pcm_buf_ptr = (uint8_t *)pvPortMalloc(g_pcm_buf_size);
+#endif
 
     /*** PCM data transfer operation ***/
     while(1)
@@ -337,11 +345,16 @@ void audio_task( void * pvParameters )
         		g_ssi_write_call_count_clone = g_ssi_write_count;
         		if (g_before_ssi_write_count + g_ssi_write_call_count <= g_ssi_write_count)
         		{
-                	ret_code = d2audio_data_read();
-            		if (ret_code != 0)
-            		{
-                		g_d2audio_read_stop_request = 1;
-            		}
+        			R_BYTEQ_Unused(g_byte_que, &queue_no_used_size);
+        			if (queue_no_used_size >= PCM_UNUSED_BUF_LOW_LIMIT_NUM * g_pcm_read_size)
+        			{
+                    	ret_code = d2audio_data_read();
+                		if (ret_code != 0)
+                		{
+                    		g_d2audio_read_stop_request = 1;
+                		}
+
+        			}
             		g_before_ssi_write_count = g_ssi_write_call_count_clone;
         		}
         	}
@@ -543,12 +556,8 @@ static void ssi_start_for_speakers( void )
 static void ssi_write( void )
 {
     int8_t ssi_ret;
-    uint16_t samples;   /* 1sample = stareo */
-    uint16_t unused_count;
     uint8_t write_buff_index;
     byteq_err_t err_code;
-    uint8_t write_buf[PCM_WRITE_BUF_SIZE];
-    const void *write_buff;
 
     for(write_buff_index = 0; write_buff_index < PCM_WRITE_BUF_SIZE; write_buff_index++)
     {
@@ -765,15 +774,21 @@ void d2audio_play_start(void)
 
     if (g_d2audio_play_request == 0)
     {
-        d2audio_get_chunck_size(&g_read_pcm_size);
+        d2audio_get_bit_per_sample(&g_pcm_data_width);
+        g_pcm_bit_per_sample_num = FILE_READ_SIZE / ((g_pcm_data_width / 8) * CHANNELS);
+        g_pcm_read_size = (g_pcm_data_width / 8) * CHANNELS * g_pcm_bit_per_sample_num;
+        g_pcm_buf_num = 65535 / (g_pcm_bit_per_sample_num * (g_pcm_data_width / 8) * CHANNELS);
+        g_pcm_buf_size = g_pcm_read_size * g_pcm_buf_num;
+        g_pcm_buf_ptr = (uint8_t *)pvPortMalloc(g_pcm_buf_size);
+    	d2audio_get_chunck_size(&g_read_pcm_size);
         err_code = R_BYTEQ_Open(g_pcm_buf_ptr, g_pcm_buf_size, &g_byte_que);
     	if (err_code != BYTEQ_SUCCESS)
     	{
     		audio_trap(BYTEQ_OPEN_ERROR);
     	}
-    	for (buff_count = 0; buff_count<READ_NUM; buff_count++)
+    	for (buff_count = 0; buff_count<INITIAL_READ_SECTOR_NUM; buff_count++)
     	{
-        	ret_code = d2audio_read_data(&g_read_buff[0], (READ_SIZE), &read_size);
+        	ret_code = d2audio_read_data(&g_read_buff[0], (FILE_READ_SIZE), &read_size);
         	if (ret_code == 0)
         	{
             	ret_code = d2audio_data_set(&g_read_buff[0], read_size);
@@ -799,7 +814,7 @@ int32_t d2audio_data_read(void)
 	uint8_t buff_count;
     byteq_err_t err_code;
     uint16_t que_space;
-	ret_code = d2audio_read_data(&g_read_buff[0], (READ_SIZE), &read_size);
+	ret_code = d2audio_read_data(&g_read_buff[0], (FILE_READ_SIZE), &read_size);
 	if ((ret_code == 0) || (read_size > 0))
 	{
     	ret_code = d2audio_data_set(&g_read_buff[0], read_size);
@@ -821,17 +836,20 @@ int32_t d2audio_data_set(uint8_t *read_buff, uint16_t read_size)
 
 	for (read_count = 0; read_count < read_size; read_count++ )
 	{
-		surplus = queue_index % 4;
-		if (surplus == 0)
-		{
-			err_code = R_BYTEQ_Put(g_byte_que, 0x00);
-			if (err_code == BYTEQ_ERR_QUEUE_FULL)
-			{
-				ret_code = 1;
-				break;
-			}
-			queue_index++;
-		}
+        if ((g_pcm_data_width / 8) == PCM_WIDTH_BIT_24)
+        {
+    		surplus = queue_index % 4;
+    		if (surplus == 0)
+    		{
+    			err_code = R_BYTEQ_Put(g_byte_que, 0x00);
+    			if (err_code == BYTEQ_ERR_QUEUE_FULL)
+    			{
+    				ret_code = 1;
+    				break;
+    			}
+    			queue_index++;
+    		}
+        }
 		set_data = *(read_buff + read_count);
 		err_code = R_BYTEQ_Put(g_byte_que, set_data);
 		if (err_code == BYTEQ_ERR_QUEUE_FULL)

@@ -67,6 +67,8 @@ DIR dir2;
 FIL g_file = {0};
 uint8_t g_riff_data[44];
 uint32_t g_chunk_size;
+uint16_t g_bit_per_sample = 0;
+
 // USER END
 
 /*********************************************************************
@@ -110,6 +112,8 @@ extern void d2audio_record_stop(void);
 void d2audio_log_string(char *pstring);
 void d2audio_file_search(void);
 int32_t d2audio_get_riff_data(char *filename);
+void d2audio_get_chunck_size(uint32_t *get_chunk_size);
+void d2audio_get_bit_per_sample(uint16_t *bit_per_sample);
 int32_t d2audio_read_data(uint8_t *read_buff, uint16_t request_read_size, uint16_t *read_size);
 
 WM_HWIN hWinD2AudioRecordAndPlayWindow;
@@ -377,12 +381,23 @@ int32_t d2audio_get_riff_data(char *filename)
 	uint8_t red_data;
 	uint8_t get_chunk_size = 0;
 	uint32_t w_chunk = 0;
+	uint16_t work = 0;
 
     ret = R_tfat_f_open(&g_file, filename, TFAT_FA_READ | TFAT_FA_OPEN_EXISTING);
     if (TFAT_RES_OK == ret)
     {
         memset(g_riff_data, 0x00, sizeof(g_riff_data));
         ret_code = d2audio_read_data(g_riff_data, sizeof(g_riff_data), &read_size);
+        /* get bit per Sample */
+        work =  g_riff_data[34];
+        work = work & 0x00FF;
+        g_bit_per_sample = work;
+        work =  g_riff_data[35];
+        work = work & 0x00FF;
+        work = work << 8;
+        work = work & 0xFF00;
+        g_bit_per_sample = work | g_bit_per_sample;
+
     	for (i=0; i<4; i++)
     	{
     		red_data = *(g_riff_data + 36 + i);
@@ -442,6 +457,11 @@ int32_t d2audio_read_data(uint8_t *read_buff, uint16_t request_read_size, uint16
 void d2audio_get_chunck_size(uint32_t *get_chunk_size)
 {
 	*get_chunk_size = g_chunk_size;
+}
+
+void d2audio_get_bit_per_sample(uint16_t *g_pcm_read_size)
+{
+	*g_pcm_read_size = g_bit_per_sample;
 }
 // USER END
 
