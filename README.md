@@ -14,3 +14,5 @@ RX72N Envision Kit bootloader/demos based on Amazon FreeRTOS
 * ja:
     * [![](https://img.youtube.com/vi/ZC1WexzCJEo/0.jpg)](https://www.youtube.com/watch?v=ZC1WexzCJEo)
 
+## Notice
+* Please use git clone when you would try a debug with e2 studio.
