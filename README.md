@@ -16,3 +16,6 @@ RX72N Envision Kit bootloader/demos based on Amazon FreeRTOS
 
 ## Notice
 * Please use git clone when you would try a debug with e2 studio.
+
+## elements14: Renesas RX72N Envision Kit - Review
+* https://www.element14.com/community/roadTestReviews/3641/l/renesas-rx72n-envision-kit-review
