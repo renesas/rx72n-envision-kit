@@ -91,6 +91,7 @@
 #endif
 
 #define SFD_DEBUG_PRINT( X )  /* printf( X ) */
+//#define SFD_DEBUG_PRINT( X )  printf( X )
 
 #define SFD_DATA_FLASH_UPDATE_STATE_INITIALIZE 0
 #define SFD_DATA_FLASH_UPDATE_STATE_ERASE 1
@@ -147,6 +148,8 @@ sfd_err_t R_SFD_Open(void)
 
 	if(FLASH_CFG_DATA_FLASH_BGO == 1)
 	{
+		R_FLASH_Open();
+
 		/* check the hash */
 		check_dataflash_area(0);
 		/* copy data from storage to ram */
@@ -165,7 +168,8 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
 {
     uint32_t i;
     uint8_t hash_sha256[SFD_SHA256_LENGTH];
-    SFD_HANDLE xHandle = SFD_HANDLE_INVALID;
+    SFD_HANDLE specified_label_xHandle = SFD_HANDLE_INVALID;
+    SFD_HANDLE blank_entry_xHandle = SFD_HANDLE_INVALID;
 
 #if defined USE_MBEDTLS
     mbedtls_sha256_context ctx;
@@ -192,7 +196,8 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
     {
         if (!strncmp((char * )&sfd_control_block_data_image.data.sfd_data[i].label, (char * )label, label_length))
         {
-            xHandle = i;
+        	specified_label_xHandle = sfd_control_block_data_image.data.sfd_data[i].xHandle;
+            break;
         }
     }
 
@@ -200,7 +205,7 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
     uint32_t total_stored_data_size = 0;
 
     /* specified label found: overwrite specified data into registered label.  */
-    if (xHandle != SFD_HANDLE_INVALID)
+    if (specified_label_xHandle != SFD_HANDLE_INVALID)
     {
         for (int i = 0; i < SFD_OBJECT_HANDLES_NUM; i++)
         {
@@ -210,13 +215,14 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
             }
         }
 
-        /* remove current xHandle from sfd_data */
-        if (sfd_control_block_data_image.data.sfd_data[xHandle].status == SFD_DATA_STATUS_REGISTERED)
+        /* remove current xHandle (delete target) from sfd_data */
+        if (sfd_control_block_data_image.data.sfd_data[specified_label_xHandle].status == SFD_DATA_STATUS_REGISTERED)
         {
-            uint32_t move_target_xHandle = 0, move_target_index = 0;
+        	SFD_HANDLE move_target_xHandle = SFD_HANDLE_INVALID, move_target_index = SFD_HANDLE_INVALID;
 
-            uint32_t delete_target_index = sfd_control_block_data_image.data.sfd_data[xHandle].local_storage_index;
-            uint32_t delete_target_data_size = sfd_control_block_data_image.data.sfd_data[xHandle].data_length;
+            uint32_t delete_target_xHandle = sfd_control_block_data_image.data.sfd_data[specified_label_xHandle].xHandle;
+            uint32_t delete_target_index = sfd_control_block_data_image.data.sfd_data[specified_label_xHandle].local_storage_index;
+            uint32_t delete_target_data_size = sfd_control_block_data_image.data.sfd_data[specified_label_xHandle].data_length;
 
             /* Search move target index and handle  */
             for (int i = 0; i < SFD_OBJECT_HANDLES_NUM; i++)
@@ -230,7 +236,7 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
                 }
             }
 
-            if (move_target_xHandle != 0)
+            if (move_target_xHandle != SFD_HANDLE_INVALID)
             {
                 /* Move target index to delete target index */
                 memmove(
@@ -251,9 +257,12 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
             /* Recalculate the end of data storage  */
             total_stored_data_size -= delete_target_data_size;
 
-            sfd_control_block_data_image.data.sfd_data[xHandle].local_storage_index = 0;
-            sfd_control_block_data_image.data.sfd_data[xHandle].data_length = 0;
+            /* set delete_target to next brank_entry */
+            blank_entry_xHandle = sfd_control_block_data_image.data.sfd_data[delete_target_xHandle].xHandle;
 
+            /* delete all sfd_data from delete_target */
+            memset(&sfd_control_block_data_image.data.sfd_data[delete_target_xHandle], 0, sizeof(SFD_DESCRIPTOR));
+            sfd_control_block_data_image.data.sfd_data[delete_target_xHandle].status = SFD_DATA_STATUS_EMPTY;
         }
     }
 	/* specified label not found: add specified data as new label. */
@@ -264,7 +273,7 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
         {
             if (sfd_control_block_data_image.data.sfd_data[i].status == SFD_DATA_STATUS_EMPTY)
             {
-                xHandle = i;
+                blank_entry_xHandle = i;
             	break;
             }
             else if (sfd_control_block_data_image.data.sfd_data[i].status == SFD_DATA_STATUS_REGISTERED)
@@ -276,12 +285,12 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
 
     if(data_length + total_stored_data_size < SFD_LOCAL_STORAGE_SIZE)
     {
-		strncpy((char * )sfd_control_block_data_image.data.sfd_data[xHandle].label, (char * )label, SFD_HANDLES_LABEL_MAX_LENGTH);
-		sfd_control_block_data_image.data.sfd_data[xHandle].label_length = label_length;
-		sfd_control_block_data_image.data.sfd_data[xHandle].local_storage_index = total_stored_data_size;
-		sfd_control_block_data_image.data.sfd_data[xHandle].data_length = data_length;
-		sfd_control_block_data_image.data.sfd_data[xHandle].status = SFD_DATA_STATUS_REGISTERED;
-		sfd_control_block_data_image.data.sfd_data[xHandle].xHandle = xHandle;
+		strncpy((char * )sfd_control_block_data_image.data.sfd_data[blank_entry_xHandle].label, (char * )label, SFD_HANDLES_LABEL_MAX_LENGTH);
+		sfd_control_block_data_image.data.sfd_data[blank_entry_xHandle].label_length = label_length;
+		sfd_control_block_data_image.data.sfd_data[blank_entry_xHandle].local_storage_index = total_stored_data_size;
+		sfd_control_block_data_image.data.sfd_data[blank_entry_xHandle].data_length = data_length;
+		sfd_control_block_data_image.data.sfd_data[blank_entry_xHandle].status = SFD_DATA_STATUS_REGISTERED;
+		sfd_control_block_data_image.data.sfd_data[blank_entry_xHandle].xHandle = blank_entry_xHandle;
 		memcpy(&sfd_control_block_data_image.data.local_storage[total_stored_data_size], data, data_length);
 
 		/* update dataflash data */
@@ -289,10 +298,10 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
     }
     else
     {
-    	xHandle = SFD_HANDLE_INVALID;
+    	blank_entry_xHandle = SFD_HANDLE_INVALID;
     }
 
-    return xHandle;
+    return blank_entry_xHandle;
 
 }
 
@@ -406,6 +415,8 @@ sfd_err_t R_SFD_EraseAll(void)
     }
 	/* update dataflash data */
 	update_dataflash_data();
+
+	R_SFD_ResetScan();
 }
 
 uint32_t R_SFD_ReadPysicalSize(void)
