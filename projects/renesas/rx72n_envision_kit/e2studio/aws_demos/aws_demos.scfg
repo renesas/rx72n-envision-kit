@@ -4,6 +4,7 @@
         <configuration active="true" id="com.renesas.smc.toolchain.rxc.configuration.release">
             <property id="com.renesas.smc.service.project.buildArtefactType" values="com.renesas.smc.service.project.buildArtefactType.exe"/>
             <toolchain id="com.renesas.smc.toolchain.rxc.toolchain.rxc">
+                <option id="com.renesas.smc.toolchain.option.language" key="com.renesas.smc.toolchain.option.language.c"/>
                 <option id="com.renesas.smc.toolchain.option.buildArtefactType" key="com.renesas.smc.toolchain.option.buildArtefactType.exe"/>
                 <option id="com.renesas.smc.toolchain.option.rtos" key="com.renesas.smc.toolchain.option.rtos.freertos">
                     <item id="com.renesas.smc.toolchain.option.rtos.freertos" value="AmazonFreeRTOS_RX_v201908.00-rx-0.1.16"/>
@@ -13,9 +14,6 @@
         <platform id="R5F572NNHxFB"/>
         <option id="board" value="カスタムユーザボード"/>
     </general>
-    <tool id="Summary" version="1.0.0.0">
-        <option id="com.renesas.smc.code.type" value="Linked File"/>
-    </tool>
     <tool id="Clock">
         <option enabled="true" id="vccinput" selection="textinputitem">
             <item enabled="true" id="textinputitem" input="3.3" value="3.300"/>
@@ -52,14 +50,14 @@
             <item enabled="true" id="check"/>
             <item enabled="true" id="uncheck"/>
         </option>
+        <option enabled="false" id="hocooscenable" selection="uncheck">
+            <item enabled="true" id="check"/>
+            <item enabled="true" id="uncheck"/>
+        </option>
         <option enabled="false" id="hocofrequency" selection="frq16">
             <item enabled="true" id="frq16"/>
             <item enabled="true" id="frq18"/>
             <item enabled="true" id="frq20"/>
-        </option>
-        <option enabled="false" id="hocooscenable" selection="uncheck">
-            <item enabled="true" id="check"/>
-            <item enabled="true" id="uncheck"/>
         </option>
         <option enabled="true" id="lococlockenable" selection="uncheck">
             <item enabled="true" id="check"/>
@@ -590,6 +588,7 @@
         <Item currentVect="255" id="PERIA_INTA255" priority="15" usedState="未使用"/>
     </tool>
     <tool id="Pins" version="1.0.1.0">
+        <pinItem allocation="10" comments="" direction="None" id="EMLE" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="20" comments="" direction="None" id="XTAL" isUsedBySoftware="false" locked="false" status="0"/>
         <pinItem allocation="84$B" comments="" direction="None" id="LCD_TCON3" isUsedBySoftware="false" locked="false" status="0"/>
         <pinItem allocation="83$B" comments="" direction="None" id="LCD_TCON2" isUsedBySoftware="false" locked="false" status="0"/>
@@ -619,6 +618,7 @@
         <pinItem allocation="119$B" comments="" direction="None" id="QIO1" isUsedBySoftware="false" locked="false" status="0"/>
         <pinItem allocation="22" comments="" direction="None" id="EXTAL" isUsedBySoftware="false" locked="false" status="0"/>
         <pinItem allocation="26" comments="" direction="None" id="SSCL6" isUsedBySoftware="false" locked="false" status="0"/>
+        <pinItem allocation="16" comments="" direction="None" id="FINED" isUsedBySoftware="true" locked="false" status="0"/>
         <pinItem allocation="32" comments="" direction="None" id="SDHI_CD" isUsedBySoftware="false" locked="false" status="0"/>
         <pinItem allocation="38$C" comments="" direction="None" id="SDHI_D3" isUsedBySoftware="false" locked="false" status="0"/>
         <pinItem allocation="39$C" comments="" direction="None" id="SDHI_D2" isUsedBySoftware="false" locked="false" status="0"/>
@@ -675,6 +675,9 @@
         <pinnumItem comment="VREFH0" id="174"/>
         <pinnumItem comment="AVCC0" id="175"/>
         <pinnumItem comment="P07" id="176"/>
+    </tool>
+    <tool id="Summary" version="1.0.0.0">
+        <option id="com.renesas.smc.code.type" value="Linked File"/>
     </tool>
     <tool id="SWComponent" version="1.0.0.0">
         <configuration inuse="true" name="r_ether_rx">
@@ -1640,5 +1643,15 @@
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
         </configuration>
+    </tool>
+    <tool id="System">
+        <section id="ocd">
+            <option enabled="true" id="debugIF" selection="fine">
+                <item enabled="true" id="unused"/>
+                <item enabled="true" id="fine"/>
+                <item enabled="true" id="jtag"/>
+                <item enabled="true" id="jtagTrace"/>
+            </option>
+        </section>
     </tool>
 </smc>
