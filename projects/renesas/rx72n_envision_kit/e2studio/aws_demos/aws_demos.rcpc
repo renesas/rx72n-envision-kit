@@ -1891,7 +1891,7 @@
       </Category>
     </Files>
     <Device Category="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.cpu.rx600" Series="RX">R5F572NNHxFB</Device>
-    <BuildOptions Name="CC-RX" Version="v3.01.00">
+    <BuildOptions Name="CC-RX" Version="v3.04.00">
       <BuildMode Active="True" Name="HardwareDebug">
         <GeneralOptions/>
         <CompileOptions>
@@ -1900,8 +1900,8 @@
           <Option>-dpfpu</Option>
           <Option>-branch=32</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_bsp"</Option>
-          <Option>-include="C:\git\b\rx72n-envision-kit\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\utility"</Option>
-          <Option>-include="C:\git\b\rx72n-envision-kit\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\key"</Option>
+          <Option>-include="C:\git\rx72n-envision-kit\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\utility"</Option>
+          <Option>-include="C:\git\rx72n-envision-kit\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\key"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\freertos_kernel\include"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\amazon_freertos_common"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\amazon_freertos_common\compiler_support\ccrx"</Option>
@@ -2042,7 +2042,7 @@
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_tfat_driver_rx\src"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_tfat_rx"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_tfat_rx\lib"</Option>
-          <Option>-preinclude="implicitlyinclude.h"</Option>
+          <Option>-preinclude="${ProjDirPath}\..\..\..\..\..\vendors\renesas\amazon_freertos_common\compiler_support\ccrx\implicitlyinclude.h"</Option>
           <Option>-define=MBEDTLS_CONFIG_FILE="&lt;aws_mbedtls_config.h&gt;",CONFIG_MEDTLS_USE_AFR_MEMORY</Option>
           <Option>-asmopt=-bank</Option>
           <Option>-utf8</Option>
@@ -2593,8 +2593,8 @@
         <NoTargetFile Target="AWS_IOT_MCU_ROOT\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_pincfg\r_sci_rx_pinset.c"/>
         <CommonOptions>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_bsp"</IncludePathForC>
-          <IncludePathForC>"C:\git\b\rx72n-envision-kit\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\utility"</IncludePathForC>
-          <IncludePathForC>"C:\git\b\rx72n-envision-kit\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\key"</IncludePathForC>
+          <IncludePathForC>"C:\git\rx72n-envision-kit\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\utility"</IncludePathForC>
+          <IncludePathForC>"C:\git\rx72n-envision-kit\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\key"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\freertos_kernel\include"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\amazon_freertos_common"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\amazon_freertos_common\compiler_support\ccrx"</IncludePathForC>
