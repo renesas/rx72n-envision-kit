@@ -1,6 +1,6 @@
 /*
- * Amazon FreeRTOS BLE HAL V2.0.0
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS BLE HAL V5.1.0
+ * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -479,14 +479,11 @@ typedef struct
      * The service is started automatically.
      * @Warning: Not all platform supports changes to the attribute table while connected.
      * It should be checked that calling this API while connected  is supported by the vendor's API.
-     * Triggers BTServiceAddedCallback_t.
      *
      * @param[in] ucServerIf Server interface, return on the callback BTRegisterServerCallback_t
      *  after successful pxRegisterServer call.
-     *
-     * @param[in] pxElements database elements of all the services and characteristics
-     *
-     * @param[in] ulElementsCount Total count of all the database elements
+     * @param[in,out] pxService GATT Service structure. When @ref pxAddServiceBlob returns,
+     * pxService->pusHandlesBuffer is filled with corresponding attribute handles.
      *
      * @return Returns eBTStatusSuccess on successful call.
      */

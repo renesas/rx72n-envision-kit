@@ -1,6 +1,6 @@
 /*
- * Amazon FreeRTOS POSIX V1.1.2
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS POSIX V1.2.0
+ * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -243,7 +243,7 @@ int pthread_barrier_wait( pthread_barrier_t * barrier );
  */
 int pthread_create( pthread_t * thread,
                     const pthread_attr_t * attr,
-                    void *( *startroutine )( void * ),
+                    void * ( *startroutine )( void * ),
                     void * arg );
 
 /**
@@ -357,6 +357,18 @@ int pthread_getschedparam( pthread_t thread,
  */
 int pthread_join( pthread_t thread,
                   void ** retval );
+
+
+/**
+ * @brief  Marks the thread identified by thread as detached.
+ *
+ * @see https://pubs.opengroup.org/onlinepubs/009695399/functions/pthread_detach.html
+ *
+ * @retval 0 - Upon successful completion.
+ * @retval EINVAL - The implementation has detected that the value specified by thread does not refer
+ *                  to a joinable thread.
+ */
+int pthread_detach( pthread_t thread );
 
 /**
  * @brief Destroy a mutex.

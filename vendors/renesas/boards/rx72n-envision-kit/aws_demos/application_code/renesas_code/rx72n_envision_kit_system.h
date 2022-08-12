@@ -37,7 +37,6 @@
 /* for using Amazon FreeRTOS */
 #include "FreeRTOS.h"
 #include "task.h"
-#include "aws_application_version.h"
 
 /* for using C standard library */
 #include <stdio.h>

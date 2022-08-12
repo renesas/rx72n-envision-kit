@@ -1,0 +1,1112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MicomToolCommonProjectFile Version="1.00">
+  <CreatorType Name="e2studio" Version=""/>
+  <Placeholders>
+    <PlaceholderPrefix>${</PlaceholderPrefix>
+    <PlaceholderPostfix>}</PlaceholderPostfix>
+  </Placeholders>
+  <Project Name="segger_emwin_demos" Type="Application">
+    <Files>
+      <Category Name="src">
+        <Path>src\main.c</Path>
+        <Category Name="Application">
+          <Category Name="Archery">
+            <Path>src\Application\Archery\MainTask_Archery.c</Path>
+            <Category Name="Resource">
+              <Path>src\Application\Archery\Resource\Airplane_145x27.c</Path>
+              <Path>src\Application\Archery\Resource\Arrow_16x37.c</Path>
+              <Path>src\Application\Archery\Resource\Font_24.c</Path>
+              <Path>src\Application\Archery\Resource\Font_48.c</Path>
+              <Path>src\Application\Archery\Resource\Fuji_bare_480x136.c</Path>
+              <Path>src\Application\Archery\Resource\NextButton_30x30.c</Path>
+              <Path>src\Application\Archery\Resource\Quiver_37x110.c</Path>
+              <Path>src\Application\Archery\Resource\Shot_Arrow_0.c</Path>
+              <Path>src\Application\Archery\Resource\Shot_Arrow_1.c</Path>
+              <Path>src\Application\Archery\Resource\Shot_Arrow_2.c</Path>
+              <Path>src\Application\Archery\Resource\Shot_Arrow_3.c</Path>
+              <Path>src\Application\Archery\Resource\Shot_Arrow_4.c</Path>
+              <Path>src\Application\Archery\Resource\Shot_Arrow_5.c</Path>
+              <Path>src\Application\Archery\Resource\Shot_Arrow_6.c</Path>
+              <Path>src\Application\Archery\Resource\TouchArea_170x120.c</Path>
+            </Category>
+          </Category>
+          <Category Name="BicycleRace">
+            <Path>src\Application\BicycleRace\MainTask_BicyleRace.c</Path>
+            <Category Name="Resource">
+              <Path>src\Application\BicycleRace\Resource\Barrier_224x56.c</Path>
+              <Path>src\Application\BicycleRace\Resource\BicycleRider_15F_134x122.c</Path>
+              <Path>src\Application\BicycleRace\Resource\Buildings_358x132.c</Path>
+              <Path>src\Application\BicycleRace\Resource\Crowd_130x90.c</Path>
+              <Path>src\Application\BicycleRace\Resource\Knob_150x150.c</Path>
+              <Path>src\Application\BicycleRace\Resource\OctinSportsRg40.c</Path>
+              <Path>src\Application\BicycleRace\Resource\StartFinish_Left_26x160.c</Path>
+              <Path>src\Application\BicycleRace\Resource\StartFinish_Right_125x264.c</Path>
+            </Category>
+          </Category>
+          <Category Name="MainMenu">
+            <Path>src\Application\MainMenu\GUI_KeyPad.c</Path>
+            <Path>src\Application\MainMenu\MainTask_Menu.c</Path>
+            <Path>src\Application\MainMenu\Resource.h</Path>
+            <Category Name="Resource">
+              <Path>src\Application\MainMenu\Resource\Archery_200x113.c</Path>
+              <Path>src\Application\MainMenu\Resource\Commodore64Angled12.c</Path>
+              <Path>src\Application\MainMenu\Resource\Commodore64Angled14.c</Path>
+              <Path>src\Application\MainMenu\Resource\Commodore64Angled18.c</Path>
+              <Path>src\Application\MainMenu\Resource\Commodore64Angled20.c</Path>
+              <Path>src\Application\MainMenu\Resource\Commodore64Angled24.c</Path>
+              <Path>src\Application\MainMenu\Resource\Commodore64Angled32.c</Path>
+              <Path>src\Application\MainMenu\Resource\Commodore64Angled40.c</Path>
+              <Path>src\Application\MainMenu\Resource\Commodore64Angled8.c</Path>
+              <Path>src\Application\MainMenu\Resource\Cycling_200x113.c</Path>
+              <Path>src\Application\MainMenu\Resource\ExitButton_36x36.c</Path>
+              <Path>src\Application\MainMenu\Resource\HelpButton_36x36.c</Path>
+              <Path>src\Application\MainMenu\Resource\Lifting_200x113.c</Path>
+              <Path>src\Application\MainMenu\Resource\PointingArrow_15x22.c</Path>
+              <Path>src\Application\MainMenu\Resource\Renesas_small.c</Path>
+              <Path>src\Application\MainMenu\Resource\Running_200x113.c</Path>
+            </Category>
+          </Category>
+          <Category Name="Running">
+            <Path>src\Application\Running\MainTask_Running.c</Path>
+            <Category Name="Resource">
+              <Path>src\Application\Running\Resource\100m_95x91.c</Path>
+              <Path>src\Application\Running\Resource\200m_95x91.c</Path>
+              <Path>src\Application\Running\Resource\300m_95x91.c</Path>
+              <Path>src\Application\Running\Resource\Audience_new_144x57.c</Path>
+              <Path>src\Application\Running\Resource\Energy_18x19.c</Path>
+              <Path>src\Application\Running\Resource\Runner1_Small.c</Path>
+              <Path>src\Application\Running\Resource\Shoe1_100x100.c</Path>
+              <Path>src\Application\Running\Resource\Shoe2_100x100.c</Path>
+              <Path>src\Application\Running\Resource\Stand_14x77.c</Path>
+              <Path>src\Application\Running\Resource\lazer8448.c</Path>
+              <Path>src\Application\Running\Resource\renesas_logo_196x32.c</Path>
+              <Path>src\Application\Running\Resource\startend_95x91.c</Path>
+            </Category>
+          </Category>
+          <Category Name="Weightlifting">
+            <Path>src\Application\Weightlifting\MainTask_Weightlifting.c</Path>
+            <Category Name="Resource">
+              <Path>src\Application\Weightlifting\Resource\ActionButton_Pressed_130x80.c</Path>
+              <Path>src\Application\Weightlifting\Resource\ActionButton_Unpressed_130x80.c</Path>
+              <Path>src\Application\Weightlifting\Resource\Floor_480x65.c</Path>
+              <Path>src\Application\Weightlifting\Resource\Lifter_146x148.c</Path>
+              <Path>src\Application\Weightlifting\Resource\PlusButton_36x36.c</Path>
+              <Path>src\Application\Weightlifting\Resource\PlusButton_Pressed_36x36.c</Path>
+              <Path>src\Application\Weightlifting\Resource\SFSportsNight48.c</Path>
+              <Path>src\Application\Weightlifting\Resource\Weight_big_6x50.c</Path>
+              <Path>src\Application\Weightlifting\Resource\Weight_med_6x50.c</Path>
+              <Path>src\Application\Weightlifting\Resource\Weight_small_6x50.c</Path>
+            </Category>
+          </Category>
+        </Category>
+        <Category Name="Config">
+          <Path>src\Config\GUIConf.c</Path>
+          <Path>src\Config\GUIConf.h</Path>
+          <Path>src\Config\GUI_X_Ex.c</Path>
+          <Path>src\Config\LCDConf.c</Path>
+          <Path>src\Config\LCDConf.h</Path>
+          <Path>src\Config\PIDConf.c</Path>
+          <Path>src\Config\PIDConf.h</Path>
+        </Category>
+        <Category Name="GUI">
+          <Path>src\GUI\BUTTON.h</Path>
+          <Path>src\GUI\BUTTON_Private.h</Path>
+          <Path>src\GUI\CALENDAR.h</Path>
+          <Path>src\GUI\CHECKBOX.h</Path>
+          <Path>src\GUI\CHECKBOX_Private.h</Path>
+          <Path>src\GUI\CHOOSECOLOR.h</Path>
+          <Path>src\GUI\CHOOSEFILE.h</Path>
+          <Path>src\GUI\DIALOG.h</Path>
+          <Path>src\GUI\DIALOG_Type.h</Path>
+          <Path>src\GUI\DROPDOWN.h</Path>
+          <Path>src\GUI\DROPDOWN_Private.h</Path>
+          <Path>src\GUI\EDIT.h</Path>
+          <Path>src\GUI\EDIT_Private.h</Path>
+          <Path>src\GUI\FRAMEWIN.h</Path>
+          <Path>src\GUI\FRAMEWIN_Private.h</Path>
+          <Path>src\GUI\GRAPH.h</Path>
+          <Path>src\GUI\GRAPH_Private.h</Path>
+          <Path>src\GUI\GUI.h</Path>
+          <Path>src\GUI\GUIDRV_DCache.h</Path>
+          <Path>src\GUI\GUIDRV_DCache_Private.h</Path>
+          <Path>src\GUI\GUIDRV_Dist.h</Path>
+          <Path>src\GUI\GUIDRV_Lin.h</Path>
+          <Path>src\GUI\GUIDRV_Lin_Opt_16.h</Path>
+          <Path>src\GUI\GUIDRV_Lin_Opt_24.h</Path>
+          <Path>src\GUI\GUIDRV_Lin_Opt_32.h</Path>
+          <Path>src\GUI\GUIDRV_Lin_Opt_8.h</Path>
+          <Path>src\GUI\GUIDRV_Lin_Private.h</Path>
+          <Path>src\GUI\GUIDRV_NoOpt_1_8.h</Path>
+          <Path>src\GUI\GUIDRV_Template.h</Path>
+          <Path>src\GUI\GUIDRV_TemplateI.h</Path>
+          <Path>src\GUI\GUIDRV_TemplateI_Private.h</Path>
+          <Path>src\GUI\GUIMTDRV_TangoC32.h</Path>
+          <Path>src\GUI\GUITDRV_ADS7846.h</Path>
+          <Path>src\GUI\GUI_ARRAY.h</Path>
+          <Path>src\GUI\GUI_ARRAY_Private.h</Path>
+          <Path>src\GUI\GUI_BMP_Private.h</Path>
+          <Path>src\GUI\GUI_ConfDefaults.h</Path>
+          <Path>src\GUI\GUI_Debug.h</Path>
+          <Path>src\GUI\GUI_FontIntern.h</Path>
+          <Path>src\GUI\GUI_GCache_Private.h</Path>
+          <Path>src\GUI\GUI_GIF_Private.h</Path>
+          <Path>src\GUI\GUI_HOOK.h</Path>
+          <Path>src\GUI\GUI_JPEG_Private.h</Path>
+          <Path>src\GUI\GUI_Private.h</Path>
+          <Path>src\GUI\GUI_SPRITE_Private.h</Path>
+          <Path>src\GUI\GUI_SetOrientation.h</Path>
+          <Path>src\GUI\GUI_SetOrientationCX.h</Path>
+          <Path>src\GUI\GUI_Type.h</Path>
+          <Path>src\GUI\GUI_VNC.h</Path>
+          <Path>src\GUI\GUI_Version.h</Path>
+          <Path>src\GUI\GUI__BiDi2_Brackets_800.h</Path>
+          <Path>src\GUI\GUI__BiDi2_Types_800.h</Path>
+          <Path>src\GUI\Global.h</Path>
+          <Path>src\GUI\HEADER.h</Path>
+          <Path>src\GUI\HEADER_Private.h</Path>
+          <Path>src\GUI\ICONVIEW.h</Path>
+          <Path>src\GUI\ICONVIEW_Private.h</Path>
+          <Path>src\GUI\IMAGE.h</Path>
+          <Path>src\GUI\IMAGE_Private.h</Path>
+          <Path>src\GUI\IP_FS.h</Path>
+          <Path>src\GUI\KNOB.h</Path>
+          <Path>src\GUI\KNOB_Private.h</Path>
+          <Path>src\GUI\LCD.h</Path>
+          <Path>src\GUI\LCD_ConfDefaults.h</Path>
+          <Path>src\GUI\LCD_Private.h</Path>
+          <Path>src\GUI\LCD_Protected.h</Path>
+          <Path>src\GUI\LCD_SIM.h</Path>
+          <Path>src\GUI\LISTBOX.h</Path>
+          <Path>src\GUI\LISTBOX_Private.h</Path>
+          <Path>src\GUI\LISTVIEW.h</Path>
+          <Path>src\GUI\LISTVIEW_Private.h</Path>
+          <Path>src\GUI\LISTWHEEL.h</Path>
+          <Path>src\GUI\LISTWHEEL_Private.h</Path>
+          <Path>src\GUI\MENU.h</Path>
+          <Path>src\GUI\MENU_Private.h</Path>
+          <Path>src\GUI\MESSAGEBOX.h</Path>
+          <Path>src\GUI\MULTIEDIT.h</Path>
+          <Path>src\GUI\MULTIPAGE.h</Path>
+          <Path>src\GUI\MULTIPAGE_Private.h</Path>
+          <Path>src\GUI\PROGBAR.h</Path>
+          <Path>src\GUI\PROGBAR_Private.h</Path>
+          <Path>src\GUI\RADIO.h</Path>
+          <Path>src\GUI\RADIO_Private.h</Path>
+          <Path>src\GUI\ROTARY.h</Path>
+          <Path>src\GUI\ROTARY_Private.h</Path>
+          <Path>src\GUI\SCROLLBAR.h</Path>
+          <Path>src\GUI\SCROLLBAR_Private.h</Path>
+          <Path>src\GUI\SEGGER.h</Path>
+          <Path>src\GUI\SLIDER.h</Path>
+          <Path>src\GUI\SLIDER_Private.h</Path>
+          <Path>src\GUI\SPINBOX.h</Path>
+          <Path>src\GUI\SPINBOX_Private.h</Path>
+          <Path>src\GUI\SWIPELIST.h</Path>
+          <Path>src\GUI\SWIPELIST_Private.h</Path>
+          <Path>src\GUI\TEXT.h</Path>
+          <Path>src\GUI\TEXT_Private.h</Path>
+          <Path>src\GUI\TREEVIEW.h</Path>
+          <Path>src\GUI\TREEVIEW_Private.h</Path>
+          <Path>src\GUI\WIDGET.h</Path>
+          <Path>src\GUI\WINDOW_Private.h</Path>
+          <Path>src\GUI\WM.h</Path>
+          <Path>src\GUI\WM_GUI.h</Path>
+          <Path>src\GUI\WM_Intern.h</Path>
+        </Category>
+        <Category Name="renesas_code">
+          <Category Name="key">
+            <Path>src\renesas_code\key\code_signer_public_key.h</Path>
+          </Category>
+          <Category Name="src">
+            <Path>src\renesas_code\src\bank_swap.c</Path>
+            <Path>src\renesas_code\src\base64_decode.c</Path>
+            <Path>src\renesas_code\src\base64_decode.h</Path>
+            <Path>src\renesas_code\src\firm_update.c</Path>
+            <Path>src\renesas_code\src\progbar.c</Path>
+            <Path>src\renesas_code\src\r_cryptogram.h</Path>
+            <Path>src\renesas_code\src\r_sdc_sdmem_rx_demo_pin.c</Path>
+            <Path>src\renesas_code\src\r_sdc_sdmem_rx_demo_pin.h</Path>
+            <Path>src\renesas_code\src\r_sdc_sdmem_rx_demo_pin_config.h</Path>
+            <Path>src\renesas_code\src\sdcard_task.c</Path>
+            <Path>src\renesas_code\src\switch_button_function.c</Path>
+          </Category>
+        </Category>
+        <Category Name="smc_gen">
+          <Category Name="general">
+            <Path>src\smc_gen\general\r_cg_hardware_setup.c</Path>
+            <Path>src\smc_gen\general\r_cg_macrodriver.h</Path>
+            <Path>src\smc_gen\general\r_cg_userdefine.h</Path>
+            <Path>src\smc_gen\general\r_smc_cgc.c</Path>
+            <Path>src\smc_gen\general\r_smc_cgc.h</Path>
+            <Path>src\smc_gen\general\r_smc_cgc_user.c</Path>
+            <Path>src\smc_gen\general\r_smc_entry.h</Path>
+            <Path>src\smc_gen\general\r_smc_interrupt.c</Path>
+            <Path>src\smc_gen\general\r_smc_interrupt.h</Path>
+          </Category>
+          <Category Name="r_bsp">
+            <Path>src\smc_gen\r_bsp\platform.h</Path>
+            <Path>src\smc_gen\r_bsp\readme.txt</Path>
+            <Category Name="board">
+              <Category Name="generic_rx72n">
+                <Path>src\smc_gen\r_bsp\board\generic_rx72n\hwsetup.c</Path>
+                <Path>src\smc_gen\r_bsp\board\generic_rx72n\hwsetup.h</Path>
+                <Path>src\smc_gen\r_bsp\board\generic_rx72n\r_bsp.h</Path>
+                <Path>src\smc_gen\r_bsp\board\generic_rx72n\r_bsp_config_reference.h</Path>
+                <Path>src\smc_gen\r_bsp\board\generic_rx72n\r_bsp_interrupt_config_reference.h</Path>
+              </Category>
+              <Category Name="user">
+                <Path>src\smc_gen\r_bsp\board\user\r_bsp.h</Path>
+              </Category>
+            </Category>
+            <Category Name="doc">
+              <Category Name="en">
+                <Path>src\smc_gen\r_bsp\doc\en\r01an1685ej0552-rx-bsp.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_bsp\doc\ja\r01an1685jj0552-rx-bsp.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="mcu">
+              <Category Name="all">
+                <Path>src\smc_gen\r_bsp\mcu\all\dbsct.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\lowlvl.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\lowlvl.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\lowsrc.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\lowsrc.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\mcu_locks.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_common.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_common.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_cpu.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_interrupts.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_interrupts.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_locking.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_mcu_startup.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_mcu_startup.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_software_interrupt.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_software_interrupt.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_rtos.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_rx_compiler.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_rx_intrinsic_functions.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_rx_intrinsic_functions.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_typedefs.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\resetprg.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\sbrk.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\sbrk.h</Path>
+              </Category>
+              <Category Name="rx72n">
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_clocks.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_clocks.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_info.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_init.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_init.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_interrupts.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_interrupts.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_locks.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_mapped_interrupts.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_mapped_interrupts.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_mapped_interrupts_private.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\r_bsp_cpu.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\r_bsp_locking.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\vecttbl.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\vecttbl.h</Path>
+                <Category Name="register_access">
+                  <Category Name="ccrx">
+                    <Path>src\smc_gen\r_bsp\mcu\rx72n\register_access\ccrx\iodefine.h</Path>
+                  </Category>
+                </Category>
+              </Category>
+            </Category>
+          </Category>
+          <Category Name="r_cmt_rx">
+            <Path>src\smc_gen\r_cmt_rx\r_cmt_rx_if.h</Path>
+            <Path>src\smc_gen\r_cmt_rx\readme.txt</Path>
+            <Category Name="doc">
+              <Category Name="en">
+                <Path>src\smc_gen\r_cmt_rx\doc\en\r01an1856ej0431-rx-timer.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_cmt_rx\doc\ja\r01an1856jj0431-rx-timer.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_cmt_rx\ref\r_cmt_rx_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Path>src\smc_gen\r_cmt_rx\src\r_cmt_rx.c</Path>
+            </Category>
+          </Category>
+          <Category Name="r_config">
+            <Path>src\smc_gen\r_config\r_bsp_config.h</Path>
+            <Path>src\smc_gen\r_config\r_bsp_config_readme.txt</Path>
+            <Path>src\smc_gen\r_config\r_bsp_interrupt_config.h</Path>
+            <Path>src\smc_gen\r_config\r_cmt_rx_config.h</Path>
+            <Path>src\smc_gen\r_config\r_dmaca_rx_config.h</Path>
+            <Path>src\smc_gen\r_config\r_drw2d_rx_config.h</Path>
+            <Path>src\smc_gen\r_config\r_flash_rx_config.h</Path>
+            <Path>src\smc_gen\r_config\r_glcdc_rx_config.h</Path>
+            <Path>src\smc_gen\r_config\r_gpio_rx_config.h</Path>
+            <Path>src\smc_gen\r_config\r_irq_rx_config.h</Path>
+            <Path>src\smc_gen\r_config\r_sci_iic_rx_config.h</Path>
+            <Path>src\smc_gen\r_config\r_sci_iic_rx_pin_config.h</Path>
+            <Path>src\smc_gen\r_config\r_sdc_sd_rx_config.h</Path>
+            <Path>src\smc_gen\r_config\r_sdhi_rx_config.h</Path>
+            <Path>src\smc_gen\r_config\r_sys_time_rx_config.h</Path>
+            <Path>src\smc_gen\r_config\r_tfat_driver_rx_config.h</Path>
+            <Path>src\smc_gen\r_config\r_tfat_rx_config.h</Path>
+          </Category>
+          <Category Name="r_dmaca_rx">
+            <Path>src\smc_gen\r_dmaca_rx\r_dmaca_rx_if.h</Path>
+            <Path>src\smc_gen\r_dmaca_rx\readme.txt</Path>
+            <Category Name="doc">
+              <Category Name="en">
+                <Path>src\smc_gen\r_dmaca_rx\doc\en\r01an2063ej0230-rx-dmac.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_dmaca_rx\doc\ja\r01an2063jj0230-rx-dmac.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_dmaca_rx\ref\r_dmaca_rx_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Path>src\smc_gen\r_dmaca_rx\src\r_dmaca_rx.c</Path>
+              <Path>src\smc_gen\r_dmaca_rx\src\r_dmaca_rx_private.h</Path>
+              <Category Name="targets">
+                <Category Name="rx72n">
+                  <Path>src\smc_gen\r_dmaca_rx\src\targets\rx72n\r_dmaca_rx_target.c</Path>
+                  <Path>src\smc_gen\r_dmaca_rx\src\targets\rx72n\r_dmaca_rx_target.h</Path>
+                </Category>
+              </Category>
+            </Category>
+          </Category>
+          <Category Name="r_drw2d_rx">
+            <Path>src\smc_gen\r_drw2d_rx\ReadMe.txt</Path>
+            <Category Name="doc">
+              <Path>src\smc_gen\r_drw2d_rx\doc\License.txt</Path>
+              <Category Name="en">
+                <Path>src\smc_gen\r_drw2d_rx\doc\en\r01an5373ej0110-rx-drw2d.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_drw2d_rx\doc\ja\r01an5373jj0110-rx-drw2d.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="inc">
+              <Category Name="tes">
+                <Path>src\smc_gen\r_drw2d_rx\inc\tes\dave_base.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\inc\tes\dave_driver.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\inc\tes\dave_errorcodes.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\inc\tes\dave_math.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\inc\tes\dave_types.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\inc\tes\dave_videomodes.h</Path>
+              </Category>
+            </Category>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_drw2d_rx\ref\r_drw2d_rx_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Category Name="rx">
+                <Path>src\smc_gen\r_drw2d_rx\src\rx\dave_base_rx.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\rx\dave_base_rx.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\rx\dave_irq_rx.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\rx\dave_memory_rx.c</Path>
+              </Category>
+              <Category Name="tes">
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_64bitoperation.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_base.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_base.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_blit.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_box.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_box.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_circle.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_circle.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_context.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_context.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_curve.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_curve.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_dlist.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_dlist.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_driver.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_edge.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_edge.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_errorcodes.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_gradient.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_gradient.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_hardware.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_hardware.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_intern.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_line.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_line.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_math.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_memory.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_memory.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_pattern.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_pattern.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_perfcount.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_polyline.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_polyline.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_quad.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_quad.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_rbuffer.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_rbuffer.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_registermap.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_render.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_render.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_texture.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_texture.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_triangle.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_triangle.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_triarray.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_utility.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_utility.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_viewport.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_viewport.h</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_wedge.c</Path>
+                <Path>src\smc_gen\r_drw2d_rx\src\tes\dave_wedge.h</Path>
+              </Category>
+            </Category>
+          </Category>
+          <Category Name="r_flash_rx">
+            <Path>src\smc_gen\r_flash_rx\r_flash_rx_if.h</Path>
+            <Path>src\smc_gen\r_flash_rx\readme.txt</Path>
+            <Category Name="doc">
+              <Category Name="en">
+                <Path>src\smc_gen\r_flash_rx\doc\en\r01an2184ej0450-rx-flash.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_flash_rx\doc\ja\r01an2184jj0450-rx-flash.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_flash_rx\ref\r_flash_rx_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Path>src\smc_gen\r_flash_rx\src\r_flash_fcu.c</Path>
+              <Path>src\smc_gen\r_flash_rx\src\r_flash_fcu.h</Path>
+              <Path>src\smc_gen\r_flash_rx\src\r_flash_group.c</Path>
+              <Path>src\smc_gen\r_flash_rx\src\r_flash_group.h</Path>
+              <Path>src\smc_gen\r_flash_rx\src\r_flash_rx.c</Path>
+              <Path>src\smc_gen\r_flash_rx\src\r_flash_rx.h</Path>
+              <Path>src\smc_gen\r_flash_rx\src\r_flash_targets.h</Path>
+              <Category Name="flash_type_1">
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_codeflash.c</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_codeflash.h</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_codeflash_extra.c</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_codeflash_extra.h</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_dataflash.c</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_dataflash.h</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_flash_common.h</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_flash_type1.c</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_flash_type1_if.h</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_flash_utils.c</Path>
+              </Category>
+              <Category Name="flash_type_3">
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_3\r_flash_type3.c</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_3\r_flash_type3_if.h</Path>
+              </Category>
+              <Category Name="flash_type_4">
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_4\r_flash_type4.c</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_4\r_flash_type4_if.h</Path>
+              </Category>
+              <Category Name="targets">
+                <Category Name="rx72n">
+                  <Path>src\smc_gen\r_flash_rx\src\targets\rx72n\r_flash_rx72n.h</Path>
+                </Category>
+              </Category>
+            </Category>
+          </Category>
+          <Category Name="r_glcdc_rx">
+            <Path>src\smc_gen\r_glcdc_rx\r_glcdc_rx_if.h</Path>
+            <Path>src\smc_gen\r_glcdc_rx\readme.txt</Path>
+            <Category Name="doc">
+              <Category Name="en">
+                <Path>src\smc_gen\r_glcdc_rx\doc\en\r01an3609ej0130-rx-lcd.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_glcdc_rx\doc\ja\r01an3609jj0130-rx-lcd.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_glcdc_rx\ref\r_glcdc_rx_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Path>src\smc_gen\r_glcdc_rx\src\r_glcdc_private.c</Path>
+              <Path>src\smc_gen\r_glcdc_rx\src\r_glcdc_private.h</Path>
+              <Path>src\smc_gen\r_glcdc_rx\src\r_glcdc_rx.c</Path>
+              <Category Name="targets">
+                <Category Name="rx72n">
+                  <Path>src\smc_gen\r_glcdc_rx\src\targets\rx72n\r_glcdc_rx72n.c</Path>
+                </Category>
+              </Category>
+            </Category>
+          </Category>
+          <Category Name="r_gpio_rx">
+            <Path>src\smc_gen\r_gpio_rx\r_gpio_rx_if.h</Path>
+            <Path>src\smc_gen\r_gpio_rx\readme.txt</Path>
+            <Category Name="doc">
+              <Category Name="en">
+                <Path>src\smc_gen\r_gpio_rx\doc\en\r01an1721ej0340-rx-gpio.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_gpio_rx\doc\ja\r01an1721jj0340-rx-gpio.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_gpio_rx\ref\r_gpio_rx_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Path>src\smc_gen\r_gpio_rx\src\r_gpio_rx.c</Path>
+              <Category Name="targets">
+                <Category Name="rx72n">
+                  <Path>src\smc_gen\r_gpio_rx\src\targets\rx72n\r_gpio_rx72n.c</Path>
+                  <Path>src\smc_gen\r_gpio_rx\src\targets\rx72n\r_gpio_rx72n.h</Path>
+                </Category>
+              </Category>
+            </Category>
+          </Category>
+          <Category Name="r_irq_rx">
+            <Path>src\smc_gen\r_irq_rx\r_irq_rx_if.h</Path>
+            <Path>src\smc_gen\r_irq_rx\readme.txt</Path>
+            <Category Name="doc">
+              <Category Name="en">
+                <Path>src\smc_gen\r_irq_rx\doc\en\r01an1668ej0340-rx-int.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_irq_rx\doc\ja\r01an1668jj0340-rx-int.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_irq_rx\ref\r_irq_rx_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Path>src\smc_gen\r_irq_rx\src\r_irq_rx.c</Path>
+              <Path>src\smc_gen\r_irq_rx\src\r_irq_rx_private.h</Path>
+            </Category>
+          </Category>
+          <Category Name="r_pincfg">
+            <Path>src\smc_gen\r_pincfg\Pin.c</Path>
+            <Path>src\smc_gen\r_pincfg\Pin.h</Path>
+            <Path>src\smc_gen\r_pincfg\r_glcdc_rx_pinset.c</Path>
+            <Path>src\smc_gen\r_pincfg\r_glcdc_rx_pinset.h</Path>
+            <Path>src\smc_gen\r_pincfg\r_irq_rx_pinset.c</Path>
+            <Path>src\smc_gen\r_pincfg\r_irq_rx_pinset.h</Path>
+            <Path>src\smc_gen\r_pincfg\r_pinset.h</Path>
+            <Path>src\smc_gen\r_pincfg\r_sdhi_rx_pinset.c</Path>
+            <Path>src\smc_gen\r_pincfg\r_sdhi_rx_pinset.h</Path>
+          </Category>
+          <Category Name="r_sci_iic_rx">
+            <Path>src\smc_gen\r_sci_iic_rx\r_sci_iic_rx_if.h</Path>
+            <Path>src\smc_gen\r_sci_iic_rx\readme.txt</Path>
+            <Category Name="doc">
+              <Category Name="en">
+                <Path>src\smc_gen\r_sci_iic_rx\doc\en\r01an1691ej0245-rx-sci-iic.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_sci_iic_rx\doc\ja\r01an1691jj0245-rx-sci-iic.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_sci_iic_rx\ref\r_sci_iic_rx_config_reference.h</Path>
+              <Path>src\smc_gen\r_sci_iic_rx\ref\r_sci_iic_rx_pin_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Path>src\smc_gen\r_sci_iic_rx\src\r_sci_iic_rx.c</Path>
+              <Path>src\smc_gen\r_sci_iic_rx\src\r_sci_iic_rx_platform.h</Path>
+              <Path>src\smc_gen\r_sci_iic_rx\src\r_sci_iic_rx_private.h</Path>
+              <Category Name="targets">
+                <Category Name="rx72n">
+                  <Path>src\smc_gen\r_sci_iic_rx\src\targets\rx72n\r_sci_iic_rx72n.c</Path>
+                  <Path>src\smc_gen\r_sci_iic_rx\src\targets\rx72n\r_sci_iic_rx72n_private.h</Path>
+                </Category>
+              </Category>
+            </Category>
+          </Category>
+          <Category Name="r_sdc_sdmem_rx">
+            <Path>src\smc_gen\r_sdc_sdmem_rx\r_sdc_sd_rx_if.h</Path>
+            <Path>src\smc_gen\r_sdc_sdmem_rx\readme.txt</Path>
+            <Category Name="doc">
+              <Category Name="en">
+                <Path>src\smc_gen\r_sdc_sdmem_rx\doc\en\r01an4233ej0300-rx-sdmemory.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_sdc_sdmem_rx\doc\ja\r01an4233jj0300-rx-sdmemory.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_sdc_sdmem_rx\ref\r_sdc_sd_rx_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Path>src\smc_gen\r_sdc_sdmem_rx\src\r_sdc_sd_cd.c</Path>
+              <Path>src\smc_gen\r_sdc_sdmem_rx\src\r_sdc_sd_cmd.c</Path>
+              <Path>src\smc_gen\r_sdc_sdmem_rx\src\r_sdc_sd_config.c</Path>
+              <Path>src\smc_gen\r_sdc_sdmem_rx\src\r_sdc_sd_initialize.c</Path>
+              <Path>src\smc_gen\r_sdc_sdmem_rx\src\r_sdc_sd_int.c</Path>
+              <Path>src\smc_gen\r_sdc_sdmem_rx\src\r_sdc_sd_open.c</Path>
+              <Path>src\smc_gen\r_sdc_sdmem_rx\src\r_sdc_sd_rx_private.h</Path>
+              <Path>src\smc_gen\r_sdc_sdmem_rx\src\r_sdc_sd_trans.c</Path>
+              <Path>src\smc_gen\r_sdc_sdmem_rx\src\r_sdc_sd_util.c</Path>
+              <Path>src\smc_gen\r_sdc_sdmem_rx\src\r_sdc_sd_wrapper.c</Path>
+              <Category Name="mem">
+                <Path>src\smc_gen\r_sdc_sdmem_rx\src\mem\r_sdc_sdmem_initialize.c</Path>
+                <Path>src\smc_gen\r_sdc_sdmem_rx\src\mem\r_sdc_sdmem_param.c</Path>
+                <Path>src\smc_gen\r_sdc_sdmem_rx\src\mem\r_sdc_sdmem_read.c</Path>
+                <Path>src\smc_gen\r_sdc_sdmem_rx\src\mem\r_sdc_sdmem_util.c</Path>
+                <Path>src\smc_gen\r_sdc_sdmem_rx\src\mem\r_sdc_sdmem_wrapper.c</Path>
+                <Path>src\smc_gen\r_sdc_sdmem_rx\src\mem\r_sdc_sdmem_write.c</Path>
+              </Category>
+            </Category>
+          </Category>
+          <Category Name="r_sdhi_rx">
+            <Path>src\smc_gen\r_sdhi_rx\r_sdhi_rx_if.h</Path>
+            <Path>src\smc_gen\r_sdhi_rx\readme.txt</Path>
+            <Category Name="doc">
+              <Category Name="en">
+                <Path>src\smc_gen\r_sdhi_rx\doc\en\r01an3852ej0206-rx-communication.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_sdhi_rx\doc\ja\r01an3852jj0206-rx-communication.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_sdhi_rx\ref\r_sdhi_rx_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Path>src\smc_gen\r_sdhi_rx\src\r_sdhi_int.c</Path>
+              <Path>src\smc_gen\r_sdhi_rx\src\r_sdhi_open.c</Path>
+              <Path>src\smc_gen\r_sdhi_rx\src\r_sdhi_rx_private.h</Path>
+              <Path>src\smc_gen\r_sdhi_rx\src\r_sdhi_util.c</Path>
+              <Category Name="targets">
+                <Category Name="rx72n">
+                  <Path>src\smc_gen\r_sdhi_rx\src\targets\rx72n\r_sdhi_dev.c</Path>
+                  <Path>src\smc_gen\r_sdhi_rx\src\targets\rx72n\r_sdhi_register.c</Path>
+                  <Path>src\smc_gen\r_sdhi_rx\src\targets\rx72n\r_sdhi_rx_target.h</Path>
+                </Category>
+              </Category>
+            </Category>
+          </Category>
+          <Category Name="r_sys_time_rx">
+            <Path>src\smc_gen\r_sys_time_rx\r_sys_time_rx_if.h</Path>
+            <Path>src\smc_gen\r_sys_time_rx\readme.txt</Path>
+            <Category Name="doc">
+              <Category Name="en">
+                <Path>src\smc_gen\r_sys_time_rx\doc\en\r20an0431ej0101-rx-middle.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_sys_time_rx\doc\ja\r20an0431jj0101-rx-middle.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_sys_time_rx\ref\r_sys_time_rx_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Path>src\smc_gen\r_sys_time_rx\src\r_sys_time_rx.c</Path>
+              <Path>src\smc_gen\r_sys_time_rx\src\r_sys_time_rx_private.h</Path>
+            </Category>
+          </Category>
+          <Category Name="r_tfat_driver_rx">
+            <Path>src\smc_gen\r_tfat_driver_rx\r_tfat_driver_rx_if.h</Path>
+            <Path>src\smc_gen\r_tfat_driver_rx\readme.txt</Path>
+            <Category Name="doc">
+              <Category Name="en">
+                <Path>src\smc_gen\r_tfat_driver_rx\doc\en\r20an0335ej0105-rx-tfat.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_tfat_driver_rx\doc\ja\r20an0335jj0105-rx-tfat.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_tfat_driver_rx\ref\r_tfat_driver_rx_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Path>src\smc_gen\r_tfat_driver_rx\src\r_tfat_drv_if.c</Path>
+              <Path>src\smc_gen\r_tfat_driver_rx\src\r_tfat_drv_if_dev.h</Path>
+              <Category Name="device">
+                <Category Name="sdmem">
+                  <Path>src\smc_gen\r_tfat_driver_rx\src\device\sdmem\r_tfat_drv_if_sdmem.c</Path>
+                </Category>
+                <Category Name="usb">
+                  <Path>src\smc_gen\r_tfat_driver_rx\src\device\usb\r_tfat_drv_if_usb.c</Path>
+                </Category>
+                <Category Name="usb_mini">
+                  <Path>src\smc_gen\r_tfat_driver_rx\src\device\usb_mini\r_tfat_drv_if_usb_mini.c</Path>
+                </Category>
+              </Category>
+            </Category>
+          </Category>
+          <Category Name="r_tfat_rx">
+            <Path>src\smc_gen\r_tfat_rx\r_tfat_lib.h</Path>
+            <Path>src\smc_gen\r_tfat_rx\readme.txt</Path>
+            <Category Name="doc">
+              <Category Name="en">
+                <Path>src\smc_gen\r_tfat_rx\doc\en\r20an0038ej0304-rx-tfat.pdf</Path>
+                <Path>src\smc_gen\r_tfat_rx\doc\en\r20uw0078ej0301_tfat.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_tfat_rx\doc\ja\r20an0038jj0304-rx-tfat.pdf</Path>
+                <Path>src\smc_gen\r_tfat_rx\doc\ja\r20uw0078jj0301_tfat.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="lib">
+              <Path>src\smc_gen\r_tfat_rx\lib\r_mw_version.h</Path>
+              <Path>src\smc_gen\r_tfat_rx\lib\r_stdint.h</Path>
+            </Category>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_tfat_rx\ref\r_tfat_rx_config_reference.h</Path>
+            </Category>
+          </Category>
+        </Category>
+        <Category Name="tinycrypt">
+          <Category Name="lib">
+            <Category Name="include">
+              <Category Name="tinycrypt">
+                <Path>src\tinycrypt\lib\include\tinycrypt\constants.h</Path>
+                <Path>src\tinycrypt\lib\include\tinycrypt\ecc.h</Path>
+                <Path>src\tinycrypt\lib\include\tinycrypt\ecc_dh.h</Path>
+                <Path>src\tinycrypt\lib\include\tinycrypt\ecc_dsa.h</Path>
+                <Path>src\tinycrypt\lib\include\tinycrypt\ecc_platform_specific.h</Path>
+                <Path>src\tinycrypt\lib\include\tinycrypt\sha256.h</Path>
+                <Path>src\tinycrypt\lib\include\tinycrypt\utils.h</Path>
+              </Category>
+            </Category>
+            <Category Name="source">
+              <Path>src\tinycrypt\lib\source\ecc.c</Path>
+              <Path>src\tinycrypt\lib\source\ecc_dsa.c</Path>
+              <Path>src\tinycrypt\lib\source\ecc_platform_specific.c</Path>
+              <Path>src\tinycrypt\lib\source\sha256.c</Path>
+              <Path>src\tinycrypt\lib\source\utils.c</Path>
+            </Category>
+          </Category>
+        </Category>
+      </Category>
+    </Files>
+    <Device Category="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.cpu.rx600" Series="RX">R5F572NNHxFB</Device>
+    <BuildOptions Name="CC-RX" Version="v3.01.00">
+      <BuildMode Active="True" Name="HardwareDebug">
+        <GeneralOptions/>
+        <CompileOptions>
+          <Option>-isa=rxv3</Option>
+          <Option>-fpu</Option>
+          <Option>-dpfpu</Option>
+          <Option>-branch=32</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\Application\MainMenu"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\renesas_code\key"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\renesas_code\src"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\tinycrypt\lib\include"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\Config"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\GUI"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_config"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_sci_iic_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_sci_iic_rx\src"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_sys_time_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_sys_time_rx\src"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_tfat_driver_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_tfat_driver_rx\src"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_tfat_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_tfat_rx\lib"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_sdhi_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_bsp"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_irq_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_irq_rx\src"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_dmaca_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_dmaca_rx\src"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_gpio_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_gpio_rx\src"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_flash_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_flash_rx\src"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_flash_rx\src\flash_type_1"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_flash_rx\src\flash_type_3"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_flash_rx\src\flash_type_4"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_flash_rx\src\targets"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_glcdc_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_cmt_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_cmt_rx\src"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_drw2d_rx\inc\tes"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_sdc_sdmem_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\general"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_pincfg"</Option>
+          <Option>-asmopt=-bank</Option>
+          <Option>-utf8</Option>
+          <Option>-nomessage</Option>
+          <Option>-debug</Option>
+          <Option>-outcode=utf8</Option>
+          <Option>-tfu=intrinsic</Option>
+          <Option>-nologo</Option>
+          <Option>-lang=c99</Option>
+          <Option>-lang=cpp</Option>
+          <Option>-output=obj=${CONFIGDIR}\${FILELEAF}.obj</Option>
+          <Option>-obj_path=${CONFIGDIR}</Option>
+        </CompileOptions>
+        <AssembleOptions>
+          <Option>-isa=rxv3</Option>
+          <Option>-fpu</Option>
+          <Option>-dpfpu</Option>
+          <Option>-utf8</Option>
+          <Option>-bank</Option>
+          <Option>-debug</Option>
+          <Option>-nologo</Option>
+          <Option>-output=${CONFIGDIR}</Option>
+        </AssembleOptions>
+        <LinkOptions>
+          <Option>-output="${ProjName}.abs"</Option>
+          <Option>-form=absolute</Option>
+          <Option>-nomessage</Option>
+          <Option>-vect=_undefined_interrupt_source_isr</Option>
+          <Option>-list=${ProjName}.map</Option>
+          <Option>-nooptimize</Option>
+          <Option>-rom=D=R,D_1=R_1,D_2=R_2,D_8=R_8,PFRAM2=RPFRAM2,PFRAM=RPFRAM</Option>
+          <Option>-cpu=RAM=00000000-0007ffff,FIX=00080000-00083fff,FIX=00086000-00087fff,FIX=00088000-0009ffff,FIX=000a0000-000a3fff,RAM=000a4000-000a5fff,FIX=000a6000-000bffff,FIX=000c0000-000dffff,FIX=000e0000-000fffff,ROM=00100000-00107fff,FIX=007fc000-007fcfff,FIX=007fe000-007fffff,RAM=00800000-0087ffff,RAM=00ff8000-00ffffff,RAM=fe7f5d00-fe7f5d7f,RAM=fe7f7d70-fe7f7d9f,ROM=ffc00000-ffffffff</Option>
+          <Option>-nologo</Option>
+          <Option>-library="${ProjDirPath}/../../../../../../../Users/Shelty/e2_studio/workspace1/${ProjName}/src/smc_gen/r_tfat_rx/lib/tfat_rx600_little.lib"</Option>
+          <Option>-library="${ProjDirPath}/../../../../../../../Users/Shelty/e2_studio/workspace1/${ProjName}/src/GUI/GUILib.lib"</Option>
+          <Option>-start=SU,SI,B_1,R_1,B_2,R_2,B,R,B_8,R_8,RPFRAM,RPFRAM2/0840000,C_1,C_2,C,C_8,C$*,D*,W*,L,P*/0FFE00300,EXCEPTVECT/0FFFBFF80,RESETVECT/0FFFBFFFC</Option>
+          <Option>-end</Option>
+          <Option>-output="${ProjName}.mot"</Option>
+          <Option>-form=stype</Option>
+          <Option>-byte_count=10</Option>
+          <Option>-nologo</Option>
+          <Option>-nomessage</Option>
+          <Option>-exit</Option>
+          <PreLinker>Auto</PreLinker>
+        </LinkOptions>
+        <LibraryGenerateOptions>
+          <Option>-isa=rxv3</Option>
+          <Option>-fpu</Option>
+          <Option>-dpfpu</Option>
+          <Option>-branch=32</Option>
+          <Option>-lang=c99</Option>
+          <Option>-head=runtime,math,mathf,stdio,stdlib,string,new</Option>
+          <Option>-output="${ProjName}.lib"</Option>
+          <Option>-nologo</Option>
+          <GenerateMode>BuildOptionChanged</GenerateMode>
+        </LibraryGenerateOptions>
+        <LinkOrder>
+          <Path>HardwareDebug\MainTask_Archery.obj</Path>
+          <Path>HardwareDebug\Airplane_145x27.obj</Path>
+          <Path>HardwareDebug\Arrow_16x37.obj</Path>
+          <Path>HardwareDebug\Font_24.obj</Path>
+          <Path>HardwareDebug\Font_48.obj</Path>
+          <Path>HardwareDebug\Fuji_bare_480x136.obj</Path>
+          <Path>HardwareDebug\NextButton_30x30.obj</Path>
+          <Path>HardwareDebug\Quiver_37x110.obj</Path>
+          <Path>HardwareDebug\Shot_Arrow_0.obj</Path>
+          <Path>HardwareDebug\Shot_Arrow_1.obj</Path>
+          <Path>HardwareDebug\Shot_Arrow_2.obj</Path>
+          <Path>HardwareDebug\Shot_Arrow_3.obj</Path>
+          <Path>HardwareDebug\Shot_Arrow_4.obj</Path>
+          <Path>HardwareDebug\Shot_Arrow_5.obj</Path>
+          <Path>HardwareDebug\Shot_Arrow_6.obj</Path>
+          <Path>HardwareDebug\TouchArea_170x120.obj</Path>
+          <Path>HardwareDebug\MainTask_BicyleRace.obj</Path>
+          <Path>HardwareDebug\Barrier_224x56.obj</Path>
+          <Path>HardwareDebug\BicycleRider_15F_134x122.obj</Path>
+          <Path>HardwareDebug\Buildings_358x132.obj</Path>
+          <Path>HardwareDebug\Crowd_130x90.obj</Path>
+          <Path>HardwareDebug\Knob_150x150.obj</Path>
+          <Path>HardwareDebug\OctinSportsRg40.obj</Path>
+          <Path>HardwareDebug\StartFinish_Left_26x160.obj</Path>
+          <Path>HardwareDebug\StartFinish_Right_125x264.obj</Path>
+          <Path>HardwareDebug\GUI_KeyPad.obj</Path>
+          <Path>HardwareDebug\MainTask_Menu.obj</Path>
+          <Path>HardwareDebug\Archery_200x113.obj</Path>
+          <Path>HardwareDebug\Commodore64Angled12.obj</Path>
+          <Path>HardwareDebug\Commodore64Angled14.obj</Path>
+          <Path>HardwareDebug\Commodore64Angled18.obj</Path>
+          <Path>HardwareDebug\Commodore64Angled20.obj</Path>
+          <Path>HardwareDebug\Commodore64Angled24.obj</Path>
+          <Path>HardwareDebug\Commodore64Angled32.obj</Path>
+          <Path>HardwareDebug\Commodore64Angled40.obj</Path>
+          <Path>HardwareDebug\Commodore64Angled8.obj</Path>
+          <Path>HardwareDebug\Cycling_200x113.obj</Path>
+          <Path>HardwareDebug\ExitButton_36x36.obj</Path>
+          <Path>HardwareDebug\HelpButton_36x36.obj</Path>
+          <Path>HardwareDebug\Lifting_200x113.obj</Path>
+          <Path>HardwareDebug\PointingArrow_15x22.obj</Path>
+          <Path>HardwareDebug\Renesas_small.obj</Path>
+          <Path>HardwareDebug\Running_200x113.obj</Path>
+          <Path>HardwareDebug\MainTask_Running.obj</Path>
+          <Path>HardwareDebug\100m_95x91.obj</Path>
+          <Path>HardwareDebug\200m_95x91.obj</Path>
+          <Path>HardwareDebug\300m_95x91.obj</Path>
+          <Path>HardwareDebug\Audience_new_144x57.obj</Path>
+          <Path>HardwareDebug\Energy_18x19.obj</Path>
+          <Path>HardwareDebug\Runner1_Small.obj</Path>
+          <Path>HardwareDebug\Shoe1_100x100.obj</Path>
+          <Path>HardwareDebug\Shoe2_100x100.obj</Path>
+          <Path>HardwareDebug\Stand_14x77.obj</Path>
+          <Path>HardwareDebug\lazer8448.obj</Path>
+          <Path>HardwareDebug\renesas_logo_196x32.obj</Path>
+          <Path>HardwareDebug\startend_95x91.obj</Path>
+          <Path>HardwareDebug\MainTask_Weightlifting.obj</Path>
+          <Path>HardwareDebug\ActionButton_Pressed_130x80.obj</Path>
+          <Path>HardwareDebug\ActionButton_Unpressed_130x80.obj</Path>
+          <Path>HardwareDebug\Floor_480x65.obj</Path>
+          <Path>HardwareDebug\Lifter_146x148.obj</Path>
+          <Path>HardwareDebug\PlusButton_36x36.obj</Path>
+          <Path>HardwareDebug\PlusButton_Pressed_36x36.obj</Path>
+          <Path>HardwareDebug\SFSportsNight48.obj</Path>
+          <Path>HardwareDebug\Weight_big_6x50.obj</Path>
+          <Path>HardwareDebug\Weight_med_6x50.obj</Path>
+          <Path>HardwareDebug\Weight_small_6x50.obj</Path>
+          <Path>HardwareDebug\GUIConf.obj</Path>
+          <Path>HardwareDebug\GUI_X_Ex.obj</Path>
+          <Path>HardwareDebug\LCDConf.obj</Path>
+          <Path>HardwareDebug\PIDConf.obj</Path>
+          <Path>HardwareDebug\main.obj</Path>
+          <Path>HardwareDebug\bank_swap.obj</Path>
+          <Path>HardwareDebug\base64_decode.obj</Path>
+          <Path>HardwareDebug\firm_update.obj</Path>
+          <Path>HardwareDebug\progbar.obj</Path>
+          <Path>HardwareDebug\r_sdc_sdmem_rx_demo_pin.obj</Path>
+          <Path>HardwareDebug\sdcard_task.obj</Path>
+          <Path>HardwareDebug\switch_button_function.obj</Path>
+          <Path>HardwareDebug\r_cg_hardware_setup.obj</Path>
+          <Path>HardwareDebug\r_smc_cgc.obj</Path>
+          <Path>HardwareDebug\r_smc_cgc_user.obj</Path>
+          <Path>HardwareDebug\r_smc_interrupt.obj</Path>
+          <Path>HardwareDebug\hwsetup.obj</Path>
+          <Path>HardwareDebug\dbsct.obj</Path>
+          <Path>HardwareDebug\lowlvl.obj</Path>
+          <Path>HardwareDebug\lowsrc.obj</Path>
+          <Path>HardwareDebug\mcu_locks.obj</Path>
+          <Path>HardwareDebug\r_bsp_common.obj</Path>
+          <Path>HardwareDebug\r_bsp_cpu.obj</Path>
+          <Path>HardwareDebug\r_bsp_interrupts.obj</Path>
+          <Path>HardwareDebug\r_bsp_locking.obj</Path>
+          <Path>HardwareDebug\r_bsp_mcu_startup.obj</Path>
+          <Path>HardwareDebug\r_bsp_software_interrupt.obj</Path>
+          <Path>HardwareDebug\r_rx_intrinsic_functions.obj</Path>
+          <Path>HardwareDebug\resetprg.obj</Path>
+          <Path>HardwareDebug\sbrk.obj</Path>
+          <Path>HardwareDebug\mcu_clocks.obj</Path>
+          <Path>HardwareDebug\mcu_init.obj</Path>
+          <Path>HardwareDebug\mcu_interrupts.obj</Path>
+          <Path>HardwareDebug\mcu_mapped_interrupts.obj</Path>
+          <Path>HardwareDebug\vecttbl.obj</Path>
+          <Path>HardwareDebug\r_cmt_rx.obj</Path>
+          <Path>HardwareDebug\r_dmaca_rx.obj</Path>
+          <Path>HardwareDebug\r_dmaca_rx_target.obj</Path>
+          <Path>HardwareDebug\dave_base_rx.obj</Path>
+          <Path>HardwareDebug\dave_irq_rx.obj</Path>
+          <Path>HardwareDebug\dave_memory_rx.obj</Path>
+          <Path>HardwareDebug\dave_64bitoperation.obj</Path>
+          <Path>HardwareDebug\dave_base.obj</Path>
+          <Path>HardwareDebug\dave_blit.obj</Path>
+          <Path>HardwareDebug\dave_box.obj</Path>
+          <Path>HardwareDebug\dave_circle.obj</Path>
+          <Path>HardwareDebug\dave_context.obj</Path>
+          <Path>HardwareDebug\dave_curve.obj</Path>
+          <Path>HardwareDebug\dave_dlist.obj</Path>
+          <Path>HardwareDebug\dave_driver.obj</Path>
+          <Path>HardwareDebug\dave_edge.obj</Path>
+          <Path>HardwareDebug\dave_errorcodes.obj</Path>
+          <Path>HardwareDebug\dave_gradient.obj</Path>
+          <Path>HardwareDebug\dave_hardware.obj</Path>
+          <Path>HardwareDebug\dave_line.obj</Path>
+          <Path>HardwareDebug\dave_math.obj</Path>
+          <Path>HardwareDebug\dave_memory.obj</Path>
+          <Path>HardwareDebug\dave_pattern.obj</Path>
+          <Path>HardwareDebug\dave_perfcount.obj</Path>
+          <Path>HardwareDebug\dave_polyline.obj</Path>
+          <Path>HardwareDebug\dave_quad.obj</Path>
+          <Path>HardwareDebug\dave_rbuffer.obj</Path>
+          <Path>HardwareDebug\dave_render.obj</Path>
+          <Path>HardwareDebug\dave_texture.obj</Path>
+          <Path>HardwareDebug\dave_triangle.obj</Path>
+          <Path>HardwareDebug\dave_utility.obj</Path>
+          <Path>HardwareDebug\dave_viewport.obj</Path>
+          <Path>HardwareDebug\dave_wedge.obj</Path>
+          <Path>HardwareDebug\r_codeflash.obj</Path>
+          <Path>HardwareDebug\r_codeflash_extra.obj</Path>
+          <Path>HardwareDebug\r_dataflash.obj</Path>
+          <Path>HardwareDebug\r_flash_type1.obj</Path>
+          <Path>HardwareDebug\r_flash_utils.obj</Path>
+          <Path>HardwareDebug\r_flash_type3.obj</Path>
+          <Path>HardwareDebug\r_flash_type4.obj</Path>
+          <Path>HardwareDebug\r_flash_fcu.obj</Path>
+          <Path>HardwareDebug\r_flash_group.obj</Path>
+          <Path>HardwareDebug\r_flash_rx.obj</Path>
+          <Path>HardwareDebug\r_glcdc_private.obj</Path>
+          <Path>HardwareDebug\r_glcdc_rx.obj</Path>
+          <Path>HardwareDebug\r_glcdc_rx72n.obj</Path>
+          <Path>HardwareDebug\r_gpio_rx.obj</Path>
+          <Path>HardwareDebug\r_gpio_rx72n.obj</Path>
+          <Path>HardwareDebug\r_irq_rx.obj</Path>
+          <Path>HardwareDebug\Pin.obj</Path>
+          <Path>HardwareDebug\r_glcdc_rx_pinset.obj</Path>
+          <Path>HardwareDebug\r_irq_rx_pinset.obj</Path>
+          <Path>HardwareDebug\r_sdhi_rx_pinset.obj</Path>
+          <Path>HardwareDebug\r_sci_iic_rx.obj</Path>
+          <Path>HardwareDebug\r_sci_iic_rx72n.obj</Path>
+          <Path>HardwareDebug\r_sdc_sdmem_initialize.obj</Path>
+          <Path>HardwareDebug\r_sdc_sdmem_param.obj</Path>
+          <Path>HardwareDebug\r_sdc_sdmem_read.obj</Path>
+          <Path>HardwareDebug\r_sdc_sdmem_util.obj</Path>
+          <Path>HardwareDebug\r_sdc_sdmem_wrapper.obj</Path>
+          <Path>HardwareDebug\r_sdc_sdmem_write.obj</Path>
+          <Path>HardwareDebug\r_sdc_sd_cd.obj</Path>
+          <Path>HardwareDebug\r_sdc_sd_cmd.obj</Path>
+          <Path>HardwareDebug\r_sdc_sd_config.obj</Path>
+          <Path>HardwareDebug\r_sdc_sd_initialize.obj</Path>
+          <Path>HardwareDebug\r_sdc_sd_int.obj</Path>
+          <Path>HardwareDebug\r_sdc_sd_open.obj</Path>
+          <Path>HardwareDebug\r_sdc_sd_trans.obj</Path>
+          <Path>HardwareDebug\r_sdc_sd_util.obj</Path>
+          <Path>HardwareDebug\r_sdc_sd_wrapper.obj</Path>
+          <Path>HardwareDebug\r_sdhi_int.obj</Path>
+          <Path>HardwareDebug\r_sdhi_open.obj</Path>
+          <Path>HardwareDebug\r_sdhi_util.obj</Path>
+          <Path>HardwareDebug\r_sdhi_dev.obj</Path>
+          <Path>HardwareDebug\r_sdhi_register.obj</Path>
+          <Path>HardwareDebug\r_sys_time_rx.obj</Path>
+          <Path>HardwareDebug\r_tfat_drv_if_sdmem.obj</Path>
+          <Path>HardwareDebug\r_tfat_drv_if_usb.obj</Path>
+          <Path>HardwareDebug\r_tfat_drv_if_usb_mini.obj</Path>
+          <Path>HardwareDebug\r_tfat_drv_if.obj</Path>
+          <Path>HardwareDebug\ecc.obj</Path>
+          <Path>HardwareDebug\ecc_dsa.obj</Path>
+          <Path>HardwareDebug\ecc_platform_specific.obj</Path>
+          <Path>HardwareDebug\sha256.obj</Path>
+          <Path>HardwareDebug\utils.obj</Path>
+          <Path>HardwareDebug\segger_emwin_demos.lib</Path>
+        </LinkOrder>
+        <CommonOptions>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\Application\MainMenu"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\renesas_code\key"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\renesas_code\src"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\tinycrypt\lib\include"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\Config"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\GUI"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_config"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_sci_iic_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_sci_iic_rx\src"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_sys_time_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_sys_time_rx\src"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_tfat_driver_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_tfat_driver_rx\src"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_tfat_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_tfat_rx\lib"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_sdhi_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_bsp"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_irq_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_irq_rx\src"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_dmaca_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_dmaca_rx\src"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_gpio_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_gpio_rx\src"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_flash_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_flash_rx\src"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_flash_rx\src\flash_type_1"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_flash_rx\src\flash_type_3"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_flash_rx\src\flash_type_4"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_flash_rx\src\targets"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_glcdc_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_cmt_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_cmt_rx\src"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_drw2d_rx\inc\tes"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_sdc_sdmem_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\general"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace1\${ProjName}\src\smc_gen\r_pincfg"</IncludePathForC>
+        </CommonOptions>
+      </BuildMode>
+    </BuildOptions>
+  </Project>
+</MicomToolCommonProjectFile>

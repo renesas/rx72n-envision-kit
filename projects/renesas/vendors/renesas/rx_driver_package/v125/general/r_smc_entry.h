@@ -14,15 +14,14 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2019 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2022 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_smc_entry.h
-* Version      : 1.0.0
-* Device(s)    : R5F572NNHxFB
-* Description  : SMC platform header file.
-* Creation Date: 2020-04-24
+* File Name        : r_smc_entry.h
+* Version          : 1.0.110
+* Device(s)        : R5F572NNHxFB
+* Description      : SMC platform header file.
 ***********************************************************************************************************************/
 
 #ifndef SMC_ENTRY_H

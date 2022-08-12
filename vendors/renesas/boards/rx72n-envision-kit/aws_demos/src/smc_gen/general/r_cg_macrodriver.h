@@ -14,15 +14,14 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2019 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2022 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_cg_macrodriver.h
-* Version      : 1.0.0
-* Device(s)    : R5F572NNHxFB
-* Description  : Macro header file for code generation.
-* Creation Date: 2020-04-24
+* File Name        : r_cg_macrodriver.h
+* Version          : 1.0.110
+* Device(s)        : R5F572NNHxFB
+* Description      : Macro header file for code generation.
 ***********************************************************************************************************************/
 
 #ifndef MACRODRIVER_H
@@ -42,7 +41,7 @@ Macro definitions (Register bit)
 /***********************************************************************************************************************
 Macro definitions
 ***********************************************************************************************************************/
-#ifndef __TYPEDEF__
+#ifndef __TYPEDEF_CG__
 
 /* Status list definition */
 #define MD_STATUSBASE        (0x00U)
@@ -67,9 +66,9 @@ Macro definitions
 /***********************************************************************************************************************
 Typedef definitions
 ***********************************************************************************************************************/
-#ifndef __TYPEDEF__
+#ifndef __TYPEDEF_CG__
     typedef unsigned short      MD_STATUS;
-    #define __TYPEDEF__
+    #define __TYPEDEF_CG__
 #endif
 
 /***********************************************************************************************************************

@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.2.1
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.4.3 LTS Patch 2
+ * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -19,12 +19,16 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * http://www.FreeRTOS.org
- * http://aws.amazon.com/freertos
+ * https://www.FreeRTOS.org
+ * https://github.com/FreeRTOS
  *
  * 1 tab == 4 spaces!
  */
-
+/* Including FreeRTOSConfig.h here will cause build errors if the header file
+contains code not understood by the assembler - for example the 'extern' keyword.
+To avoid errors place any such code inside a #ifdef __ICCARM__/#endif block so
+the code is included in C files but excluded by the preprocessor in assembly
+files (__ICCARM__ is defined by the IAR C compiler but not by the IAR assembler. */
 #include <FreeRTOSConfig.h>
 
 	RSEG    CODE:CODE(2)
@@ -78,12 +82,39 @@ xPortPendSVHandler:
 	ldr r0, [r1]
 	/* Move onto the second item in the TCB... */
 	add r1, r1, #4
+
+	dmb					/* Complete outstanding transfers before disabling MPU. */
+	ldr r2, =0xe000ed94	/* MPU_CTRL register. */
+	ldr r3, [r2]		/* Read the value of MPU_CTRL. */
+	bic r3, r3, #1		/* r3 = r3 & ~1 i.e. Clear the bit 0 in r3. */
+	str r3, [r2]		/* Disable MPU. */
+
 	/* Region Base Address register. */
 	ldr r2, =0xe000ed9c
-	/* Read 4 sets of MPU registers. */
+	/* Read 4 sets of MPU registers [MPU Region # 4 - 7]. */
 	ldmia r1!, {r4-r11}
-	/* Write 4 sets of MPU registers. */
-	stmia r2!, {r4-r11}
+	/* Write 4 sets of MPU registers [MPU Region # 4 - 7]. */
+	stmia r2, {r4-r11}
+
+	#ifdef configTOTAL_MPU_REGIONS
+		#if ( configTOTAL_MPU_REGIONS == 16 )
+			/* Read 4 sets of MPU registers [MPU Region # 8 - 11]. */
+			ldmia r1!, {r4-r11}
+			/* Write 4 sets of MPU registers. [MPU Region # 8 - 11]. */
+			stmia r2, {r4-r11}
+			/* Read 4 sets of MPU registers [MPU Region # 12 - 15]. */
+			ldmia r1!, {r4-r11}
+			/* Write 4 sets of MPU registers. [MPU Region # 12 - 15]. */
+			stmia r2, {r4-r11}
+		#endif /* configTOTAL_MPU_REGIONS == 16. */
+	#endif /* configTOTAL_MPU_REGIONS */
+
+	ldr r2, =0xe000ed94	/* MPU_CTRL register. */
+	ldr r3, [r2]		/* Read the value of MPU_CTRL. */
+	orr r3, r3, #1		/* r3 = r3 | 1 i.e. Set the bit 0 in r3. */
+	str r3, [r2]		/* Enable MPU. */
+	dsb					/* Force memory writes before continuing. */
+
 	/* Pop the registers that are not automatically saved on exception entry. */
 	ldmia r0!, {r3-r11, r14}
 	msr control, r3
@@ -151,12 +182,39 @@ vPortRestoreContextOfFirstTask:
 	ldr r0, [r1]
 	/* Move onto the second item in the TCB... */
 	add r1, r1, #4
+
+	dmb					/* Complete outstanding transfers before disabling MPU. */
+	ldr r2, =0xe000ed94	/* MPU_CTRL register. */
+	ldr r3, [r2]		/* Read the value of MPU_CTRL. */
+	bic r3, r3, #1		/* r3 = r3 & ~1 i.e. Clear the bit 0 in r3. */
+	str r3, [r2]		/* Disable MPU. */
+
 	/* Region Base Address register. */
 	ldr r2, =0xe000ed9c
-	/* Read 4 sets of MPU registers. */
+	/* Read 4 sets of MPU registers [MPU Region # 4 - 7]. */
 	ldmia r1!, {r4-r11}
-	/* Write 4 sets of MPU registers. */
-	stmia r2!, {r4-r11}
+	/* Write 4 sets of MPU registers [MPU Region # 4 - 7]. */
+	stmia r2, {r4-r11}
+
+	#ifdef configTOTAL_MPU_REGIONS
+		#if ( configTOTAL_MPU_REGIONS == 16 )
+			/* Read 4 sets of MPU registers [MPU Region # 8 - 11]. */
+			ldmia r1!, {r4-r11}
+			/* Write 4 sets of MPU registers. [MPU Region # 8 - 11]. */
+			stmia r2, {r4-r11}
+			/* Read 4 sets of MPU registers [MPU Region # 12 - 15]. */
+			ldmia r1!, {r4-r11}
+			/* Write 4 sets of MPU registers. [MPU Region # 12 - 15]. */
+			stmia r2, {r4-r11}
+		#endif /* configTOTAL_MPU_REGIONS == 16. */
+	#endif /* configTOTAL_MPU_REGIONS */
+
+	ldr r2, =0xe000ed94	/* MPU_CTRL register. */
+	ldr r3, [r2]		/* Read the value of MPU_CTRL. */
+	orr r3, r3, #1		/* r3 = r3 | 1 i.e. Set the bit 0 in r3. */
+	str r3, [r2]		/* Enable MPU. */
+	dsb					/* Force memory writes before continuing. */
+
 	/* Pop the registers that are not automatically saved on exception entry. */
 	ldmia r0!, {r3-r11, r14}
 	msr control, r3

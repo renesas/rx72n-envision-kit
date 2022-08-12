@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="com.renesas.cdt.launch.dsf.gdbremote.launchConfigurationType">
+    <booleanAttribute key=".setStepMode" value="false"/>
     <stringAttribute key="com.renesas.cdt.core.additionalServerArgs" value=""/>
+    <intAttribute key="com.renesas.cdt.core.connectionTimeout" value="30"/>
     <stringAttribute key="com.renesas.cdt.core.initCommands" value=""/>
     <stringAttribute key="com.renesas.cdt.core.ipAddress" value="localhost"/>
     <stringAttribute key="com.renesas.cdt.core.jtagDevice" value="E2 Lite (RX)"/>
@@ -15,27 +17,29 @@
         <listEntry value="61234"/>
     </listAttribute>
     <booleanAttribute key="com.renesas.cdt.core.loadImage" value="true"/>
-    <stringAttribute key="com.renesas.cdt.core.optionInitCommands" value=""/>
+    <stringAttribute key="com.renesas.cdt.core.optionInitCommands" value="monitor force_rtos_off&#10;&#10;"/>
     <intAttribute key="com.renesas.cdt.core.portNumber" value="61234"/>
     <stringAttribute key="com.renesas.cdt.core.runCommands" value=""/>
     <stringAttribute key="com.renesas.cdt.core.secondGDBExe" value="green_dsp-elf-gdb"/>
     <booleanAttribute key="com.renesas.cdt.core.secondGDBSupport" value="false"/>
     <intAttribute key="com.renesas.cdt.core.secondGdbPortNumber" value="61237"/>
-    <stringAttribute key="com.renesas.cdt.core.serverParam" value="-g E2LITE  -t R5F572NN_DUAL  -uClockSrcHoco= 0 -uInputClock= 16.0000 -uPTimerClock= 240000000 -uAllowClockSourceInternal= 1 -uUseFine= 1 -uFineBaudRate= 1.50 -w 1 -z 0 -uRegisterSetting= 0 -uModePin= 0 -uChangeStartupBank= 1 -uStartupBank= 0 -uDebugMode= 0 -uExecuteProgram= 0 -uIdCode= FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF -uresetOnReload= 1 -n 0 -uWorkRamAddress= 1000 -uProgReWriteIRom= 1 -uProgReWriteDFlash= 1 -uhookWorkRamAddr= 0x7fb40 -uhookWorkRamSize= 0x4c0"/>
+    <stringAttribute key="com.renesas.cdt.core.serverParam" value="-g E2LITE  -t R5F572NN_DUAL -uConnectionTimeout= 30 -uClockSrcHoco= 0 -uInputClock= &quot;16.0000&quot; -uPTimerClock= &quot;240000000&quot; -uAllowClockSourceInternal= 1 -uUseFine= 1 -uFineBaudRate= &quot;1.50&quot; -w 0 -z &quot;0&quot; -uRegisterSetting= &quot;0&quot; -uModePin= &quot;0&quot; -uChangeStartupBank= 1 -uStartupBank= &quot;0&quot; -uDebugMode= &quot;0&quot; -uExecuteProgram= 0 -uIdCode= &quot;FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF&quot; -uresetOnReload= 1 -n 0 -uWorkRamAddress= &quot;1000&quot; -uverifyOnWritingMemory= 0 -uProgReWriteIRom= 1 -uProgReWriteDFlash= 1 -uhookWorkRamAddr= &quot;0x7fb40&quot; -uhookWorkRamSize= &quot;0x4c0&quot; -uOSRestriction= 0"/>
     <booleanAttribute key="com.renesas.cdt.core.setResume" value="true"/>
     <booleanAttribute key="com.renesas.cdt.core.setStopAt" value="true"/>
     <booleanAttribute key="com.renesas.cdt.core.startServer" value="true"/>
     <stringAttribute key="com.renesas.cdt.core.stopAt" value="main"/>
     <stringAttribute key="com.renesas.cdt.core.targetDevice" value="R5F572NN_DUAL"/>
     <booleanAttribute key="com.renesas.cdt.core.useRemoteTarget" value="true"/>
-    <stringAttribute key="com.renesas.cdt.debug.ioview.dsf.registerSelection0" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#13;&#10;&lt;selectedRegisterList ioFilePath=&quot;C:\Users\a5090515\.eclipse\com.renesas.platform_1435879475\DebugComp\RX\IoFiles\RX72N.sfrx&quot;/&gt;&#13;&#10;"/>
+    <stringAttribute key="com.renesas.cdt.debug.ioview.dsf.registerSelection0" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#13;&#10;&lt;selectedRegisterList ioFilePath=&quot;C:\Users\Shelty\.eclipse\com.renesas.platform_1993961354\DebugComp\RX\IoFiles\RX72N.sfrx&quot;/&gt;&#13;&#10;"/>
     <stringAttribute key="com.renesas.cdt.launch.dsf.IO_MAP" value="${support_area_loc}"/>
     <booleanAttribute key="com.renesas.cdt.launch.dsf.USE_DEFAULT_IO_MAP" value="true"/>
     <listAttribute key="com.renesas.cdt.launch.dsf.downloadImages">
-        <listEntry value="|true|true|true||true|No core"/>
-        <listEntry value="${workspace_loc:\aws_demos\HardwareDebug\aws_demos.x}|true|false|true|0|true|No core"/>
+        <listEntry value="|true|true|true||true|No core|INTERNAL_MEMORY||false"/>
+        <listEntry value="${workspace_loc:\aws_demos\HardwareDebug\aws_demos.x}|true|false|true|0|true|No core|INTERNAL_MEMORY||false"/>
     </listAttribute>
     <booleanAttribute key="com.renesas.cdt.launch.dsf.downloadImagesUpgradedV30" value="true"/>
+    <listAttribute key="com.renesas.cdt.launch.dsf.externalFlashDestinationAddresses"/>
+    <listAttribute key="com.renesas.cdt.launch.dsf.externalFlashDownloadModules"/>
     <stringAttribute key="com.renesas.cdt.launch.dsf.launchSeqType" value="com.renesas.cdt.launch.dsf.launchSequence.e2GdbServer"/>
     <stringAttribute key="com.renesas.cdt.launch.dsf.serverPath" value="${renesas.support.targetLoc:rx-debug}\e2-server-gdb"/>
     <listAttribute key="com.renesas.cdt.launch.ui.address.mruList.memoryMonitorExpression">
@@ -48,7 +52,7 @@
     <booleanAttribute key="com.renesas.hardwaredebug.rx.e2lite.allow.clock.source.internal" value="true"/>
     <intAttribute key="com.renesas.hardwaredebug.rx.e2lite.clock_source" value="0"/>
     <stringAttribute key="com.renesas.hardwaredebug.rx.e2lite.connection.mode" value="0"/>
-    <booleanAttribute key="com.renesas.hardwaredebug.rx.e2lite.e2lite_pwr" value="true"/>
+    <booleanAttribute key="com.renesas.hardwaredebug.rx.e2lite.e2lite_pwr" value="false"/>
     <booleanAttribute key="com.renesas.hardwaredebug.rx.e2lite.enable.hot.plug" value="false"/>
     <booleanAttribute key="com.renesas.hardwaredebug.rx.e2lite.enable_external_flash" value="false"/>
     <booleanAttribute key="com.renesas.hardwaredebug.rx.e2lite.execute.program" value="false"/>
@@ -71,10 +75,13 @@
     <stringAttribute key="com.renesas.hardwaredebug.rx.e2lite.mode_pin" value="0"/>
     <booleanAttribute key="com.renesas.hardwaredebug.rx.e2lite.prog_rewrite_dflash" value="true"/>
     <booleanAttribute key="com.renesas.hardwaredebug.rx.e2lite.prog_rewrite_irom" value="true"/>
+    <booleanAttribute key="com.renesas.hardwaredebug.rx.e2lite.rtosIntegrationInDebugView" value="false"/>
+    <booleanAttribute key="com.renesas.hardwaredebug.rx.e2lite.rtosintegrationthreadsrunning" value="false"/>
     <stringAttribute key="com.renesas.hardwaredebug.rx.e2lite.serial_number" value=""/>
     <stringAttribute key="com.renesas.hardwaredebug.rx.e2lite.startup_bank" value="0"/>
     <stringAttribute key="com.renesas.hardwaredebug.rx.e2lite.supply.voltage" value="3.3"/>
     <intAttribute key="com.renesas.hardwaredebug.rx.e2lite.timer_clock" value="240000000"/>
+    <booleanAttribute key="com.renesas.hardwaredebug.rx.e2lite.verify.on.writing.to.memory" value="false"/>
     <intAttribute key="com.renesas.hardwaredebug.rx.e2lite.work_ram_start" value="4096"/>
     <booleanAttribute key="com.renesas.hardwaredebug.timemeasurement" value="true"/>
     <intAttribute key="org.eclipse.cdt.debug.gdbjtag.core.delay" value="3"/>
@@ -113,6 +120,6 @@
         <listEntry value="4"/>
     </listAttribute>
     <booleanAttribute key="org.eclipse.debug.ui.ATTR_LAUNCH_IN_BACKGROUND" value="false"/>
-    <stringAttribute key="org.eclipse.dsf.launch.MEMORY_BLOCKS" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#13;&#10;&lt;memoryBlockExpressionList context=&quot;reserved-for-future-use&quot;&gt;&#13;&#10;    &#13;&#10;    &lt;gdbmemoryBlockExpression address=&quot;8388608&quot; core_thread_id=&quot;1_i1&quot; label=&quot;0x00800000&quot;&gt;&#13;&#10;        &lt;memoryRendering id=&quot;org.eclipse.debug.ui.rendering.hexint&quot;&gt;&#13;&#10;            &lt;renderingInstance containerId=&quot;org.eclipse.debug.ui.MemoryView.RenderingViewPane.1&quot; viewId=&quot;org.eclipse.debug.ui.MemoryView&quot; viewSecondaryId=&quot;&quot;/&gt;&#13;&#10;        &lt;/memoryRendering&gt;&#13;&#10;    &lt;/gdbmemoryBlockExpression&gt;&#13;&#10;    &lt;gdbmemoryBlockExpression address=&quot;4290772992&quot; core_thread_id=&quot;1_i1&quot; label=&quot;0xffc00000&quot;&gt;&#13;&#10;        &lt;memoryRendering id=&quot;org.eclipse.debug.ui.rendering.hexint&quot;&gt;&#13;&#10;            &lt;renderingInstance containerId=&quot;org.eclipse.debug.ui.MemoryView.RenderingViewPane.1&quot; viewId=&quot;org.eclipse.debug.ui.MemoryView&quot; viewSecondaryId=&quot;&quot;/&gt;&#13;&#10;        &lt;/memoryRendering&gt;&#13;&#10;        &lt;memoryRendering id=&quot;org.eclipse.debug.ui.rendering.raw_memory&quot;&gt;&#13;&#10;            &lt;renderingProperty name=&quot;org.eclipse.debug.ui.AbstractTableRendering.colSize&quot; value=&quot;1&quot;/&gt;&#13;&#10;            &lt;renderingProperty name=&quot;org.eclipse.debug.ui.AbstractTableRendering.rowSize&quot; value=&quot;16&quot;/&gt;&#13;&#10;        &lt;/memoryRendering&gt;&#13;&#10;    &lt;/gdbmemoryBlockExpression&gt;&#13;&#10;&lt;/memoryBlockExpressionList&gt;&#13;&#10;"/>
+    <stringAttribute key="org.eclipse.dsf.launch.MEMORY_BLOCKS" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&lt;memoryBlockExpressionList context=&quot;reserved-for-future-use&quot;&gt;&lt;gdbmemoryBlockExpression address=&quot;8388608&quot; core_thread_id=&quot;1_i1&quot; label=&quot;0x00800000&quot;&gt;&lt;memoryRendering id=&quot;org.eclipse.debug.ui.rendering.hexint&quot;&gt;&lt;renderingInstance containerId=&quot;org.eclipse.debug.ui.MemoryView.RenderingViewPane.1&quot; viewId=&quot;org.eclipse.debug.ui.MemoryView&quot; viewSecondaryId=&quot;&quot;/&gt;&lt;/memoryRendering&gt;&lt;/gdbmemoryBlockExpression&gt;&lt;gdbmemoryBlockExpression address=&quot;4290772992&quot; core_thread_id=&quot;1_i1&quot; label=&quot;0xffc00000&quot;&gt;&lt;memoryRendering id=&quot;org.eclipse.debug.ui.rendering.hexint&quot;&gt;&lt;renderingInstance containerId=&quot;org.eclipse.debug.ui.MemoryView.RenderingViewPane.1&quot; viewId=&quot;org.eclipse.debug.ui.MemoryView&quot; viewSecondaryId=&quot;&quot;/&gt;&lt;/memoryRendering&gt;&lt;memoryRendering id=&quot;org.eclipse.debug.ui.rendering.raw_memory&quot;&gt;&lt;renderingProperty name=&quot;org.eclipse.debug.ui.AbstractTableRendering.colSize&quot; value=&quot;1&quot;/&gt;&lt;renderingProperty name=&quot;org.eclipse.debug.ui.AbstractTableRendering.rowSize&quot; value=&quot;16&quot;/&gt;&lt;/memoryRendering&gt;&lt;/gdbmemoryBlockExpression&gt;&lt;/memoryBlockExpressionList&gt;"/>
     <stringAttribute key="process_factory_id" value="org.eclipse.cdt.dsf.gdb.GdbProcessFactory"/>
 </launchConfiguration>

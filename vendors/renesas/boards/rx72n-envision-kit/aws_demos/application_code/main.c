@@ -27,8 +27,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "FreeRTOS.h"
 #include "task.h"
 
-/* Version includes. */
-#include "aws_application_version.h"
+/* FreeRTOS includes. */
+#include "FreeRTOS.h"
+#include "task.h"
 
 /* System init includes. */
 #include "iot_system_init.h"

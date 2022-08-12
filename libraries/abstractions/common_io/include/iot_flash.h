@@ -1,6 +1,6 @@
 /*
- * Amazon FreeRTOS Common IO V1.0.0
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Common IO V0.1.3
+ * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -94,6 +94,7 @@ typedef struct IotFlashInfo
                                  *   and if sub-sectors of 4k can be write protected then this may be set to 4K*/
     uint8_t ucAsyncSupported;   /*!< Provides a flag to indicate if background erase/program
                                  *   is supported. User must check this before they can setup a callback and wait.*/
+    uint32_t ulFlashID;         /*!< flash chip id */
 } IotFlashInfo_t;
 
 /**

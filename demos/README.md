@@ -1,14 +1,14 @@
-Amazon FreeRTOS can be built utilizing a supported IDE toolchain or with cmake.  For additional instructions for each individual board, refer to the top level README for the Getting Started Guides: https://github.com/aws/amazon-freertos/blob/master/README.md
+FreeRTOS can be built utilizing a supported IDE toolchain or with cmake.  For additional instructions for each individual board, refer to the top level README for the Getting Started Guides: https://github.com/aws/amazon-freertos/blob/master/README.md
 
 
 ### Selecting a Demo
 
-There are a variety of demos available for each user to explore the functionality available within Amazon FreeRTOS.  To select which demo to enable, please follow the steps below:
+There are a variety of demos available for each user to explore the functionality available within FreeRTOS.  To select which demo to enable, please follow the steps below:
 
 1. Navigate to  ```./vendors/<VENDOR_NAME>/boards/<BOARD>/aws_demos/common/config_files```  
 2. Open ```aws_demo_config.h``` file. 
 3. The defines are used to select which demo will be enabled from the list of available demos
-4. By default, ```#define CONFIG_MQTT_DEMO_ENABLED``` MQTT demos is selected. 
+4. By default, ```#define CONFIG_CORE_MQTT_MUTUAL_AUTH_DEMO_ENABLED``` MQTT demos is selected. 
 5. Replace the ```#define``` with your demo of choice if necessary
 6. Compile your project utilizing IDE or with cmake
 

@@ -7,26 +7,21 @@ afr_module_sources(
     ${AFR_CURRENT_MODULE}
     INTERFACE
         "$<$<TARGET_EXISTS:AFR::freertos_plus_tcp>:${AFR_DEMOS_DIR}/demo_runner/aws_demo_network_addr.c>"
-        "${AFR_DEMOS_DIR}/demo_runner/aws_demo_version.c"
         "${AFR_DEMOS_DIR}/demo_runner/aws_demo.c"
         "${AFR_DEMOS_DIR}/network_manager/aws_iot_network_manager.c"
-        "${AFR_DEMOS_DIR}/network_manager/aws_iot_demo_network.c"
         "${AFR_DEMOS_DIR}/network_manager/iot_network_manager_private.h"
         "${AFR_DEMOS_DIR}/demo_runner/iot_demo_freertos.c"
         "${AFR_DEMOS_DIR}/demo_runner/iot_demo_runner.c"
-        "${AFR_DEMOS_DIR}/include/aws_application_version.h"
         "${AFR_DEMOS_DIR}/include/aws_clientcredential.h"
         "${AFR_DEMOS_DIR}/include/aws_clientcredential_keys.h"
         "${AFR_DEMOS_DIR}/include/aws_demo.h"
-        "${AFR_DEMOS_DIR}/include/aws_iot_demo_network.h"
-        "${AFR_DEMOS_DIR}/include/aws_ota_codesigner_certificate.h"
         "${AFR_DEMOS_DIR}/include/iot_config_common.h"
         "${AFR_DEMOS_DIR}/include/iot_demo_logging.h"
         "${AFR_DEMOS_DIR}/include/iot_demo_runner.h"
 )
 afr_module_include_dirs(
     ${AFR_CURRENT_MODULE}
-    INTERFACE
+    INTERFACE 
         "${AFR_DEMOS_DIR}/include"
         "${AFR_DEMOS_DIR}/network_manager"
 )
@@ -53,7 +48,7 @@ if(TARGET AFR::wifi::mcu_port AND TARGET AFR::ble_hal::mcu_port)
 endif()
 
 # Add other modules.
-file(GLOB afr_demos "${AFR_DEMOS_DIR}/*")
+file(GLOB_RECURSE afr_demos LIST_DIRECTORIES true "${AFR_DEMOS_DIR}/*")
 foreach(demo IN LISTS afr_demos)
     if(IS_DIRECTORY "${demo}" AND EXISTS "${demo}/CMakeLists.txt")
         afr_add_subdirectory("${demo}")

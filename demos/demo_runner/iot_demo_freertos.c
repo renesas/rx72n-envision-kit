@@ -1,6 +1,6 @@
 /*
- * Amazon FreeRTOS V201910.00
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS V202203.00
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -25,7 +25,7 @@
 
 /**
  * @file iot_demo_freertos.c
- * @brief Generic demo runner for C SDK libraries on Amazon FreeRTOS.
+ * @brief Generic demo runner for C SDK libraries on FreeRTOS.
  */
 
 /* The config header is always included first. */
@@ -40,15 +40,6 @@
 #include "aws_demo.h"
 #include "iot_init.h"
 
-/* Remove dependency to MQTT */
-#if ( defined( CONFIG_MQTT_DEMO_ENABLED ) || defined( CONFIG_SHADOW_DEMO_ENABLED ) || defined( CONFIG_DEFENDER_DEMO_ENABLED ) || defined( CONFIG_OTA_UPDATE_DEMO_ENABLED ) )
-    #define MQTT_DEMO_TYPE_ENABLED
-#endif
-
-#if defined( MQTT_DEMO_TYPE_ENABLED )
-    #include "iot_mqtt.h"
-#endif
-
 static IotNetworkManagerSubscription_t subscription = IOT_NETWORK_MANAGER_SUBSCRIPTION_INITIALIZER;
 
 /* Semaphore used to wait for a network to be available. */
@@ -56,29 +47,6 @@ static IotSemaphore_t demoNetworkSemaphore;
 
 /* Variable used to indicate the connected network. */
 static uint32_t demoConnectedNetwork = AWSIOT_NETWORK_TYPE_NONE;
-
-#if defined( MQTT_DEMO_TYPE_ENABLED )
-    #if BLE_ENABLED
-        extern const IotMqttSerializer_t IotBleMqttSerializer;
-    #endif
-
-
-/*-----------------------------------------------------------*/
-
-    const IotMqttSerializer_t * demoGetMqttSerializer( void )
-    {
-        const IotMqttSerializer_t * ret = NULL;
-
-        #if BLE_ENABLED
-            if( demoConnectedNetwork == AWSIOT_NETWORK_TYPE_BLE )
-            {
-                ret = &IotBleMqttSerializer;
-            }
-        #endif
-
-        return ret;
-    }
-#endif /* if defined( MQTT_DEMO_TYPE_ENABLED ) */
 
 /*-----------------------------------------------------------*/
 
@@ -123,13 +91,22 @@ static void _onNetworkStateChangeCallback( uint32_t network,
 {
     const IotNetworkInterface_t * pNetworkInterface = NULL;
     void * pConnectionParams = NULL, * pCredentials = NULL;
+    uint32_t disconnectedNetworks = AWSIOT_NETWORK_TYPE_NONE;
 
     demoContext_t * pDemoContext = ( demoContext_t * ) pContext;
 
-    if( ( state == eNetworkStateEnabled ) && ( demoConnectedNetwork == AWSIOT_NETWORK_TYPE_NONE ) )
+    if( ( state == eNetworkStateConnected ) && ( demoConnectedNetwork == AWSIOT_NETWORK_TYPE_NONE ) )
     {
         demoConnectedNetwork = network;
         IotSemaphore_Post( &demoNetworkSemaphore );
+
+        /* Disable the disconnected networks to save power and reclaim any unused memory. */
+        disconnectedNetworks = configENABLED_NETWORKS & ( ~demoConnectedNetwork );
+
+        if( disconnectedNetworks != AWSIOT_NETWORK_TYPE_NONE )
+        {
+            AwsIotNetworkManager_DisableNetwork( disconnectedNetworks );
+        }
 
         if( pDemoContext->networkConnectedCallback != NULL )
         {
@@ -144,12 +121,20 @@ static void _onNetworkStateChangeCallback( uint32_t network,
                                                     pNetworkInterface );
         }
     }
-    else if( ( state == eNetworkStateDisabled ) && ( demoConnectedNetwork == network ) )
+    else if( ( state == eNetworkStateEnabled ) && ( demoConnectedNetwork == network ) )
     {
         if( pDemoContext->networkDisconnectedCallback != NULL )
         {
             pNetworkInterface = AwsIotNetworkManager_GetNetworkInterface( network );
             pDemoContext->networkDisconnectedCallback( pNetworkInterface );
+        }
+
+        /* Re-enable all the networks for the demo for reconnection. */
+        disconnectedNetworks = configENABLED_NETWORKS & ( ~demoConnectedNetwork );
+
+        if( disconnectedNetworks != AWSIOT_NETWORK_TYPE_NONE )
+        {
+            AwsIotNetworkManager_EnableNetwork( disconnectedNetworks );
         }
 
         demoConnectedNetwork = _getConnectedNetworkForDemo( pDemoContext );
@@ -186,7 +171,8 @@ static int _initialize( demoContext_t * pContext )
     bool commonLibrariesInitialized = false;
     bool semaphoreCreated = false;
 
-    /* Initialize common libraries required by network manager and demo. */
+    /* Initialize the C-SDK common libraries. This function must be called
+     * once (and only once) before calling any other C-SDK function. */
     if( IotSdk_Init() == true )
     {
         commonLibrariesInitialized = true;
@@ -238,7 +224,7 @@ static int _initialize( demoContext_t * pContext )
     {
         if( AwsIotNetworkManager_EnableNetwork( configENABLED_NETWORKS ) != configENABLED_NETWORKS )
         {
-            IotLogError( "Failed to intialize all the networks configured for the device." );
+            IotLogError( "Failed to initialize all the networks configured for the device." );
             status = EXIT_FAILURE;
         }
     }
@@ -246,13 +232,16 @@ static int _initialize( demoContext_t * pContext )
     if( status == EXIT_SUCCESS )
     {
         /* Wait for network configured for the demo to be initialized. */
-        demoConnectedNetwork = _getConnectedNetworkForDemo( pContext );
-
-        if( demoConnectedNetwork == AWSIOT_NETWORK_TYPE_NONE )
+        if( pContext->networkTypes != AWSIOT_NETWORK_TYPE_NONE )
         {
-            /* Network not yet initialized. Block for a network to be intialized. */
-            IotLogInfo( "No networks connected for the demo. Waiting for a network connection. " );
-            demoConnectedNetwork = _waitForDemoNetworkConnection( pContext );
+            demoConnectedNetwork = _getConnectedNetworkForDemo( pContext );
+
+            if( demoConnectedNetwork == AWSIOT_NETWORK_TYPE_NONE )
+            {
+                /* Network not yet initialized. Block for a network to be initialized. */
+                IotLogInfo( "No networks connected for the demo. Waiting for a network connection. " );
+                demoConnectedNetwork = _waitForDemoNetworkConnection( pContext );
+            }
         }
     }
 
@@ -279,9 +268,10 @@ static int _initialize( demoContext_t * pContext )
  */
 static void _cleanup( void )
 {
-    AwsIotNetworkManager_DisableNetwork( configENABLED_NETWORKS );
     /* Remove network manager subscription */
     AwsIotNetworkManager_RemoveSubscription( subscription );
+    /* Disable all the networks used by the demo.*/
+    AwsIotNetworkManager_DisableNetwork( configENABLED_NETWORKS );
     IotSemaphore_Destroy( &demoNetworkSemaphore );
     IotSdk_Cleanup();
 }
@@ -290,22 +280,11 @@ static void _cleanup( void )
 
 void runDemoTask( void * pArgument )
 {
-    /* On Amazon FreeRTOS, credentials and server info are defined in a header
-     * and set by the initializers. */
-
     demoContext_t * pContext = ( demoContext_t * ) pArgument;
     const IotNetworkInterface_t * pNetworkInterface = NULL;
     void * pConnectionParams = NULL, * pCredentials = NULL;
     int status;
 
-    #ifdef INSERT_DELAY_BEFORE_DEMO
-        {
-            /* DO NOT EDIT - The test framework relies on this delay to ensure that
-             * the "STARTING DEMO" tag below is not missed while the framework opens
-             * the serial port for reading output.*/
-            vTaskDelay( pdMS_TO_TICKS( 5000UL ) );
-        }
-    #endif /* INSERT_DELAY_BEFORE_DEMO */
 
     #ifdef democonfigMEMORY_ANALYSIS
         democonfigMEMORY_ANALYSIS_STACK_DEPTH_TYPE xBeforeDemoTaskWaterMark, xAfterDemoTaskWaterMark = 0;
@@ -348,6 +327,11 @@ void runDemoTask( void * pArgument )
             IotLogInfo( "memory_metrics::demo_task_stack::before::bytes::%u", xBeforeDemoTaskWaterMark );
             IotLogInfo( "memory_metrics::demo_task_stack::after::bytes::%u", xAfterDemoTaskWaterMark );
         #endif /* democonfigMEMORY_ANALYSIS */
+
+        /* Give a chance to drain the logging queue to increase the probability
+         * of the following messages used by the test framework not getting
+         * dropped. */
+        vTaskDelay( pdMS_TO_TICKS( 1000 ) );
 
         /* Log the demo status. */
         if( status == EXIT_SUCCESS )
@@ -404,6 +388,11 @@ void runDemoTask( void * pArgument )
 
 /*-----------------------------------------------------------*/
 
+/* It is recommended to implement hooks that use platform specific APIs. This allows
+ * for better error messages and recovery. Should platform specific hooks be implemented,
+ * add this macro to iot_config.h to avoid compiling these symbols.*/
+#ifndef iotconfigUSE_PORT_SPECIFIC_HOOKS
+
 /**
  * @brief Warn user if pvPortMalloc fails.
  *
@@ -414,16 +403,16 @@ void runDemoTask( void * pArgument )
  * configTOTAL_HEAP_SIZE configuration constant in FreeRTOSConfig.h.
  *
  */
-void vApplicationMallocFailedHook()
-{
-    configPRINTF( ( "ERROR: Malloc failed to allocate memory\r\n" ) );
-    taskDISABLE_INTERRUPTS();
-
-    /* Loop forever */
-    for( ; ; )
+    void vApplicationMallocFailedHook()
     {
+        configPRINT_STRING( ( "ERROR: Malloc failed to allocate memory\r\n" ) );
+        taskDISABLE_INTERRUPTS();
+
+        /* Loop forever */
+        for( ; ; )
+        {
+        }
     }
-}
 
 /*-----------------------------------------------------------*/
 
@@ -438,19 +427,22 @@ void vApplicationMallocFailedHook()
  * has occurred.
  *
  */
-void vApplicationStackOverflowHook( TaskHandle_t xTask,
-                                    char * pcTaskName )
-{
-    configPRINTF( ( "ERROR: stack overflow with task %s\r\n", pcTaskName ) );
-    portDISABLE_INTERRUPTS();
-
-    /* Unused Parameters */
-    ( void ) xTask;
-
-    /* Loop forever */
-    for( ; ; )
+    void vApplicationStackOverflowHook( TaskHandle_t xTask,
+                                        char * pcTaskName )
     {
-    }
-}
+        configPRINT_STRING( ( "ERROR: stack overflow in task " ) );
+        configPRINT_STRING( ( pcTaskName ) );
+        configPRINT_STRING( ( "\r\n" ) );
+        portDISABLE_INTERRUPTS();
 
+        /* Unused Parameters */
+        ( void ) xTask;
+        ( void ) pcTaskName;
+
+        /* Loop forever */
+        for( ; ; )
+        {
+        }
+    }
+#endif /* iotconfigUSE_PORT_SPECIFIC_HOOKS */
 /*-----------------------------------------------------------*/

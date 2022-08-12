@@ -37,7 +37,6 @@
 
 /* for using Amazon FreeRTOS */
 #include "FreeRTOS.h"
-#include "aws_application_version.h"
 
 /* for RX72N Envision Kit system common header */
 #include "rx72n_envision_kit_system.h"

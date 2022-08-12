@@ -1,6 +1,6 @@
 /*
- * Amazon FreeRTOS Secure Sockets V1.1.7
- * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Secure Sockets V1.3.1
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -23,10 +23,6 @@
  * http://www.FreeRTOS.org
  */
 
-/* Define _SECURE_SOCKETS_WRAPPER_NOT_REDEFINE to prevent secure sockets functions
- * from redefining in iot_secure_sockets_wrapper_metrics.h */
-#define _SECURE_SOCKETS_WRAPPER_NOT_REDEFINE
-
 /* FreeRTOS includes. */
 #include "FreeRTOS.h"
 #include "FreeRTOSIPConfig.h"
@@ -37,10 +33,8 @@
 #include "iot_secure_sockets.h"
 #include "iot_tls.h"
 #include "task.h"
-#include "iot_pkcs11.h"
+#include "core_pkcs11.h"
 #include "iot_crypto.h"
-
-#undef _SECURE_SOCKETS_WRAPPER_NOT_REDEFINE
 
 /* Internal context structure. */
 typedef struct SSOCKETContext

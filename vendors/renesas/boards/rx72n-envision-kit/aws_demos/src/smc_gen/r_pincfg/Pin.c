@@ -18,11 +18,10 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : Pin.c
-* Version      : 1.0.2
-* Device(s)    : R5F572NNHxFB
-* Description  : This file implements SMC pin code generation.
-* Creation Date: 2020-11-20
+* File Name        : Pin.c
+* Version          : 1.0.2
+* Device(s)        : R5F572NNHxFB
+* Description      : This file implements SMC pin code generation.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -55,6 +54,11 @@ Global variables and functions
 void R_Pins_Create(void)
 {
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_MPC);
+
+    /* Set AN000 pin */
+    MPC.P40PFS.BYTE = 0x80U;
+    PORT4.PMR.BYTE &= 0xFEU;
+    PORT4.PDR.BYTE &= 0xFEU;
 
     /* Set AUDIO_CLK pin */
     MPC.P00PFS.BYTE = 0x17U;

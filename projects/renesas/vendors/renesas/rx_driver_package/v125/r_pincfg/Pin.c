@@ -18,11 +18,10 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : Pin.c
-* Version      : 1.0.2
-* Device(s)    : R5F572NNHxFB
-* Description  : This file implements SMC pin code generation.
-* Creation Date: 2020-04-24
+* File Name        : Pin.c
+* Version          : 1.0.2
+* Device(s)        : R5F572NNHxFB
+* Description      : This file implements SMC pin code generation.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -55,6 +54,15 @@ Global variables and functions
 void R_Pins_Create(void)
 {
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_MPC);
+
+    /* Set AN000 pin */
+    MPC.P40PFS.BYTE = 0x80U;
+    PORT4.PMR.BYTE &= 0xFEU;
+    PORT4.PDR.BYTE &= 0xFEU;
+
+    /* Set AUDIO_CLK pin */
+    MPC.P00PFS.BYTE = 0x17U;
+    PORT0.PMR.BYTE |= 0x01U;
 
     /* Set CLKOUT25M pin */
     MPC.P56PFS.BYTE = 0x2AU;
@@ -276,15 +284,45 @@ void R_Pins_Create(void)
     MPC.P32PFS.BYTE = 0x0AU;
     PORT3.PMR.BYTE |= 0x04U;
 
+    /* Set SSIBCK0 pin */
+    MPC.P01PFS.BYTE = 0x17U;
+    PORT0.PMR.BYTE |= 0x02U;
+
+    /* Set SSIBCK1 pin */
+    MPC.P02PFS.BYTE = 0x17U;
+    PORT0.PMR.BYTE |= 0x04U;
+
+    /* Set SSIDATA1 pin */
+    MPC.P03PFS.BYTE = 0x17U;
+    PORT0.PMR.BYTE |= 0x08U;
+
+    /* Set SSILRCK0 pin */
+    MPC.PF5PFS.BYTE = 0x17U;
+    PORTF.PMR.BYTE |= 0x20U;
+
+    /* Set SSILRCK1 pin */
+    MPC.P05PFS.BYTE = 0x17U;
+    PORT0.PMR.BYTE |= 0x20U;
+
+    /* Set SSIRXD0 pin */
+    MPC.PJ5PFS.BYTE = 0x17U;
+    PORTJ.PMR.BYTE |= 0x20U;
+
+    /* Set SSITXD0 pin */
+    MPC.PJ3PFS.BYTE = 0x17U;
+    PORTJ.PMR.BYTE |= 0x08U;
+
     /* Set TXD2 pin */
     PORT1.PODR.BYTE |= 0x08U;
     MPC.P13PFS.BYTE = 0x0AU;
     PORT1.PDR.BYTE |= 0x08U;
+    // PORT1.PMR.BIT.B3 = 1U; // Please set the PMR bit after TE bit is set to 1.
 
     /* Set TXD7 pin */
     PORT9.PODR.BYTE |= 0x01U;
     MPC.P90PFS.BYTE = 0x0AU;
     PORT9.PDR.BYTE |= 0x01U;
+    // PORT9.PMR.BIT.B0 = 1U; // Please set the PMR bit after TE bit is set to 1.
 
     /* Set USB0_OVRCURA pin */
     MPC.P14PFS.BYTE = 0x12U;
@@ -295,5 +333,5 @@ void R_Pins_Create(void)
     PORT1.PMR.BYTE |= 0x40U;
 
     R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_MPC);
-}   
+}
 

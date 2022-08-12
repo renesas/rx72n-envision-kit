@@ -1,6 +1,6 @@
 #
-# Amazon FreeRTOS BLE HAL V2.0.0
-# Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+# FreeRTOS BLE HAL V2.0.0
+# Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in
@@ -32,6 +32,7 @@ import time
 from testClass import runTest
 from bleAdapter import bleAdapter
 
+ENABLE_TC_AFQP_READ_WRITE_LONG = 1
 
 def main():
     scan_filter = dict()
@@ -60,7 +61,7 @@ def main():
         isTestSuccessFull,
         runTest.discoverPrimaryServices)
 
-    bleAdapter.gatt.updateLocalAttributeTable()
+    bleAdapter.gatt.updateLocalAttributeTable( True )
 
     # Check device not present. After discovery of services, advertisement
     # should have stopped.
@@ -70,8 +71,8 @@ def main():
     # bleAdapter.readLocalMTU()
 
     # Check attribute table UUIDs
-    bleAdapter.gatt.updateLocalAttributeTable()
-    isTestSuccessFull = runTest.checkUUIDs(bleAdapter.gatt)
+    bleAdapter.gatt.updateLocalAttributeTable( True )
+    isTestSuccessFull = runTest.checkUUIDs(bleAdapter.gatt, True)
     runTest.submitTestResult(isTestSuccessFull, runTest.checkUUIDs)
 
     # Check attribute table properties
@@ -79,10 +80,11 @@ def main():
     runTest.submitTestResult(isTestSuccessFull, runTest.checkProperties)
 
     # CHeck long write
-    isTestSuccessFull = runTest.writereadLongCharacteristic()
-    runTest.submitTestResult(
-        isTestSuccessFull,
-        runTest.writereadLongCharacteristic)
+    if ENABLE_TC_AFQP_READ_WRITE_LONG == 1:
+        isTestSuccessFull = runTest.writereadLongCharacteristic()
+        runTest.submitTestResult(
+            isTestSuccessFull,
+            runTest.writereadLongCharacteristic)
 
     # Check read/write, simple connection
     isTestSuccessFull = runTest.readWriteSimpleConnection()
