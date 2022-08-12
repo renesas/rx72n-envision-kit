@@ -95,7 +95,7 @@ the pended interrupt.  This would normally be the lowest priority. */
 /* The maximum interrupt priority from which FreeRTOS API calls can be made.
 Interrupts that use a priority above this will not be effected by anything the
 kernel is doing. */
-#define configMAX_SYSCALL_INTERRUPT_PRIORITY    4
+#define configMAX_SYSCALL_INTERRUPT_PRIORITY    15
 
 /* The peripheral used to generate the tick interrupt is configured as part of
 the application code.  This constant should be set to the vector number of the

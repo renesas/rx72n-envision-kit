@@ -155,6 +155,8 @@ sfd_err_t R_SFD_Open(void)
 		/* copy data from storage to ram */
 		memcpy(&sfd_control_block_data_image, (void *)&sfd_control_block_data, sizeof(sfd_control_block_data_image));
 		sfd_err = SFD_SUCCESS;
+
+		R_FLASH_Close();
 	}
 	else
 	{
@@ -170,6 +172,8 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
     uint8_t hash_sha256[SFD_SHA256_LENGTH];
     SFD_HANDLE specified_label_xHandle = SFD_HANDLE_INVALID;
     SFD_HANDLE blank_entry_xHandle = SFD_HANDLE_INVALID;
+
+	R_FLASH_Open();
 
 #if defined USE_MBEDTLS
     mbedtls_sha256_context ctx;
@@ -300,6 +304,8 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
     {
     	blank_entry_xHandle = SFD_HANDLE_INVALID;
     }
+
+	R_FLASH_Close();
 
     return blank_entry_xHandle;
 
@@ -508,7 +514,7 @@ static void update_dataflash_data_from_image(void)
     {
         case SFD_DATA_FLASH_UPDATE_STATE_INITIALIZE: /* initialize */
         	cb_func_info.pcallback = update_data_flash_callback_function;
-        	cb_func_info.int_priority = 15;
+        	cb_func_info.int_priority = 14;
         	R_FLASH_Control(FLASH_CMD_SET_BGO_CALLBACK, (void *)&cb_func_info);
             required_dataflash_block_num = sizeof(SFD_CONTROL_BLOCK) / FLASH_DF_BLOCK_SIZE;
             if(sizeof(SFD_CONTROL_BLOCK) % FLASH_DF_BLOCK_SIZE)
@@ -575,7 +581,7 @@ static void update_dataflash_data_mirror_from_image(void)
     {
     	case SFD_DATA_FLASH_UPDATE_STATE_INITIALIZE: /* initialize */
     		cb_func_info.pcallback = update_data_flash_callback_function;
-    		cb_func_info.int_priority = 15;
+    		cb_func_info.int_priority = 14;
     		R_FLASH_Control(FLASH_CMD_SET_BGO_CALLBACK, (void *)&cb_func_info);
             required_dataflash_block_num = sizeof(SFD_CONTROL_BLOCK) / FLASH_DF_BLOCK_SIZE;
             if(sizeof(SFD_CONTROL_BLOCK) % FLASH_DF_BLOCK_SIZE)
