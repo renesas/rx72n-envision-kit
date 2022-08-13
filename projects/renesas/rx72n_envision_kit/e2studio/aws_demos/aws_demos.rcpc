@@ -9,6 +9,14 @@
     <Files>
       <Category Name="application_code">
         <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\main.c</Path>
+        <Category Name="aws_code">
+          <Category Name="sntp_client">
+            <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\aws_code\sntp_client\SNTPClientTask.c</Path>
+            <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\aws_code\sntp_client\SampleAppTask.c</Path>
+            <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\aws_code\sntp_client\common_demo_include.h</Path>
+            <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\aws_code\sntp_client\demo_config.h</Path>
+          </Category>
+        </Category>
         <Category Name="renesas_code">
           <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\audio_task.c</Path>
           <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\gui_task.c</Path>
@@ -18,7 +26,6 @@
           <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\sdcard_task.c</Path>
           <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\serial_flash_task.c</Path>
           <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\serial_terminal_task.c</Path>
-          <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\sntp_task.c</Path>
           <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\task_manager_task.c</Path>
           <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\tcp_receive_performance_task.c</Path>
           <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\tcp_send_performance_task.c</Path>
@@ -803,6 +810,7 @@
         <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\config_files\core_http_config.h</Path>
         <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\config_files\core_mqtt_config.h</Path>
         <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\config_files\core_pkcs11_config.h</Path>
+        <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\config_files\core_sntp_config.h</Path>
         <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\config_files\defender_config.h</Path>
         <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\config_files\defender_demo_config.h</Path>
         <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\config_files\http_demo_mutual_auth_config.h</Path>
@@ -1357,6 +1365,17 @@
               <Path>..\..\..\..\..\libraries\coreMQTT-Agent\source\include\core_mqtt_agent.h</Path>
               <Path>..\..\..\..\..\libraries\coreMQTT-Agent\source\include\core_mqtt_agent_command_functions.h</Path>
               <Path>..\..\..\..\..\libraries\coreMQTT-Agent\source\include\core_mqtt_agent_message_interface.h</Path>
+            </Category>
+          </Category>
+        </Category>
+        <Category Name="coreSNTP">
+          <Category Name="source">
+            <Path>..\..\..\..\..\libraries\coreSNTP\source\core_sntp_client.c</Path>
+            <Path>..\..\..\..\..\libraries\coreSNTP\source\core_sntp_serializer.c</Path>
+            <Category Name="include">
+              <Path>..\..\..\..\..\libraries\coreSNTP\source\include\core_sntp_client.h</Path>
+              <Path>..\..\..\..\..\libraries\coreSNTP\source\include\core_sntp_config_defaults.h</Path>
+              <Path>..\..\..\..\..\libraries\coreSNTP\source\include\core_sntp_serializer.h</Path>
             </Category>
           </Category>
         </Category>
@@ -1932,6 +1951,7 @@
           <Option>-include="${ProjDirPath}\..\..\..\..\..\freertos_kernel\portable\Renesas\RX600v2"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\config_files"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\aws_code"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\ports\ota_pal_for_aws"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\demos\include"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\demos\network_manager"</Option>
@@ -1978,6 +1998,7 @@
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\config"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\coreMQTT\source\include"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\coreMQTT\source\interface"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\coreSNTP\source\include"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\coreHTTP\source\include"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\coreHTTP\source\dependency\3rdparty\http_parser"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\coreMQTT-Agent\source\include"</Option>
@@ -2049,6 +2070,7 @@
           <Option>-nomessage=11174,21644,20010,23034,23035,20177,23033</Option>
           <Option>-debug</Option>
           <Option>-outcode=utf8</Option>
+          <Option>-optimize=0</Option>
           <Option>-tfu=intrinsic</Option>
           <Option>-nologo</Option>
           <Option>-lang=c99</Option>
@@ -2153,6 +2175,8 @@
         <LinkOrder>
           <Path>HardwareDebug\port_asm.obj</Path>
           <Path>HardwareDebug\reset_program.obj</Path>
+          <Path>HardwareDebug\SNTPClientTask.obj</Path>
+          <Path>HardwareDebug\SampleAppTask.obj</Path>
           <Path>HardwareDebug\main.obj</Path>
           <Path>HardwareDebug\audio_task.obj</Path>
           <Path>HardwareDebug\gui_task.obj</Path>
@@ -2168,7 +2192,6 @@
           <Path>HardwareDebug\sdcard_task.obj</Path>
           <Path>HardwareDebug\serial_flash_task.obj</Path>
           <Path>HardwareDebug\serial_terminal_task.obj</Path>
-          <Path>HardwareDebug\sntp_task.obj</Path>
           <Path>HardwareDebug\task_manager_task.obj</Path>
           <Path>HardwareDebug\tcp_receive_performance_task.obj</Path>
           <Path>HardwareDebug\tcp_send_performance_task.obj</Path>
@@ -2314,15 +2337,10 @@
           <Path>HardwareDebug\r_usb_hmsc_api.obj</Path>
           <Path>HardwareDebug\r_usb_hmsc_driver.obj</Path>
           <Path>HardwareDebug\r_usb_hstorage_driver.obj</Path>
-          <Path>HardwareDebug\http_demo_utils.obj</Path>
           <Path>HardwareDebug\mqtt_demo_helpers.obj</Path>
           <Path>HardwareDebug\mqtt_subscription_manager.obj</Path>
           <Path>HardwareDebug\ota_application_version.obj</Path>
           <Path>HardwareDebug\pkcs11_helpers.obj</Path>
-          <Path>HardwareDebug\http_demo_mutual_auth.obj</Path>
-          <Path>HardwareDebug\http_demo_s3_download.obj</Path>
-          <Path>HardwareDebug\http_demo_s3_download_multithreaded.obj</Path>
-          <Path>HardwareDebug\http_demo_s3_upload.obj</Path>
           <Path>HardwareDebug\mqtt_demo_mutual_auth.obj</Path>
           <Path>HardwareDebug\mqtt_agent_task.obj</Path>
           <Path>HardwareDebug\simple_sub_pub_demo.obj</Path>
@@ -2339,7 +2357,6 @@
           <Path>HardwareDebug\aws_greengrass_discovery_demo.obj</Path>
           <Path>HardwareDebug\jobs_demo.obj</Path>
           <Path>HardwareDebug\aws_iot_network_manager.obj</Path>
-          <Path>HardwareDebug\ota_demo_core_http.obj</Path>
           <Path>HardwareDebug\ota_demo_core_mqtt.obj</Path>
           <Path>HardwareDebug\aws_tcp_echo_client_single_task.obj</Path>
           <Path>HardwareDebug\event_groups.obj</Path>
@@ -2475,14 +2492,14 @@
           <Path>HardwareDebug\iot_static_memory_common.obj</Path>
           <Path>HardwareDebug\iot_taskpool.obj</Path>
           <Path>HardwareDebug\iot_taskpool_static_memory.obj</Path>
-          <Path>HardwareDebug\core_http_client.obj</Path>
-          <Path>HardwareDebug\http_parser.obj</Path>
           <Path>HardwareDebug\core_json.obj</Path>
           <Path>HardwareDebug\core_mqtt.obj</Path>
           <Path>HardwareDebug\core_mqtt_serializer.obj</Path>
           <Path>HardwareDebug\core_mqtt_state.obj</Path>
           <Path>HardwareDebug\core_mqtt_agent.obj</Path>
           <Path>HardwareDebug\core_mqtt_agent_command_functions.obj</Path>
+          <Path>HardwareDebug\core_sntp_client.obj</Path>
+          <Path>HardwareDebug\core_sntp_serializer.obj</Path>
           <Path>HardwareDebug\defender.obj</Path>
           <Path>HardwareDebug\shadow.obj</Path>
           <Path>HardwareDebug\aws_greengrass_discovery.obj</Path>
@@ -2583,6 +2600,14 @@
           <Path>HardwareDebug\r_sci_rx72n_data.obj</Path>
           <Path>HardwareDebug\aws_demos.lib</Path>
         </LinkOrder>
+        <NoTargetFile Target="AWS_IOT_MCU_ROOT\demos\common\http_demo_helpers\http_demo_utils.c"/>
+        <NoTargetFile Target="AWS_IOT_MCU_ROOT\demos\coreHTTP\http_demo_mutual_auth.c"/>
+        <NoTargetFile Target="AWS_IOT_MCU_ROOT\demos\coreHTTP\http_demo_s3_download.c"/>
+        <NoTargetFile Target="AWS_IOT_MCU_ROOT\demos\coreHTTP\http_demo_s3_download_multithreaded.c"/>
+        <NoTargetFile Target="AWS_IOT_MCU_ROOT\demos\coreHTTP\http_demo_s3_upload.c"/>
+        <NoTargetFile Target="AWS_IOT_MCU_ROOT\demos\ota\ota_demo_core_http\ota_demo_core_http.c"/>
+        <NoTargetFile Target="AWS_IOT_MCU_ROOT\libraries\coreHTTP\source\core_http_client.c"/>
+        <NoTargetFile Target="AWS_IOT_MCU_ROOT\libraries\coreHTTP\source\dependency\3rdparty\http_parser\http_parser.c"/>
         <NoTargetFile Target="AWS_IOT_MCU_ROOT\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\general\r_cg_hardware_setup.c"/>
         <NoTargetFile Target="AWS_IOT_MCU_ROOT\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\general\r_smc_cgc.c"/>
         <NoTargetFile Target="AWS_IOT_MCU_ROOT\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\general\r_smc_cgc_user.c"/>
@@ -2625,6 +2650,7 @@
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\freertos_kernel\portable\Renesas\RX600v2"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\config_files"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\aws_code"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\ports\ota_pal_for_aws"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\demos\include"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\demos\network_manager"</IncludePathForC>
@@ -2671,6 +2697,7 @@
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\config"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\coreMQTT\source\include"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\coreMQTT\source\interface"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\coreSNTP\source\include"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\coreHTTP\source\include"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\coreHTTP\source\dependency\3rdparty\http_parser"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\coreMQTT-Agent\source\include"</IncludePathForC>

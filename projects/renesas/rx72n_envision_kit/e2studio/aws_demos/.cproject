@@ -78,6 +78,7 @@
 									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../freertos_kernel/portable/Renesas/RX600v2"/>
 									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/config_files"/>
 									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/aws_code&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/ports/ota_pal_for_aws&quot;"/>
 									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../demos/include"/>
 									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../demos/network_manager"/>
@@ -124,6 +125,7 @@
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../libraries/3rdparty/tracealyzer_recorder/config&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../libraries/coreMQTT/source/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../libraries/coreMQTT/source/interface&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../libraries/coreSNTP/source/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../libraries/coreHTTP/source/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../libraries/coreHTTP/source/dependency/3rdparty/http_parser&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../libraries/coreMQTT-Agent/source/include&quot;"/>
@@ -700,8 +702,9 @@
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.rtosConfig.1733071265" name="RTOS Configurator" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.rtosConfig"/>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.configuration.216582545.1511590152" name="common_demo_include.h" rcbsApplicability="disable" resourcePath="application_code/aws_code/sntp_client/common_demo_include.h" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen|smc_gen|libraries/3rdparty/tracealyzer_recorder|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="demos/common/http_demo_helpers|libraries/coreHTTP|demos/coreHTTP|demos/ota/ota_demo_core_http|vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen|smc_gen|libraries/3rdparty/tracealyzer_recorder|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
