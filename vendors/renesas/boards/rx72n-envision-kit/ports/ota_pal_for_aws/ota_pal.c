@@ -588,6 +588,11 @@ static OtaPalStatus_t otaPal_CheckFileSignature( OtaFileContext_t * const pFileC
         }
         while( tmp != NULL );
     }
+    else
+    {
+    	xSemaphoreTake( xSemaphoreFlashig, portMAX_DELAY );
+        xSemaphoreGive( xSemaphoreFlashig );
+    }
 
     /* Verify an ECDSA-SHA256 signature. */
     if( CRYPTO_SignatureVerificationStart( &pvSigVerifyContext, cryptoASYMMETRIC_ALGORITHM_ECDSA,
