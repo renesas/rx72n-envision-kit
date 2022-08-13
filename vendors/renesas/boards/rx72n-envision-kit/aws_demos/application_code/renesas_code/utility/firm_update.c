@@ -40,6 +40,9 @@
 #include "code_signer_public_key.h"
 #include "base64_decode.h"
 
+/* RX72N Envision Kit system header include */
+#include "rx72n_envision_kit_system.h"
+
 /***********************************************************************************************************************
  Macro definitions
  ***********************************************************************************************************************/
@@ -174,6 +177,8 @@ uint32_t firmware_update(void)
             load_firmware_control_block.status = FIRMWARE_UPDATE_STATE_WAIT_START;
             break;
         case FIRMWARE_UPDATE_STATE_WAIT_START: /* wait start */
+            xSemaphoreGive( xSemaphoreFlashing );
+            R_FLASH_Open();
             /* this state will be changed by other process request using load_firmware_control_block.status */
             break;
         case FIRMWARE_UPDATE_STATE_ERASE: /* erase bank1 user program area */
@@ -285,6 +290,8 @@ uint32_t firmware_update(void)
             {
                 load_firmware_control_block.status= FIRMWARE_UPDATE_STATE_ERROR;
             }
+            R_FLASH_Close();
+            xSemaphoreGive( xSemaphoreFlashing );
             break;
         case FIRMWARE_UPDATE_STATE_FINALIZE_WAIT_ERASE_DATA_FLASH:
             /* this state will be changed by callback routine */

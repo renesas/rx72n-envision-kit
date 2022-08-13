@@ -49,6 +49,9 @@
 #include "platform.h"
 #include "r_flash_rx_if.h"
 
+/* RX72N Envision Kit system header include */
+#include "rx72n_envision_kit_system.h"
+
 /* Specify the OTA signature algorithm we support on this platform. */
 const char OTA_JsonFileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ] = "sig-sha256-ecdsa";
 
@@ -246,7 +249,6 @@ static FRAGMENTED_FLASH_BLOCK_LIST * fragmented_flash_block_list_assemble( FRAGM
 
 static QueueHandle_t xQueue;
 static TaskHandle_t xTask;
-static xSemaphoreHandle xSemaphoreFlashig;
 static xSemaphoreHandle xSemaphoreWriteBlock;
 static volatile LOAD_FIRMWARE_CONTROL_BLOCK load_firmware_control_block;
 static FRAGMENTED_FLASH_BLOCK_LIST * fragmented_flash_block_list;
@@ -271,8 +273,8 @@ OtaPalStatus_t otaPal_CreateFileForRx( OtaFileContext_t * const pFileContext )
             /* create task/queue/semaphore for flashing */
             xQueue = xQueueCreate( otaconfigMAX_NUM_BLOCKS_REQUEST, sizeof( PACKET_BLOCK_FOR_QUEUE ) );
             xTaskCreate( ota_flashing_task, "OTA_FLASHING_TASK", configMINIMAL_STACK_SIZE, NULL, configMAX_PRIORITIES, &xTask );
-            xSemaphoreFlashig = xSemaphoreCreateBinary();
-            xSemaphoreGive( xSemaphoreFlashig );
+//            xSemaphoreFlashing = xSemaphoreCreateBinary(); -> move to prvMiscInitialization() @ main.c
+//            xSemaphoreGive( xSemaphoreFlashing ); -> move to prvMiscInitialization() @ main.c
             xSemaphoreWriteBlock = xSemaphoreCreateMutex();
             xSemaphoreGive( xSemaphoreWriteBlock );
             fragmented_flash_block_list = NULL;
@@ -356,10 +358,10 @@ OtaPalStatus_t otaPal_Abort( OtaFileContext_t * const pFileContext )
             xQueue = NULL;
         }
 
-        if( NULL != xSemaphoreFlashig )
+        if( NULL != xSemaphoreFlashing )
         {
-            vSemaphoreDelete( xSemaphoreFlashig );
-            xSemaphoreFlashig = NULL;
+            vSemaphoreDelete( xSemaphoreFlashing );
+            xSemaphoreFlashing = NULL;
         }
 
         if( NULL != xSemaphoreWriteBlock )
@@ -517,10 +519,10 @@ OtaPalStatus_t otaPal_CloseFile( OtaFileContext_t * const pFileContext )
             xQueue = NULL;
         }
 
-        if( NULL != xSemaphoreFlashig )
+        if( NULL != xSemaphoreFlashing )
         {
-            vSemaphoreDelete( xSemaphoreFlashig );
-            xSemaphoreFlashig = NULL;
+            vSemaphoreDelete( xSemaphoreFlashing );
+            xSemaphoreFlashing = NULL;
         }
 
         if( NULL != xSemaphoreWriteBlock )
@@ -564,7 +566,7 @@ static OtaPalStatus_t otaPal_CheckFileSignature( OtaFileContext_t * const pFileC
             /* Replace length bytes from offset. */
             memcpy( &assembled_flash_buffer[ tmp->content.offset ], tmp->content.binary, tmp->content.length );
             /* Flashing memory. */
-            xSemaphoreTake( xSemaphoreFlashig, portMAX_DELAY );
+            xSemaphoreTake( xSemaphoreFlashing, portMAX_DELAY );
             R_FLASH_Close();
             R_FLASH_Open();
             cb_func_info.pcallback = ota_header_flashing_callback;
@@ -582,7 +584,7 @@ static OtaPalStatus_t otaPal_CheckFileSignature( OtaFileContext_t * const pFileC
             {
             }
 
-            xSemaphoreGive( xSemaphoreFlashig );
+            xSemaphoreGive( xSemaphoreFlashing );
             load_firmware_control_block.total_image_length += tmp->content.length;
             tmp = fragmented_flash_block_list_delete( tmp, tmp->content.offset );
         }
@@ -590,8 +592,8 @@ static OtaPalStatus_t otaPal_CheckFileSignature( OtaFileContext_t * const pFileC
     }
     else
     {
-    	xSemaphoreTake( xSemaphoreFlashig, portMAX_DELAY );
-        xSemaphoreGive( xSemaphoreFlashig );
+    	xSemaphoreTake( xSemaphoreFlashing, portMAX_DELAY );
+        xSemaphoreGive( xSemaphoreFlashing );
     }
 
     /* Verify an ECDSA-SHA256 signature. */
@@ -1345,7 +1347,7 @@ static void ota_flashing_task( void * pvParameters )
     while( 1 )
     {
         xQueueReceive( xQueue, &packet_block_for_queue2, portMAX_DELAY );
-        xSemaphoreTake( xSemaphoreFlashig, portMAX_DELAY );
+        xSemaphoreTake( xSemaphoreFlashing, portMAX_DELAY );
         memcpy( block, packet_block_for_queue2.p_packet, packet_block_for_queue2.length );
         ulOffset = packet_block_for_queue2.ulOffset;
         length = packet_block_for_queue2.length;
@@ -1378,7 +1380,7 @@ static void ota_flashing_callback( void * event )
     }
 
     static portBASE_TYPE xHigherPriorityTaskWoken;
-    xSemaphoreGiveFromISR( xSemaphoreFlashig, &xHigherPriorityTaskWoken );
+    xSemaphoreGiveFromISR( xSemaphoreFlashing, &xHigherPriorityTaskWoken );
 }
 
 static void ota_header_flashing_callback( void * event )

@@ -99,3 +99,5 @@ extern char *iot_thing_name;
 extern char *mqtt_broker_endpoint;
 extern char *signing_certificate_pem;
 
+extern xSemaphoreHandle xSemaphoreFlashing;
+

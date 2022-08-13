@@ -47,6 +47,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "aws_demo.h"
 #include "aws_clientcredential.h"
 
+/* RX72N Envision Kit system header include */
+#include "rx72n_envision_kit_system.h"
+
 #define mainLOGGING_TASK_STACK_SIZE         ( configMINIMAL_STACK_SIZE * 6 )
 #define mainLOGGING_MESSAGE_QUEUE_LENGTH    ( 15 )
 #define mainTEST_RUNNER_TASK_STACK_SIZE    ( configMINIMAL_STACK_SIZE * 8 )
@@ -128,6 +131,9 @@ static void prvMiscInitialization( void )
 {
     /* Initialize UART for serial terminal. */
     uart_config();
+
+    xSemaphoreFlashing = xSemaphoreCreateBinary();
+    xSemaphoreGive( xSemaphoreFlashing );
 
     /* Start logging task. */
     xLoggingTaskInitialize( mainLOGGING_TASK_STACK_SIZE,

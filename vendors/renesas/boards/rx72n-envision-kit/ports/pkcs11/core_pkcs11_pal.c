@@ -63,6 +63,9 @@
 #include "platform.h"
 #include "r_flash_rx_if.h"
 
+/* RX72N Envision Kit system header include */
+#include "rx72n_envision_kit_system.h"
+
 typedef struct _pkcs_data
 {
     CK_ATTRIBUTE Label;
@@ -231,6 +234,7 @@ CK_OBJECT_HANDLE PKCS11_PAL_SaveObject( CK_ATTRIBUTE_PTR pxLabel,
     mbedtls_sha256_context ctx;
 
     mbedtls_sha256_init(&ctx);
+    xSemaphoreTake( xSemaphoreFlashing, portMAX_DELAY );
     R_FLASH_Open();
 
 #if defined (BSP_MCU_RX63N) || (BSP_MCU_RX631) || (BSP_MCU_RX630)
@@ -360,8 +364,8 @@ CK_OBJECT_HANDLE PKCS11_PAL_SaveObject( CK_ATTRIBUTE_PTR pxLabel,
             while(1);
         }
     }
-
     R_FLASH_Close();
+    xSemaphoreGive( xSemaphoreFlashing );
 
     return xHandle;
 

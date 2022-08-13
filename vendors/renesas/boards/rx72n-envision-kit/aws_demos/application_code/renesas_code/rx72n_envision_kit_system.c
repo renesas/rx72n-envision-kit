@@ -44,3 +44,5 @@ const char tcp_send_performance_server_port_number_label[] = DATAFLASH_LABEL_NAM
 char *iot_thing_name;
 char *mqtt_broker_endpoint;
 char *signing_certificate_pem;
+
+xSemaphoreHandle xSemaphoreFlashing;
