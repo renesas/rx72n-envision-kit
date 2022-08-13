@@ -41,3 +41,6 @@ const char code_signer_certificate_label[] = DATAFLASH_LABEL_NAME_CODE_SIGNER_CE
 const char tcp_send_performance_server_ip_address_label[] = DATAFLASH_LABEL_NAME_TCP_SEND_PERFORMANCE_SERVER_IP_ADDRESS;
 const char tcp_send_performance_server_port_number_label[] = DATAFLASH_LABEL_NAME_TCP_SEND_PERFORMANCE_SERVER_PORT_NUMBER;
 
+char *iot_thing_name;
+char *mqtt_broker_endpoint;
+char *signing_certificate_pem;

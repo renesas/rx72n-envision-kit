@@ -32,7 +32,22 @@
  * @brief Certificate used for validating code signing signatures in the OTA PAL.
  */
 #ifndef otapalconfigCODE_SIGNING_CERTIFICATE
-    #define otapalconfigCODE_SIGNING_CERTIFICATE    "Insert code signing certificate..."
+#define otapalconfigCODE_SIGNING_CERTIFICATE \
+"-----BEGIN CERTIFICATE-----\n"\
+"MIICYDCCAgYCCQDqyS1m4rjviTAKBggqhkjOPQQDAjCBtzELMAkGA1UEBhMCSlAx\n"\
+"DjAMBgNVBAgMBVRva3lvMRAwDgYDVQQHDAdLb2RhaXJhMRwwGgYDVQQKDBNSZW5l\n"\
+"c2FzIEVsZWN0cm9uaWNzMSYwJAYDVQQLDB1Tb2Z0d2FyZSBEZXZlbG9wbWVudCBE\n"\
+"aXZpc2lvbjERMA8GA1UEAwwISXNoaWd1cm8xLTArBgkqhkiG9w0BCQEWHmhpcm9r\n"\
+"aS5pc2hpZ3Vyby5mdkByZW5lc2FzLmNvbTAeFw0xOTExMTYwMTI3NTBaFw0yOTEx\n"\
+"MTMwMTI3NTBaMIG3MQswCQYDVQQGEwJKUDEOMAwGA1UECAwFVG9reW8xEDAOBgNV\n"\
+"BAcMB0tvZGFpcmExHDAaBgNVBAoME1JlbmVzYXMgRWxlY3Ryb25pY3MxJjAkBgNV\n"\
+"BAsMHVNvZnR3YXJlIERldmVsb3BtZW50IERpdmlzaW9uMREwDwYDVQQDDAhJc2hp\n"\
+"Z3VybzEtMCsGCSqGSIb3DQEJARYeaGlyb2tpLmlzaGlndXJvLmZ2QHJlbmVzYXMu\n"\
+"Y29tMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEWiAlaCQGEgIKoP+qk7Uqc/ME\n"\
+"/hjwamq1v/z/LWx15CKig59Pd3+ar2RFOlMMOhIfkYgS+Ha7tH+w0ggnKDrUujAK\n"\
+"BggqhkjOPQQDAgNIADBFAiArP+9pg0eWqaIkC77T8nDHs9r+18KKvntIDoo9FhKW\n"\
+"gQIhAO75WVGyGt58QCGNx3wMcbaDgJ4Xpqj0SWTWdxdz0jh1\n"\
+"-----END CERTIFICATE-----\n"
 #endif
 
 /**
@@ -42,7 +57,7 @@
  * declared in the ota_appversion32.h file in the OTA library.
  */
 #ifndef APP_VERSION_MAJOR
-    #define APP_VERSION_MAJOR    0
+    #define APP_VERSION_MAJOR    2
 #endif
 
 /**
@@ -52,7 +67,7 @@
  * declared in the ota_appversion32.h file in the OTA library.
  */
 #ifndef APP_VERSION_MINOR
-    #define APP_VERSION_MINOR    9
+    #define APP_VERSION_MINOR    0
 #endif
 
 /**
@@ -62,7 +77,7 @@
  * declared in the ota_appversion32.h file in the OTA library.
  */
 #ifndef APP_VERSION_BUILD
-    #define APP_VERSION_BUILD    2
+    #define APP_VERSION_BUILD    0
 #endif
 
 /**

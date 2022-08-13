@@ -90,6 +90,10 @@
 /* Includes the OTA Application version number. */
 #include "ota_appversion32.h"
 
+/* Renesas includes */
+#include "r_simple_filesystem_on_dataflash_if.h"
+#include "rx72n_envision_kit_system.h"
+
 /*------------- Demo configurations -------------------------*/
 
 /** Note: The device client certificate and private key credentials are
@@ -106,7 +110,7 @@
  * @brief The MQTT broker endpoint used for this demo.
  */
 #ifndef democonfigMQTT_BROKER_ENDPOINT
-    #define democonfigMQTT_BROKER_ENDPOINT    clientcredentialMQTT_BROKER_ENDPOINT
+    #define democonfigMQTT_BROKER_ENDPOINT    mqtt_broker_endpoint
 #endif
 
 /**
@@ -123,7 +127,7 @@
  * must be unique so edit as required to ensure no two clients connecting to the
  * same broker use the same client identifier.
  */
-    #define democonfigCLIENT_IDENTIFIER    clientcredentialIOT_THING_NAME
+    #define democonfigCLIENT_IDENTIFIER    iot_thing_name
 #endif
 
 #ifndef democonfigMQTT_BROKER_PORT
@@ -1906,6 +1910,26 @@ int RunOtaCoreMqttDemo( bool xAwsIotMqttMode,
 
     BaseType_t xDemoStatus = pdFAIL;
     BaseType_t xMqttInitialized = pdFALSE;
+
+    uint8_t *tmp;
+    uint32_t data_length;
+
+    if(SFD_SUCCESS == R_SFD_GetObjectValue(
+    		R_SFD_FindObject((uint8_t *)iot_thing_name_label, strlen(iot_thing_name_label)),
+			&tmp,
+			&data_length))
+    {
+    	iot_thing_name = pvPortMalloc(data_length);
+        memcpy(iot_thing_name, tmp, data_length);
+    }
+    if(SFD_SUCCESS == R_SFD_GetObjectValue(
+    		R_SFD_FindObject((uint8_t *)mqtt_broker_endpoint_label, strlen(mqtt_broker_endpoint_label)),
+			&tmp,
+			&data_length))
+    {
+    	mqtt_broker_endpoint = pvPortMalloc(data_length);
+        memcpy(mqtt_broker_endpoint, tmp, data_length);
+    }
 
     LogInfo( ( "OTA over MQTT demo, Application version %u.%u.%u",
                appFirmwareVersion.u.x.major,

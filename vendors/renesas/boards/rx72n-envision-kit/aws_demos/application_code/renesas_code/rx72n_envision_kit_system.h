@@ -94,3 +94,8 @@ extern const char mqtt_broker_endpoint_label[];
 extern const char code_signer_certificate_label[];
 extern const char tcp_send_performance_server_ip_address_label[];
 extern const char tcp_send_performance_server_port_number_label[];
+
+extern char *iot_thing_name;
+extern char *mqtt_broker_endpoint;
+extern char *signing_certificate_pem;
+

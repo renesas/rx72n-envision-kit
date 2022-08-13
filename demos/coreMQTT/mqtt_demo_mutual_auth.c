@@ -84,6 +84,10 @@
 /* Include AWS IoT metrics macros header. */
 #include "aws_iot_metrics.h"
 
+/* Renesas includes */
+#include "r_simple_filesystem_on_dataflash_if.h"
+#include "rx72n_envision_kit_system.h"
+
 /*------------- Demo configurations -------------------------*/
 
 /** Note: The device client certificate and private key credentials are
@@ -100,7 +104,7 @@
  * @brief The MQTT broker endpoint used for this demo.
  */
 #ifndef democonfigMQTT_BROKER_ENDPOINT
-    #define democonfigMQTT_BROKER_ENDPOINT    clientcredentialMQTT_BROKER_ENDPOINT
+    #define democonfigMQTT_BROKER_ENDPOINT    mqtt_broker_endpoint
 #endif
 
 /**
@@ -117,7 +121,7 @@
  * must be unique so edit as required to ensure no two clients connecting to the
  * same broker use the same client identifier.
  */
-    #define democonfigCLIENT_IDENTIFIER    clientcredentialIOT_THING_NAME
+    #define democonfigCLIENT_IDENTIFIER    iot_thing_name
 #endif
 
 #ifndef democonfigMQTT_BROKER_PORT
@@ -165,7 +169,7 @@
  * The topic name starts with the client identifier to ensure that each demo
  * interacts with a unique topic name.
  */
-#define mqttexampleTOPIC                                  democonfigCLIENT_IDENTIFIER "/example/topic"
+#define mqttexampleTOPIC                                  "/example/topic"
 
 /**
  * @brief The number of topic filters to subscribe.
@@ -435,7 +439,7 @@ static uint16_t usPacketTypeReceived = 0U;
  */
 typedef struct topicFilterContext
 {
-    const char * pcTopicFilter;
+    char * pcTopicFilter;
     MQTTSubAckStatus_t xSubAckStatus;
 } topicFilterContext_t;
 
@@ -445,7 +449,7 @@ typedef struct topicFilterContext
  */
 static topicFilterContext_t xTopicFilterContext[ mqttexampleTOPIC_COUNT ] =
 {
-    { mqttexampleTOPIC, MQTTSubAckFailure }
+    { NULL, MQTTSubAckFailure }
 };
 
 
@@ -501,6 +505,36 @@ int RunCoreMqttMutualAuthDemo( bool awsIotMqttMode,
     ( void ) pNetworkServerInfo;
     ( void ) pNetworkCredentialInfo;
     ( void ) pNetworkInterface;
+
+    uint8_t *tmp;
+    uint32_t data_length;
+
+    if(SFD_SUCCESS == R_SFD_GetObjectValue(
+    		R_SFD_FindObject((uint8_t *)iot_thing_name_label, strlen(iot_thing_name_label)),
+			&tmp,
+			&data_length))
+    {
+    	iot_thing_name = pvPortMalloc(data_length);
+        memcpy(iot_thing_name, tmp, data_length);
+    }
+    if(SFD_SUCCESS == R_SFD_GetObjectValue(
+    		R_SFD_FindObject((uint8_t *)mqtt_broker_endpoint_label, strlen(mqtt_broker_endpoint_label)),
+			&tmp,
+			&data_length))
+    {
+    	mqtt_broker_endpoint = pvPortMalloc(data_length);
+        memcpy(mqtt_broker_endpoint, tmp, data_length);
+
+        char *topic_filter = pvPortMalloc(strlen(iot_thing_name) + strlen(mqttexampleTOPIC));
+        topic_filter[0] = 0;
+        strcat(topic_filter, iot_thing_name);
+        strcat(topic_filter, mqttexampleTOPIC);
+
+        for( ulTopicCount = 0; ulTopicCount < mqttexampleTOPIC_COUNT; ulTopicCount++ )
+        {
+        	xTopicFilterContext[ulTopicCount].pcTopicFilter = topic_filter;
+        }
+    }
 
     /* Set the entry time of the demo application. This entry time will be used
      * to calculate relative time elapsed in the execution of the demo application,
