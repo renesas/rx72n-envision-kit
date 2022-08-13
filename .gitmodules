@@ -1,0 +1,4 @@
+[submodule "libraries/coreSNTP"]
+	path = libraries/coreSNTP
+	url = https://github.com/FreeRTOS/coreSNTP.git
+	branch = 7c54c2b12eab3380145de6057beca03f7f5e1377
