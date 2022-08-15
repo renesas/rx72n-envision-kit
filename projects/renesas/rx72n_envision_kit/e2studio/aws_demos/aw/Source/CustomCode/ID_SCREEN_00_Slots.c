@@ -9,55 +9,52 @@
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
-File        : Resource.h
-Purpose     : Generated file do NOT edit!
+File        : ID_SCREEN_00_Slots.c
+Purpose     : AppWizard managed file, function content could be changed
 ---------------------------END-OF-HEADER------------------------------
 */
 
-#ifndef RESOURCE_H
-#define RESOURCE_H
+#include "Application.h"
+#include "../Generated/Resource.h"
+#include "../Generated/ID_SCREEN_00.h"
 
-#include "AppWizard.h"
-
-/*********************************************************************
-*
-*       Text
-*/
-#define ID_RTEXT_0 0
-#define ID_RTEXT_1 1
-
-#define APPW_MANAGE_TEXT APPW_MANAGE_TEXT_EXT
-extern const unsigned char acAPPW_Language_0[];
+/*** Begin of user code area ***/
+/*** End of user code area ***/
 
 /*********************************************************************
 *
-*       Fonts
+*       Public code
+*
+**********************************************************************
 */
-extern const unsigned char acNotoSans_24_Normal_EXT_AA4[];
+/*********************************************************************
+*
+*       cbID_SCREEN_00
+*/
+void cbID_SCREEN_00(WM_MESSAGE * pMsg) {
+  GUI_USE_PARA(pMsg);
+}
 
 /*********************************************************************
 *
-*       Images
+*       ID_SCREEN_00__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START
 */
-extern const unsigned char acmcu[];
-extern const unsigned char actitle_renesas[];
+void ID_SCREEN_00__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult) {
+  GUI_USE_PARA(pAction);
+  GUI_USE_PARA(hScreen);
+  GUI_USE_PARA(pMsg);
+  GUI_USE_PARA(pResult);
+}
 
 /*********************************************************************
 *
-*       Screens
+*       ID_SCREEN_00__ID_TIMER_00__APPW_NOTIFICATION_TIMER__ID_TEXT_01__APPW_JOB_SETVIS
 */
-#define ID_SCREEN_00 (GUI_ID_USER + 4096)
-
-extern APPW_ROOT_INFO ID_SCREEN_00_RootInfo;
-
-#define APPW_INITIAL_SCREEN &ID_SCREEN_00_RootInfo
-
-/*********************************************************************
-*
-*       Project path
-*/
-#define APPW_PROJECT_PATH "C:/git/rx72n-envision-kit/projects/renesas/rx72n_envision_kit/e2studio/aws_demos/aw"
-
-#endif  // RESOURCE_H
+void ID_SCREEN_00__ID_TIMER_00__APPW_NOTIFICATION_TIMER__ID_TEXT_01__APPW_JOB_SETVIS(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult) {
+  GUI_USE_PARA(pAction);
+  GUI_USE_PARA(hScreen);
+  GUI_USE_PARA(pMsg);
+  GUI_USE_PARA(pResult);
+}
 
 /*************************** End of file ****************************/

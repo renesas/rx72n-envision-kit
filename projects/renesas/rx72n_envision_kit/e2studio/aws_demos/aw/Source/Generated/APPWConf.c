@@ -43,14 +43,14 @@ Purpose     : Generated file do NOT edit!
 *       _apRootList
 */
 static APPW_ROOT_INFO * _apRootList[] = {
-  0
+  &ID_SCREEN_00_RootInfo,
 };
 
 /*********************************************************************
 *
 *       _NumScreens
 */
-static unsigned _NumScreens = 0;
+static unsigned _NumScreens = GUI_COUNTOF(_apRootList);
 
 /*********************************************************************
 *
@@ -66,6 +66,23 @@ static U8 _MultibufEnable = 0;
 
 /*********************************************************************
 *
+*       _apLang
+*/
+static const char * _apLang[] = {
+  (const char *)acAPPW_Language_0,
+};
+
+/*********************************************************************
+*
+*       _TextInit
+*/
+static const APPW_TEXT_INIT _TextInit = {
+  _apLang,
+  GUI_COUNTOF(_apLang),
+};
+
+/*********************************************************************
+*
 *       Static code
 *
 **********************************************************************
@@ -75,9 +92,7 @@ static U8 _MultibufEnable = 0;
 *       _InitText
 */
 static void _InitText(void) {
-  //
-  // Empty, because application does not contain any text
-  //
+  APPW_TextInitMem(&_TextInit);
 }
 
 /*********************************************************************

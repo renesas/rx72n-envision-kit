@@ -9,55 +9,40 @@
 *                                                                    *
 **********************************************************************
 ----------------------------------------------------------------------
-File        : Resource.h
+File        : ID_SCREEN_00.h
 Purpose     : Generated file do NOT edit!
 ---------------------------END-OF-HEADER------------------------------
 */
 
-#ifndef RESOURCE_H
-#define RESOURCE_H
+#ifndef ID_SCREEN_00_H
+#define ID_SCREEN_00_H
 
 #include "AppWizard.h"
 
 /*********************************************************************
 *
-*       Text
+*       Objects
 */
-#define ID_RTEXT_0 0
-#define ID_RTEXT_1 1
-
-#define APPW_MANAGE_TEXT APPW_MANAGE_TEXT_EXT
-extern const unsigned char acAPPW_Language_0[];
+#define ID_BOX_00   (GUI_ID_USER + 1)
+#define ID_IMAGE_00 (GUI_ID_USER + 2)
+#define ID_IMAGE_01 (GUI_ID_USER + 3)
+#define ID_TEXT_00  (GUI_ID_USER + 4)
+#define ID_TEXT_01  (GUI_ID_USER + 5)
+#define ID_TIMER_00 (GUI_ID_USER + 6)
 
 /*********************************************************************
 *
-*       Fonts
+*       Slots
 */
-extern const unsigned char acNotoSans_24_Normal_EXT_AA4[];
+void ID_SCREEN_00__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START        (APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
+void ID_SCREEN_00__ID_TIMER_00__APPW_NOTIFICATION_TIMER__ID_TEXT_01__APPW_JOB_SETVIS(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
 
 /*********************************************************************
 *
-*       Images
+*       Callback
 */
-extern const unsigned char acmcu[];
-extern const unsigned char actitle_renesas[];
+void cbID_SCREEN_00(WM_MESSAGE * pMsg);
 
-/*********************************************************************
-*
-*       Screens
-*/
-#define ID_SCREEN_00 (GUI_ID_USER + 4096)
-
-extern APPW_ROOT_INFO ID_SCREEN_00_RootInfo;
-
-#define APPW_INITIAL_SCREEN &ID_SCREEN_00_RootInfo
-
-/*********************************************************************
-*
-*       Project path
-*/
-#define APPW_PROJECT_PATH "C:/git/rx72n-envision-kit/projects/renesas/rx72n_envision_kit/e2studio/aws_demos/aw"
-
-#endif  // RESOURCE_H
+#endif  // ID_SCREEN_00_H
 
 /*************************** End of file ****************************/
