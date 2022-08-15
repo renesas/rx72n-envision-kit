@@ -17,6 +17,8 @@ Purpose     : Content to be managed by customer
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
+#include "rx72n_envision_kit_system.h"
+
 #endif  // APPLICATION_H
 
 /*************************** End of file ****************************/

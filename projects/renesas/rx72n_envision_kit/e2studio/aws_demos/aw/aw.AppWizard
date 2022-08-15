@@ -19,14 +19,20 @@
     <Id>
       Id=ID_RTEXT_0
       Id=ID_RTEXT_1
+      Id=ID_RTEXT_2
+      Id=ID_RTEXT_3
     </Id>
     <Lang>
       Name=language
       Text=RX72N Benchmark Demonstration Program
       Text=Touch screen to start user program...
+      Text=System Information
+      Text=CPU Load   0%
     </Lang>
   </Text>
   <Variables>
+    Item=4096,ID_VAR_00,0
+    Item=4097,ID_VAR_01,0
   </Variables>
   <FocusInfo>
     Color=00000000
@@ -159,16 +165,16 @@
       IdPrev=0
       IdPost=0
       <Dispose>
-        xSize=382
+        xSize=402
         ySize=32
         <X0>
           Mode=2
-          Off=49
+          Off=39
           Id=0
         </X0>
         <Y0>
           Mode=2
-          Off=199
+          Off=203
           Id=0
         </Y0>
       </Dispose>
@@ -184,7 +190,7 @@
         Id=0
       </SetTextId>
       <SetFont>
-        Font=NotoSans_24_Normal_EXT_AA4.xbf
+        Font=Roboto_24_Normal_EXT_AA4.xbf
       </SetFont>
     </Text>
     <Text>
@@ -218,6 +224,9 @@
       <SetTextId>
         Id=1
       </SetTextId>
+      <SetFont>
+        Font=Roboto_16_Normal_EXT_AA4.xbf
+      </SetFont>
     </Text>
     <Timer>
       ParentId=2048
@@ -231,6 +240,219 @@
       <SetAutoRestart>
       </SetAutoRestart>
     </Timer>
+    <Screen>
+      ParentId=0
+      IdString=ID_SCREEN_01
+      Id=2048
+      IdPrev=0
+      IdPost=0
+      RootId=6145
+      <Dispose>
+        xSize=0
+        ySize=0
+        <X0>
+          Mode=2
+          Off=0
+          Id=0
+        </X0>
+        <Y0>
+          Mode=2
+          Off=0
+          Id=0
+        </Y0>
+        <X1>
+          Mode=2
+          Off=0
+          Id=0
+        </X1>
+        <Y1>
+          Mode=2
+          Off=0
+          Id=0
+        </Y1>
+      </Dispose>
+    </Screen>
+    <Box>
+      ParentId=2048
+      IdString=ID_BOX_00
+      Id=2049
+      IdPrev=0
+      IdPost=0
+      <Dispose>
+        xSize=0
+        ySize=0
+        <X0>
+          Mode=2
+          Off=0
+          Id=0
+        </X0>
+        <Y0>
+          Mode=2
+          Off=0
+          Id=0
+        </Y0>
+        <X1>
+          Mode=2
+          Off=0
+          Id=0
+        </X1>
+        <Y1>
+          Mode=2
+          Off=0
+          Id=0
+        </Y1>
+      </Dispose>
+      <SetColor>
+        Color=ff000000
+      </SetColor>
+    </Box>
+    <Text>
+      ParentId=2048
+      IdString=ID_TEXT_00
+      Id=2051
+      IdPrev=0
+      IdPost=0
+      <Dispose>
+        xSize=113
+        ySize=32
+        <X0>
+          Mode=2
+          Off=6
+          Id=0
+        </X0>
+        <Y0>
+          Mode=2
+          Off=-6
+          Id=0
+        </Y0>
+      </Dispose>
+      <SetColor>
+        Color=ffffffff
+      </SetColor>
+      <SetTextAlign>
+        Alignment=14
+        xOff=0
+        yOff=0
+      </SetTextAlign>
+      <SetTextId>
+        Id=2
+      </SetTextId>
+      <SetFont>
+        Font=Roboto_16_Normal_EXT_AA4.xbf
+      </SetFont>
+    </Text>
+    <Text>
+      ParentId=2048
+      IdString=ID_TEXT_01
+      Id=2053
+      IdPrev=0
+      IdPost=0
+      <Dispose>
+        xSize=100
+        ySize=32
+        <X0>
+          Mode=2
+          Off=128
+          Id=0
+        </X0>
+        <Y0>
+          Mode=2
+          Off=-6
+          Id=0
+        </Y0>
+      </Dispose>
+      <SetColor>
+        Color=ffffffff
+      </SetColor>
+      <SetTextAlign>
+        Alignment=14
+        xOff=0
+        yOff=0
+      </SetTextAlign>
+      <SetTextId>
+        Id=3
+      </SetTextId>
+      <SetFont>
+        Font=Roboto_16_Normal_EXT_AA4.xbf
+      </SetFont>
+    </Text>
+    <Timer>
+      ParentId=2048
+      IdString=ID_TIMER_00
+      Id=2054
+      IdPrev=0
+      IdPost=0
+      <SetPeriod>
+        Period=1000
+      </SetPeriod>
+      <SetAutoRestart>
+      </SetAutoRestart>
+    </Timer>
+    <Window>
+      ParentId=2048
+      IdString=ID_WINDOW_00
+      Id=2050
+      IdPrev=0
+      IdPost=0
+      <Dispose>
+        xSize=0
+        ySize=0
+        <X0>
+          Mode=2
+          Off=0
+          Id=0
+        </X0>
+        <Y0>
+          Mode=2
+          Off=20
+          Id=0
+        </Y0>
+        <X1>
+          Mode=2
+          Off=0
+          Id=0
+        </X1>
+        <Y1>
+          Mode=2
+          Off=20
+          Id=0
+        </Y1>
+      </Dispose>
+    </Window>
+    <Box>
+      ParentId=2050
+      IdString=ID_BOX_01
+      Id=2052
+      IdPrev=0
+      IdPost=0
+      <Dispose>
+        xSize=0
+        ySize=0
+        <X0>
+          Mode=2
+          Off=0
+          Id=0
+        </X0>
+        <Y0>
+          Mode=2
+          Off=0
+          Id=0
+        </Y0>
+        <X1>
+          Mode=2
+          Off=0
+          Id=0
+        </X1>
+        <Y1>
+          Mode=2
+          Off=0
+          Id=0
+        </Y1>
+      </Dispose>
+      <SetColor>
+        Color=ffffffff
+      </SetColor>
+    </Box>
   </Objects>
   <Interactions>
     <START>
@@ -241,6 +463,17 @@
       Slot=ID_SCREEN_00__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START
       Flags=0
     </START>
+    <SETVALUE>
+      RootId=6144
+      IdSrc=ID_SCREEN_00
+      NCode=APPW_NOTIFICATION_INITDIALOG
+      IdDst=ID_VAR_00
+      Slot=ID_SCREEN_00__APPW_NOTIFICATION_INITDIALOG
+      Flags=0
+      <Para>
+        Value=1
+      </Para>
+    </SETVALUE>
     <SETVIS>
       RootId=6144
       IdSrc=ID_TIMER_00
@@ -252,10 +485,63 @@
         OnOff=2
       </Para>
     </SETVIS>
+    <SHOWSCREEN>
+      RootId=6144
+      IdSrc=ID_SCREEN_00
+      NCode=APPW_NOTIFICATION_PIDPRESSED
+      Slot=ID_SCREEN_00__APPW_NOTIFICATION_PIDPRESSED_0
+      Flags=0
+      Condition=A&B,2,IS_VAR,ID_VAR_00,==,IS_VAL,1,IS_VAR,ID_VAR_01,==,IS_VAL,1
+      <Para>
+        RootId=6145
+      </Para>
+    </SHOWSCREEN>
+    <CLOSESCREEN>
+      RootId=6144
+      IdSrc=ID_SCREEN_00
+      NCode=APPW_NOTIFICATION_PIDPRESSED
+      Slot=ID_SCREEN_00__APPW_NOTIFICATION_PIDPRESSED
+      Flags=0
+      Condition=A&B,2,IS_VAR,ID_VAR_00,==,IS_VAL,1,IS_VAR,ID_VAR_01,==,IS_VAL,1
+      <Para>
+        RootId=6144
+      </Para>
+    </CLOSESCREEN>
+    <ADDVALUE>
+      RootId=6144
+      IdSrc=ID_SCREEN_00
+      NCode=APPW_NOTIFICATION_PIDPRESSED
+      IdDst=ID_VAR_01
+      Slot=ID_SCREEN_00__APPW_NOTIFICATION_PIDPRESSED_1
+      Comment=PID event come at system init phase so this value is used for ignoring this.
+      Flags=0
+      <Para>
+        Value=1
+      </Para>
+    </ADDVALUE>
+    <START>
+      RootId=6145
+      IdSrc=ID_SCREEN_01
+      NCode=APPW_NOTIFICATION_INITDIALOG
+      IdDst=ID_TIMER_00
+      Slot=ID_SCREEN_01__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START
+      Flags=0
+    </START>
+    <SETTEXT>
+      RootId=6145
+      IdSrc=ID_TIMER_00
+      NCode=APPW_NOTIFICATION_TIMER
+      IdDst=ID_TEXT_01
+      Slot=ID_SCREEN_01__ID_TIMER_00__APPW_NOTIFICATION_TIMER__ID_TEXT_01__APPW_JOB_SETTEXT
+      Flags=0
+      <Para>
+        Text=
+      </Para>
+    </SETTEXT>
   </Interactions>
   <Selection>
-    Root=ID_SCREEN_00
-    Object=2054
+    Root=ID_SCREEN_01
+    Object=2053
   </Selection>
   <Terms>
   </Terms>

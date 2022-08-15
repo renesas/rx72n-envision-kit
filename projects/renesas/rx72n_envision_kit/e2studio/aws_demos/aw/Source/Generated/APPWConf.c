@@ -28,7 +28,6 @@ Purpose     : Generated file do NOT edit!
 #define COLOR_CONVERSION GUICC_M565
 #define DISPLAY_DRIVER GUIDRV_WIN32
 #define NUM_BUFFERS   2
-#define _aVarList NULL
 #define _appDrawing NULL
 #define _NumDrawings 0
 
@@ -44,6 +43,7 @@ Purpose     : Generated file do NOT edit!
 */
 static APPW_ROOT_INFO * _apRootList[] = {
   &ID_SCREEN_00_RootInfo,
+  &ID_SCREEN_01_RootInfo,
 };
 
 /*********************************************************************
@@ -54,9 +54,18 @@ static unsigned _NumScreens = GUI_COUNTOF(_apRootList);
 
 /*********************************************************************
 *
+*       _aVarList
+*/
+static APPW_VAR_OBJECT _aVarList[] = {
+  { ID_VAR_00, 0, 0, NULL },
+  { ID_VAR_01, 0, 0, NULL },
+};
+
+/*********************************************************************
+*
 *       _NumVars
 */
-static unsigned _NumVars = 0;
+static unsigned _NumVars = GUI_COUNTOF(_aVarList);
 
 /*********************************************************************
 *

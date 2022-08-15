@@ -122,10 +122,6 @@ extern void vTaskClearUsageSingleList(List_t *pxList);
 /*******************************************************************************
  global variables and functions
 ********************************************************************************/
-
-volatile int32_t first_touch_wait_flag;
-volatile int32_t gui_initialize_complete_flag;
-
 void gui_task( void * pvParameters );
 void emWinCallback(WM_MESSAGE * pMsg);
 void callback_frame_window_to_main(int32_t id, int32_t event);
@@ -147,7 +143,7 @@ void gui_task( void * pvParameters )
 	APPW_CreateRoot(APPW_INITIAL_SCREEN, WM_HBKWIN);
 
 	/* GUI initialize complete */
-	gui_initialize_complete_flag = 1;
+	task_info->gui_initialize_complete_flag = 1;
 #if 0
 	/* generate frame window */
 	demo_window_free_list(demo_window_list_head);
@@ -180,10 +176,9 @@ void gui_task( void * pvParameters )
 
 	/* wait until first touch screen */
 	GUI_Delay(10);
-	vTaskDelay(1000);	/* this wait needs for ignoring touch event at WM_TOUCH_CHILD in TitleLogoWindowDLG.c when initializing. */
+	vTaskDelay(1000);	/* this wait needs for ignoring touch event at APPW_NOTIFICATION_PIDPRESSED in ID_SCREEN_00.c when initializing. */
 
-	first_touch_wait_flag = 1;
-	while(first_touch_wait_flag)
+	while(task_info->first_touch_complete_flag)
 	{
 		GUI_Delay(10);
 		vTaskDelay(10);
@@ -284,7 +279,7 @@ void main_1s_display_update(TASK_INFO *task_info)
 	}
 	idle_rate = ((float)(idle_cpu_time - previous_idle_cpu_time) / (float)(total_cpu_time - previous_total_cpu_time));
 	cpu_load = 100 - (uint32_t)(idle_rate * 100);
-	display_update_cpu_load(task_info->hWin_frame, cpu_load);
+	task_info->cpu_load = cpu_load;
 	previous_idle_cpu_time = idle_cpu_time;
 	previous_total_cpu_time = total_cpu_time;
 

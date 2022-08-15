@@ -74,12 +74,12 @@ static APPW_CREATE_ITEM _aCreate[] = {
   },
   { WM_OBJECT_TEXT_Create,
     ID_TEXT_00, ID_SCREEN_00,
-    { { { DISPOSE_MODE_REL_PARENT, 49, 0, 0 },
-        { DISPOSE_MODE_REL_PARENT, 199, 0, 0 },
+    { { { DISPOSE_MODE_REL_PARENT, 39, 0, 0 },
+        { DISPOSE_MODE_REL_PARENT, 203, 0, 0 },
         { DISPOSE_MODE_NULL, 0, 0, 0 },
         { DISPOSE_MODE_NULL, 0, 0, 0 },
       },
-      382, 32, 0, 0, 0, 0
+      402, 32, 0, 0, 0, 0
     },
     { 0, 0 }
   },
@@ -124,15 +124,37 @@ static const APPW_SETUP_ITEM _aSetup[] = {
                                                 ARG_V(0),
                                                 ARG_V(0) } },
   { ID_TEXT_00,   APPW_SET_PROP_TEXTID,       { ARG_V(ID_RTEXT_0) } },
-  { ID_TEXT_00,   APPW_SET_PROP_FONT,         { ARG_VP(0, acNotoSans_24_Normal_EXT_AA4) } },
+  { ID_TEXT_00,   APPW_SET_PROP_FONT,         { ARG_VP(0, acRoboto_24_Normal_EXT_AA4) } },
   { ID_TEXT_01,   APPW_SET_PROP_COLOR,        { ARG_V(GUI_BLACK) } },
   { ID_TEXT_01,   APPW_SET_PROP_ALIGNTEXT,    { ARG_V(GUI_ALIGN_HCENTER | GUI_ALIGN_VCENTER),
                                                 ARG_V(0),
                                                 ARG_V(0) } },
   { ID_TEXT_01,   APPW_SET_PROP_TEXTID,       { ARG_V(ID_RTEXT_1) } },
+  { ID_TEXT_01,   APPW_SET_PROP_FONT,         { ARG_VP(0, acRoboto_16_Normal_EXT_AA4) } },
   { ID_TIMER_00,  APPW_SET_PROP_PERIOD,       { ARG_V(500) } },
   { ID_TIMER_00,  APPW_SET_PROP_AUTORESTART,  { ARG_V(0) } },
 };
+
+/*********************************************************************
+*
+*       Comparison(s)
+*/
+static APPW_COND_COMP _aComparison_03[] = {
+  { { { APPW_IS_VAR, ID_VAR_00 }, { APPW_IS_VAL, 1 } }, APPW__CompareIsEqual },
+  { { { APPW_IS_VAR, ID_VAR_01 }, { APPW_IS_VAL, 1 } }, APPW__CompareIsEqual },
+};
+
+static APPW_COND_COMP _aComparison_04[] = {
+  { { { APPW_IS_VAR, ID_VAR_00 }, { APPW_IS_VAL, 1 } }, APPW__CompareIsEqual },
+  { { { APPW_IS_VAR, ID_VAR_01 }, { APPW_IS_VAL, 1 } }, APPW__CompareIsEqual },
+};
+
+/*********************************************************************
+*
+*       Condition(s)
+*/
+static const APPW_COND _Condition_03 = { "A&B", _aComparison_03, GUI_COUNTOF(_aComparison_03) };
+static const APPW_COND _Condition_04 = { "A&B", _aComparison_04, GUI_COUNTOF(_aComparison_04) };
 
 /*********************************************************************
 *
@@ -141,8 +163,24 @@ static const APPW_SETUP_ITEM _aSetup[] = {
 static const APPW_ACTION_ITEM _aAction[] = {
   { ID_SCREEN_00, APPW_NOTIFICATION_INITDIALOG,     ID_TIMER_00,  APPW_JOB_START,          ID_SCREEN_00__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START,
   },
+  { ID_SCREEN_00, APPW_NOTIFICATION_INITDIALOG,     ID_VAR_00,    APPW_JOB_SETVALUE,       ID_SCREEN_00__APPW_NOTIFICATION_INITDIALOG,
+    { ARG_V(1),
+    }, 0, NULL
+  },
   { ID_TIMER_00,  APPW_NOTIFICATION_TIMER,          ID_TEXT_01,   APPW_JOB_SETVIS,         ID_SCREEN_00__ID_TIMER_00__APPW_NOTIFICATION_TIMER__ID_TEXT_01__APPW_JOB_SETVIS,
     { ARG_V(APPW_SET_TOGGLE),
+    }, 0, NULL
+  },
+  { ID_SCREEN_00, APPW_NOTIFICATION_PIDPRESSED,     0,            APPW_JOB_SHOWSCREEN,     ID_SCREEN_00__APPW_NOTIFICATION_PIDPRESSED_0,
+    { ARG_V(ID_SCREEN_01),
+    }, 0, &_Condition_03
+  },
+  { ID_SCREEN_00, APPW_NOTIFICATION_PIDPRESSED,     0,            APPW_JOB_CLOSESCREEN,    ID_SCREEN_00__APPW_NOTIFICATION_PIDPRESSED,
+    { ARG_V(ID_SCREEN_00),
+    }, 0, &_Condition_04
+  },
+  { ID_SCREEN_00, APPW_NOTIFICATION_PIDPRESSED,     ID_VAR_01,    APPW_JOB_ADDVALUE,       ID_SCREEN_00__APPW_NOTIFICATION_PIDPRESSED_1,
+    { ARG_V(1),
     }, 0, NULL
   },
 };

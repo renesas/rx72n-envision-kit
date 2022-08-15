@@ -44,6 +44,8 @@ Includes   <System Includes> , "Project Includes"
 #include "GUI.h"
 #include "DIALOG.h"
 
+#include "rx72n_envision_kit_system.h"
+
 /*******************************************************************************
  Macro definitions
  *******************************************************************************/
@@ -206,7 +208,9 @@ void uart_string_printf(char *pString)
     sci_err_t sci_err;
     uint32_t retry = 0xFFFF;
 
-    while(!gui_initialize_complete_flag)
+    TASK_INFO *task_info = get_task_info();
+
+    while(!task_info->gui_initialize_complete_flag)
     {
     	vTaskDelay(1);
     }

@@ -75,6 +75,13 @@ typedef struct _task_info
 
 	/* for demo system time */
 	SYS_TIME sys_time;
+
+	/* for cpuload info */
+	uint32_t cpu_load;
+
+	/* system flag */
+	volatile uint32_t gui_initialize_complete_flag;
+	volatile uint32_t first_touch_complete_flag;
 }TASK_INFO;
 
 #define DATAFLASH_LABEL_NAME_TIMEZONE "timezone"
@@ -101,3 +108,4 @@ extern char *signing_certificate_pem;
 
 extern xSemaphoreHandle xSemaphoreFlashing;
 
+extern TASK_INFO * get_task_info(void);

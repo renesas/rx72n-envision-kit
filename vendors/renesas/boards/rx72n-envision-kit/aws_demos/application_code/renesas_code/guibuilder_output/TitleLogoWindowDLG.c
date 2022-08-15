@@ -648,11 +648,13 @@ static void _cbDialog(WM_MESSAGE * pMsg) {
   // USER START (Optionally insert additional message handling)
     case WM_TOUCH:
     case WM_TOUCH_CHILD:
+#if 0
     	if(first_touch_wait_flag)
     	{
     		delete_window_to_main(pMsg->hWin);
     		first_touch_wait_flag = 0;
     	}
+#endif
 		break;
     case WM_DELETE:
     	nop();

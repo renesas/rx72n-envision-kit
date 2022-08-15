@@ -98,6 +98,7 @@ int32_t wait_first_display(void);
 void firmware_version_read(char **ver_str);
 void amazon_freertos_syslog_putstring(char *string);
 void main_task(void);
+TASK_INFO * get_task_info(void);
 
 /******************************************************************************
  Function Name   : main
@@ -184,6 +185,11 @@ void firmware_version_read(char **ver_str)
 void amazon_freertos_syslog_putstring(char *string)
 {
 	display_syslog_putstring(task_info.hWin_system_log, string);
+}
+
+TASK_INFO * get_task_info(void)
+{
+	return &task_info;
 }
 
 /******************************************************************************

@@ -1,2 +1,4 @@
 RX72N Benchmark Demonstration Program
 Touch screen to start user program...
+System Information
+CPU Load   0%
