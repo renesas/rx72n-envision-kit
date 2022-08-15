@@ -115,12 +115,6 @@ void main_task(void)
     /* system timer initialization */
     R_SYS_TIME_Open();
 
-    /* GUI initialization */
-    GUI_Exit();
-    GUI_Init();
-    LCDCONF_EnableDave2D();
-    WM_MULTIBUF_Enable(1);
-
     /* flash initialization */
     R_FLASH_Open();
     R_FLASH_Control(FLASH_CMD_BANK_GET, &bank_info);

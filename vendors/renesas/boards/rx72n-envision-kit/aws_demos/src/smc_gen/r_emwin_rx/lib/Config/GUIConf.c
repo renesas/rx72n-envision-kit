@@ -1,72 +1,86 @@
-/*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
-*        Solutions for real time microcontroller applications        *
-**********************************************************************
-*                                                                    *
-*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
-*                                                                    *
-*        Internet: www.segger.com    Support:  support@segger.com    *
-*                                                                    *
-**********************************************************************
+/**********************************************************************************************************************
+ * DISCLAIMER
+ * This software is supplied by Renesas Electronics Corporation and is only intended for use with Renesas products. No
+ * other uses are authorized. This software is owned by Renesas Electronics Corporation and is protected under all
+ * applicable laws, including copyright laws.
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND RENESAS MAKES NO WARRANTIES REGARDING
+ * THIS SOFTWARE, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. ALL SUCH WARRANTIES ARE EXPRESSLY DISCLAIMED. TO THE MAXIMUM
+ * EXTENT PERMITTED NOT PROHIBITED BY LAW, NEITHER RENESAS ELECTRONICS CORPORATION NOR ANY OF ITS AFFILIATED COMPANIES
+ * SHALL BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES FOR ANY REASON RELATED TO
+ * THIS SOFTWARE, EVEN IF RENESAS OR ITS AFFILIATES HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+ * Renesas reserves the right, without notice, to make changes to this software and to discontinue the availability of
+ * this software. By using this software, you agree to the additional terms and conditions found by accessing the
+ * following link:
+ * http://www.renesas.com/disclaimer
+ *
+ * Copyright (C) 2021 Renesas Electronics Corporation. All rights reserved.
+ *********************************************************************************************************************/
+/**********************************************************************************************************************
+ * File Name    : GUIConf.c
+ * Version      : 1.00
+ * Description  : GUI runtime configuration.
+ *********************************************************************************************************************/
+/**********************************************************************************************************************
+ * History : DD.MM.YYYY Version        Description
+ *         : 31.07.2020 6.14.a.1.00    First Release
+ *         : 04.09.2020 6.14.a.1.10    Update to adjust r_emwin_rx_config.h file.
+ *         : 11.12.2020 6.14.g.1.20    Update to adjust emWin v6.14g. Modify multi-touch and timer function.
+ *                                     Adjust GCC and IAR compilers.
+ *         : 31.03.2021 6.14.g.1.30    Update to adjust the spec of Smart Configurator and QE for Display.
+ *         : 29.12.2021 6.20.  1.00    Update emWin library to v6.22.
+ *                                     Adjust configuration option with Smart Configurator.
+ *********************************************************************************************************************/
 
-***** emWin - Graphical user interface for embedded applications *****
-emWin is protected by international copyright laws.   Knowledge of the
-source code may not be used to write a similar product.  This file may
-only be used in accordance with a license and should not be re-
-distributed in any way. We appreciate your understanding and fairness.
-
-----------------------------------------------------------------------
-File        : GUIConf.c
-Purpose     : GUI runtime configuration
----------------------------END-OF-HEADER------------------------------
-*/
-
-#include "GUI_Private.h"
+/**********************************************************************************************************************
+ Includes   <System Includes> , "Project Includes"
+ *********************************************************************************************************************/
+#include <stdint.h>
+#include "GUI.h"
+#if (GUI_SUPPORT_TOUCH == 1)
 #include "PIDConf.h"
+#endif
+
 #include "r_emwin_rx_config.h"
 
-/*********************************************************************
-*
-*       Defines
-*
-**********************************************************************
-*/
-//
-// Define the available number of bytes available for the GUI
-//
-#define GUI_NUMBYTES  EMWIN_GUI_NUM_BYTES
+/**********************************************************************************************************************
+ Macro definitions
+ *********************************************************************************************************************/
 
-/*********************************************************************
-*
-*       Public code
-*
-**********************************************************************
-*/
-/*********************************************************************
-*
-*       GUI_X_Config
-*
-* Purpose:
-*   Called during the initialization process in order to set up the
-*   available memory for the GUI.
-*/
-void GUI_X_Config(void) {
-  //
-  // 32 bit aligned memory area
-  //
-  static U32 aMemory[GUI_NUMBYTES / 4];
-  //
-  // Assign memory to emWin
-  //
-  GUI_ALLOC_AssignMemory(aMemory, GUI_NUMBYTES);
-  //
-  // Create and select default font
-  //
-  GUI_SetDefaultFont(&GUI_Font6x8);
-  //
-  // Set PID init function
-  //
-  GUI_PID_SetInitFunc(PID_X_Init);
+/**********************************************************************************************************************
+ Local Typedef definitions
+ *********************************************************************************************************************/
+
+/**********************************************************************************************************************
+ Exported global variables
+ *********************************************************************************************************************/
+
+/**********************************************************************************************************************
+ Private (static) variables and functions
+ *********************************************************************************************************************/
+
+/**********************************************************************************************************************
+ * Function Name: GUI_X_Config
+ * Description  : Called during the initialization process in order to set up the available memory for the GUI.
+ * Arguments    : .
+ * Return Value : .
+ *********************************************************************************************************************/
+void GUI_X_Config(void)
+{
+    /* 32 bit aligned memory area */
+    static uint32_t s_a_memory[EMWIN_GUI_NUM_BYTES / 4];
+
+    /* Assign memory to emWin */
+    GUI_ALLOC_AssignMemory(s_a_memory, EMWIN_GUI_NUM_BYTES);
+
+    /* Create and select default font */
+    GUI_SetDefaultFont(&GUI_Font6x8);
+
+#if (GUI_SUPPORT_TOUCH == 1)
+    /* Set PID init function */
+    GUI_PID_SetInitFunc(PID_X_Init);
+#endif
 }
-
-/*************************** End of file ****************************/
+/**********************************************************************************************************************
+ End of function GUI_X_Config
+ *********************************************************************************************************************/

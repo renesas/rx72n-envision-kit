@@ -33,7 +33,7 @@ Includes
 #include "r_s12ad_rx_pinset.h"
 #include "r_sci_rx_pinset.h"
 #include "r_usb_basic_pinset.h"
-#include "r_glcdc_rx_pinset.h"
 #include "r_ssi_api_rx_pinset.h"
+#include "r_glcdc_rx_pinset.h"
 
 #endif /* R_PINSET_H */

@@ -1,539 +1,579 @@
-/*********************************************************************
-*                SEGGER Microcontroller GmbH & Co. KG                *
-*        Solutions for real time microcontroller applications        *
-**********************************************************************
-*                                                                    *
-*        (c) 1996 - 2017  SEGGER Microcontroller GmbH & Co. KG       *
-*                                                                    *
-*        Internet: www.segger.com    Support:  support@segger.com    *
-*                                                                    *
-**********************************************************************
+/**********************************************************************************************************************
+ * DISCLAIMER
+ * This software is supplied by Renesas Electronics Corporation and is only intended for use with Renesas products. No
+ * other uses are authorized. This software is owned by Renesas Electronics Corporation and is protected under all
+ * applicable laws, including copyright laws.
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND RENESAS MAKES NO WARRANTIES REGARDING
+ * THIS SOFTWARE, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. ALL SUCH WARRANTIES ARE EXPRESSLY DISCLAIMED. TO THE MAXIMUM
+ * EXTENT PERMITTED NOT PROHIBITED BY LAW, NEITHER RENESAS ELECTRONICS CORPORATION NOR ANY OF ITS AFFILIATED COMPANIES
+ * SHALL BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES FOR ANY REASON RELATED TO
+ * THIS SOFTWARE, EVEN IF RENESAS OR ITS AFFILIATES HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+ * Renesas reserves the right, without notice, to make changes to this software and to discontinue the availability of
+ * this software. By using this software, you agree to the additional terms and conditions found by accessing the
+ * following link:
+ * http://www.renesas.com/disclaimer
+ *
+ * Copyright (C) 2021 Renesas Electronics Corporation. All rights reserved.
+ *********************************************************************************************************************/
+/**********************************************************************************************************************
+ * File Name    : PIDConf.c
+ * Version      : 1.00
+ * Description  : Touch panel configuration.
+ *********************************************************************************************************************/
+/**********************************************************************************************************************
+ * History : DD.MM.YYYY Version        Description
+ *         : 31.07.2020 6.14.a.1.00    First Release
+ *         : 04.09.2020 6.14.a.1.10    Update to adjust r_emwin_rx_config.h file.
+ *         : 11.12.2020 6.14.g.1.20    Update to adjust emWin v6.14g. Modify multi-touch and timer function.
+ *                                     Adjust GCC and IAR compilers.
+ *         : 31.03.2021 6.14.g.1.30    Update to adjust the spec of Smart Configurator and QE for Display.
+ *         : 29.12.2021 6.20.  1.00    Update emWin library to v6.22.
+ *                                     Adjust configuration option with Smart Configurator.
+ *********************************************************************************************************************/
 
-***** emWin - Graphical user interface for embedded applications *****
-emWin is protected by international copyright laws.   Knowledge of the
-source code may not be used to write a similar product.  This file may
-only be used in accordance with a license and should not be re-
-distributed in any way. We appreciate your understanding and fairness.
-
-----------------------------------------------------------------------
-File        : PIDConf.c
-Purpose     : Touch panel configuration
----------------------------END-OF-HEADER------------------------------
-*/
-
+/**********************************************************************************************************************
+ Includes   <System Includes> , "Project Includes"
+ *********************************************************************************************************************/
 #include "GUI.h"
+#include "GUIConf.h"
 
-#include "platform.h"
-#include "r_sci_iic_rx_if.h"
-#include "r_sys_time_rx_if.h"
 #include "r_gpio_rx_if.h"
 #include "r_emwin_rx_config.h"
+#include "../../src/r_emwin_rx_private.h"
 
+/**********************************************************************************************************************
+ Macro definitions
+ *********************************************************************************************************************/
 
-/*********************************************************************
-*
-*       Config
-*
-**********************************************************************
-*/
-#ifndef USE_MULTITOUCH
-  #define USE_MULTITOUCH  EMWIN_USE_MULTITOUCH
+/**********************************************************************************************************************
+ Local Typedef definitions
+ *********************************************************************************************************************/
+#if (EMWIN_USE_TOUCH == 1)
+/* Holds information about coordinates and ID. */
+typedef struct
+{
+    uint8_t x_high;       /* Bit 6..7 - EventFlag, Bit 0..3 x_high */
+    uint8_t x_low;
+    uint8_t y_high;       /* Bit 4..7 - TouchID, Bit 0..3 y_high */
+    uint8_t y_low;
+    uint8_t id;
+} st_touch_data_t;
+
+/* Holds information about different touch points, mode, gesture and number of points. */
+typedef struct
+{
+    uint8_t device_mode;
+    uint8_t gesture_id;
+    uint8_t num_points;
+} st_report_data_t;
+
+/*  Used by this module to calculate the different MT flags and events. */
+typedef struct
+{
+    uint16_t x_pos;
+    uint16_t y_pos;
+    uint8_t  id;
+} st_point_data_t;
 #endif
 
-/*********************************************************************
-*
-*       Defines
-*
-**********************************************************************
-*/
-#define SLAVE_ADDRESS        EMWIN_SLAVE_ADDRESS
-#define MAX_NUM_TOUCHPOINTS  EMWIN_MAX_NUM_TOUCHPOINTS
-#define MAX_NUM_IDS          EMWIN_MAX_NUM_IDS
-#define NUM_CALIB_POINTS     EMWIN_NUM_CALIB_POINTS
+/**********************************************************************************************************************
+ Exported global variables
+ *********************************************************************************************************************/
 
-#define XSIZE  EMWIN_XSIZE_PHYS
-#define YSIZE  EMWIN_YSIZE_PHYS
+/**********************************************************************************************************************
+ Private (static) variables and functions
+ *********************************************************************************************************************/
+#if (EMWIN_USE_TOUCH == 1)
+static int32_t s_layer_index;
 
-/*********************************************************************
-*
-*       Types
-*
-**********************************************************************
-*/
-/*********************************************************************
-*
-*       TOUCH_DATA
-*
-*  Holds information about coordinates and ID.
-*/
-typedef struct {
-  U8 xHigh;       // Bit 6..7 - EventFlag, Bit 0..3 xHigh
-  U8 xLow;
-  U8 yHigh;       // Bit 4..7 - TouchID, Bit 0..3 yHigh
-  U8 yLow;
-  U8 ID;
-} TOUCH_DATA;
 
-/*********************************************************************
-*
-*       REPORT_DATA
-*
-*  Holds information about different touch points, mode, gesture and
-*  number of points.
-*/
-typedef struct {
-  U8         DeviceMode;
-  U8         GestureID;
-  U8         NumPoints;
-} REPORT_DATA;
-
-/*********************************************************************
-*
-*       POINT_DATA
-*
-*  Used by this module to calculate the different MT flags and events.
-*/
-typedef struct {
-  U16 xPos;
-  U16 yPos;
-  U8  Id;
-  U8  Flags;
-} POINT_DATA;
-
-/*********************************************************************
-*
-*       Static data
-*
-**********************************************************************
-*/
-static int _LayerIndex;
-
-static sci_iic_info_t _Info;
-
-static U8 _aBuffer[63] = {0};
-static U8 _Busy;
-
-#if (USE_MULTITOUCH == 1)
-  static U8  _aActiveIds[MAX_NUM_TOUCHPOINTS];
+#if (EMWIN_USE_MULTITOUCH == 1)
+static uint8_t s_a_active_ids[EMWIN_MAX_NUM_TOUCHPOINTS];
+#endif
 #endif
 
-/*********************************************************************
-*
-*       Local code
-*
-**********************************************************************
-*/
-/*********************************************************************
-*
-*       _cb_SCI_IIC_ch6
-*/
-#if (USE_MULTITOUCH == 0)
-static void _cb_SCI_IIC(void) {
-  sci_iic_mcu_status_t      iic_status;
-  volatile sci_iic_return_t ret;
-  int Temp;
+#if (EMWIN_USE_TOUCH == 1)
+#if (EMWIN_USE_MULTITOUCH == 0)
+/**********************************************************************************************************************
+ * Function Name: pidconf_cb_single
+ * Description  : .
+ * Arguments    : .
+ * Return Value : .
+ *********************************************************************************************************************/
+e_emwin_rx_err_t pidconf_cb_single(uint8_t * p_addr, uint32_t size)
+{
+    static GUI_PID_STATE s_state_pid;
+    static int32_t       s_is_touched;
+    st_report_data_t     report;
+    st_touch_data_t      touch_point;
+    uint8_t *            p_buffer;
+    e_emwin_rx_err_t     emwin_ret = EMWIN_RX_SUCCESS;
 
-  ret = R_SCI_IIC_GetStatus(&_Info, &iic_status);
-  if ((ret == SCI_IIC_SUCCESS) && (iic_status.BIT.NACK == 1)) {
-    static GUI_PID_STATE StatePID;
-    static int           IsTouched;
-    REPORT_DATA          Report;
-    TOUCH_DATA           TouchPoint;
-    U8                 * pBuffer;
+    /* Handle just one touch info. */
+    s_state_pid.Layer  = s_layer_index;          /* Set layer who should handle touch */
+    p_buffer           =  p_addr;
+    report.device_mode = *p_buffer++;            /* Get device mode, 000b - Work Mode, 001b - Factory Mode */
+    report.gesture_id  = *p_buffer++;            /* GestureID:  0x10 Move UP
+                                                  *             0x14 Move Left
+                                                  *             0x18 Move Down
+                                                  *             0x1C Move Right
+                                                  *             0x48 Zoom In
+                                                  *             0x49 Zoom Out
+                                                  *             0x00 No Gesture */
+    report.num_points   = *p_buffer++;           /* Number of points */
+    touch_point.x_high  = (*p_buffer ++) & 0x0F; /* Get the upper 4 bits of the x position */
+    touch_point.x_low   = *p_buffer++;           /* and the lower 8 bits */
+    touch_point.y_high  = (*p_buffer ++) & 0x0F; /* Get the upper 4 bits of the y position */
+    touch_point.y_low   = *p_buffer++;           /* and the lower 8 bits */
 
-    StatePID.Layer    = _LayerIndex;          // Set layer who should handle touch
-    pBuffer           =  _aBuffer;
-    Report.DeviceMode = *pBuffer++;           // Get device mode, 000b - Work Mode, 001b - Factory Mode
-    Report. GestureID = *pBuffer++;           // GestureID:  0x10 Move UP
-                                              //             0x14 Move Left
-                                              //             0x18 Move Down
-                                              //             0x1C Move Right
-                                              //             0x48 Zoom In
-                                              //             0x49 Zoom Out
-                                              //             0x00 No Gesture
-    Report.NumPoints  = *pBuffer++;           // Number of points
-    TouchPoint.xHigh  = (*pBuffer++) & 0x0F;  // Get the upper 4 bits of the x position
-    TouchPoint.xLow   = *pBuffer++;           // and the lower 8 bits
-    TouchPoint.yHigh  = (*pBuffer++) & 0x0F;  // Get the upper 4 bits of the y position
-    TouchPoint.yLow   = *pBuffer++;           // and the lower 8 bits
-    //
-    // We just handle one touch point, so we stop here.
-    //
-    // Check if we have a touch detected
-    //
-    if (Report.NumPoints) {
-      IsTouched        = 1;  // Remember that we have a touch, needed for generating up events
-      StatePID.Pressed = 1;  // State is pressed
-      //
-      // Shift bits for x- and y- coordinate to the correct position
-      //
-      StatePID.x       = ((TouchPoint.xHigh & 0x0F) << 8 | TouchPoint.xLow);
-      StatePID.y       = ((TouchPoint.yHigh & 0x0F) << 8 | TouchPoint.yLow);
+    /* Check if we have a touch detected */
+    if (report.num_points)
+    {
+        s_is_touched        = 1; /* Remember that we have a touch, needed for generating up events */
+        s_state_pid.Pressed = 1; /* State is pressed */
 
-      if (LCD_GetMirrorX()) {
-        StatePID.x = XSIZE - 1 - StatePID.x;
-      }
-      if (LCD_GetMirrorY()) {
-        StatePID.y = YSIZE - 1 - StatePID.y;
-      }
-      if (LCD_GetSwapXY()) {
-        Temp = StatePID.x;
-        StatePID.x = StatePID.y;
-        StatePID.y = Temp;
-      }
+        /* Shift bits for x- and y- coordinate to the correct position */
+        s_state_pid.x       = (((touch_point.x_high & 0x0F) << 8) | touch_point.x_low);
+        s_state_pid.y       = (((touch_point.y_high & 0x0F) << 8) | touch_point.y_low);
 
-      //
-      // Pass touch data to emWin
-      //
-      GUI_TOUCH_StoreStateEx(&StatePID);
-    } else {
-      if (IsTouched) {         // If we had a touch,
-        IsTouched        = 0;  // now we don't.
-        StatePID.Pressed = 0;  // So, state is not pressed.
-        //
-        // Tell emWin
-        //
-        GUI_TOUCH_StoreStateEx(&StatePID);
-      }
+        /* Pass touch data to emWin */
+        GUI_TOUCH_StoreStateEx(&s_state_pid);
     }
-    _Busy = 0;
-  }
-}
+    else
+    {
+        if (s_is_touched)
+        {                            /* If we had a touch, */
+            s_is_touched        = 0; /* now we don't. */
+            s_state_pid.Pressed = 0; /* So, state is not pressed. */
 
-#else
-
-/*********************************************************************
-*
-*       _ActiveIdFound
-*
-* Purpose:
-*   Checks if the given Id is part of the currently active Ids
-*/
-static int _ActiveIdFound(U8 Id) {
-  int i;
-  U8 * pId;
-
-  pId = _aActiveIds;
-  i   = GUI_COUNTOF(_aActiveIds);
-  do {
-    if (*pId++ == Id) {
-      return 1;
+            /* Tell emWin */
+            GUI_TOUCH_StoreStateEx(&s_state_pid);
+        }
     }
-  } while (--i);
-  return 0;
+
+    return emwin_ret;
 }
+/**********************************************************************************************************************
+ * End of function pidconf_cb_single
+ *********************************************************************************************************************/
+#else /* EMWIN_USE_MULTITOUCH == 0 */
 
-/*********************************************************************
-*
-*       _StoreId
-*
-* Purpose:
-*   Finds a free 'slot' for the given Id and puts it to the active Ids
-*/
-static int _StoreId(U8 Id) {
-  int i;
-  U8 * pId;
+/**********************************************************************************************************************
+ * Function Name: active_id_found
+ * Description  : Checks if the given ID is part of the currently active IDs.
+ * Arguments    : .
+ * Return Value : .
+ *********************************************************************************************************************/
+static int32_t active_id_found(uint8_t id)
+{
+    int32_t i;
+    uint8_t * p_id;
 
-  pId = _aActiveIds;
-  i   = GUI_COUNTOF(_aActiveIds);
-  do {
-    if (*pId == 0) {
-      *pId = Id;
-      return 0;
+    p_id = s_a_active_ids;
+    i    = GUI_COUNTOF(s_a_active_ids);
+    do
+    {
+        if (*p_id++ == id)
+        {
+            return 1;
+        }
+    } while (--i); /* WAIT_LOOP */
+
+    return 0;
+}
+/**********************************************************************************************************************
+ * End of function active_id_found
+ *********************************************************************************************************************/
+
+/**********************************************************************************************************************
+ * Function Name: store_id
+ * Description  : Finds a free 'slot' for the given ID and puts it to the active IDs.
+ * Arguments    : .
+ * Return Value : .
+ *********************************************************************************************************************/
+static int32_t store_id(uint8_t id)
+{
+    int32_t i;
+    uint8_t * p_id;
+
+    p_id = s_a_active_ids;
+    i    = GUI_COUNTOF(s_a_active_ids);
+    do
+    {
+        if (*p_id == 0)
+        {
+            *p_id = id;
+            return 0;
+        }
+        p_id++;
+    } while (--i); /* WAIT_LOOP */
+
+    return 1;
+}
+/**********************************************************************************************************************
+ * End of function store_id
+ *********************************************************************************************************************/
+
+/**********************************************************************************************************************
+ * Function Name: current_id_found
+ * Description  : Checks if the given ID is part of the given st_point_data_t array.
+ * Arguments    : .
+ * Return Value : .
+ *********************************************************************************************************************/
+static int32_t current_id_found(uint8_t id, st_point_data_t * p_point_data, int32_t num_points)
+{
+    st_point_data_t * p_i;
+    int32_t i;
+
+    /* WAIT_LOOP */
+    for (p_i = p_point_data, i = 0; i < num_points; i++, p_i++)
+    {
+        if (p_i->id == id)
+        {
+            return 1;
+        }
     }
-    pId++;
-  } while (--i);
-  return 1;
+
+    return 0;
 }
+/**********************************************************************************************************************
+ * End of function current_id_found
+ *********************************************************************************************************************/
 
-/*********************************************************************
-*
-*       _CurrentIdFound
-*
-* Purpose:
-*   Checks if the given Id is part of the given POINT_DATA array
-*/
-static int _CurrentIdFound(U8 Id, POINT_DATA * pPointData, int NumPoints) {
-  POINT_DATA * pi;
-  int i;
-
-  for (pi = pPointData, i = 0; i < NumPoints; i++, pi++) {
-    if (pi->Id == Id) {
-      return 1;
+/**********************************************************************************************************************
+ * Function Name: create_input
+ * Description  : .
+ * Arguments    : .
+ * Return Value : Fills the given GUI_MTOUCH_INPUT structure with the given coordinates
+ *                of the st_point_data_t data structure. In case of UP events there is no
+ *                data and only the given ID is used.
+ *********************************************************************************************************************/
+static void create_input(uint16_t flags, uint8_t id, st_point_data_t * p_point_data, GUI_MTOUCH_INPUT * p_input)
+{
+    if (p_point_data)
+    {
+        p_input->x  = p_point_data->x_pos;
+        p_input->y  = p_point_data->y_pos;
+        p_input->Id = p_point_data->id;
     }
-  }
-  return 0;
-}
-
-/*********************************************************************
-*
-*       _CreateInput
-*
-* Purpose:
-*   Fills the given GUI_MTOUCH_INPUT structure with the given coordinates
-*   of the POINT_DATA data structure. In case of UP events there is no
-*   data and only the given Id is used.
-*/
-static void _CreateInput(U16 Flags, U8 Id, POINT_DATA * pPointData, GUI_MTOUCH_INPUT * pInput) {
-  if (pPointData) {
-    pInput->x  = pPointData->xPos;
-    pInput->y  = pPointData->yPos;
-    pInput->Id = pPointData->Id;
-  } else {
-    pInput->Id = Id;
-  }
-  pInput->Flags = Flags;
-}
-
-/*********************************************************************
-*
-*       _CreateUpInputs
-*
-* Purpose:
-*   Checks if the already existing active touch points exist in current
-*   data. For each non existing active Id in the current data an UP event
-*   is created.
-*/
-static void _CreateUpInputs(POINT_DATA * pPointData, int NumPoints, GUI_MTOUCH_INPUT ** ppInput, int * pNumInputs) {
-  GUI_MTOUCH_INPUT * pInput;
-  int i;
-  U8 * pId;
-  U8 Id;
-
-  pInput = *ppInput;
-  pId = _aActiveIds;
-  i   = GUI_COUNTOF(_aActiveIds);
-  do {
-    Id = *pId;
-    if (Id) {
-      if (_CurrentIdFound(Id, pPointData, NumPoints) == 0) {
-        _CreateInput(GUI_MTOUCH_FLAG_UP, Id, NULL, pInput);
-        (*pNumInputs)++;
-        pInput++;
-        *pId = 0;
-      }
+    else
+    {
+        p_input->Id = id;
     }
-    pId++;
-  } while (--i);
-  *ppInput = pInput;
+    p_input->Flags = flags;
 }
+/**********************************************************************************************************************
+ * End of function create_input
+ *********************************************************************************************************************/
 
-/*********************************************************************
-*
-*       _CreateMoveAndDownInputs
-*
-* Purpose:
-*   Fills the given array of GUI_MTOUCH_INPUT structures with data of current
-*   POINT_DATA array. If an item already exist a MOVE event is created,
-*   otherwise a DOWM event.
-*/
-static void _CreateMoveAndDownInputs(POINT_DATA * pPointData, int NumPoints, GUI_MTOUCH_INPUT * pInput) {
-  int i, Found;
+/**********************************************************************************************************************
+ * Function Name: create_up_inputs
+ * Description  : Checks if the already existing active touch points exist in current
+ *                data. For each non existing active ID in the current data an UP event
+ *                is created.
+ * Arguments    : .
+ * Return Value : .
+ *********************************************************************************************************************/
+static void create_up_inputs(st_point_data_t * p_point_data, int32_t num_points,
+                            GUI_MTOUCH_INPUT ** pp_input, int32_t * p_num_inputs)
+{
+    GUI_MTOUCH_INPUT * p_input;
+    int32_t i;
+    uint8_t * p_id;
+    uint8_t id;
 
-  for (i = 0; i < NumPoints; i++, pPointData++, pInput++) {
-    Found = _ActiveIdFound(pPointData->Id);
-    pInput->x     = pPointData->xPos;
-    pInput->y     = pPointData->yPos;
-    pInput->Id    = pPointData->Id;
-    if (Found) {
-      pInput->Flags = GUI_MTOUCH_FLAG_MOVE;
-    } else {
-      pInput->Flags = GUI_MTOUCH_FLAG_DOWN;
-      _StoreId(pPointData->Id);
+    p_input = *pp_input;
+    p_id = s_a_active_ids;
+    i   = GUI_COUNTOF(s_a_active_ids);
+    do
+    {
+        id = *p_id;
+        if (id)
+        {
+            if (current_id_found(id, p_point_data, num_points) == 0)
+            {
+                create_input(GUI_MTOUCH_FLAG_UP, id, NULL, p_input);
+                (*p_num_inputs)++;
+                p_input++;
+                *p_id = 0;
+            }
+        }
+        p_id++;
+    } while (--i); /* WAIT_LOOP */
+    *pp_input = p_input;
+}
+/**********************************************************************************************************************
+ * End of function create_up_inputs
+ *********************************************************************************************************************/
+
+/**********************************************************************************************************************
+ * Function Name: create_move_and_down_inputs
+ * Description  : Fills the given array of GUI_MTOUCH_INPUT structures with data of current
+ *                st_point_data_t array. If an item already exist a MOVE event is created,
+ *                otherwise a DOWM event.
+ * Arguments    : .
+ * Return Value : .
+ *********************************************************************************************************************/
+static void create_move_and_down_inputs(st_point_data_t * p_point_data, int32_t num_points, GUI_MTOUCH_INPUT * p_input)
+{
+    int32_t i;
+    int32_t found;
+
+    /* WAIT_LOOP */
+    for (i = 0; i < num_points; i++, p_point_data++, p_input++)
+    {
+        found       = active_id_found(p_point_data->id);
+        p_input->x  = p_point_data->x_pos;
+        p_input->y  = p_point_data->y_pos;
+        p_input->Id = p_point_data->id;
+        if (found)
+        {
+            p_input->Flags = GUI_MTOUCH_FLAG_MOVE;
+        }
+        else
+        {
+            p_input->Flags = GUI_MTOUCH_FLAG_DOWN;
+            store_id(p_point_data->id);
+        }
     }
-  }
 }
+/**********************************************************************************************************************
+ * End of function create_move_and_down_inputs
+ *********************************************************************************************************************/
 
-/*********************************************************************
-*
-*       _cb_SCI_IIC_ch6
-*/
-static void _cb_SCI_IIC(void) {
-  sci_iic_mcu_status_t      iic_status;
-  volatile sci_iic_return_t ret;
-  GUI_MTOUCH_INPUT * pInput;
-  GUI_MTOUCH_EVENT   Event;
-  GUI_MTOUCH_INPUT   aInput[MAX_NUM_TOUCHPOINTS];
-  POINT_DATA         aPointData[MAX_NUM_TOUCHPOINTS];
-  REPORT_DATA        Report;
-  TOUCH_DATA         TouchPoint;
-  int                NumInputs;
-  int                i;
-  U8                 NumPoints;
-  int                xCoord;
-  int                yCoord;
-  U8               * pBuffer;
+/**********************************************************************************************************************
+ * Function Name: pidconf_cb_multi
+ * Description  : .
+ * Arguments    : .
+ * Return Value : .
+ *********************************************************************************************************************/
+e_emwin_rx_err_t pidconf_cb_multi(uint8_t * p_addr, uint32_t size)
+{
+    GUI_MTOUCH_INPUT    * p_input;
+    GUI_MTOUCH_EVENT    event;
+    GUI_MTOUCH_INPUT    a_input[EMWIN_MAX_NUM_TOUCHPOINTS];
+    st_point_data_t     a_point_data[EMWIN_MAX_NUM_TOUCHPOINTS];
+    st_report_data_t    report;
+    st_touch_data_t     touch_point;
+    int32_t             num_inputs;
+    int32_t             i;
+    uint8_t             num_points = 0;
+    int32_t             x_coord;
+    int32_t             y_coord;
+    uint8_t             * p_buffer;
+    e_emwin_rx_err_t      emwin_ret = EMWIN_RX_SUCCESS;
 
-  ret = R_SCI_IIC_GetStatus(&_Info, &iic_status);
-  if ((ret == SCI_IIC_SUCCESS) && (iic_status.BIT.NACK == 1)) {
-    pBuffer           =  _aBuffer;
-    Report.DeviceMode = *pBuffer++;           // Get device mode, 000b - Work Mode, 001b - Factory Mode
-    Report. GestureID = *pBuffer++;           // GestureID:  0x10 Move UP
-                                            //             0x14 Move Left
-                                            //             0x18 Move Down
-                                            //             0x1C Move Right
-                                            //             0x48 Zoom In
-                                            //             0x49 Zoom Out
-                                            //             0x00 No Gesture
-    Report.NumPoints  = *pBuffer++;           // Number of points
-    NumPoints         =  Report.NumPoints;
-    //
-    // Reading point data is only required if there is a touch point
-    //
-    if (NumPoints) {
-      //
-      // Get coordinates and Ids from buffer
-      //
-      for (i = 0; i < NumPoints; i++) {
-        TouchPoint.xHigh  = (*pBuffer++) & 0x0F;  // Get the upper 4 bits of the x position
-        TouchPoint.xLow   =  *pBuffer++;          // and the lower 8 bits
-        TouchPoint.ID     = (*pBuffer)   & 0xF0;  // Extract the touch point ID
-        TouchPoint.yHigh  = (*pBuffer++) & 0x0F;  // Get the upper 4 bits of the y position
-        TouchPoint.yLow   =  *pBuffer++;          // and the lower 8 bits
-        //
-        // Increment buffer twice since we have two dummy bytes
-        //
-        pBuffer++;
-        pBuffer++;
-        //
-        // Calculate coordinate values
-        //
-        xCoord = ((TouchPoint.xHigh & 0x0F) << 8 | TouchPoint.xLow);
-        yCoord = ((TouchPoint.yHigh & 0x0F) << 8 | TouchPoint.yLow);
-        //
-        // Add 1 to ID because TC counts from 0 and emWin can't handle an ID with 0
-        //
-        aPointData[i].Id   = TouchPoint.ID + 1;
-        aPointData[i].xPos = xCoord;
-        aPointData[i].yPos = yCoord;
-      }
+    p_buffer           =  p_addr;
+    report.device_mode = *p_buffer++;            /* Get device mode, 000b - Work Mode, 001b - Factory Mode */
+    report.gesture_id  = *p_buffer++;            /* GestureID:  0x10 Move UP
+                                                  *             0x14 Move Left
+                                                  *             0x18 Move Down
+                                                  *             0x1C Move Right
+                                                  *             0x48 Zoom In
+                                                  *             0x49 Zoom Out
+                                                  *             0x00 No Gesture */
+    report.num_points  = *p_buffer++;            /* Number of points */
+    if(report.num_points <= EMWIN_MAX_NUM_TOUCHPOINTS)
+    {
+        num_points     =  report.num_points;
     }
-    // Independent of NumPoints check if UP-inputs need to be generated
-    //
-    //
-    pInput    = aInput;
-    NumInputs = 0;
-    _CreateUpInputs(aPointData, NumPoints, &pInput, &NumInputs);
-    //
-    // Create MOVE- and DOWN-inputs only for current points
-    //
-    if (NumPoints) {
-      _CreateMoveAndDownInputs(aPointData, NumPoints, pInput);
-      NumInputs += NumPoints;
+
+    /* Reading point data is only required if there is a touch point */
+    if (num_points)
+    {
+        /* Get coordinates and IDs from buffer */
+        /* WAIT_LOOP */
+        for (i = 0; i < num_points; i++)
+        {
+            touch_point.x_high  = (*p_buffer++) & 0x0F; /* Get the upper 4 bits of the x position */
+            touch_point.x_low   =  *p_buffer++;         /* and the lower 8 bits */
+            touch_point.id      = (*p_buffer)   & 0xF0; /* Extract the touch point ID */
+            touch_point.y_high  = (*p_buffer++) & 0x0F; /* Get the upper 4 bits of the y position */
+            touch_point.y_low   =  *p_buffer++;         /* and the lower 8 bits */
+
+            /* Increment buffer twice since we have two dummy bytes */
+            p_buffer++;
+            p_buffer++;
+
+            /* Calculate coordinate values */
+            x_coord = ((touch_point.x_high & 0x0F) << 8 | touch_point.x_low);
+            y_coord = ((touch_point.y_high & 0x0F) << 8 | touch_point.y_low);
+
+            /* Add 1 to ID because TC counts from 0 and emWin can't handle an ID with 0 */
+            a_point_data[i].id    = touch_point.id + 1;
+            a_point_data[i].x_pos = x_coord;
+            a_point_data[i].y_pos = y_coord;
+        }
     }
-    //
-    // If any input exists, store an event into emWin buffer
-    //
-    if (NumInputs) {
-      Event.LayerIndex = _LayerIndex;
-      Event.NumPoints  = NumInputs;
-      GUI_MTOUCH_StoreEvent(&Event, aInput);
+
+    /* Independent of num_points check if UP-inputs need to be generated */
+    p_input    = a_input;
+    num_inputs = 0;
+    create_up_inputs(a_point_data, num_points, &p_input, &num_inputs);
+
+    /* Create MOVE- and DOWN-inputs only for current points */
+    if (num_points)
+    {
+        create_move_and_down_inputs(a_point_data, num_points, p_input);
+        num_inputs += num_points;
     }
-    _Busy = 0;
-  }
+
+    /* If any input exists, store an event into emWin buffer */
+    if (num_inputs)
+    {
+        event.LayerIndex = s_layer_index;
+        event.NumPoints  = num_inputs;
+        GUI_MTOUCH_StoreEvent(&event, a_input);
+    }
+
+    return emwin_ret;
 }
+/**********************************************************************************************************************
+ * End of function pidconf_cb_multi
+ *********************************************************************************************************************/
+#endif /* EMWIN_USE_MULTITOUCH == 0 */
+#endif /* EMWIN_USE_TOUCH == 1 */
 
-#endif
-
-/*********************************************************************
-*
-*       _Exec
-*/
-static void _Exec(void) {
-  //
-  // Read all touch points to clear the buffer on TC side
-  //
-  static uint8_t slave_addr_eeprom[] = { SLAVE_ADDRESS };  // Slave address
-  static uint8_t access_addr1[]      = { 0x00 };           // 1st data field
-  volatile sci_iic_return_t ret;
-
-  if (_Busy) {
-    return;
-  }
-  //
-  // Sets IIC Information
-  //
-  _Info.p_slv_adr    = slave_addr_eeprom;
-  _Info.p_data1st    = access_addr1;
-  _Info.p_data2nd    = _aBuffer;
-  _Info.dev_sts      = SCI_IIC_NO_INIT;
-  _Info.cnt1st       = sizeof(access_addr1);
-  _Info.cnt2nd       = sizeof(_aBuffer);
-  _Info.callbackfunc = &_cb_SCI_IIC;
-  //
-  // Start Master Receive
-  //
-  ret = R_SCI_IIC_MasterReceive(&_Info);
-  if (ret == SCI_IIC_SUCCESS) {
-    _Busy = 1;
-  }
+/**********************************************************************************************************************
+ * Function Name: r_emwin_rx_pidconf_cb
+ * Description  : .
+ * Arguments    : .
+ * Return Value : .
+ *********************************************************************************************************************/
+e_emwin_rx_err_t r_emwin_rx_pidconf_cb(uint8_t * p_addr, uint32_t size)
+{
+    e_emwin_rx_err_t     emwin_ret = EMWIN_RX_SUCCESS;
+#if (EMWIN_USE_TOUCH == 1)
+#if (EMWIN_USE_MULTITOUCH == 0)
+    emwin_ret = pidconf_cb_single(p_addr, size);
+#else /* EMWIN_USE_MULTITOUCH == 1 */
+    emwin_ret = pidconf_cb_multi(p_addr, size);
+#endif /* EMWIN_USE_MULTITOUCH == 0 */
+#endif /* EMWIN_USE_TOUCH == 1 */
+    return emwin_ret;
 }
+/**********************************************************************************************************************
+ * End of function r_emwin_rx_pidconf_cb
+ *********************************************************************************************************************/
 
-/*********************************************************************
-*
-*       _cbTimer
-*/
-static void _cbTimer(void * pData) {
-  _Exec();
-}
-
-/*********************************************************************
-*
-*       Public code
-*
-**********************************************************************
-*/
-/*********************************************************************
-*
-*       PID_X_SetLayerIndex
-*/
-void PID_X_SetLayerIndex(int LayerIndex) {
-  _LayerIndex = LayerIndex;
-}
-
-/*********************************************************************
-*
-*       PID_X_Init
-*/
-void PID_X_Init(void) {
-  U32 Channel;
-
-  //
-  // Reset touch ic
-  //
-  R_GPIO_PinDirectionSet(EMWIN_TOUCH_IC_RESET_PIN, GPIO_DIRECTION_OUTPUT);
-  R_GPIO_PinWrite(EMWIN_TOUCH_IC_RESET_PIN, GPIO_LEVEL_LOW);
-  R_BSP_SoftwareDelay(10, BSP_DELAY_MILLISECS);
-  R_GPIO_PinWrite(EMWIN_TOUCH_IC_RESET_PIN, GPIO_LEVEL_HIGH);
-  R_BSP_SoftwareDelay(300, BSP_DELAY_MILLISECS);
-  //
-  // Sets IIC Information (Ch6)
-  //
-  _Info.ch_no        = EMWIN_SCI_IIC_NUMBER;
-  //
-  // SCI open
-  //
-  if (R_SCI_IIC_Open(&_Info) != SCI_IIC_SUCCESS) {
-    return;  // Error
-  }
-  //
-  // Create timer for executing touch
-  //
-  R_SYS_TIME_Open();
-  R_SYS_TIME_RegisterPeriodicCallback(_cbTimer, 2);
-#if (USE_MULTITOUCH == 1)
-  GUI_MTOUCH_Enable(1);
+/**********************************************************************************************************************
+ * Function Name: PID_X_SetLayerIndex
+ * Description  : Set layer index.
+ * Arguments    : .
+ * Return Value : .
+ *********************************************************************************************************************/
+void PID_X_SetLayerIndex(int layer_index)
+{
+#if (EMWIN_USE_TOUCH == 1)
+    s_layer_index = layer_index;
 #endif
 }
+/**********************************************************************************************************************
+ * End of function PID_X_SetLayerIndex
+ *********************************************************************************************************************/
 
-/*********************************************************************
-*
-*       Dummies, not used
-*/
-void GUI_TOUCH_X_ActivateX(void) {}
-void GUI_TOUCH_X_ActivateY(void) {}
-int  GUI_TOUCH_X_MeasureX(void) { return 0;}
-int  GUI_TOUCH_X_MeasureY(void) { return 0;}
+/**********************************************************************************************************************
+ * Function Name: PID_X_Init
+ * Description  : Used to initialize Pointer Input Device.
+ * Arguments    : .
+ * Return Value : .
+ *********************************************************************************************************************/
+void PID_X_Init(void)
+{
+#if (EMWIN_USE_TOUCH == 1)
+    e_emwin_rx_err_t pid_ret;
 
-/*************************** End of file ****************************/
+    GUI_X_Delay(300);
 
+#if (EMWIN_USE_TOUCH_IC_RESET_PIN == 1)
+    /* Reset touch ic */
+    R_GPIO_PinDirectionSet(EMWIN_TOUCH_IC_RESET_PIN, GPIO_DIRECTION_OUTPUT);
+    R_GPIO_PinWrite(EMWIN_TOUCH_IC_RESET_PIN, GPIO_LEVEL_LOW);
+    GUI_X_Delay(10);
+    R_GPIO_PinWrite(EMWIN_TOUCH_IC_RESET_PIN, GPIO_LEVEL_HIGH);
+    GUI_X_Delay(300);
+#endif
+
+    pid_ret = r_emwin_rx_pid_open();
+    if (EMWIN_RX_SUCCESS != pid_ret)
+    {
+        return; /* Error */
+    }
+
+#if (EMWIN_USE_MULTITOUCH == 1)
+    GUI_MTOUCH_Enable(1);
+#endif
+#endif
+}
+/**********************************************************************************************************************
+ * End of function PID_X_Init
+ *********************************************************************************************************************/
+
+#if (EMWIN_USE_TOUCH == 1)
+/**********************************************************************************************************************
+ * Function Name: GUI_TOUCH_X_ActivateX
+ * Description  : This routine is not implemented.
+ * Arguments    : .
+ * Return Value : .
+ *********************************************************************************************************************/
+void GUI_TOUCH_X_ActivateX(void)
+{
+    /* This routine is called from guI_TOUCH_Exec() to activate the measurement of the X-axis. GUI_TOUCH_X_ActivateX()
+     * swithces on the measurement voltage to the X-axis. Switching on the voltage in X means the value for the Y-axis
+     * can be measured. */
+    R_BSP_NOP();
+}
+/**********************************************************************************************************************
+ * End of function GUI_TOUCH_X_ActivateX
+ *********************************************************************************************************************/
+
+/**********************************************************************************************************************
+ * Function Name: GUI_TOUCH_X_ActivateY
+ * Description  : This routine is not implemented.
+ * Arguments    : .
+ * Return Value : .
+ *********************************************************************************************************************/
+void GUI_TOUCH_X_ActivateY(void)
+{
+    /* This routine is called from guI_TOUCH_Exec() to activate the measurement of the Y-axis. GUI_TOUCH_X_ActivateY()
+     * swithces on the measurement voltage to the Y-axis. Switching on the voltage in Y means the value for the X-axis
+     * can be measured. */
+    R_BSP_NOP();
+}
+/**********************************************************************************************************************
+ * End of function GUI_TOUCH_X_ActivateY
+ *********************************************************************************************************************/
+
+/**********************************************************************************************************************
+ * Function Name: GUI_TOUCH_X_MeasureX
+ * Description  : This routine is not implemented.
+ * Arguments    : .
+ * Return Value : .
+ *********************************************************************************************************************/
+int GUI_TOUCH_X_MeasureX(void)
+{
+    /* This routine is called from GUI_TOUCH_Exec() to return the measurement values from the A/D converter for the
+    X-axis. */
+    return 0;
+}
+/**********************************************************************************************************************
+ * End of function GUI_TOUCH_X_MeasureX
+ *********************************************************************************************************************/
+
+/**********************************************************************************************************************
+ * Function Name: GUI_TOUCH_X_MeasureY
+ * Description  : This routine is not implemented.
+ * Arguments    : .
+ * Return Value : .
+ *********************************************************************************************************************/
+int GUI_TOUCH_X_MeasureY(void)
+{
+    /* This routine is called from GUI_TOUCH_Exec() to return the measurement values from the A/D converter for the
+    Y-axis. */
+    return 0;
+}
+/**********************************************************************************************************************
+ * End of function GUI_TOUCH_X_MeasureY
+ *********************************************************************************************************************/
+#endif /* EMWIN_USE_TOUCH == 1 */

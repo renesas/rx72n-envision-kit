@@ -1,0 +1,14 @@
+<!DOCTYPE emWin_AppWizard_Project_File>
+<Project>
+  xSizeDisplay=480
+  ySizeDisplay=272
+  ColorConv=GUICC_M565
+  LastSavedWith=1.24_6.22
+  BSP=
+  ManageTextExt=0
+  ShowMissingCharacters=1
+  EnableBiDi=0
+  EnableThai=0
+  EnableFocus=0
+  MultibufEnable=0
+</Project>

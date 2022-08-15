@@ -1,0 +1,4 @@
+C:/git/rx72n-envision-kit/projects/renesas/rx72n_envision_kit/e2studio/aws_demos/aw/Source/APPW_MainTask.c
+C:/git/rx72n-envision-kit/projects/renesas/rx72n_envision_kit/e2studio/aws_demos/aw/Source/Generated/Resource.h
+C:/git/rx72n-envision-kit/projects/renesas/rx72n_envision_kit/e2studio/aws_demos/aw/Source/Generated/Resource.c
+C:/git/rx72n-envision-kit/projects/renesas/rx72n_envision_kit/e2studio/aws_demos/aw/Source/Generated/APPWConf.c

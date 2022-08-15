@@ -144,12 +144,11 @@
           <Category Name="r_drw2d_rx">
             <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_drw2d_rx\ReadMe.txt</Path>
             <Category Name="doc">
-              <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_drw2d_rx\doc\License.txt</Path>
               <Category Name="en">
-                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_drw2d_rx\doc\en\r01an5373ej0110-rx-drw2d.pdf</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_drw2d_rx\doc\en\r01an5373ej0111-rx-drw2d.pdf</Path>
               </Category>
               <Category Name="ja">
-                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_drw2d_rx\doc\ja\r01an5373jj0110-rx-drw2d.pdf</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_drw2d_rx\doc\ja\r01an5373jj0111-rx-drw2d.pdf</Path>
               </Category>
             </Category>
             <Category Name="inc">
@@ -228,12 +227,29 @@
             </Category>
           </Category>
           <Category Name="r_emwin_rx">
+            <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\r_emwin_rx_if.h</Path>
+            <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\readme.txt</Path>
             <Category Name="doc">
-              <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\doc\License.txt</Path>
-              <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\doc\UM03001_emWin5.pdf</Path>
+              <Category Name="Training">
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\doc\Training\emWin_Training.pdf</Path>
+              </Category>
+              <Category Name="emWin_doc">
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\doc\emWin_doc\AN03001_emWinMigrationV4V5.pdf</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\doc\emWin_doc\AN03002_Custom_Widget_Type.pdf</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\doc\emWin_doc\HowTo_RunSimulationUnderVS2015_2017.txt</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\doc\emWin_doc\License_GUI-00678.txt</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\doc\emWin_doc\UM03001_emWin.pdf</Path>
+              </Category>
+              <Category Name="en">
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\doc\en\r01an5983ej0100-rx-emwin.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\doc\ja\r01an5983jj0100-rx-emwin.pdf</Path>
+              </Category>
             </Category>
             <Category Name="lib">
               <Category Name="Config">
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\Config\APPW_X_NoFS.c</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\Config\GUIConf.c</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\Config\GUIConf.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\Config\GUI_X_Ex.c</Path>
@@ -243,6 +259,7 @@
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\Config\PIDConf.h</Path>
               </Category>
               <Category Name="GUI">
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\AppWizard.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\BUTTON.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\BUTTON_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\CALENDAR.h</Path>
@@ -258,24 +275,13 @@
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\EDIT_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\FRAMEWIN.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\FRAMEWIN_Private.h</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GAUGE.h</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GAUGE_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GRAPH.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GRAPH_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUI.h</Path>
-                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIDRV_DCache.h</Path>
-                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIDRV_DCache_Private.h</Path>
-                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIDRV_Dist.h</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIDRV_FlexColor.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIDRV_Lin.h</Path>
-                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIDRV_Lin_Opt_16.h</Path>
-                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIDRV_Lin_Opt_24.h</Path>
-                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIDRV_Lin_Opt_32.h</Path>
-                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIDRV_Lin_Opt_8.h</Path>
-                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIDRV_Lin_Private.h</Path>
-                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIDRV_NoOpt_1_8.h</Path>
-                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIDRV_Template.h</Path>
-                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIDRV_TemplateI.h</Path>
-                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIDRV_TemplateI_Private.h</Path>
-                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIMTDRV_TangoC32.h</Path>
-                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUITDRV_ADS7846.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUI_ARRAY.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUI_ARRAY_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUI_BMP_Private.h</Path>
@@ -288,6 +294,7 @@
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUI_JPEG_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUI_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUI_SPRITE_Private.h</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUI_SPY_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUI_SetOrientation.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUI_SetOrientationCX.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUI_Type.h</Path>
@@ -303,6 +310,8 @@
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\IMAGE.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\IMAGE_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\IP_FS.h</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\KEYBOARD.h</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\KEYBOARD_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\KNOB.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\KNOB_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\LCD.h</Path>
@@ -320,10 +329,13 @@
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\MENU_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\MESSAGEBOX.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\MULTIEDIT.h</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\MULTIEDIT_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\MULTIPAGE.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\MULTIPAGE_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\PROGBAR.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\PROGBAR_Private.h</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\QRCODE.h</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\QRCODE_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\RADIO.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\RADIO_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\ROTARY.h</Path>
@@ -337,6 +349,8 @@
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\SPINBOX_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\SWIPELIST.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\SWIPELIST_Private.h</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\SWITCH.h</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\SWITCH_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\TEXT.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\TEXT_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\TREEVIEW.h</Path>
@@ -350,6 +364,15 @@
             </Category>
             <Category Name="ref">
               <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\ref\r_emwin_rx_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\src\r_emwin_rx_if.c</Path>
+              <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\src\r_emwin_rx_lcdif.c</Path>
+              <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\src\r_emwin_rx_pidif.c</Path>
+              <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\src\r_emwin_rx_private.h</Path>
+            </Category>
+            <Category Name="tool">
+              <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\tool\License.txt</Path>
             </Category>
           </Category>
           <Category Name="r_flash_spi">
@@ -396,10 +419,10 @@
             <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_glcdc_rx\readme.txt</Path>
             <Category Name="doc">
               <Category Name="en">
-                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_glcdc_rx\doc\en\r01an3609ej0130-rx-lcd.pdf</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_glcdc_rx\doc\en\r01an3609ej0150-rx-lcd.pdf</Path>
               </Category>
               <Category Name="ja">
-                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_glcdc_rx\doc\ja\r01an3609jj0130-rx-lcd.pdf</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_glcdc_rx\doc\ja\r01an3609jj0150-rx-lcd.pdf</Path>
               </Category>
             </Category>
             <Category Name="ref">
@@ -796,6 +819,162 @@
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_hmsc\src\inc\r_usb_hmsc.h</Path>
               </Category>
             </Category>
+          </Category>
+        </Category>
+      </Category>
+      <Category Name="aw">
+        <Path>aw\FileList.txt</Path>
+        <Category Name="Simulation">
+          <Category Name="Config">
+            <Path>aw\Simulation\Config\APPW_X_WIN32.c</Path>
+            <Path>aw\Simulation\Config\GUIConf.c</Path>
+            <Path>aw\Simulation\Config\GUIConf.h</Path>
+            <Path>aw\Simulation\Config\GUI_SIM_Win32.h</Path>
+            <Path>aw\Simulation\Config\LCDConf.c</Path>
+            <Path>aw\Simulation\Config\LCDConf.h</Path>
+            <Path>aw\Simulation\Config\SIMConf.c</Path>
+          </Category>
+          <Category Name="GUI_Lib">
+            <Path>aw\Simulation\GUI_Lib\AppWizard.h</Path>
+            <Path>aw\Simulation\GUI_Lib\BUTTON.h</Path>
+            <Path>aw\Simulation\GUI_Lib\BUTTON_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\CALENDAR.h</Path>
+            <Path>aw\Simulation\GUI_Lib\CHECKBOX.h</Path>
+            <Path>aw\Simulation\GUI_Lib\CHECKBOX_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\CHOOSECOLOR.h</Path>
+            <Path>aw\Simulation\GUI_Lib\CHOOSEFILE.h</Path>
+            <Path>aw\Simulation\GUI_Lib\DIALOG.h</Path>
+            <Path>aw\Simulation\GUI_Lib\DIALOG_Type.h</Path>
+            <Path>aw\Simulation\GUI_Lib\DROPDOWN.h</Path>
+            <Path>aw\Simulation\GUI_Lib\DROPDOWN_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\EDIT.h</Path>
+            <Path>aw\Simulation\GUI_Lib\EDIT_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\FRAMEWIN.h</Path>
+            <Path>aw\Simulation\GUI_Lib\FRAMEWIN_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GAUGE.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GAUGE_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GRAPH.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GRAPH_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_BitPlains.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_FlexColor.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_FlexColor_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_Lin.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_Null.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13513.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13517.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13748.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13781.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13L01.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13L02.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13L04.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D15G00.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_SH_MEM.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_SLin.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_SLinEPD.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_SLinEPD_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_SPage.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_SPage_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_SSD1322.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_SSD1926.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_ST7591_DCache.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_TemplateI.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_UC1698G.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_Win32.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_ARRAY.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_ARRAY_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_BMP_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_ConfDefaults.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_Debug.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_FontIntern.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_GCache_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_GIF_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_HOOK.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_JPEG_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_SPRITE_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_SPY_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_SetOrientation.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_SetOrientationCX.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_Type.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_VNC.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_Version.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI__BiDi2_Brackets_800.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI__BiDi2_Types_800.h</Path>
+            <Path>aw\Simulation\GUI_Lib\Global.h</Path>
+            <Path>aw\Simulation\GUI_Lib\HEADER.h</Path>
+            <Path>aw\Simulation\GUI_Lib\HEADER_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\ICONVIEW.h</Path>
+            <Path>aw\Simulation\GUI_Lib\ICONVIEW_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\IMAGE.h</Path>
+            <Path>aw\Simulation\GUI_Lib\IMAGE_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\IP_FS.h</Path>
+            <Path>aw\Simulation\GUI_Lib\KEYBOARD.h</Path>
+            <Path>aw\Simulation\GUI_Lib\KEYBOARD_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\KNOB.h</Path>
+            <Path>aw\Simulation\GUI_Lib\KNOB_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LCD.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LCD_ConfDefaults.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LCD_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LCD_Protected.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LCD_SIM.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LISTBOX.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LISTBOX_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LISTVIEW.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LISTVIEW_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LISTWHEEL.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LISTWHEEL_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\MENU.h</Path>
+            <Path>aw\Simulation\GUI_Lib\MENU_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\MESSAGEBOX.h</Path>
+            <Path>aw\Simulation\GUI_Lib\MULTIEDIT.h</Path>
+            <Path>aw\Simulation\GUI_Lib\MULTIEDIT_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\MULTIPAGE.h</Path>
+            <Path>aw\Simulation\GUI_Lib\MULTIPAGE_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\PROGBAR.h</Path>
+            <Path>aw\Simulation\GUI_Lib\PROGBAR_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\QRCODE.h</Path>
+            <Path>aw\Simulation\GUI_Lib\QRCODE_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\RADIO.h</Path>
+            <Path>aw\Simulation\GUI_Lib\RADIO_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\ROTARY.h</Path>
+            <Path>aw\Simulation\GUI_Lib\ROTARY_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SCROLLBAR.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SCROLLBAR_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SEGGER.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SLIDER.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SLIDER_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SPINBOX.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SPINBOX_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SWIPELIST.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SWIPELIST_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SWITCH.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SWITCH_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\TEXT.h</Path>
+            <Path>aw\Simulation\GUI_Lib\TEXT_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\TREEVIEW.h</Path>
+            <Path>aw\Simulation\GUI_Lib\TREEVIEW_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\WIDGET.h</Path>
+            <Path>aw\Simulation\GUI_Lib\WINDOW_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\WM.h</Path>
+            <Path>aw\Simulation\GUI_Lib\WM_GUI.h</Path>
+            <Path>aw\Simulation\GUI_Lib\WM_Intern.h</Path>
+          </Category>
+          <Category Name="Simulation">
+            <Path>aw\Simulation\Simulation\GUI_SIM_Win32.h</Path>
+            <Path>aw\Simulation\Simulation\WinMain.c</Path>
+          </Category>
+        </Category>
+        <Category Name="Source">
+          <Path>aw\Source\APPW_MainTask.c</Path>
+          <Category Name="CustomCode">
+            <Path>aw\Source\CustomCode\Application.c</Path>
+            <Path>aw\Source\CustomCode\Application.h</Path>
+          </Category>
+          <Category Name="Generated">
+            <Path>aw\Source\Generated\APPWConf.c</Path>
+            <Path>aw\Source\Generated\Resource.c</Path>
+            <Path>aw\Source\Generated\Resource.h</Path>
           </Category>
         </Category>
       </Category>
@@ -1550,6 +1729,11 @@
           </Category>
         </Category>
       </Category>
+      <Category Name="src">
+        <Path>src\qe_emwin_config.h</Path>
+        <Path>src\r_image_config.h</Path>
+        <Path>src\r_lcd_timing.h</Path>
+      </Category>
       <Category Name="vendors">
         <Category Name="renesas">
           <Category Name="amazon_freertos_common">
@@ -2015,6 +2199,7 @@
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\device_shadow_for_aws\source\include"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\device_defender_for_aws\source\include"</Option>
           <Option>-include="${ProjDirPath}\generate"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace5\${ProjName}\src"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\general"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_pincfg"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_config"</Option>
@@ -2026,8 +2211,6 @@
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_sdhi_rx"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_sys_time_rx"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_sys_time_rx\src"</Option>
-          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\Config"</Option>
-          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_dmaca_rx"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_dmaca_rx\src"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_s12ad_rx"</Option>
@@ -2045,12 +2228,10 @@
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_basic"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_basic\src\driver\inc"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_basic\src\hw\inc"</Option>
-          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_glcdc_rx"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_cmt_rx"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_cmt_rx\src"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_hmsc"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_hmsc\src\inc"</Option>
-          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_drw2d_rx\inc\tes"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_sdc_sdmem_rx"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_flash_spi"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_memdrv_rx"</Option>
@@ -2063,14 +2244,20 @@
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_tfat_driver_rx\src"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_tfat_rx"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_tfat_rx\lib"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_drw2d_rx\inc\tes"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\Config"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_glcdc_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace5\${ProjName}\aw\Source"</Option>
           <Option>-preinclude="${ProjDirPath}\..\..\..\..\..\vendors\renesas\amazon_freertos_common\compiler_support\ccrx\implicitlyinclude.h"</Option>
-          <Option>-define=MBEDTLS_CONFIG_FILE="&lt;aws_mbedtls_config.h&gt;",CONFIG_MEDTLS_USE_AFR_MEMORY</Option>
+          <Option>-define=MBEDTLS_CONFIG_FILE="&lt;aws_mbedtls_config.h&gt;",CONFIG_MEDTLS_USE_AFR_MEMORY,QE_DISPLAY_CONFIGURATION,QE_EMWIN_CONFIGURATION</Option>
           <Option>-asmopt=-bank</Option>
           <Option>-utf8</Option>
           <Option>-nomessage=11174,21644,20010,23034,23035,20177,23033</Option>
           <Option>-debug</Option>
+          <Option>-nostuff=C</Option>
           <Option>-outcode=utf8</Option>
-          <Option>-optimize=0</Option>
           <Option>-tfu=intrinsic</Option>
           <Option>-nologo</Option>
           <Option>-lang=c99</Option>
@@ -2095,8 +2282,6 @@
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_sdhi_rx"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_sys_time_rx"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_sys_time_rx\src"</Option>
-          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\Config"</Option>
-          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_dmaca_rx"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_dmaca_rx\src"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_s12ad_rx"</Option>
@@ -2114,12 +2299,10 @@
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_basic"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_basic\src\driver\inc"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_basic\src\hw\inc"</Option>
-          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_glcdc_rx"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_cmt_rx"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_cmt_rx\src"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_hmsc"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_hmsc\src\inc"</Option>
-          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_drw2d_rx\inc\tes"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_sdc_sdmem_rx"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_flash_spi"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_memdrv_rx"</Option>
@@ -2132,6 +2315,11 @@
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_tfat_driver_rx\src"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_tfat_rx"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_tfat_rx\lib"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_drw2d_rx\inc\tes"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\Config"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_glcdc_rx"</Option>
           <Option>-utf8</Option>
           <Option>-bank</Option>
           <Option>-debug</Option>
@@ -2150,7 +2338,7 @@
           <Option>-cpu=RAM=00000000-0007ffff,FIX=00080000-00083fff,FIX=00086000-00087fff,FIX=00088000-0009ffff,FIX=000a0000-000a3fff,RAM=000a4000-000a5fff,FIX=000a6000-000bffff,FIX=000c0000-000dffff,FIX=000e0000-000fffff,ROM=00100000-00107fff,FIX=007fc000-007fcfff,FIX=007fe000-007fffff,RAM=00800000-0087ffff,RAM=00ff8000-00ffffff,RAM=fe7f5d00-fe7f5d7f,RAM=fe7f7d70-fe7f7d9f,ROM=ffc00000-ffffffff</Option>
           <Option>-nologo</Option>
           <Option>-library="${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_tfat_rx/lib/tfat_rx600_little.lib"</Option>
-          <Option>-library="${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_emwin_rx/lib/GUI/emWinLib.lib"</Option>
+          <Option>-library="${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_emwin_rx/lib/GUI/emWinLib_CCRX.lib"</Option>
           <Option>-start=B_ETHERNET_BUFFERS_1,B_RX_DESC_1,B_TX_DESC_1,R,R_1,R_2,R_8,B_8,B,B_1,B_2,RPFRAM2*,SU,SI/0,C_BOOTLOADER_KEY_STORAGE*/0100000,C_PKCS11_STORAGE*/0100800,C_SYSTEM_CONFIG*/0104800,C_1,C_2,C,C_8,C$*,D*,W*,L,P*/0FFE00300,EXCEPTVECT/0FFFBFF80,RESETVECT/0FFFBFFFC</Option>
           <Option>-end</Option>
           <Option>-output="${ProjName}.mot"</Option>
@@ -2237,10 +2425,14 @@
           <Path>HardwareDebug\dave_utility.obj</Path>
           <Path>HardwareDebug\dave_viewport.obj</Path>
           <Path>HardwareDebug\dave_wedge.obj</Path>
+          <Path>HardwareDebug\APPW_X_NoFS.obj</Path>
           <Path>HardwareDebug\GUIConf.obj</Path>
           <Path>HardwareDebug\GUI_X_Ex.obj</Path>
           <Path>HardwareDebug\LCDConf.obj</Path>
           <Path>HardwareDebug\PIDConf.obj</Path>
+          <Path>HardwareDebug\r_emwin_rx_if.obj</Path>
+          <Path>HardwareDebug\r_emwin_rx_lcdif.obj</Path>
+          <Path>HardwareDebug\r_emwin_rx_pidif.obj</Path>
           <Path>HardwareDebug\r_flash_spi_dev_port.obj</Path>
           <Path>HardwareDebug\r_flash_spi_dev_port.obj</Path>
           <Path>HardwareDebug\r_flash_spi_drvif.obj</Path>
@@ -2337,6 +2529,10 @@
           <Path>HardwareDebug\r_usb_hmsc_api.obj</Path>
           <Path>HardwareDebug\r_usb_hmsc_driver.obj</Path>
           <Path>HardwareDebug\r_usb_hstorage_driver.obj</Path>
+          <Path>HardwareDebug\APPW_MainTask.obj</Path>
+          <Path>HardwareDebug\Application.obj</Path>
+          <Path>HardwareDebug\APPWConf.obj</Path>
+          <Path>HardwareDebug\Resource.obj</Path>
           <Path>HardwareDebug\mqtt_demo_helpers.obj</Path>
           <Path>HardwareDebug\mqtt_subscription_manager.obj</Path>
           <Path>HardwareDebug\ota_application_version.obj</Path>
@@ -2600,6 +2796,11 @@
           <Path>HardwareDebug\r_sci_rx72n_data.obj</Path>
           <Path>HardwareDebug\aws_demos.lib</Path>
         </LinkOrder>
+        <NoTargetFile Target="aw\Simulation\Config\APPW_X_WIN32.c"/>
+        <NoTargetFile Target="aw\Simulation\Config\GUIConf.c"/>
+        <NoTargetFile Target="aw\Simulation\Config\LCDConf.c"/>
+        <NoTargetFile Target="aw\Simulation\Config\SIMConf.c"/>
+        <NoTargetFile Target="aw\Simulation\Simulation\WinMain.c"/>
         <NoTargetFile Target="AWS_IOT_MCU_ROOT\demos\common\http_demo_helpers\http_demo_utils.c"/>
         <NoTargetFile Target="AWS_IOT_MCU_ROOT\demos\coreHTTP\http_demo_mutual_auth.c"/>
         <NoTargetFile Target="AWS_IOT_MCU_ROOT\demos\coreHTTP\http_demo_s3_download.c"/>
@@ -2714,6 +2915,7 @@
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\device_shadow_for_aws\source\include"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\device_defender_for_aws\source\include"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\generate"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace5\${ProjName}\src"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\general"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_pincfg"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_config"</IncludePathForC>
@@ -2725,8 +2927,6 @@
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_sdhi_rx"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_sys_time_rx"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_sys_time_rx\src"</IncludePathForC>
-          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\Config"</IncludePathForC>
-          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_dmaca_rx"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_dmaca_rx\src"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_s12ad_rx"</IncludePathForC>
@@ -2744,12 +2944,10 @@
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_basic"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_basic\src\driver\inc"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_basic\src\hw\inc"</IncludePathForC>
-          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_glcdc_rx"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_cmt_rx"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_cmt_rx\src"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_hmsc"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_hmsc\src\inc"</IncludePathForC>
-          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_drw2d_rx\inc\tes"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_sdc_sdmem_rx"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_flash_spi"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_memdrv_rx"</IncludePathForC>
@@ -2762,6 +2960,12 @@
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_tfat_driver_rx\src"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_tfat_rx"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_tfat_rx\lib"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_drw2d_rx\inc\tes"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\Config"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_glcdc_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace5\${ProjName}\aw\Source"</IncludePathForC>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_tests\src\smc_gen\r_pincfg"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_bsp"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\general"</IncludePathForAsm>
@@ -2775,8 +2979,6 @@
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_sdhi_rx"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_sys_time_rx"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_sys_time_rx\src"</IncludePathForAsm>
-          <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\Config"</IncludePathForAsm>
-          <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_dmaca_rx"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_dmaca_rx\src"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_s12ad_rx"</IncludePathForAsm>
@@ -2794,12 +2996,10 @@
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_basic"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_basic\src\driver\inc"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_basic\src\hw\inc"</IncludePathForAsm>
-          <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_glcdc_rx"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_cmt_rx"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_cmt_rx\src"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_hmsc"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_usb_hmsc\src\inc"</IncludePathForAsm>
-          <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_drw2d_rx\inc\tes"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_sdc_sdmem_rx"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_flash_spi"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_memdrv_rx"</IncludePathForAsm>
@@ -2812,8 +3012,15 @@
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_tfat_driver_rx\src"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_tfat_rx"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_tfat_rx\lib"</IncludePathForAsm>
+          <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_drw2d_rx\inc\tes"</IncludePathForAsm>
+          <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx"</IncludePathForAsm>
+          <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\Config"</IncludePathForAsm>
+          <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI"</IncludePathForAsm>
+          <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_glcdc_rx"</IncludePathForAsm>
           <MacroForC>MBEDTLS_CONFIG_FILE="&lt;aws_mbedtls_config.h&gt;"</MacroForC>
           <MacroForC>CONFIG_MEDTLS_USE_AFR_MEMORY</MacroForC>
+          <MacroForC>QE_DISPLAY_CONFIGURATION</MacroForC>
+          <MacroForC>QE_EMWIN_CONFIGURATION</MacroForC>
         </CommonOptions>
       </BuildMode>
     </BuildOptions>

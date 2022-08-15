@@ -41,6 +41,7 @@
 /* for using Segger emWin */
 #include "GUI.h"
 #include "DIALOG.h"
+#include "Generated/Resource.h"
 
 /* for using Amazon FreeRTOS */
 #include "FreeRTOS.h"
@@ -140,9 +141,14 @@ void gui_task( void * pvParameters )
 	static uint32_t counter_10ms = 0, counter_100ms = 0;
 	TASK_INFO *task_info = (TASK_INFO *)pvParameters;
 
+    /* GUI initialization */
+	APPW_X_Setup();
+	APPW_Init(APPW_PROJECT_PATH);
+	APPW_CreateRoot(APPW_INITIAL_SCREEN, WM_HBKWIN);
+
 	/* GUI initialize complete */
 	gui_initialize_complete_flag = 1;
-
+#if 0
 	/* generate frame window */
 	demo_window_free_list(demo_window_list_head);
 	task_info->hWin_frame = CreateFrameWindow();
@@ -167,7 +173,7 @@ void gui_task( void * pvParameters )
 
 	task_info->hWin_title_logo = CreateTitleLogoWindow();
 	demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_title_logo, task_info->hWin_frame, DEMO_NAME_TITLE_LOGO);
-
+#endif
 	/* get each GUI IDs */
 	prev_button_id = get_prev_button_id();
 	next_button_id = get_next_button_id();

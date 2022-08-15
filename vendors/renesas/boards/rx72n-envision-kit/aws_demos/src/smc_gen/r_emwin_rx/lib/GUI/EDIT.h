@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2021  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.50 - Graphical user interface for embedded applications **
+** emWin V6.22 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only  be used  in accordance  with  a license  and should  not be  re-
@@ -20,11 +20,11 @@ Licensor:                 SEGGER Software GmbH
 Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
 Licensed SEGGER software: emWin
 License number:           GUI-00678
-License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
-License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
+License model:            License and Service Agreement, signed December 16th, 2016, Amendment No. 1 signed May 16th, 2019 and Amendment No. 2, signed September 20th, 2021 by Carsten Jauch, Managing Director
+License valid for:        RX (based on RX-V1, RX-V2 or RX-V3)
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2016-12-22 - 2019-12-31
+SUA period:               2016-12-22 - 2022-12-31
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : EDIT.h
@@ -69,19 +69,30 @@ Purpose     : EDIT include
 #define EDIT_CF_TOP     GUI_TA_TOP
 #define EDIT_CF_BOTTOM  GUI_TA_BOTTOM
 
-//
-// Color indices
-//
-#define EDIT_CI_DISABLED 0
-#define EDIT_CI_ENABLED  1
-#define EDIT_CI_CURSOR   2
+/*********************************************************************
+*
+*       EDIT color indexes
+*
+*  Description
+*    Color indexes for EDIT widget.
+*/
+#define EDIT_CI_DISABLED 0    // Color index for the disabled state.
+#define EDIT_CI_ENABLED  1    // Color index for the enabled state.
+#define EDIT_CI_CURSOR   2    // Color to be used for the cursor. This is only taken into account if the cursor is not in inversion mode (\c{EDIT_EnableInversion(0)}).
 
-//
-// Signed or normal mode
-//
-#define GUI_EDIT_NORMAL                  (0 << 0)
-#define GUI_EDIT_SIGNED                  (1 << 0)
-#define GUI_EDIT_SUPPRESS_LEADING_ZEROES (1 << 1)
+/*********************************************************************
+*
+*       EDIT flags
+*
+*  Description
+*    These flags are used if the EDIT widget is in decimal or float mode.
+*    This can be activated by calling EDIT_SetDecMode() or EDIT_SetFloatMode().
+*    These flags are OR-combinable.
+*/
+#define GUI_EDIT_NORMAL                  (0 << 0)    // Edit in normal mode. A sign is displayed only if the value is negative.
+#define GUI_EDIT_SIGNED                  (1 << 0)    // "+" and "-" sign is displayed.
+#define GUI_EDIT_SUPPRESS_LEADING_ZEROES (1 << 1)    // Does not show leading zeroes.
+/* emDoc mark */
 
 //
 // Cursor coloring
@@ -89,6 +100,10 @@ Purpose     : EDIT include
 #define GUI_EDIT_SHOWCURSOR              (1 << 2)
 #define GUI_EDIT_CUSTCOLORMODE           (1 << 3)
 #define GUI_EDIT_CURSORBLINK             (1 << 4)
+//
+// Automatic text scrolling
+//
+#define GUI_EDIT_AUTOSCROLL              (1 << 5)
 
 //
 // Edit modes
@@ -157,9 +172,12 @@ GUI_COLOR        EDIT_GetDefaultTextColor(unsigned int Index);
 // Methods changing properties
 //
 void EDIT_AddKey           (EDIT_Handle hObj, int Key);
+void EDIT_EnableAutoScroll (EDIT_Handle hObj, int OnOff);
 void EDIT_EnableBlink      (EDIT_Handle hObj, int Period, int OnOff);
 GUI_COLOR EDIT_GetBkColor  (EDIT_Handle hObj, unsigned int Index);
 void EDIT_SetBkColor       (EDIT_Handle hObj, unsigned int Index, GUI_COLOR color);
+void EDIT_SetBorderSize    (EDIT_Handle hObj, int Border);
+int  EDIT_GetBorderSize    (EDIT_Handle hObj);
 void EDIT_SetCursorAtChar  (EDIT_Handle hObj, int Pos);
 void EDIT_SetCursorAtPixel (EDIT_Handle hObj, int xPos);
 void EDIT_SetFont          (EDIT_Handle hObj, const GUI_FONT * pFont);
@@ -177,15 +195,20 @@ int  EDIT_EnableInversion  (EDIT_Handle hObj, int OnOff);
 //
 // Get/Set user input
 //
+U16   EDIT_GetCharAtPixel    (EDIT_Handle hObj, int x, int y, int * pIndex);
 int   EDIT_GetCursorCharPos  (EDIT_Handle hObj);
 void  EDIT_GetCursorPixelPos (EDIT_Handle hObj, int * pxPos, int * pyPos);
 float EDIT_GetFloatValue     (EDIT_Handle hObj);
 const GUI_FONT * EDIT_GetFont(EDIT_Handle hObj);
+int   EDIT_GetMaxLen         (EDIT_Handle hObj);
+void  EDIT_GetMinMax         (EDIT_Handle hObj, int * pMin, int * pMax);
 int   EDIT_GetNumChars       (EDIT_Handle hObj);
 void  EDIT_GetText           (EDIT_Handle hObj, char * sDest, int MaxLen);
 int   EDIT_GetTextAlign      (EDIT_Handle hObj);
 I32   EDIT_GetValue          (EDIT_Handle hObj);
 void  EDIT_SetFloatValue     (EDIT_Handle hObj, float Value);
+void  EDIT_GetSel            (EDIT_Handle hObj, int * pFirstChar, int * pLastChar);
+void  EDIT_GetSelText        (EDIT_Handle hObj, char * sDest, int MaxLen);
 int   EDIT_GetUserData       (EDIT_Handle hObj, void * pDest, int NumBytes);
 void  EDIT_SetValue          (EDIT_Handle hObj, I32 Value);
 
