@@ -87,7 +87,7 @@ typedef struct _task_info
 
 	/* system flag */
 	volatile uint32_t gui_initialize_complete_flag;
-	volatile uint32_t first_touch_complete_flag;
+
 }TASK_INFO;
 
 #define DATAFLASH_LABEL_NAME_TIMEZONE "timezone"

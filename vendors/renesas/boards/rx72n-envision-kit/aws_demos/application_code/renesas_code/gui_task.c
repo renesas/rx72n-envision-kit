@@ -175,17 +175,6 @@ void gui_task( void * pvParameters )
 	prev_button_id = get_prev_button_id();
 	next_button_id = get_next_button_id();
 
-	/* wait until first touch screen */
-	GUI_Delay(10);
-	vTaskDelay(1000);	/* this wait needs for ignoring touch event at APPW_NOTIFICATION_PIDPRESSED in ID_SCREEN_00.c when initializing. */
-
-	while(task_info->first_touch_complete_flag)
-	{
-		APPW_Exec();
-		GUI_Delay(10);
-		vTaskDelay(10);
-	}
-
 	/* notify completing GUI initialization and first touch to main task */
 	xTaskNotifyGive(task_info->main_task_handle);
 

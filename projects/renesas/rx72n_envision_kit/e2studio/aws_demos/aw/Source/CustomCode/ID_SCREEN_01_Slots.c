@@ -46,7 +46,6 @@ void ID_SCREEN_01__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START(APP
   GUI_USE_PARA(pResult);
 
   TASK_INFO *task_info = get_task_info();
-  task_info->first_touch_complete_flag = 1;
 }
 
 /*********************************************************************
