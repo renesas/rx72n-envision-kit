@@ -195,7 +195,7 @@ void sdcard_task( void * pvParameters )
             GUI_Delay(1);
         }
 
-        vTaskDelay(1);
+        vTaskDelay(1000);
     }
 }
 
