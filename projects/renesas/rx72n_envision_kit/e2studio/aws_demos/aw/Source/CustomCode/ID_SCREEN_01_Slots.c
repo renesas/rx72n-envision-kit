@@ -73,6 +73,19 @@ void ID_SCREEN_01__ID_TIMER_00__APPW_NOTIFICATION_TIMER(APPW_ACTION_ITEM * pActi
   sprintf(string, "IP: %d.%d.%d.%d", task_info->ip_address[0], task_info->ip_address[1], task_info->ip_address[2], task_info->ip_address[3]);
   TEXT_SetText(hItem, string);
 
+  /* update sd status info */
+  hItem = WM_GetDialogItem(hScreen, ID_TEXT_03_SD);
+  if(task_info->sd_status == 1)
+  {
+	  sprintf(string, "SD: attach");
+
+  }
+  else if(task_info->sd_status == 0)
+  {
+	  sprintf(string, "SD: detach");
+  }
+  TEXT_SetText(hItem, string);
+
   /* update time info */
   hItem = WM_GetDialogItem(hScreen, ID_TEXT_04_TIME);
   sprintf(string, "Time: %02d/%02d/%04d %02d:%02d:%02d", task_info->sys_time.month, task_info->sys_time.day, task_info->sys_time.year, task_info->sys_time.hour, task_info->sys_time.min, task_info->sys_time.sec);

@@ -119,7 +119,7 @@ void sdcard_task( void * pvParameters )
             previous_sdc_sd_card_detection = sdc_sd_card_detection;
             if(SDC_SD_SUCCESS == sdc_sd_card_detection)
             {
-                display_update_sd_stat(task_info->hWin_frame, 0);	/* 0 means attach */
+                task_info->sd_status = 1;	/* 1 means attach */
                 r_sdc_sdmem_demo_power_on(g_sdc_sd_card_no);
                 R_SDHI_PinSetTransfer();
                 R_SDC_SD_IntCallback(g_sdc_sd_card_no, r_sdc_sd_callback);
@@ -135,7 +135,7 @@ void sdcard_task( void * pvParameters )
             }
             else
             {
-                display_update_sd_stat(task_info->hWin_frame, 1);	/* 1 means detach */
+                task_info->sd_status = 0;	/* 0 means detach */
                 previous_sdc_sd_card_detection = sdc_sd_card_detection;
                 if(SDC_SD_SUCCESS != sdc_sd_card_detection)
                 {
