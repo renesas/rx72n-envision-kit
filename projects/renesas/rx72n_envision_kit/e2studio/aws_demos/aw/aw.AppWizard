@@ -747,32 +747,18 @@
       Slot=ID_SCREEN_01__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START
       Flags=0
     </START>
-    <SETTEXT>
+    <NULL>
       RootId=6145
       IdSrc=ID_TIMER_00
       NCode=APPW_NOTIFICATION_TIMER
-      IdDst=ID_TEXT_01_CPU_LOAD
-      Slot=ID_SCREEN_01__ID_TIMER_00__APPW_NOTIFICATION_TIMER__ID_TEXT_01__APPW_JOB_SETTEXT
+      Slot=ID_SCREEN_01__ID_TIMER_00__APPW_NOTIFICATION_TIMER
+      Comment=Update each info on frame
       Flags=0
-      <Para>
-        Text=
-      </Para>
-    </SETTEXT>
-    <SETTEXT>
-      RootId=6145
-      IdSrc=ID_TIMER_00
-      NCode=APPW_NOTIFICATION_TIMER
-      IdDst=ID_TEXT_02_IP
-      Slot=ID_SCREEN_01__ID_TIMER_00__APPW_NOTIFICATION_TIMER__ID_TEXT_02_IP__APPW_JOB_SETTEXT
-      Flags=0
-      <Para>
-        Text=
-      </Para>
-    </SETTEXT>
+    </NULL>
   </Interactions>
   <Selection>
     Root=ID_SCREEN_01
-    Object=2048
+    Object=2059
   </Selection>
   <Terms>
   </Terms>
