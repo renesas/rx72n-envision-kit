@@ -8,4 +8,4 @@ IP: 0.0.0.0
 SD: detach
 USB: N/A
 Time: 00/00/0000 00:00:00
-Ethernet: disconnect
+100.00 fps

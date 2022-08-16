@@ -60,6 +60,8 @@ Typedef definitions
 #define DEMO_NAME_SERIAL_TERMINAL "Serial Terminal"
 #define DEMO_NAME_TASK_MANAGER "Task Manager"
 
+#define MINIMUM_TIME_TICK_FOR_UPDATE_DISPLAY 10 /* 100fps */
+
 typedef struct _demo_window_list
 {
 	WM_HWIN demo_window_handle;
@@ -185,8 +187,6 @@ void gui_task( void * pvParameters )
 	while(1)
 	{
 		main_10ms_display_update(task_info);
-		APPW_Exec();
-		vTaskDelay(10);
 		counter_10ms++;
 		if(counter_10ms > 10)
 		{
@@ -204,8 +204,34 @@ void gui_task( void * pvParameters )
 
 void main_10ms_display_update(TASK_INFO *task_info)
 {
-	GUI_Exec(); /* Do the background work ... Update windows etc.) */
-//	GUI_X_ExecIdle(); /* Nothing left to do for the moment ... Idle processing */
+	TickType_t before_appw_exec_time_tick = xTaskGetTickCount();
+	APPW_Exec();
+	GUI_Exec();
+	TickType_t after_appw_exec_time_tick = xTaskGetTickCount();
+	if(after_appw_exec_time_tick > before_appw_exec_time_tick)
+	{
+		if( MINIMUM_TIME_TICK_FOR_UPDATE_DISPLAY > (after_appw_exec_time_tick - before_appw_exec_time_tick))
+		{
+			/* >100fps pattern */
+			vTaskDelay(MINIMUM_TIME_TICK_FOR_UPDATE_DISPLAY - (after_appw_exec_time_tick - before_appw_exec_time_tick));
+			task_info->current_fps = 1000 / MINIMUM_TIME_TICK_FOR_UPDATE_DISPLAY;
+		}
+		else
+		{
+			/* <100fps pattern */
+			vTaskDelay(1);
+			task_info->current_fps = (float)((float)1000 / (float)(after_appw_exec_time_tick - before_appw_exec_time_tick));
+		}
+		task_info->history_fps[task_info->history_fps_index++] = task_info->current_fps;
+		if(MAX_HISTORY_FPS_INDEX == task_info->history_fps_index)
+		{
+			task_info->history_fps_index = 0;
+		}
+	}
+	else
+	{
+		/* nothing to do */
+	}
 }
 
 void main_100ms_display_update(TASK_INFO *task_info)
@@ -258,7 +284,7 @@ void main_1s_display_update(TASK_INFO *task_info)
 	uint32_t ip_address;
 	uint32_t number_of_tasks;
 
-	/* get freertos CPU load info */
+	/* get/set freertos CPU load info */
 	number_of_tasks = uxTaskGetNumberOfTasks();
 	stats_buffer = pvPortMalloc(number_of_tasks * sizeof(TaskStatus_t));
 	number_of_tasks = uxTaskGetSystemState(stats_buffer, number_of_tasks, &total_cpu_time);
@@ -275,7 +301,7 @@ void main_1s_display_update(TASK_INFO *task_info)
 	previous_idle_cpu_time = idle_cpu_time;
 	previous_total_cpu_time = total_cpu_time;
 
-	/* get IP address info */
+	/* get/set IP address info */
 	ip_address = FreeRTOS_GetIPAddress();
 #if (__LIT)
 	ip_address_array[3] = (ip_address & 0xff000000) >> 24;
@@ -289,6 +315,14 @@ void main_1s_display_update(TASK_INFO *task_info)
 	ip_address_array[3] = (ip_address & 0x000000ff) >>  0;
 #endif
 	task_info->ip_address = ip_address_array;
+
+	/* get/set FPS averatge info */
+	float tmp_fps = 0;
+	for(int i = 0; i < MAX_HISTORY_FPS_INDEX; i++)
+	{
+		tmp_fps += task_info->history_fps[i];
+	}
+	task_info->average_fps = tmp_fps / MAX_HISTORY_FPS_INDEX;
 
 	vPortFree(stats_buffer);
 }

@@ -77,6 +77,11 @@ void ID_SCREEN_01__ID_TIMER_00__APPW_NOTIFICATION_TIMER(APPW_ACTION_ITEM * pActi
   hItem = WM_GetDialogItem(hScreen, ID_TEXT_04_TIME);
   sprintf(string, "Time: %02d/%02d/%04d %02d:%02d:%02d", task_info->sys_time.month, task_info->sys_time.day, task_info->sys_time.year, task_info->sys_time.hour, task_info->sys_time.min, task_info->sys_time.sec);
   TEXT_SetText(hItem, string);
+
+  /* update fps info */
+  hItem = WM_GetDialogItem(hScreen, ID_TEXT_06_FPS);
+  sprintf(string, "%3.02f fps", task_info->average_fps);
+  TEXT_SetText(hItem, string);
 }
 
 /*************************** End of file ****************************/

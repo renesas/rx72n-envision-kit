@@ -46,6 +46,17 @@
 /* for RX Family FIT */
 #include "r_sys_time_rx_if.h"
 
+#define DATAFLASH_LABEL_NAME_TIMEZONE "timezone"
+#define DATAFLASH_LABEL_NAME_CLIENT_PRIVATE_KEY "client_private_key"
+#define DATAFLASH_LABEL_NAME_CLIENT_CERTIFICATE "client_certificate"
+#define DATAFLASH_LABEL_NAME_IOT_THING_NAME "iot_thing_name"
+#define DATAFLASH_LABEL_NAME_MQTT_BROKER_ENDPOINT "mqtt_broker_endpoint"
+#define DATAFLASH_LABEL_NAME_CODE_SIGNER_CERTIFICATE "code_signer_certificate"
+#define DATAFLASH_LABEL_NAME_TCP_SEND_PERFORMANCE_SERVER_IP_ADDRESS "tcp_send_performance_server_ip_address"
+#define DATAFLASH_LABEL_NAME_TCP_SEND_PERFORMANCE_SERVER_PORT_NUMBER "tcp_send_performance_server_port_number"
+
+#define MAX_HISTORY_FPS_INDEX 300 /* for 3 seconds average */
+
 /**********************************************************************************************************************
 Typedef definitions
 **********************************************************************************************************************/
@@ -85,19 +96,16 @@ typedef struct _task_info
 	/* for IP address info (4bytes array pointer) */
 	uint8_t *ip_address;
 
+	/* for frame per second info */
+	float history_fps[MAX_HISTORY_FPS_INDEX];
+	uint32_t history_fps_index;
+	float current_fps;
+	float average_fps;
+
 	/* system flag */
 	volatile uint32_t gui_initialize_complete_flag;
 
 }TASK_INFO;
-
-#define DATAFLASH_LABEL_NAME_TIMEZONE "timezone"
-#define DATAFLASH_LABEL_NAME_CLIENT_PRIVATE_KEY "client_private_key"
-#define DATAFLASH_LABEL_NAME_CLIENT_CERTIFICATE "client_certificate"
-#define DATAFLASH_LABEL_NAME_IOT_THING_NAME "iot_thing_name"
-#define DATAFLASH_LABEL_NAME_MQTT_BROKER_ENDPOINT "mqtt_broker_endpoint"
-#define DATAFLASH_LABEL_NAME_CODE_SIGNER_CERTIFICATE "code_signer_certificate"
-#define DATAFLASH_LABEL_NAME_TCP_SEND_PERFORMANCE_SERVER_IP_ADDRESS "tcp_send_performance_server_ip_address"
-#define DATAFLASH_LABEL_NAME_TCP_SEND_PERFORMANCE_SERVER_PORT_NUMBER "tcp_send_performance_server_port_number"
 
 extern const char timezone_label[];
 extern const char client_private_key_label[];

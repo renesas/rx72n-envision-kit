@@ -41,7 +41,7 @@
       Text=SD: detach
       Text=USB: N/A
       Text=Time: 00/00/0000 00:00:00
-      Text=Ethernet: disconnect
+      Text=100.00 fps
     </Lang>
   </Text>
   <Variables>
@@ -530,6 +530,41 @@
         Font=Roboto_16_Normal_EXT_AA4.xbf
       </SetFont>
     </Text>
+    <Text>
+      ParentId=2048
+      IdString=ID_TEXT_06_FPS
+      Id=2061
+      IdPrev=0
+      IdPost=0
+      <Dispose>
+        xSize=75
+        ySize=32
+        <X0>
+          Mode=2
+          Off=222
+          Id=0
+        </X0>
+        <Y0>
+          Mode=2
+          Off=-6
+          Id=0
+        </Y0>
+      </Dispose>
+      <SetColor>
+        Color=ffffffff
+      </SetColor>
+      <SetTextAlign>
+        Alignment=13
+        xOff=0
+        yOff=0
+      </SetTextAlign>
+      <SetTextId>
+        Id=10
+      </SetTextId>
+      <SetFont>
+        Font=Roboto_16_Normal_EXT_AA4.xbf
+      </SetFont>
+    </Text>
     <Button>
       ParentId=2048
       IdString=ID_BUTTON_01
@@ -756,10 +791,6 @@
       Flags=0
     </NULL>
   </Interactions>
-  <Selection>
-    Root=ID_SCREEN_01
-    Object=2059
-  </Selection>
   <Terms>
   </Terms>
 </Project>

@@ -30,6 +30,7 @@ Purpose     : Generated file do NOT edit!
 #define ID_TEXT_03_SD       (GUI_ID_USER + 10)
 #define ID_TEXT_04_TIME     (GUI_ID_USER + 11)
 #define ID_TEXT_05_USB      (GUI_ID_USER + 12)
+#define ID_TEXT_06_FPS      (GUI_ID_USER + 13)
 #define ID_BUTTON_01        (GUI_ID_USER + 8)
 #define ID_BUTTON_00        (GUI_ID_USER + 7)
 #define ID_TIMER_00         (GUI_ID_USER + 6)
