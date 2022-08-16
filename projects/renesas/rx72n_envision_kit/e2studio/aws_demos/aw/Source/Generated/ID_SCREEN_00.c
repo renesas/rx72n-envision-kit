@@ -141,12 +141,12 @@ static const APPW_SETUP_ITEM _aSetup[] = {
 */
 static APPW_COND_COMP _aComparison_04[] = {
   { { { APPW_IS_VAR, ID_VAR_00 }, { APPW_IS_VAL, 1 } }, APPW__CompareIsEqual },
-  { { { APPW_IS_VAR, ID_VAR_01 }, { APPW_IS_VAL, 1 } }, APPW__CompareIsEqual },
+  { { { APPW_IS_VAR, ID_VAR_01 }, { APPW_IS_VAL, 2 } }, APPW__CompareIsEqual },
 };
 
 static APPW_COND_COMP _aComparison_05[] = {
   { { { APPW_IS_VAR, ID_VAR_00 }, { APPW_IS_VAL, 1 } }, APPW__CompareIsEqual },
-  { { { APPW_IS_VAR, ID_VAR_01 }, { APPW_IS_VAL, 1 } }, APPW__CompareIsEqual },
+  { { { APPW_IS_VAR, ID_VAR_01 }, { APPW_IS_VAL, 2 } }, APPW__CompareIsEqual },
 };
 
 /*********************************************************************

@@ -21,6 +21,13 @@
       Id=ID_RTEXT_1
       Id=ID_RTEXT_2
       Id=ID_RTEXT_3
+      Id=ID_RTEXT_4
+      Id=ID_RTEXT_5
+      Id=ID_RTEXT_6
+      Id=ID_RTEXT_7
+      Id=ID_RTEXT_8
+      Id=ID_RTEXT_9
+      Id=ID_RTEXT_10
     </Id>
     <Lang>
       Name=language
@@ -28,6 +35,13 @@
       Text=Touch screen to start user program...
       Text=System Information
       Text=CPU Load   0%
+      Text=next
+      Text=back
+      Text=IP: 0.0.0.0
+      Text=SD: detach
+      Text=USB: N/A
+      Text=Time: 00/00/0000 00:00:00
+      Text=Ethernet: disconnect
     </Lang>
   </Text>
   <Variables>
@@ -308,7 +322,7 @@
     </Box>
     <Text>
       ParentId=2048
-      IdString=ID_TEXT_00
+      IdString=ID_TEXT_00_TITLE
       Id=2051
       IdPrev=0
       IdPost=0
@@ -330,7 +344,7 @@
         Color=ffffffff
       </SetColor>
       <SetTextAlign>
-        Alignment=14
+        Alignment=12
         xOff=0
         yOff=0
       </SetTextAlign>
@@ -343,7 +357,7 @@
     </Text>
     <Text>
       ParentId=2048
-      IdString=ID_TEXT_01
+      IdString=ID_TEXT_01_CPU_LOAD
       Id=2053
       IdPrev=0
       IdPost=0
@@ -365,7 +379,7 @@
         Color=ffffffff
       </SetColor>
       <SetTextAlign>
-        Alignment=14
+        Alignment=12
         xOff=0
         yOff=0
       </SetTextAlign>
@@ -376,6 +390,212 @@
         Font=Roboto_16_Normal_EXT_AA4.xbf
       </SetFont>
     </Text>
+    <Text>
+      ParentId=2048
+      IdString=ID_TEXT_02_IP
+      Id=2057
+      IdPrev=0
+      IdPost=0
+      <Dispose>
+        xSize=98
+        ySize=32
+        <X0>
+          Mode=2
+          Off=142
+          Id=0
+        </X0>
+        <Y0>
+          Mode=2
+          Off=245
+          Id=0
+        </Y0>
+      </Dispose>
+      <SetColor>
+        Color=ffffffff
+      </SetColor>
+      <SetTextAlign>
+        Alignment=12
+        xOff=0
+        yOff=0
+      </SetTextAlign>
+      <SetTextId>
+        Id=6
+      </SetTextId>
+      <SetFont>
+        Font=Roboto_16_Normal_EXT_AA4.xbf
+      </SetFont>
+    </Text>
+    <Text>
+      ParentId=2048
+      IdString=ID_TEXT_03_SD
+      Id=2058
+      IdPrev=0
+      IdPost=0
+      <Dispose>
+        xSize=67
+        ySize=32
+        <X0>
+          Mode=2
+          Off=68
+          Id=0
+        </X0>
+        <Y0>
+          Mode=2
+          Off=245
+          Id=0
+        </Y0>
+      </Dispose>
+      <SetColor>
+        Color=ffffffff
+      </SetColor>
+      <SetTextAlign>
+        Alignment=12
+        xOff=0
+        yOff=0
+      </SetTextAlign>
+      <SetTextId>
+        Id=7
+      </SetTextId>
+      <SetFont>
+        Font=Roboto_16_Normal_EXT_AA4.xbf
+      </SetFont>
+    </Text>
+    <Text>
+      ParentId=2048
+      IdString=ID_TEXT_04_TIME
+      Id=2059
+      IdPrev=0
+      IdPost=0
+      <Dispose>
+        xSize=162
+        ySize=32
+        <X0>
+          Mode=2
+          Off=314
+          Id=0
+        </X0>
+        <Y0>
+          Mode=2
+          Off=245
+          Id=0
+        </Y0>
+      </Dispose>
+      <SetColor>
+        Color=ffffffff
+      </SetColor>
+      <SetTextAlign>
+        Alignment=13
+        xOff=0
+        yOff=0
+      </SetTextAlign>
+      <SetTextId>
+        Id=9
+      </SetTextId>
+      <SetFont>
+        Font=Roboto_16_Normal_EXT_AA4.xbf
+      </SetFont>
+    </Text>
+    <Text>
+      ParentId=2048
+      IdString=ID_TEXT_05_USB
+      Id=2060
+      IdPrev=0
+      IdPost=0
+      <Dispose>
+        xSize=62
+        ySize=32
+        <X0>
+          Mode=2
+          Off=6
+          Id=0
+        </X0>
+        <Y0>
+          Mode=2
+          Off=245
+          Id=0
+        </Y0>
+      </Dispose>
+      <SetColor>
+        Color=ffffffff
+      </SetColor>
+      <SetTextAlign>
+        Alignment=12
+        xOff=0
+        yOff=0
+      </SetTextAlign>
+      <SetTextId>
+        Id=8
+      </SetTextId>
+      <SetFont>
+        Font=Roboto_16_Normal_EXT_AA4.xbf
+      </SetFont>
+    </Text>
+    <Button>
+      ParentId=2048
+      IdString=ID_BUTTON_01
+      Id=2056
+      IdPrev=0
+      IdPost=0
+      <Dispose>
+        xSize=80
+        ySize=16
+        <X0>
+          Mode=2
+          Off=306
+          Id=0
+        </X0>
+        <Y0>
+          Mode=2
+          Off=2
+          Id=0
+        </Y0>
+      </Dispose>
+      <SetSbitmaps>
+        Index0=DARK_Button_Up_100x30.png
+        Index1=DARK_Button_Down_100x30.png
+      </SetSbitmaps>
+      <SetColors>
+        Color0=ffffffff
+        Color1=ff646464
+        Color3=       0
+      </SetColors>
+      <SetTextId>
+        Id=5
+      </SetTextId>
+    </Button>
+    <Button>
+      ParentId=2048
+      IdString=ID_BUTTON_00
+      Id=2055
+      IdPrev=0
+      IdPost=0
+      <Dispose>
+        xSize=80
+        ySize=16
+        <X0>
+          Mode=2
+          Off=395
+          Id=0
+        </X0>
+        <Y0>
+          Mode=2
+          Off=2
+          Id=0
+        </Y0>
+      </Dispose>
+      <SetSbitmaps>
+        Index0=DARK_Button_Up_100x30.png
+        Index1=DARK_Button_Down_100x30.png
+      </SetSbitmaps>
+      <SetColors>
+        Color0=ffffffff
+        Color1=ff646464
+        Color3=       0
+      </SetColors>
+      <SetTextId>
+        Id=4
+      </SetTextId>
+    </Button>
     <Timer>
       ParentId=2048
       IdString=ID_TIMER_00
@@ -503,7 +723,7 @@
       NCode=APPW_NOTIFICATION_PIDPRESSED
       Slot=ID_SCREEN_00__APPW_NOTIFICATION_PIDPRESSED_0
       Flags=0
-      Condition=A&B,2,IS_VAR,ID_VAR_00,==,IS_VAL,1,IS_VAR,ID_VAR_01,==,IS_VAL,1
+      Condition=A&B,2,IS_VAR,ID_VAR_00,==,IS_VAL,1,IS_VAR,ID_VAR_01,==,IS_VAL,2
       <Para>
         RootId=6145
       </Para>
@@ -514,7 +734,7 @@
       NCode=APPW_NOTIFICATION_PIDPRESSED
       Slot=ID_SCREEN_00__APPW_NOTIFICATION_PIDPRESSED
       Flags=0
-      Condition=A&B,2,IS_VAR,ID_VAR_00,==,IS_VAL,1,IS_VAR,ID_VAR_01,==,IS_VAL,1
+      Condition=A&B,2,IS_VAR,ID_VAR_00,==,IS_VAL,1,IS_VAR,ID_VAR_01,==,IS_VAL,2
       <Para>
         RootId=6144
       </Para>
@@ -531,8 +751,19 @@
       RootId=6145
       IdSrc=ID_TIMER_00
       NCode=APPW_NOTIFICATION_TIMER
-      IdDst=ID_TEXT_01
+      IdDst=ID_TEXT_01_CPU_LOAD
       Slot=ID_SCREEN_01__ID_TIMER_00__APPW_NOTIFICATION_TIMER__ID_TEXT_01__APPW_JOB_SETTEXT
+      Flags=0
+      <Para>
+        Text=
+      </Para>
+    </SETTEXT>
+    <SETTEXT>
+      RootId=6145
+      IdSrc=ID_TIMER_00
+      NCode=APPW_NOTIFICATION_TIMER
+      IdDst=ID_TEXT_02_IP
+      Slot=ID_SCREEN_01__ID_TIMER_00__APPW_NOTIFICATION_TIMER__ID_TEXT_02_IP__APPW_JOB_SETTEXT
       Flags=0
       <Para>
         Text=
@@ -540,7 +771,7 @@
     </SETTEXT>
   </Interactions>
   <Selection>
-    Root=ID_SCREEN_00
+    Root=ID_SCREEN_01
     Object=2048
   </Selection>
   <Terms>

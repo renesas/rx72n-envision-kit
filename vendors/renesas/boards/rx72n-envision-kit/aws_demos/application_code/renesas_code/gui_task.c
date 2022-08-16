@@ -262,7 +262,7 @@ void main_1s_display_update(TASK_INFO *task_info)
 	uint32_t task_number, priority, hwm, cpu_time, idle_cpu_time, total_cpu_time, cpu_load, state;
 	float idle_rate;
 	static uint32_t previous_total_cpu_time = 0, previous_idle_cpu_time = 0;
-	uint8_t ip_address_array[4];
+	static uint8_t ip_address_array[4];
 	uint32_t ip_address;
 	uint32_t number_of_tasks;
 
@@ -296,7 +296,7 @@ void main_1s_display_update(TASK_INFO *task_info)
 	ip_address_array[2] = (ip_address & 0x0000ff00) >>  8;
 	ip_address_array[3] = (ip_address & 0x000000ff) >>  0;
 #endif
-	display_update_ip_stat(task_info->hWin_frame, ip_address_array);
+	task_info->ip_address = ip_address_array;
 
 	vPortFree(stats_buffer);
 }

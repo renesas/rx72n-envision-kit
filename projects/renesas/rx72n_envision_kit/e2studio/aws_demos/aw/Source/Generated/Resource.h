@@ -27,6 +27,13 @@ Purpose     : Generated file do NOT edit!
 #define ID_RTEXT_1 1
 #define ID_RTEXT_2 2
 #define ID_RTEXT_3 3
+#define ID_RTEXT_4 4
+#define ID_RTEXT_5 5
+#define ID_RTEXT_6 6
+#define ID_RTEXT_7 7
+#define ID_RTEXT_8 8
+#define ID_RTEXT_9 9
+#define ID_RTEXT_10 10
 
 #define APPW_MANAGE_TEXT APPW_MANAGE_TEXT_EXT
 extern const unsigned char acAPPW_Language_0[];
@@ -44,6 +51,8 @@ extern const unsigned char acRoboto_16_Normal_EXT_AA4[];
 */
 extern const unsigned char acmcu[];
 extern const unsigned char actitle_renesas[];
+extern const unsigned char acDARK_Button_Up_100x30[];
+extern const unsigned char acDARK_Button_Down_100x30[];
 
 /*********************************************************************
 *

@@ -10,6 +10,8 @@ C:/git/rx72n-envision-kit/projects/renesas/rx72n_envision_kit/e2studio/aws_demos
 C:/git/rx72n-envision-kit/projects/renesas/rx72n_envision_kit/e2studio/aws_demos/aw/Source/CustomCode/ID_SCREEN_01_Slots.c
 C:/git/rx72n-envision-kit/projects/renesas/rx72n_envision_kit/e2studio/aws_demos/aw/Resource/Image/mcu.c
 C:/git/rx72n-envision-kit/projects/renesas/rx72n_envision_kit/e2studio/aws_demos/aw/Resource/Image/title_renesas.c
+C:/git/rx72n-envision-kit/projects/renesas/rx72n_envision_kit/e2studio/aws_demos/aw/Resource/Image/DARK_Button_Up_100x30.c
+C:/git/rx72n-envision-kit/projects/renesas/rx72n_envision_kit/e2studio/aws_demos/aw/Resource/Image/DARK_Button_Down_100x30.c
 C:/git/rx72n-envision-kit/projects/renesas/rx72n_envision_kit/e2studio/aws_demos/aw/Resource/Font/Roboto_24_Normal_EXT_AA4.c
 C:/git/rx72n-envision-kit/projects/renesas/rx72n_envision_kit/e2studio/aws_demos/aw/Resource/Font/Roboto_16_Normal_EXT_AA4.c
 C:/git/rx72n-envision-kit/projects/renesas/rx72n_envision_kit/e2studio/aws_demos/aw/Resource/Text/APPW_Language_0.c

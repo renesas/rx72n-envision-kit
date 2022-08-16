@@ -79,6 +79,12 @@ typedef struct _task_info
 	/* for cpuload info */
 	uint32_t cpu_load;
 
+	/* for sd card info */
+	uint32_t sd_status;		// attach = 1 or detach = 0 (default)
+
+	/* for IP address info (4bytes array pointer) */
+	uint8_t *ip_address;
+
 	/* system flag */
 	volatile uint32_t gui_initialize_complete_flag;
 	volatile uint32_t first_touch_complete_flag;
