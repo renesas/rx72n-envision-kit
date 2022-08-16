@@ -485,6 +485,18 @@
         OnOff=2
       </Para>
     </SETVIS>
+    <ADDVALUE>
+      RootId=6144
+      IdSrc=ID_SCREEN_00
+      NCode=APPW_NOTIFICATION_PIDPRESSED
+      IdDst=ID_VAR_01
+      Slot=ID_SCREEN_00__APPW_NOTIFICATION_PIDPRESSED_1
+      Comment=PID event come at system init phase so this value is used for ignoring this.
+      Flags=0
+      <Para>
+        Value=1
+      </Para>
+    </ADDVALUE>
     <SHOWSCREEN>
       RootId=6144
       IdSrc=ID_SCREEN_00
@@ -507,18 +519,6 @@
         RootId=6144
       </Para>
     </CLOSESCREEN>
-    <ADDVALUE>
-      RootId=6144
-      IdSrc=ID_SCREEN_00
-      NCode=APPW_NOTIFICATION_PIDPRESSED
-      IdDst=ID_VAR_01
-      Slot=ID_SCREEN_00__APPW_NOTIFICATION_PIDPRESSED_1
-      Comment=PID event come at system init phase so this value is used for ignoring this.
-      Flags=0
-      <Para>
-        Value=1
-      </Para>
-    </ADDVALUE>
     <START>
       RootId=6145
       IdSrc=ID_SCREEN_01
@@ -540,8 +540,8 @@
     </SETTEXT>
   </Interactions>
   <Selection>
-    Root=ID_SCREEN_01
-    Object=2053
+    Root=ID_SCREEN_00
+    Object=2048
   </Selection>
   <Terms>
   </Terms>

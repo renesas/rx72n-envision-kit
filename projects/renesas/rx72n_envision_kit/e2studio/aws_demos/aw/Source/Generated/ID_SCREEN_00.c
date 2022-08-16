@@ -139,12 +139,12 @@ static const APPW_SETUP_ITEM _aSetup[] = {
 *
 *       Comparison(s)
 */
-static APPW_COND_COMP _aComparison_03[] = {
+static APPW_COND_COMP _aComparison_04[] = {
   { { { APPW_IS_VAR, ID_VAR_00 }, { APPW_IS_VAL, 1 } }, APPW__CompareIsEqual },
   { { { APPW_IS_VAR, ID_VAR_01 }, { APPW_IS_VAL, 1 } }, APPW__CompareIsEqual },
 };
 
-static APPW_COND_COMP _aComparison_04[] = {
+static APPW_COND_COMP _aComparison_05[] = {
   { { { APPW_IS_VAR, ID_VAR_00 }, { APPW_IS_VAL, 1 } }, APPW__CompareIsEqual },
   { { { APPW_IS_VAR, ID_VAR_01 }, { APPW_IS_VAL, 1 } }, APPW__CompareIsEqual },
 };
@@ -153,8 +153,8 @@ static APPW_COND_COMP _aComparison_04[] = {
 *
 *       Condition(s)
 */
-static const APPW_COND _Condition_03 = { "A&B", _aComparison_03, GUI_COUNTOF(_aComparison_03) };
 static const APPW_COND _Condition_04 = { "A&B", _aComparison_04, GUI_COUNTOF(_aComparison_04) };
+static const APPW_COND _Condition_05 = { "A&B", _aComparison_05, GUI_COUNTOF(_aComparison_05) };
 
 /*********************************************************************
 *
@@ -171,17 +171,17 @@ static const APPW_ACTION_ITEM _aAction[] = {
     { ARG_V(APPW_SET_TOGGLE),
     }, 0, NULL
   },
-  { ID_SCREEN_00, APPW_NOTIFICATION_PIDPRESSED,     0,            APPW_JOB_SHOWSCREEN,     ID_SCREEN_00__APPW_NOTIFICATION_PIDPRESSED_0,
-    { ARG_V(ID_SCREEN_01),
-    }, 0, &_Condition_03
-  },
-  { ID_SCREEN_00, APPW_NOTIFICATION_PIDPRESSED,     0,            APPW_JOB_CLOSESCREEN,    ID_SCREEN_00__APPW_NOTIFICATION_PIDPRESSED,
-    { ARG_V(ID_SCREEN_00),
-    }, 0, &_Condition_04
-  },
   { ID_SCREEN_00, APPW_NOTIFICATION_PIDPRESSED,     ID_VAR_01,    APPW_JOB_ADDVALUE,       ID_SCREEN_00__APPW_NOTIFICATION_PIDPRESSED_1,
     { ARG_V(1),
     }, 0, NULL
+  },
+  { ID_SCREEN_00, APPW_NOTIFICATION_PIDPRESSED,     0,            APPW_JOB_SHOWSCREEN,     ID_SCREEN_00__APPW_NOTIFICATION_PIDPRESSED_0,
+    { ARG_V(ID_SCREEN_01),
+    }, 0, &_Condition_04
+  },
+  { ID_SCREEN_00, APPW_NOTIFICATION_PIDPRESSED,     0,            APPW_JOB_CLOSESCREEN,    ID_SCREEN_00__APPW_NOTIFICATION_PIDPRESSED,
+    { ARG_V(ID_SCREEN_00),
+    }, 0, &_Condition_05
   },
 };
 
