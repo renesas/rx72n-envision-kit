@@ -110,7 +110,7 @@ void serial_flash_task( void * pvParameters )
     while(1)
     {
         serial_flash_update();
-        vTaskDelay(1);
+        vTaskDelay(1000);
     }
 }
 /* End of function serial_flash_task() */
