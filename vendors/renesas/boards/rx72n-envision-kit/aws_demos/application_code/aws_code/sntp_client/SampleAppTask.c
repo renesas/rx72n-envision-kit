@@ -107,7 +107,7 @@ void sntp_task( void * pvParameters )
 	sfd_handle_timezone = R_SFD_FindObject((uint8_t *)timezone_label, strlen((char *)timezone_label));
 	if(sfd_handle_timezone == SFD_HANDLE_INVALID)
 	{
-		sfd_handle_timezone = R_SFD_SaveObject((uint8_t *)timezone_label, strlen((char *)timezone_label), SYS_TIME_UTC, strlen((char *)SYS_TIME_UTC) + 1); /* +1 means string terminator '\0' */
+		sfd_handle_timezone = R_SFD_SaveObject((uint8_t *)timezone_label, strlen((char *)timezone_label), SYS_TIME_UTC_PLUS_0900, strlen((char *)SYS_TIME_UTC_PLUS_0900) + 1); /* +1 means string terminator '\0' */
 	}
 	R_SFD_GetObjectValue(sfd_handle_timezone, (uint8_t **)&timezone, &timezone_length);
 
