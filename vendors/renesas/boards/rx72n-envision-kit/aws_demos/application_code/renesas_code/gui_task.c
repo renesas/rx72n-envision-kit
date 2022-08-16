@@ -141,6 +141,7 @@ void gui_task( void * pvParameters )
 	APPW_X_Setup();
 	APPW_Init(APPW_PROJECT_PATH);
 	APPW_CreateRoot(APPW_INITIAL_SCREEN, WM_HBKWIN);
+	WM_MULTIBUF_Enable(1);
 
 	/* GUI initialize complete */
 	task_info->gui_initialize_complete_flag = 1;
@@ -180,6 +181,7 @@ void gui_task( void * pvParameters )
 
 	while(task_info->first_touch_complete_flag)
 	{
+		APPW_Exec();
 		GUI_Delay(10);
 		vTaskDelay(10);
 	}
@@ -194,6 +196,7 @@ void gui_task( void * pvParameters )
 	while(1)
 	{
 		main_10ms_display_update(task_info);
+		APPW_Exec();
 		vTaskDelay(10);
 		counter_10ms++;
 		if(counter_10ms > 10)

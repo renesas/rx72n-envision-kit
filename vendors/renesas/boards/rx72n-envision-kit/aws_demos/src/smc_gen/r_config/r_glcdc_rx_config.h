@@ -48,7 +48,7 @@
 /* Interrupt priority level of GLCDC interrupt (group AL1 interrupt)
  *  Setting range: 0 to 15
  */
-#define GLCDC_CFG_INTERRUPT_PRIORITY_LEVEL (1)
+#define GLCDC_CFG_INTERRUPT_PRIORITY_LEVEL (15)
 
 /* Select whether to set the GLCDC settings programmatically or using the configuration options.
  * 1: Setting by configuration options

@@ -1667,9 +1667,9 @@
                 <gridItem id="LCD_DATA23" selectedIndex="0"/>
                 <gridItem id="LCD_EXTCLK" selectedIndex="0"/>
                 <gridItem id="GLCDC_CFG_PARAM_CHECKING_ENABLE" selectedIndex="1"/>
-                <gridItem id="GLCDC_CFG_INTERRUPT_PRIORITY_LEVEL" selectedIndex="1"/>
+                <gridItem id="GLCDC_CFG_INTERRUPT_PRIORITY_LEVEL" selectedIndex="15"/>
                 <gridItem id="GLCDC_CFG_CONFIGURATION_MODE" selectedIndex="0"/>
-                <gridItem id="USE_QE_DISPLAY_CONFIGURATION" selectedIndex="0"/>
+                <gridItem id="USE_QE_DISPLAY_CONFIGURATION" selectedIndex="1"/>
                 <gridItem id="LCD_CH0_W_HFP" selectedIndex="17"/>
                 <gridItem id="LCD_CH0_W_HBP" selectedIndex="62"/>
                 <gridItem id="LCD_CH0_DISP_HW" selectedIndex="480"/>

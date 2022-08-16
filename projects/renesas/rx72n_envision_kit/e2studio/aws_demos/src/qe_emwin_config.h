@@ -42,7 +42,7 @@ Configuration Options
 #define EMWIN_MAX_NUM_TOUCHPOINTS     (10u)
 
 #define EMWIN_GUI_FRAME_BUFFER1       (0x00800000)
-#define EMWIN_GUI_FRAME_BUFFER2       (0x00800000)
+#define EMWIN_GUI_FRAME_BUFFER2       (0x00840000)
 #define EMWIN_USE_DISP_SIGNAL_PIN     (1)
 #define EMWIN_DISP_SIGNAL_PIN         (GPIO_PORT_B_PIN_3)
 #define EMWIN_USE_BACKLIGHT_PIN       (1)
