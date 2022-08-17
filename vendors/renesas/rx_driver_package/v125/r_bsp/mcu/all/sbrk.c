@@ -32,6 +32,9 @@
 Includes   <System Includes> , "Project Includes"
 ***********************************************************************************************************************/
 #include "sbrk.h"
+#if defined BSP_CFG_RTOS_USED == 1
+#include "FreeRTOS.h"
+#endif
 
 /* Only use this file if heap is enabled in r_bsp_config. */
 #if BSP_CFG_HEAP_BYTES > 0
@@ -80,7 +83,9 @@ int8_t *_last_heap_object=(int8_t *)&s_heap_area;
 int8_t  *sbrk(size_t size)
 {
     int8_t  *p_area;
-
+#if defined BSP_CFG_RTOS_USED == 1
+    p_area = pvPortMalloc(size);
+#else
     if ((sp_brk + size) > (s_heap_area.heap + BSP_CFG_HEAP_BYTES))
     {
         /* Empty area size  */
@@ -94,7 +99,7 @@ int8_t  *sbrk(size_t size)
         /* End address update */
         sp_brk += size;
     }
-
+#endif
     /* Return result */
     return p_area;
 } /* End of function sbrk() */

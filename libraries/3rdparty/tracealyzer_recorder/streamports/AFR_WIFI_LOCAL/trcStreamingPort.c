@@ -201,11 +201,16 @@ void prvInitSocket(void)
 		{
 			//prvTraceError(PSF_ERROR_STREAM_PORT_FAIL);
 			configPRINTF( ( "Failed to connect, status: %d\r\n", status) );
+	        vTraceStop();
 		}
 		else
 		{
 			configPRINTF( ( "Connected.\r\n") );
 		}
+    }
+    else
+    {
+        vTraceStop();
     }
 }
 

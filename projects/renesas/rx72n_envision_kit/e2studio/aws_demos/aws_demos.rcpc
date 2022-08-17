@@ -2166,7 +2166,6 @@
           <Option>-debug</Option>
           <Option>-nostuff=C</Option>
           <Option>-outcode=utf8</Option>
-          <Option>-optimize=0</Option>
           <Option>-tfu=intrinsic</Option>
           <Option>-nologo</Option>
           <Option>-lang=c99</Option>
