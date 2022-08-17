@@ -165,6 +165,16 @@ void main_task(void)
 	xTaskNotifyGive(task_info.task_manager_task_handle);
 	xTaskNotifyGive(task_info.serial_flash_task_handle);
 
+    /* We should wait for the network to be up before we run any demos. */
+    while( FreeRTOS_IsNetworkUp() == pdFALSE )
+    {
+        vTaskDelay(300);
+    }
+
+	/* start tracealyzer */
+	vTraceEnable(TRC_INIT);
+	vTraceEnable(TRC_START);
+
     /* main loop */
     while(1)
     {

@@ -136,8 +136,8 @@ extern "C" {
 
 #define HOST_IPADDRESS_0 192
 #define HOST_IPADDRESS_1 168
-#define HOST_IPADDRESS_2 10
-#define HOST_IPADDRESS_3 116
+#define HOST_IPADDRESS_2 1
+#define HOST_IPADDRESS_3 210
 #define HOST_PORT 12000
 
 void prvInitSocket(void);

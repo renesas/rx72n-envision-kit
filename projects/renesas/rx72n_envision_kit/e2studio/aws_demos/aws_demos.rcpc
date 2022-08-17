@@ -824,145 +824,22 @@
       </Category>
       <Category Name="aw">
         <Path>aw\FileList.txt</Path>
-        <Category Name="Simulation">
-          <Category Name="Config">
-            <Path>aw\Simulation\Config\APPW_X_WIN32.c</Path>
-            <Path>aw\Simulation\Config\GUIConf.c</Path>
-            <Path>aw\Simulation\Config\GUIConf.h</Path>
-            <Path>aw\Simulation\Config\GUI_SIM_Win32.h</Path>
-            <Path>aw\Simulation\Config\LCDConf.c</Path>
-            <Path>aw\Simulation\Config\LCDConf.h</Path>
-            <Path>aw\Simulation\Config\SIMConf.c</Path>
+        <Category Name="Resource">
+          <Category Name="Font">
+            <Path>aw\Resource\Font\Roboto_16_Normal_EXT_AA4.c</Path>
+            <Path>aw\Resource\Font\Roboto_24_Normal_EXT_AA4.c</Path>
           </Category>
-          <Category Name="GUI_Lib">
-            <Path>aw\Simulation\GUI_Lib\AppWizard.h</Path>
-            <Path>aw\Simulation\GUI_Lib\BUTTON.h</Path>
-            <Path>aw\Simulation\GUI_Lib\BUTTON_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\CALENDAR.h</Path>
-            <Path>aw\Simulation\GUI_Lib\CHECKBOX.h</Path>
-            <Path>aw\Simulation\GUI_Lib\CHECKBOX_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\CHOOSECOLOR.h</Path>
-            <Path>aw\Simulation\GUI_Lib\CHOOSEFILE.h</Path>
-            <Path>aw\Simulation\GUI_Lib\DIALOG.h</Path>
-            <Path>aw\Simulation\GUI_Lib\DIALOG_Type.h</Path>
-            <Path>aw\Simulation\GUI_Lib\DROPDOWN.h</Path>
-            <Path>aw\Simulation\GUI_Lib\DROPDOWN_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\EDIT.h</Path>
-            <Path>aw\Simulation\GUI_Lib\EDIT_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\FRAMEWIN.h</Path>
-            <Path>aw\Simulation\GUI_Lib\FRAMEWIN_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GAUGE.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GAUGE_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GRAPH.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GRAPH_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_BitPlains.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_FlexColor.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_FlexColor_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_Lin.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_Null.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13513.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13517.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13748.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13781.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13L01.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13L02.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13L04.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D15G00.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_SH_MEM.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_SLin.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_SLinEPD.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_SLinEPD_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_SPage.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_SPage_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_SSD1322.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_SSD1926.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_ST7591_DCache.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_TemplateI.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_UC1698G.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUIDRV_Win32.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI_ARRAY.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI_ARRAY_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI_BMP_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI_ConfDefaults.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI_Debug.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI_FontIntern.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI_GCache_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI_GIF_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI_HOOK.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI_JPEG_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI_SPRITE_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI_SPY_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI_SetOrientation.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI_SetOrientationCX.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI_Type.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI_VNC.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI_Version.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI__BiDi2_Brackets_800.h</Path>
-            <Path>aw\Simulation\GUI_Lib\GUI__BiDi2_Types_800.h</Path>
-            <Path>aw\Simulation\GUI_Lib\Global.h</Path>
-            <Path>aw\Simulation\GUI_Lib\HEADER.h</Path>
-            <Path>aw\Simulation\GUI_Lib\HEADER_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\ICONVIEW.h</Path>
-            <Path>aw\Simulation\GUI_Lib\ICONVIEW_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\IMAGE.h</Path>
-            <Path>aw\Simulation\GUI_Lib\IMAGE_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\IP_FS.h</Path>
-            <Path>aw\Simulation\GUI_Lib\KEYBOARD.h</Path>
-            <Path>aw\Simulation\GUI_Lib\KEYBOARD_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\KNOB.h</Path>
-            <Path>aw\Simulation\GUI_Lib\KNOB_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\LCD.h</Path>
-            <Path>aw\Simulation\GUI_Lib\LCD_ConfDefaults.h</Path>
-            <Path>aw\Simulation\GUI_Lib\LCD_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\LCD_Protected.h</Path>
-            <Path>aw\Simulation\GUI_Lib\LCD_SIM.h</Path>
-            <Path>aw\Simulation\GUI_Lib\LISTBOX.h</Path>
-            <Path>aw\Simulation\GUI_Lib\LISTBOX_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\LISTVIEW.h</Path>
-            <Path>aw\Simulation\GUI_Lib\LISTVIEW_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\LISTWHEEL.h</Path>
-            <Path>aw\Simulation\GUI_Lib\LISTWHEEL_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\MENU.h</Path>
-            <Path>aw\Simulation\GUI_Lib\MENU_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\MESSAGEBOX.h</Path>
-            <Path>aw\Simulation\GUI_Lib\MULTIEDIT.h</Path>
-            <Path>aw\Simulation\GUI_Lib\MULTIEDIT_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\MULTIPAGE.h</Path>
-            <Path>aw\Simulation\GUI_Lib\MULTIPAGE_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\PROGBAR.h</Path>
-            <Path>aw\Simulation\GUI_Lib\PROGBAR_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\QRCODE.h</Path>
-            <Path>aw\Simulation\GUI_Lib\QRCODE_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\RADIO.h</Path>
-            <Path>aw\Simulation\GUI_Lib\RADIO_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\ROTARY.h</Path>
-            <Path>aw\Simulation\GUI_Lib\ROTARY_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\SCROLLBAR.h</Path>
-            <Path>aw\Simulation\GUI_Lib\SCROLLBAR_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\SEGGER.h</Path>
-            <Path>aw\Simulation\GUI_Lib\SLIDER.h</Path>
-            <Path>aw\Simulation\GUI_Lib\SLIDER_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\SPINBOX.h</Path>
-            <Path>aw\Simulation\GUI_Lib\SPINBOX_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\SWIPELIST.h</Path>
-            <Path>aw\Simulation\GUI_Lib\SWIPELIST_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\SWITCH.h</Path>
-            <Path>aw\Simulation\GUI_Lib\SWITCH_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\TEXT.h</Path>
-            <Path>aw\Simulation\GUI_Lib\TEXT_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\TREEVIEW.h</Path>
-            <Path>aw\Simulation\GUI_Lib\TREEVIEW_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\WIDGET.h</Path>
-            <Path>aw\Simulation\GUI_Lib\WINDOW_Private.h</Path>
-            <Path>aw\Simulation\GUI_Lib\WM.h</Path>
-            <Path>aw\Simulation\GUI_Lib\WM_GUI.h</Path>
-            <Path>aw\Simulation\GUI_Lib\WM_Intern.h</Path>
+          <Category Name="Image">
+            <Path>aw\Resource\Image\DARK_Button_Down_100x30.c</Path>
+            <Path>aw\Resource\Image\DARK_Button_Up_100x30.c</Path>
+            <Path>aw\Resource\Image\mcu.c</Path>
+            <Path>aw\Resource\Image\title_renesas.c</Path>
           </Category>
-          <Category Name="Simulation">
-            <Path>aw\Simulation\Simulation\GUI_SIM_Win32.h</Path>
-            <Path>aw\Simulation\Simulation\WinMain.c</Path>
+          <Category Name="Text">
+            <Path>aw\Resource\Text\APPW_Language_0.c</Path>
+            <Path>aw\Resource\Text\APPW_Language_0.txt</Path>
+            <Path>aw\Resource\Text\APPW_Pattern.c</Path>
+            <Path>aw\Resource\Text\APPW_Pattern.txt</Path>
           </Category>
         </Category>
         <Category Name="Source">
@@ -970,9 +847,15 @@
           <Category Name="CustomCode">
             <Path>aw\Source\CustomCode\Application.c</Path>
             <Path>aw\Source\CustomCode\Application.h</Path>
+            <Path>aw\Source\CustomCode\ID_SCREEN_00_Slots.c</Path>
+            <Path>aw\Source\CustomCode\ID_SCREEN_01_Slots.c</Path>
           </Category>
           <Category Name="Generated">
             <Path>aw\Source\Generated\APPWConf.c</Path>
+            <Path>aw\Source\Generated\ID_SCREEN_00.c</Path>
+            <Path>aw\Source\Generated\ID_SCREEN_00.h</Path>
+            <Path>aw\Source\Generated\ID_SCREEN_01.c</Path>
+            <Path>aw\Source\Generated\ID_SCREEN_01.h</Path>
             <Path>aw\Source\Generated\Resource.c</Path>
             <Path>aw\Source\Generated\Resource.h</Path>
           </Category>
@@ -1390,6 +1273,30 @@
                 <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\source\ecc_dsa.c</Path>
                 <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\source\sha256.c</Path>
                 <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\source\utils.c</Path>
+              </Category>
+            </Category>
+          </Category>
+          <Category Name="tracealyzer_recorder">
+            <Path>..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\trcKernelPort.c</Path>
+            <Path>..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\trcSnapshotRecorder.c</Path>
+            <Path>..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\trcStreamingRecorder.c</Path>
+            <Category Name="Include">
+              <Path>..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\Include\aws_secure_sockets.tzext.h</Path>
+              <Path>..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\Include\aws_wifi.tzext.h</Path>
+              <Path>..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\Include\trcExtensions.h</Path>
+              <Path>..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\Include\trcHardwarePort.h</Path>
+              <Path>..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\Include\trcKernelPort.h</Path>
+              <Path>..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\Include\trcPortDefines.h</Path>
+              <Path>..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\Include\trcRecorder.h</Path>
+            </Category>
+            <Category Name="config">
+              <Path>..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\config\trcConfig.h</Path>
+              <Path>..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\config\trcSnapshotConfig.h</Path>
+              <Path>..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\config\trcStreamingConfig.h</Path>
+            </Category>
+            <Category Name="streamports">
+              <Category Name="AFR_WIFI_LOCAL">
+                <Path>..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\streamports\AFR_WIFI_LOCAL\trcStreamingPort.c</Path>
               </Category>
             </Category>
           </Category>
@@ -2112,6 +2019,7 @@
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\rx_driver_package\v125"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\rx_driver_package\v125\r_bsp"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\rx_driver_package\v125\r_bsp\board\generic_rx72n"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\rx_driver_package\v125\r_bsp\mcu\rx72n\register_access\ccrx"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\rx_driver_package\v125\r_ether_rx"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\rx_driver_package\v125\r_flash_rx"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\rx_driver_package\v125\r_flash_rx\src"</Option>
@@ -2177,8 +2085,8 @@
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\include"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\3rdparty\http_parser"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\3rdparty\jsmn"</Option>
-          <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\streamports\TCPIP\include"</Option>
-          <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\include"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\streamports\AFR_WIFI_LOCAL\include"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\Include"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\config"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\coreMQTT\source\include"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\coreMQTT\source\interface"</Option>
@@ -2199,7 +2107,8 @@
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\device_shadow_for_aws\source\include"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\device_defender_for_aws\source\include"</Option>
           <Option>-include="${ProjDirPath}\generate"</Option>
-          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace5\${ProjName}\src"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\aw\Source"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\general"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_pincfg"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_config"</Option>
@@ -2249,7 +2158,6 @@
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\Config"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_glcdc_rx"</Option>
-          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace5\${ProjName}\aw\Source"</Option>
           <Option>-preinclude="${ProjDirPath}\..\..\..\..\..\vendors\renesas\amazon_freertos_common\compiler_support\ccrx\implicitlyinclude.h"</Option>
           <Option>-define=MBEDTLS_CONFIG_FILE="&lt;aws_mbedtls_config.h&gt;",CONFIG_MEDTLS_USE_AFR_MEMORY,QE_DISPLAY_CONFIGURATION,QE_EMWIN_CONFIGURATION</Option>
           <Option>-asmopt=-bank</Option>
@@ -2258,6 +2166,7 @@
           <Option>-debug</Option>
           <Option>-nostuff=C</Option>
           <Option>-outcode=utf8</Option>
+          <Option>-optimize=0</Option>
           <Option>-tfu=intrinsic</Option>
           <Option>-nologo</Option>
           <Option>-lang=c99</Option>
@@ -2529,9 +2438,21 @@
           <Path>HardwareDebug\r_usb_hmsc_api.obj</Path>
           <Path>HardwareDebug\r_usb_hmsc_driver.obj</Path>
           <Path>HardwareDebug\r_usb_hstorage_driver.obj</Path>
+          <Path>HardwareDebug\Roboto_16_Normal_EXT_AA4.obj</Path>
+          <Path>HardwareDebug\Roboto_24_Normal_EXT_AA4.obj</Path>
+          <Path>HardwareDebug\DARK_Button_Down_100x30.obj</Path>
+          <Path>HardwareDebug\DARK_Button_Up_100x30.obj</Path>
+          <Path>HardwareDebug\mcu.obj</Path>
+          <Path>HardwareDebug\title_renesas.obj</Path>
+          <Path>HardwareDebug\APPW_Language_0.obj</Path>
+          <Path>HardwareDebug\APPW_Pattern.obj</Path>
           <Path>HardwareDebug\APPW_MainTask.obj</Path>
           <Path>HardwareDebug\Application.obj</Path>
+          <Path>HardwareDebug\ID_SCREEN_00_Slots.obj</Path>
+          <Path>HardwareDebug\ID_SCREEN_01_Slots.obj</Path>
           <Path>HardwareDebug\APPWConf.obj</Path>
+          <Path>HardwareDebug\ID_SCREEN_00.obj</Path>
+          <Path>HardwareDebug\ID_SCREEN_01.obj</Path>
           <Path>HardwareDebug\Resource.obj</Path>
           <Path>HardwareDebug\mqtt_demo_helpers.obj</Path>
           <Path>HardwareDebug\mqtt_subscription_manager.obj</Path>
@@ -2673,6 +2594,10 @@
           <Path>HardwareDebug\ecc_dsa.obj</Path>
           <Path>HardwareDebug\sha256.obj</Path>
           <Path>HardwareDebug\utils.obj</Path>
+          <Path>HardwareDebug\trcStreamingPort.obj</Path>
+          <Path>HardwareDebug\trcKernelPort.obj</Path>
+          <Path>HardwareDebug\trcSnapshotRecorder.obj</Path>
+          <Path>HardwareDebug\trcStreamingRecorder.obj</Path>
           <Path>HardwareDebug\backoff_algorithm.obj</Path>
           <Path>HardwareDebug\freertos_agent_message.obj</Path>
           <Path>HardwareDebug\freertos_command_pool.obj</Path>
@@ -2796,11 +2721,6 @@
           <Path>HardwareDebug\r_sci_rx72n_data.obj</Path>
           <Path>HardwareDebug\aws_demos.lib</Path>
         </LinkOrder>
-        <NoTargetFile Target="aw\Simulation\Config\APPW_X_WIN32.c"/>
-        <NoTargetFile Target="aw\Simulation\Config\GUIConf.c"/>
-        <NoTargetFile Target="aw\Simulation\Config\LCDConf.c"/>
-        <NoTargetFile Target="aw\Simulation\Config\SIMConf.c"/>
-        <NoTargetFile Target="aw\Simulation\Simulation\WinMain.c"/>
         <NoTargetFile Target="AWS_IOT_MCU_ROOT\demos\common\http_demo_helpers\http_demo_utils.c"/>
         <NoTargetFile Target="AWS_IOT_MCU_ROOT\demos\coreHTTP\http_demo_mutual_auth.c"/>
         <NoTargetFile Target="AWS_IOT_MCU_ROOT\demos\coreHTTP\http_demo_s3_download.c"/>
@@ -2828,6 +2748,7 @@
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\rx_driver_package\v125"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\rx_driver_package\v125\r_bsp"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\rx_driver_package\v125\r_bsp\board\generic_rx72n"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\rx_driver_package\v125\r_bsp\mcu\rx72n\register_access\ccrx"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\rx_driver_package\v125\r_ether_rx"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\rx_driver_package\v125\r_flash_rx"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\rx_driver_package\v125\r_flash_rx\src"</IncludePathForC>
@@ -2893,8 +2814,8 @@
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\include"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\3rdparty\http_parser"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\3rdparty\jsmn"</IncludePathForC>
-          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\streamports\TCPIP\include"</IncludePathForC>
-          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\include"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\streamports\AFR_WIFI_LOCAL\include"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\Include"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\3rdparty\tracealyzer_recorder\config"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\coreMQTT\source\include"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\coreMQTT\source\interface"</IncludePathForC>
@@ -2915,7 +2836,8 @@
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\device_shadow_for_aws\source\include"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\device_defender_for_aws\source\include"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\generate"</IncludePathForC>
-          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace5\${ProjName}\src"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\aw\Source"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\general"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_pincfg"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_config"</IncludePathForC>
@@ -2965,7 +2887,6 @@
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\Config"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_glcdc_rx"</IncludePathForC>
-          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace5\${ProjName}\aw\Source"</IncludePathForC>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_tests\src\smc_gen\r_pincfg"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_bsp"</IncludePathForAsm>
           <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\general"</IncludePathForAsm>

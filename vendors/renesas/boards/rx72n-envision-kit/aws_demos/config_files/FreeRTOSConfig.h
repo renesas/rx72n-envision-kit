@@ -280,7 +280,7 @@ uint32_t ulRand(void);
 #define configPLATFORM_NAME    "RenesasRX65N"
 
 /* Header required for the tracealyzer recorder library. */
-//#include "trcRecorder.h"
+#include "trcRecorder.h"
 
 /* When the FIT configurator or the Smart Configurator is used, platform.h has to be used. */
 #define configINCLUDE_PLATFORM_H_INSTEAD_OF_IODEFINE_H  1

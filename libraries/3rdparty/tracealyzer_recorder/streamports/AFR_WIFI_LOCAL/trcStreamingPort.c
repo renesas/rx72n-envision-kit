@@ -130,7 +130,7 @@
 #if (TRC_USE_TRACEALYZER_RECORDER == 1)
 #if (TRC_CFG_RECORDER_MODE == TRC_RECORDER_MODE_STREAMING)
 
-#include "aws_secure_sockets.h"
+#include "iot_secure_sockets.h"
 #include "trcExtensions.h"
 
 SocketsSockaddr_t addr = {sizeof(SocketsSockaddr_t), SOCKETS_AF_INET, 0, 0};

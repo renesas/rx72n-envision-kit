@@ -665,6 +665,21 @@
 			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/pkcs11/pkcs11t.h</locationURI>
 		</link>
 		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/trcKernelPort.c</name>
+			<type>1</type>
+			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/tracealyzer_recorder/trcKernelPort.c</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/trcSnapshotRecorder.c</name>
+			<type>1</type>
+			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/tracealyzer_recorder/trcSnapshotRecorder.c</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/trcStreamingRecorder.c</name>
+			<type>1</type>
+			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/tracealyzer_recorder/trcStreamingRecorder.c</locationURI>
+		</link>
+		<link>
 			<name>libraries/abstractions/mqtt_agent/freertos_agent_message.c</name>
 			<type>1</type>
 			<locationURI>AWS_IOT_MCU_ROOT/libraries/abstractions/mqtt_agent/freertos_agent_message.c</locationURI>
@@ -1465,6 +1480,56 @@
 			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/tinycbor/src/cborpretty_stdio.c</locationURI>
 		</link>
 		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/Include/aws_secure_sockets.tzext.h</name>
+			<type>1</type>
+			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/tracealyzer_recorder/Include/aws_secure_sockets.tzext.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/Include/aws_wifi.tzext.h</name>
+			<type>1</type>
+			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/tracealyzer_recorder/Include/aws_wifi.tzext.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/Include/trcExtensions.h</name>
+			<type>1</type>
+			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/tracealyzer_recorder/Include/trcExtensions.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/Include/trcHardwarePort.h</name>
+			<type>1</type>
+			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/tracealyzer_recorder/Include/trcHardwarePort.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/Include/trcKernelPort.h</name>
+			<type>1</type>
+			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/tracealyzer_recorder/Include/trcKernelPort.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/Include/trcPortDefines.h</name>
+			<type>1</type>
+			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/tracealyzer_recorder/Include/trcPortDefines.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/Include/trcRecorder.h</name>
+			<type>1</type>
+			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/tracealyzer_recorder/Include/trcRecorder.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/config/trcConfig.h</name>
+			<type>1</type>
+			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/tracealyzer_recorder/config/trcConfig.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/config/trcSnapshotConfig.h</name>
+			<type>1</type>
+			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/tracealyzer_recorder/config/trcSnapshotConfig.h</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/config/trcStreamingConfig.h</name>
+			<type>1</type>
+			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/tracealyzer_recorder/config/trcStreamingConfig.h</locationURI>
+		</link>
+		<link>
 			<name>libraries/abstractions/backoff_algorithm/source/backoff_algorithm.c</name>
 			<type>1</type>
 			<locationURI>AWS_IOT_MCU_ROOT/libraries/abstractions/backoff_algorithm/source/backoff_algorithm.c</locationURI>
@@ -2168,6 +2233,11 @@
 			<name>libraries/3rdparty/tinycrypt/lib/source/utils.c</name>
 			<type>1</type>
 			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/tinycrypt/lib/source/utils.c</locationURI>
+		</link>
+		<link>
+			<name>libraries/3rdparty/tracealyzer_recorder/streamports/AFR_WIFI_LOCAL/trcStreamingPort.c</name>
+			<type>1</type>
+			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/tracealyzer_recorder/streamports/AFR_WIFI_LOCAL/trcStreamingPort.c</locationURI>
 		</link>
 		<link>
 			<name>libraries/abstractions/backoff_algorithm/source/include/backoff_algorithm.h</name>
