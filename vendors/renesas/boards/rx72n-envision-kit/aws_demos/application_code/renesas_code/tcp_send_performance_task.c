@@ -90,6 +90,7 @@ void tcp_send_performance_task( void * pvParameters )
 
 	uint8_t parameter_not_found_flag = 0;
 
+	configPRINTF( ( "Searching TCP performance test server IP address and port number info on dataflash.\r\n" ) );
 	sfd_handle_tcp_send_performance_server_ip_address = R_SFD_FindObject(tcp_send_performance_server_ip_address_label, strlen((char *)tcp_send_performance_server_ip_address_label));
 	if(sfd_handle_tcp_send_performance_server_ip_address == SFD_HANDLE_INVALID)
 	{

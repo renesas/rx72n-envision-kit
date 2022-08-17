@@ -133,6 +133,10 @@
 #include "iot_secure_sockets.h"
 #include "trcExtensions.h"
 
+/* for RX72N Envision Kit system common header */
+#include "rx72n_envision_kit_system.h"
+#include "r_simple_filesystem_on_dataflash_if.h"
+
 SocketsSockaddr_t addr = {sizeof(SocketsSockaddr_t), SOCKETS_AF_INET, 0, 0};
 
 #define IPv4(a,b,c,d) (uint32_t)((d << 24) + (c << 16) + (b << 8) + a)
@@ -142,27 +146,67 @@ Socket_t sock = NULL;
 void prvInitSocket(void)
 {
 	int32_t status;
+	uint8_t parameter_not_found_flag = 0;
 
-	SOCKETS_Init();
+	SFD_HANDLE sfd_handle_tracealyzer_server_ip_address;
+	uint8_t *tracealyzer_server_ip_address_string;
+	uint32_t tracealyzer_server_ip_address_string_length;
 
-	sock = SOCKETS_Socket(SOCKETS_AF_INET, SOCKETS_SOCK_STREAM, SOCKETS_IPPROTO_TCP);
+	SFD_HANDLE sfd_handle_tracealyzer_server_port_number;
+	uint8_t *tracealyzer_server_port_number_string;
+	uint32_t tracealyzer_server_port_number_string_length;
+	uint16_t tracealyzer_server_port_number;
+	uint32_t ip_address1, ip_address2, ip_address3, ip_address4;
 
-	configPRINTF( ( "Connecting to %d.%d.%d.%d, port %d\r\n", HOST_IPADDRESS_0, HOST_IPADDRESS_1, HOST_IPADDRESS_2, HOST_IPADDRESS_3, HOST_PORT) );
-
-	addr.ulAddress = IPv4(HOST_IPADDRESS_0, HOST_IPADDRESS_1, HOST_IPADDRESS_2, HOST_IPADDRESS_3);
-	addr.usPort =  SOCKETS_htons(HOST_PORT);
-
-	status = SOCKETS_Connect(sock, &addr, sizeof( SocketsSockaddr_t ) );
-
-	if (status != SOCKETS_ERROR_NONE)
+	configPRINTF( ( "Searching Tracealyzer server IP address and port number info on dataflash.\r\n" ) );
+	sfd_handle_tracealyzer_server_ip_address = R_SFD_FindObject(tracealyzer_server_ip_address_label, strlen((char *)tracealyzer_server_ip_address_label));
+	if(sfd_handle_tracealyzer_server_ip_address == SFD_HANDLE_INVALID)
 	{
-		//prvTraceError(PSF_ERROR_STREAM_PORT_FAIL);
-		configPRINTF( ( "Failed to connect, status: %d\r\n", status) );
+        configPRINTF( ( "no parameter exist: %s\r\n", tracealyzer_server_ip_address_label ) );
+		parameter_not_found_flag++;
 	}
 	else
 	{
-		configPRINTF( ( "Connected.\r\n") );
+		R_SFD_GetObjectValue(sfd_handle_tracealyzer_server_ip_address, (uint8_t **)&tracealyzer_server_ip_address_string, &tracealyzer_server_ip_address_string_length);
+        configPRINTF( ( "parameter found: %s = %s\r\n", tracealyzer_server_ip_address_label, tracealyzer_server_ip_address_string ) );
 	}
+
+	sfd_handle_tracealyzer_server_port_number = R_SFD_FindObject(tracealyzer_server_port_number_label, strlen((char *)tracealyzer_server_port_number_label));
+	if(sfd_handle_tracealyzer_server_port_number == SFD_HANDLE_INVALID)
+	{
+        configPRINTF( ( "no parameter exist: %s\r\n", tracealyzer_server_port_number_label ) );
+		parameter_not_found_flag++;
+	}
+	else
+	{
+		R_SFD_GetObjectValue(sfd_handle_tracealyzer_server_port_number, (uint8_t **)&tracealyzer_server_port_number_string, &tracealyzer_server_port_number_string_length);
+		sscanf((char *)tracealyzer_server_port_number_string, "%d", &tracealyzer_server_port_number);
+        configPRINTF( ( "parameter found: %s = %d\r\n", tracealyzer_server_port_number_label, tracealyzer_server_port_number ) );
+	}
+
+    if(!parameter_not_found_flag)
+    {
+		SOCKETS_Init();
+
+		sock = SOCKETS_Socket(SOCKETS_AF_INET, SOCKETS_SOCK_STREAM, SOCKETS_IPPROTO_TCP);
+
+		configPRINTF( ( "Connecting to %d.%d.%d.%d, port %d\r\n", HOST_IPADDRESS_0, HOST_IPADDRESS_1, HOST_IPADDRESS_2, HOST_IPADDRESS_3, HOST_PORT) );
+
+		addr.ulAddress = IPv4(HOST_IPADDRESS_0, HOST_IPADDRESS_1, HOST_IPADDRESS_2, HOST_IPADDRESS_3);
+		addr.usPort =  SOCKETS_htons(HOST_PORT);
+
+		status = SOCKETS_Connect(sock, &addr, sizeof( SocketsSockaddr_t ) );
+
+		if (status != SOCKETS_ERROR_NONE)
+		{
+			//prvTraceError(PSF_ERROR_STREAM_PORT_FAIL);
+			configPRINTF( ( "Failed to connect, status: %d\r\n", status) );
+		}
+		else
+		{
+			configPRINTF( ( "Connected.\r\n") );
+		}
+    }
 }
 
 

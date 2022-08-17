@@ -75,6 +75,9 @@ Typedef definitions
 #define COMMAND_RESET 4
 #define COMMAND_DATAFLASH 5
 
+#define DATA_FLASH_STORE_SUCCESS "stored data into dataflash correctly.\n"
+#define DATA_FLASH_STORE_FAIL "could not store data into dataflash.\n"
+
 #if !defined(MY_BSP_CFG_AFR_TERM_SCI)
 #error "Error! Need to define MY_BSP_CFG_SERIAL_TERM_SCI in r_bsp_config.h"
 #elif MY_BSP_CFG_SERIAL_TERM_SCI == (0)
@@ -323,7 +326,7 @@ void serial_terminal_task( void * pvParameters )
 											}
 											else
 											{
-							        			sprintf(message_buffer, "could not store data into dataflash.\n");
+							        			sprintf(message_buffer, DATA_FLASH_STORE_FAIL);
 								        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 												break;
 											}
@@ -332,12 +335,12 @@ void serial_terminal_task( void * pvParameters )
 						        			/* +1 means '\0' as a string terminator */
 						        			if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)target, strlen(target), (uint8_t *)sci_buffer, strlen((const char *)sci_buffer) + 1))
 						        			{
-							        			sprintf(message_buffer, "stored data into dataflash correctly.\n");
+							        			sprintf(message_buffer, DATA_FLASH_STORE_SUCCESS);
 								        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 						        			}
 						        			else
 						        			{
-							        			sprintf(message_buffer, "could not store data into dataflash.\n");
+							        			sprintf(message_buffer, DATA_FLASH_STORE_FAIL);
 								        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 						        			}
 											break;
@@ -358,12 +361,12 @@ void serial_terminal_task( void * pvParameters )
 				        			/* +1 means '\0' as a string terminator */
 				        			if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)mqtt_broker_endpoint_label, strlen(mqtt_broker_endpoint_label), (uint8_t *)arg4, strlen((const char *)arg4) + 1))
 				        			{
-					        			sprintf(message_buffer, "stored data into dataflash correctly.\n");
+					        			sprintf(message_buffer, DATA_FLASH_STORE_SUCCESS);
 						        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 				        			}
 				        			else
 				        			{
-					        			sprintf(message_buffer, "could not store data into dataflash.\n");
+					        			sprintf(message_buffer, DATA_FLASH_STORE_FAIL);
 						        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 				        			}
 				        		}
@@ -372,12 +375,12 @@ void serial_terminal_task( void * pvParameters )
 				        			/* +1 means '\0' as a string terminator */
 				        			if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)iot_thing_name_label, strlen(iot_thing_name_label), (uint8_t *)arg4, strlen((const char *)arg4) + 1))
 				        			{
-					        			sprintf(message_buffer, "stored data into dataflash correctly.\n");
+					        			sprintf(message_buffer, DATA_FLASH_STORE_SUCCESS);
 						        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 				        			}
 				        			else
 				        			{
-					        			sprintf(message_buffer, "could not store data into dataflash.\n");
+					        			sprintf(message_buffer, DATA_FLASH_STORE_FAIL);
 						        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 				        			}
 				        		}
@@ -392,12 +395,12 @@ void serial_terminal_task( void * pvParameters )
 			        			/* +1 means '\0' as a string terminator */
 			        			if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)tcp_send_performance_server_ip_address_label, strlen(tcp_send_performance_server_ip_address_label), (uint8_t *)arg3, strlen((const char *)arg3) + 1))
 			        			{
-				        			sprintf(message_buffer, "stored data into dataflash correctly.\n");
+				        			sprintf(message_buffer, DATA_FLASH_STORE_SUCCESS);
 					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 			        			}
 			        			else
 			        			{
-				        			sprintf(message_buffer, "could not store data into dataflash.\n");
+				        			sprintf(message_buffer, DATA_FLASH_STORE_FAIL);
 					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 			        			}
 			        		}
@@ -406,12 +409,40 @@ void serial_terminal_task( void * pvParameters )
 			        			/* +1 means '\0' as a string terminator */
 			        			if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)tcp_send_performance_server_port_number_label, strlen(tcp_send_performance_server_port_number_label), (uint8_t *)arg3, strlen((const char *)arg3) + 1))
 			        			{
-				        			sprintf(message_buffer, "stored data into dataflash correctly.\n");
+				        			sprintf(message_buffer, DATA_FLASH_STORE_SUCCESS);
 					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 			        			}
 			        			else
 			        			{
-				        			sprintf(message_buffer, "could not store data into dataflash.\n");
+				        			sprintf(message_buffer, DATA_FLASH_STORE_FAIL);
+					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+			        			}
+			        		}
+			        		else if((!strcmp((const char *)arg2, "tracealyzerserveripaddress")))
+			        		{
+			        			/* +1 means '\0' as a string terminator */
+			        			if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)tracealyzer_server_ip_address_label, strlen(tracealyzer_server_ip_address_label), (uint8_t *)arg3, strlen((const char *)arg3) + 1))
+			        			{
+				        			sprintf(message_buffer, DATA_FLASH_STORE_SUCCESS);
+					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+			        			}
+			        			else
+			        			{
+				        			sprintf(message_buffer, DATA_FLASH_STORE_FAIL);
+					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+			        			}
+			        		}
+			        		else if((!strcmp((const char *)arg2, "tracealyzerserverportnumber")))
+			        		{
+			        			/* +1 means '\0' as a string terminator */
+			        			if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)tracealyzer_server_port_number_label, strlen(tracealyzer_server_port_number_label), (uint8_t *)arg3, strlen((const char *)arg3) + 1))
+			        			{
+				        			sprintf(message_buffer, DATA_FLASH_STORE_SUCCESS);
+					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+			        			}
+			        			else
+			        			{
+				        			sprintf(message_buffer, DATA_FLASH_STORE_FAIL);
 					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 			        			}
 			        		}

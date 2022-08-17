@@ -54,6 +54,8 @@
 #define DATAFLASH_LABEL_NAME_CODE_SIGNER_CERTIFICATE "code_signer_certificate"
 #define DATAFLASH_LABEL_NAME_TCP_SEND_PERFORMANCE_SERVER_IP_ADDRESS "tcp_send_performance_server_ip_address"
 #define DATAFLASH_LABEL_NAME_TCP_SEND_PERFORMANCE_SERVER_PORT_NUMBER "tcp_send_performance_server_port_number"
+#define DATAFLASH_LABEL_NAME_TRACEALYZER_SERVER_IP_ADDRESS "tracealyzer_server_ip_address"
+#define DATAFLASH_LABEL_NAME_TRACEALYZER_SERVER_PORT_NUMBER "tracealyzer_server_port_number"
 
 #define MAX_HISTORY_FPS_INDEX 300 /* for 3 seconds average */
 
@@ -115,6 +117,8 @@ extern const char mqtt_broker_endpoint_label[];
 extern const char code_signer_certificate_label[];
 extern const char tcp_send_performance_server_ip_address_label[];
 extern const char tcp_send_performance_server_port_number_label[];
+extern const char tracealyzer_server_ip_address_label[];
+extern const char tracealyzer_server_port_number_label[];
 
 extern char *iot_thing_name;
 extern char *mqtt_broker_endpoint;
