@@ -35,17 +35,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-/* for using FIT Module */
-#include "platform.h"
-#include "r_pinset.h"
-#include "r_sys_time_rx_if.h"
-#include "r_gpio_rx_if.h"
-#include "r_flash_rx_if.h"
-#include "r_usb_basic_if.h"
-#include "r_tfat_lib.h"
-#include "r_simple_filesystem_on_dataflash_if.h"
-#include "Pin.h"
-
 /* for using Segger emWin */
 #include "GUI.h"
 #include "DIALOG.h"
@@ -65,7 +54,6 @@ Typedef definitions
 /******************************************************************************
  External variables
  ******************************************************************************/
-xSemaphoreHandle xSemaphoreFlashAccess;
 
 /******************************************************************************
  Private global variables
@@ -109,21 +97,7 @@ TASK_INFO * get_task_info(void);
 void main_task(void)
 {
     uint32_t bank_info;
-
-    /* enable MCU pins */
-    R_Pins_Create();
-
-    /* system timer initialization */
-    R_SYS_TIME_Open();
-
-    /* flash initialization */
-    R_FLASH_Open();
     R_FLASH_Control(FLASH_CMD_BANK_GET, &bank_info);
-    R_SFD_Open();
-
-    /* flash access semaphore creation */
-    xSemaphoreFlashAccess = xSemaphoreCreateMutex();
-    xSemaphoreGive(xSemaphoreFlashAccess);
 
     task_info.main_task_handle = xTaskGetCurrentTaskHandle();
 

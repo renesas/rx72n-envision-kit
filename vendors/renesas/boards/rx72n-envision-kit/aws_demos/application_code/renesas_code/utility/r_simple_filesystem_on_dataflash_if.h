@@ -18,23 +18,26 @@
 * Copyright (C) 2020 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
+#ifndef SFD_HEADER_FILE
+#define SFD_HEADER_FILE
+
 /* Return error codes */
 typedef enum sfd_err_t
 {
     SFD_SUCCESS = 0,
-	SFD_INVALID_ARGUMENT,
-	SFD_END_OF_LIST,
+    SFD_INVALID_ARGUMENT,
+    SFD_END_OF_LIST,
     SFD_FATAL_ERROR
 } sfd_err_t;
 
 typedef uint32_t SFD_HANDLE;
 
-#define SFD_CONTROL_BLOCK_SIZE 6144
+#define SFD_CONTROL_BLOCK_SIZE 14336
 
 #define SFD_HANDLE_INVALID 0xffffffff
 
 #define SFD_HANDLES_LABEL_MAX_LENGTH 40
-#define SFD_OBJECT_HANDLES_NUM 10
+#define SFD_OBJECT_HANDLES_NUM 20
 
 #define SFD_SHA256_LENGTH 32
 
@@ -70,3 +73,5 @@ uint32_t R_SFD_ReadPysicalSize(void);
 uint32_t R_SFD_ReadAllocatedStorageSize(void);
 uint32_t R_SFD_ReadFreeSize(void);
 sfd_err_t R_SFD_Close(void);
+
+#endif

@@ -47,4 +47,4 @@ char *iot_thing_name;
 char *mqtt_broker_endpoint;
 char *signing_certificate_pem;
 
-xSemaphoreHandle xSemaphoreFlashing;
+xSemaphoreHandle xSemaphoreCodeFlashAccess;

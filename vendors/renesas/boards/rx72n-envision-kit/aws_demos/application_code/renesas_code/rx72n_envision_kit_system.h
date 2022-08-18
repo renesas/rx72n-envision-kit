@@ -43,8 +43,16 @@
 #include <string.h>
 #include <stdlib.h>
 
-/* for RX Family FIT */
+/* for using FIT Module */
+#include "platform.h"
+#include "r_pinset.h"
 #include "r_sys_time_rx_if.h"
+#include "r_gpio_rx_if.h"
+#include "r_flash_rx_if.h"
+#include "r_usb_basic_if.h"
+#include "r_tfat_lib.h"
+#include "r_simple_filesystem_on_dataflash_if.h"
+#include "Pin.h"
 
 #define DATAFLASH_LABEL_NAME_TIMEZONE "timezone"
 #define DATAFLASH_LABEL_NAME_CLIENT_PRIVATE_KEY "client_private_key"
@@ -124,6 +132,6 @@ extern char *iot_thing_name;
 extern char *mqtt_broker_endpoint;
 extern char *signing_certificate_pem;
 
-extern xSemaphoreHandle xSemaphoreFlashing;
+extern xSemaphoreHandle xSemaphoreCodeFlashAccess;
 
 extern TASK_INFO * get_task_info(void);

@@ -470,6 +470,18 @@ void serial_terminal_task( void * pvParameters )
 					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 				        			memcpy(message_buffer, data, data_length);
 				        			message_buffer[data_length] = 0;
+                                    for(int i = 0; i < strlen(message_buffer); i++)
+                                    {
+                                        if((message_buffer[i] < 0x20) || (message_buffer[i] > 0x7e))
+                                        {
+                                            if((message_buffer[i] != 0x0a) && (message_buffer[i] != 0x0d))
+                                            {
+                                                strcpy(message_buffer, "Could not print: <binary data> is included.");
+                                                message_buffer[strlen(message_buffer)] = 0;
+                                                break;
+                                            }
+                                        }
+                                    }
 					        		display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
 					        		vTaskDelay(100); /* 長い文字列をSCI(UART)出力した際に最後のほうが出力されない。完了待ちの方法が不明なためとりあえず時間待ち */
 				        			sprintf(message_buffer, "\n");

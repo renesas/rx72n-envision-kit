@@ -358,10 +358,10 @@ OtaPalStatus_t otaPal_Abort( OtaFileContext_t * const pFileContext )
             xQueue = NULL;
         }
 
-        if( NULL != xSemaphoreFlashing )
+        if( NULL != xSemaphoreCodeFlashAccess )
         {
-            vSemaphoreDelete( xSemaphoreFlashing );
-            xSemaphoreFlashing = NULL;
+            vSemaphoreDelete( xSemaphoreCodeFlashAccess );
+            xSemaphoreCodeFlashAccess = NULL;
         }
 
         if( NULL != xSemaphoreWriteBlock )
@@ -519,10 +519,10 @@ OtaPalStatus_t otaPal_CloseFile( OtaFileContext_t * const pFileContext )
             xQueue = NULL;
         }
 
-        if( NULL != xSemaphoreFlashing )
+        if( NULL != xSemaphoreCodeFlashAccess )
         {
-            vSemaphoreDelete( xSemaphoreFlashing );
-            xSemaphoreFlashing = NULL;
+            vSemaphoreDelete( xSemaphoreCodeFlashAccess );
+            xSemaphoreCodeFlashAccess = NULL;
         }
 
         if( NULL != xSemaphoreWriteBlock )
@@ -566,7 +566,7 @@ static OtaPalStatus_t otaPal_CheckFileSignature( OtaFileContext_t * const pFileC
             /* Replace length bytes from offset. */
             memcpy( &assembled_flash_buffer[ tmp->content.offset ], tmp->content.binary, tmp->content.length );
             /* Flashing memory. */
-            xSemaphoreTake( xSemaphoreFlashing, portMAX_DELAY );
+            xSemaphoreTake( xSemaphoreCodeFlashAccess, portMAX_DELAY );
             R_FLASH_Close();
             R_FLASH_Open();
             cb_func_info.pcallback = ota_header_flashing_callback;
@@ -584,7 +584,7 @@ static OtaPalStatus_t otaPal_CheckFileSignature( OtaFileContext_t * const pFileC
             {
             }
 
-            xSemaphoreGive( xSemaphoreFlashing );
+            xSemaphoreGive( xSemaphoreCodeFlashAccess );
             load_firmware_control_block.total_image_length += tmp->content.length;
             tmp = fragmented_flash_block_list_delete( tmp, tmp->content.offset );
         }
@@ -592,8 +592,8 @@ static OtaPalStatus_t otaPal_CheckFileSignature( OtaFileContext_t * const pFileC
     }
     else
     {
-    	xSemaphoreTake( xSemaphoreFlashing, portMAX_DELAY );
-        xSemaphoreGive( xSemaphoreFlashing );
+    	xSemaphoreTake( xSemaphoreCodeFlashAccess, portMAX_DELAY );
+        xSemaphoreGive( xSemaphoreCodeFlashAccess );
     }
 
     /* Verify an ECDSA-SHA256 signature. */
@@ -1347,7 +1347,7 @@ static void ota_flashing_task( void * pvParameters )
     while( 1 )
     {
         xQueueReceive( xQueue, &packet_block_for_queue2, portMAX_DELAY );
-        xSemaphoreTake( xSemaphoreFlashing, portMAX_DELAY );
+        xSemaphoreTake( xSemaphoreCodeFlashAccess, portMAX_DELAY );
         memcpy( block, packet_block_for_queue2.p_packet, packet_block_for_queue2.length );
         ulOffset = packet_block_for_queue2.ulOffset;
         length = packet_block_for_queue2.length;
@@ -1380,7 +1380,7 @@ static void ota_flashing_callback( void * event )
     }
 
     static portBASE_TYPE xHigherPriorityTaskWoken;
-    xSemaphoreGiveFromISR( xSemaphoreFlashing, &xHigherPriorityTaskWoken );
+    xSemaphoreGiveFromISR( xSemaphoreCodeFlashAccess, &xHigherPriorityTaskWoken );
 }
 
 static void ota_header_flashing_callback( void * event )

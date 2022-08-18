@@ -2247,7 +2247,7 @@
           <Option>-nologo</Option>
           <Option>-library="${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_tfat_rx/lib/tfat_rx600_little.lib"</Option>
           <Option>-library="${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen/r_emwin_rx/lib/GUI/emWinLib_CCRX.lib"</Option>
-          <Option>-start=B_ETHERNET_BUFFERS_1,B_RX_DESC_1,B_TX_DESC_1,R,R_1,R_2,R_8,B_8,B,B_1,B_2,RPFRAM2*,SU,SI/0,C_BOOTLOADER_KEY_STORAGE*/0100000,C_PKCS11_STORAGE*/0100800,C_SYSTEM_CONFIG*/0104800,C_1,C_2,C,C_8,C$*,D*,W*,L,P*/0FFE00300,EXCEPTVECT/0FFFBFF80,RESETVECT/0FFFBFFFC</Option>
+          <Option>-start=B_ETHERNET_BUFFERS_1,B_RX_DESC_1,B_TX_DESC_1,R,R_1,R_2,R_8,B_8,B,B_1,B_2,RPFRAM2*,SU,SI/0,C_BOOTLOADER_KEY_STORAGE*/0100000,C_SYSTEM_CONFIG*/0100800,C_1,C_2,C,C_8,C$*,D*,W*,L,P*/0FFE00300,EXCEPTVECT/0FFFBFF80,RESETVECT/0FFFBFFFC</Option>
           <Option>-end</Option>
           <Option>-output="${ProjName}.mot"</Option>
           <Option>-form=stype</Option>

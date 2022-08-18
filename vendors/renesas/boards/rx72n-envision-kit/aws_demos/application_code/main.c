@@ -132,8 +132,19 @@ static void prvMiscInitialization( void )
     /* Initialize UART for serial terminal. */
     uart_config();
 
-    xSemaphoreFlashing = xSemaphoreCreateBinary();
-    xSemaphoreGive( xSemaphoreFlashing );
+    /* enable MCU pins */
+    R_Pins_Create();
+
+    /* system timer initialization */
+    R_SYS_TIME_Open();
+
+    /* flash initialization */
+    R_FLASH_Open();
+    R_SFD_Open();
+
+    /* flash access semaphore creation */
+    xSemaphoreCodeFlashAccess = xSemaphoreCreateBinary();
+    xSemaphoreGive(xSemaphoreCodeFlashAccess);
 
     /* Start logging task. */
     xLoggingTaskInitialize( mainLOGGING_TASK_STACK_SIZE,
