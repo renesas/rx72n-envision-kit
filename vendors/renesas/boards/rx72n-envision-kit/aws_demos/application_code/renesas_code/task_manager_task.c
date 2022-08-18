@@ -77,13 +77,13 @@ void task_manager_task( void * pvParameters );
  ******************************************************************************/
 void task_manager_task( void * pvParameters )
 {
-	TASK_INFO *task_info = (WM_HWIN *)pvParameters;
+    TASK_INFO *task_info = (WM_HWIN *)pvParameters;
 
     /* wait completing gui initializing */
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
     while(1)
     {
-    	vTaskDelay(1);
+        vTaskDelay(1);
     }
 }

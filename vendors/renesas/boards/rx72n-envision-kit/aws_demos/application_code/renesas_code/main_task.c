@@ -49,7 +49,7 @@
 /**********************************************************************************************************************
 Typedef definitions
 **********************************************************************************************************************/
-#define RX72N_ENVISION_KIT_TASKS_STACK	1024
+#define RX72N_ENVISION_KIT_TASKS_STACK    1024
 
 /******************************************************************************
  External variables
@@ -134,10 +134,10 @@ void main_task(void)
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
     /* notify completing GUI initialization and first touch to each tasks */
-	xTaskNotifyGive(task_info.serial_terminal_task_handle);
-	xTaskNotifyGive(task_info.sdcard_task_handle);
-	xTaskNotifyGive(task_info.task_manager_task_handle);
-	xTaskNotifyGive(task_info.serial_flash_task_handle);
+    xTaskNotifyGive(task_info.serial_terminal_task_handle);
+    xTaskNotifyGive(task_info.sdcard_task_handle);
+    xTaskNotifyGive(task_info.task_manager_task_handle);
+    xTaskNotifyGive(task_info.serial_flash_task_handle);
 
     /* We should wait for the network to be up before we run any demos. */
     while( FreeRTOS_IsNetworkUp() == pdFALSE )
@@ -145,9 +145,9 @@ void main_task(void)
         vTaskDelay(300);
     }
 
-	/* start tracealyzer */
-	vTraceEnable(TRC_INIT);
-	vTraceEnable(TRC_START);
+    /* start tracealyzer */
+    vTraceEnable(TRC_INIT);
+    vTraceEnable(TRC_START);
 
     /* main loop */
     while(1)
@@ -168,12 +168,12 @@ void firmware_version_read(char **ver_str)
 
 void amazon_freertos_syslog_putstring(char *string)
 {
-	display_syslog_putstring(task_info.hWin_system_log, string);
+    display_syslog_putstring(task_info.hWin_system_log, string);
 }
 
 TASK_INFO * get_task_info(void)
 {
-	return &task_info;
+    return &task_info;
 }
 
 /******************************************************************************

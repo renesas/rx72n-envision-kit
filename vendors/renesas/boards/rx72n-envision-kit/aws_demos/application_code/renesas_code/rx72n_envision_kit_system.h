@@ -73,47 +73,47 @@ Typedef definitions
 
 typedef struct _task_info
 {
-	/* for FreeRTOS */
-	TaskHandle_t main_task_handle;
-	TaskHandle_t serial_terminal_task_handle;
-	TaskHandle_t gui_task_handle;
-	TaskHandle_t sdcard_task_handle;
-	TaskHandle_t task_manager_task_handle;
-	TaskHandle_t sntp_task_handle;
-	TaskHandle_t tcp_send_performance_task_handle;
-	TaskHandle_t tcp_receive_performance_task_handle;
-	TaskHandle_t serial_flash_task_handle;
-	TaskHandle_t audio_task_handle;
+    /* for FreeRTOS */
+    TaskHandle_t main_task_handle;
+    TaskHandle_t serial_terminal_task_handle;
+    TaskHandle_t gui_task_handle;
+    TaskHandle_t sdcard_task_handle;
+    TaskHandle_t task_manager_task_handle;
+    TaskHandle_t sntp_task_handle;
+    TaskHandle_t tcp_send_performance_task_handle;
+    TaskHandle_t tcp_receive_performance_task_handle;
+    TaskHandle_t serial_flash_task_handle;
+    TaskHandle_t audio_task_handle;
 
-	/* for emWin */
-	WM_HWIN hWin_serial_terminal;
-	WM_HWIN hWin_d2_audio;
-	WM_HWIN hWin_firmware_update_via_sd_card;
-	WM_HWIN hWin_task_manager;
-	WM_HWIN hWin_system_log;
-	WM_HWIN hWin_frame;
-	WM_HWIN hWin_title_logo;
+    /* for emWin */
+    WM_HWIN hWin_serial_terminal;
+    WM_HWIN hWin_d2_audio;
+    WM_HWIN hWin_firmware_update_via_sd_card;
+    WM_HWIN hWin_task_manager;
+    WM_HWIN hWin_system_log;
+    WM_HWIN hWin_frame;
+    WM_HWIN hWin_title_logo;
 
-	/* for demo system time */
-	SYS_TIME sys_time;
+    /* for demo system time */
+    SYS_TIME sys_time;
 
-	/* for cpuload info */
-	uint32_t cpu_load;
+    /* for cpuload info */
+    uint32_t cpu_load;
 
-	/* for sd card info */
-	uint32_t sd_status;		// attach = 1 or detach = 0 (default)
+    /* for sd card info */
+    uint32_t sd_status;        // attach = 1 or detach = 0 (default)
 
-	/* for IP address info (4bytes array pointer) */
-	uint8_t *ip_address;
+    /* for IP address info (4bytes array pointer) */
+    uint8_t *ip_address;
 
-	/* for frame per second info */
-	float history_fps[MAX_HISTORY_FPS_INDEX];
-	uint32_t history_fps_index;
-	float current_fps;
-	float average_fps;
+    /* for frame per second info */
+    float history_fps[MAX_HISTORY_FPS_INDEX];
+    uint32_t history_fps_index;
+    float current_fps;
+    float average_fps;
 
-	/* system flag */
-	volatile uint32_t gui_initialize_complete_flag;
+    /* system flag */
+    volatile uint32_t gui_initialize_complete_flag;
 
 }TASK_INFO;
 

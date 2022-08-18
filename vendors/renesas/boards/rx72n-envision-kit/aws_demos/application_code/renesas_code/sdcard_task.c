@@ -85,7 +85,7 @@ extern void display_update_sd_stat(WM_HWIN hWin, int8_t sd_stat);
 
 void sdcard_task( void * pvParameters )
 {
-	TASK_INFO *task_info = (WM_HWIN *)pvParameters;
+    TASK_INFO *task_info = (WM_HWIN *)pvParameters;
 
     /* wait completing gui initializing */
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
@@ -119,7 +119,7 @@ void sdcard_task( void * pvParameters )
             previous_sdc_sd_card_detection = sdc_sd_card_detection;
             if(SDC_SD_SUCCESS == sdc_sd_card_detection)
             {
-                task_info->sd_status = 1;	/* 1 means attach */
+                task_info->sd_status = 1;    /* 1 means attach */
                 r_sdc_sdmem_demo_power_on(g_sdc_sd_card_no);
                 R_SDHI_PinSetTransfer();
                 R_SDC_SD_IntCallback(g_sdc_sd_card_no, r_sdc_sd_callback);
@@ -135,7 +135,7 @@ void sdcard_task( void * pvParameters )
             }
             else
             {
-                task_info->sd_status = 0;	/* 0 means detach */
+                task_info->sd_status = 0;    /* 0 means detach */
                 previous_sdc_sd_card_detection = sdc_sd_card_detection;
                 if(SDC_SD_SUCCESS != sdc_sd_card_detection)
                 {
@@ -230,7 +230,7 @@ sdc_sd_status_t r_sdc_sd_callback(int32_t channel)
 static void R_error(uint8_t err_code)
 {
     uint8_t    i= 1;
-	/* TFAT error, nothing to do */
+    /* TFAT error, nothing to do */
     switch (err_code)
     {
         case 1:
