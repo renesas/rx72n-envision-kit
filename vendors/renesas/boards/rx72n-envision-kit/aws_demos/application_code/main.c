@@ -138,6 +138,11 @@ static void prvMiscInitialization( void )
     /* system timer initialization */
     R_SYS_TIME_Open();
 
+    /* Start logging task. */
+    xLoggingTaskInitialize( mainLOGGING_TASK_STACK_SIZE,
+                            tskIDLE_PRIORITY,
+                            mainLOGGING_MESSAGE_QUEUE_LENGTH );
+
     /* flash initialization */
     R_FLASH_Open();
     R_SFD_Open();
@@ -145,11 +150,6 @@ static void prvMiscInitialization( void )
     /* flash access semaphore creation */
     xSemaphoreCodeFlashAccess = xSemaphoreCreateBinary();
     xSemaphoreGive(xSemaphoreCodeFlashAccess);
-
-    /* Start logging task. */
-    xLoggingTaskInitialize( mainLOGGING_TASK_STACK_SIZE,
-                            tskIDLE_PRIORITY,
-                            mainLOGGING_MESSAGE_QUEUE_LENGTH );
 }
 /*-----------------------------------------------------------*/
 

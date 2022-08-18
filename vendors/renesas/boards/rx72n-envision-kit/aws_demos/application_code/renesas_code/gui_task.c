@@ -143,7 +143,6 @@ void gui_task( void * pvParameters )
     APPW_X_Setup();
     APPW_Init(APPW_PROJECT_PATH);
     APPW_CreateRoot(APPW_INITIAL_SCREEN, WM_HBKWIN);
-    WM_MULTIBUF_Enable(1);
 
     /* GUI initialize complete */
     task_info->gui_initialize_complete_flag = 1;

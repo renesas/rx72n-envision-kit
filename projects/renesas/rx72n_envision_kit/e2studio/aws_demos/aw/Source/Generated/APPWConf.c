@@ -71,7 +71,7 @@ static unsigned _NumVars = GUI_COUNTOF(_aVarList);
 *
 *       Multibuffering
 */
-static U8 _MultibufEnable = 0;
+static U8 _MultibufEnable = 1;
 
 /*********************************************************************
 *

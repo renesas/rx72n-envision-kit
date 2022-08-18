@@ -88,7 +88,7 @@ void sntp_task( void * pvParameters )
     UTCTime_t systemTime;
 	uint32_t unix_time;
     SFD_HANDLE sfd_handle_timezone;
-	uint8_t *timezone;
+	uint8_t *timezone, *timezone_tmp;
 	uint32_t timezone_length;
 	TASK_INFO *task_info = pvParameters;
 
@@ -109,7 +109,9 @@ void sntp_task( void * pvParameters )
 	{
 		sfd_handle_timezone = R_SFD_SaveObject((uint8_t *)timezone_label, strlen((char *)timezone_label), SYS_TIME_UTC_PLUS_0900, strlen((char *)SYS_TIME_UTC_PLUS_0900) + 1); /* +1 means string terminator '\0' */
 	}
-	R_SFD_GetObjectValue(sfd_handle_timezone, (uint8_t **)&timezone, &timezone_length);
+	R_SFD_GetObjectValue(sfd_handle_timezone, (uint8_t **)&timezone_tmp, &timezone_length);
+	timezone = pvPortMalloc(timezone_length);
+	strncpy(timezone, timezone_tmp, timezone_length);
 
     while( 1 )
     {
@@ -124,10 +126,13 @@ void sntp_task( void * pvParameters )
         unix_time = systemTime.secs;
         if(SYS_TIME_ERR_BAD_TIME_OFFSET == R_SYS_TIME_ConvertUnixTimeToSystemTime(unix_time, &task_info->sys_time, timezone))
         {
-    		sfd_handle_timezone = R_SFD_SaveObject((uint8_t *)timezone_label, strlen((char *)timezone_label), SYS_TIME_UTC, strlen((char *)SYS_TIME_UTC));
+    		configPRINTF(("Bad timezone is set: %s", timezone));
+    		vTaskDelay(1000);
         }
-        R_SYS_TIME_SetCurrentTime(&task_info->sys_time);
-
+        else
+        {
+            R_SYS_TIME_SetCurrentTime(&task_info->sys_time);
+        }
         vTaskDelay( pdMS_TO_TICKS( CLOCK_QUERY_TASK_DELAY_MS ) );
     }
 }
