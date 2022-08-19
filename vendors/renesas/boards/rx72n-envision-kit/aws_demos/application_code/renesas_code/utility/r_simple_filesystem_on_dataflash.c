@@ -174,6 +174,11 @@ sfd_err_t R_SFD_Open(void)
     {
         xSemaphoreDataFlashAccess = xSemaphoreCreateBinary();
         xSemaphoreGive(xSemaphoreDataFlashAccess);
+
+        sfd_control_block_data_image = pvPortMalloc(sizeof(SFD_CONTROL_BLOCK));
+        /* copy data from storage to ram */
+        memcpy(sfd_control_block_data_image, (void *)&sfd_control_block_data, sizeof(SFD_CONTROL_BLOCK));
+
         initialized_flag = 1;
     }
 
@@ -344,7 +349,10 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
 
 sfd_err_t R_SFD_Close(void)
 {
-    /* nothing to do */
+#if defined BSP_CFG_RTOS_USED == 1 /* FreeRTOS */
+    vPortFree(sfd_control_block_data_image);
+    xSemaphoreGive( xSemaphoreDataFlashAccess );
+#endif
     return SFD_SUCCESS;
 }
 
@@ -874,9 +882,6 @@ void semaphore_take(void)
     /* please implement own exclusive processing on each functions, if there are no code, please do not call following functions in multiply. */
 #elif defined BSP_CFG_RTOS_USED == 1 /* FreeRTOS */
     xSemaphoreTake( xSemaphoreDataFlashAccess, portMAX_DELAY );
-    sfd_control_block_data_image = pvPortMalloc(sizeof(SFD_CONTROL_BLOCK));
-    /* copy data from storage to ram */
-    memcpy(sfd_control_block_data_image, (void *)&sfd_control_block_data, sizeof(SFD_CONTROL_BLOCK));
 #endif
 }
 
@@ -885,7 +890,6 @@ void semaphore_give(void)
 #if defined BSP_CFG_RTOS_USED == 0 /* None-OS */
     /* please implement own exclusive processing on each functions, if there are no code, please do not call following functions in multiply. */
 #elif defined BSP_CFG_RTOS_USED == 1 /* FreeRTOS */
-    vPortFree(sfd_control_block_data_image);
     xSemaphoreGive( xSemaphoreDataFlashAccess );
 #endif
 }
