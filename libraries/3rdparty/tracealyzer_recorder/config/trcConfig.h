@@ -331,7 +331,7 @@ extern "C" {
  * not created if stack monitoring is disabled. TRC_CFG_CTRL_TASK_PRIORITY should
  * be low, to avoid disturbing any time-sensitive tasks.
  ******************************************************************************/
-#define TRC_CFG_CTRL_TASK_PRIORITY 1
+#define TRC_CFG_CTRL_TASK_PRIORITY configMAX_PRIORITIES - 1
 
  /*******************************************************************************
  * Configuration Macro: TRC_CFG_CTRL_TASK_DELAY
@@ -344,7 +344,7 @@ extern "C" {
  * increases the CPU load of TzCtrl somewhat, but may improve the performance of
  * of the trace streaming, especially if the trace buffer is small.
  ******************************************************************************/
-#define TRC_CFG_CTRL_TASK_DELAY 10
+#define TRC_CFG_CTRL_TASK_DELAY 1
 
  /*******************************************************************************
  * Configuration Macro: TRC_CFG_CTRL_TASK_STACK_SIZE
@@ -370,7 +370,7 @@ extern "C" {
  * The custom mode allows you to control how and where the allocation is made,
  * for details see TRC_ALLOC_CUSTOM_BUFFER and vTraceSetRecorderDataBuffer().
  ******************************************************************************/
-#define TRC_CFG_RECORDER_BUFFER_ALLOCATION TRC_RECORDER_BUFFER_ALLOCATION_STATIC
+#define TRC_CFG_RECORDER_BUFFER_ALLOCATION TRC_RECORDER_BUFFER_ALLOCATION_DYNAMIC
 
 /******************************************************************************
  * TRC_CFG_MAX_ISR_NESTING
