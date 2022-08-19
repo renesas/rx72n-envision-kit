@@ -292,7 +292,7 @@ extern "C" {
  *
  * Default value is 10.
  *****************************************************************************/
-#define TRC_CFG_STACK_MONITOR_MAX_TASKS 20
+#define TRC_CFG_STACK_MONITOR_MAX_TASKS 30
 
  /******************************************************************************
  * TRC_CFG_STACK_MONITOR_MAX_REPORTS
@@ -331,7 +331,7 @@ extern "C" {
  * not created if stack monitoring is disabled. TRC_CFG_CTRL_TASK_PRIORITY should
  * be low, to avoid disturbing any time-sensitive tasks.
  ******************************************************************************/
-#define TRC_CFG_CTRL_TASK_PRIORITY configMAX_PRIORITIES - 1
+#define TRC_CFG_CTRL_TASK_PRIORITY 1
 
  /*******************************************************************************
  * Configuration Macro: TRC_CFG_CTRL_TASK_DELAY
@@ -344,7 +344,7 @@ extern "C" {
  * increases the CPU load of TzCtrl somewhat, but may improve the performance of
  * of the trace streaming, especially if the trace buffer is small.
  ******************************************************************************/
-#define TRC_CFG_CTRL_TASK_DELAY 1
+#define TRC_CFG_CTRL_TASK_DELAY 10
 
  /*******************************************************************************
  * Configuration Macro: TRC_CFG_CTRL_TASK_STACK_SIZE
