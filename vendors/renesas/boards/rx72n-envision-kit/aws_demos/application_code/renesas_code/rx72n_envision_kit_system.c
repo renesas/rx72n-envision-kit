@@ -48,3 +48,4 @@ char *mqtt_broker_endpoint;
 char *signing_certificate_pem;
 
 xSemaphoreHandle xSemaphoreCodeFlashAccess;
+FATFS fatfs;

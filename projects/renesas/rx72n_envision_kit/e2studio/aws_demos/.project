@@ -235,11 +235,6 @@
 			<locationURI>AWS_IOT_MCU_ROOT/vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code/gui_task.c</locationURI>
 		</link>
 		<link>
-			<name>application_code/renesas_code/guibuilder_output</name>
-			<type>2</type>
-			<locationURI>AWS_IOT_MCU_ROOT/vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code/guibuilder_output</locationURI>
-		</link>
-		<link>
 			<name>application_code/renesas_code/key</name>
 			<type>2</type>
 			<locationURI>AWS_IOT_MCU_ROOT/vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code/key</locationURI>

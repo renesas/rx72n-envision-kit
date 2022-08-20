@@ -77,8 +77,6 @@ extern void tcp_receive_performance_task( void * pvParameters );
 extern void serial_flash_task( void * pvParameters );
 extern void audio_task( void * pvParameters );
 
-extern void display_syslog_putstring(WM_HWIN hWin_handle, char *string);
-
 /*******************************************************************************
  global variables and functions
 ********************************************************************************/
@@ -168,7 +166,7 @@ void firmware_version_read(char **ver_str)
 
 void amazon_freertos_syslog_putstring(char *string)
 {
-    display_syslog_putstring(task_info.hWin_system_log, string);
+//    display_syslog_putstring(task_info.hWin_system_log, string);
 }
 
 TASK_INFO * get_task_info(void)

@@ -86,7 +86,6 @@ static void demo_window_display_previous(DEMO_WINDOW_LIST *pdemo_window_list_hea
 static void demo_window_display_next(DEMO_WINDOW_LIST *pdemo_window_list_head);
 
 static void main_10ms_display_update(TASK_INFO *task_info);
-static void main_100ms_display_update(TASK_INFO *task_info);
 static void main_1s_display_update(TASK_INFO *task_info);
 
 static int32_t next_button_id, prev_button_id;
@@ -94,28 +93,15 @@ static int32_t next_button_id, prev_button_id;
 /******************************************************************************
  External functions
  ******************************************************************************/
-extern WM_HWIN CreateFrameWindow(void);
-extern WM_HWIN CreateSystemLogWindow(void);
-extern WM_HWIN CreateTaskManager(void);
-extern WM_HWIN CreateFirmwareUpdateViaSDCard(void);
-extern WM_HWIN CreateTitleLogoWindow(void);
-extern WM_HWIN CreateFirmwareUpdateWindow(void);
-extern WM_HWIN CreateSerialTerminalWindow(void);
 
 extern void display_update_usb_stat(WM_HWIN hWin, int8_t usb_stat);
 extern void display_update_sd_stat(WM_HWIN hWin, int8_t sd_stat);
 extern void display_update_ip_stat(WM_HWIN hWin, uint8_t *ip_address);
 extern void display_update_time(WM_HWIN hWin, SYS_TIME *sys_time);
-extern void display_update_demo_name(WM_HWIN hWin, char *demo_name);
 extern void display_syslog_putstring(WM_HWIN hWin, char *string);
 extern void display_update_cpu_load(WM_HWIN hWin, uint32_t cpu_load);
 extern void display_update_freertos_ram(WM_HWIN hWin, int32_t remaining, int32_t max);
 extern void display_update_ip_stat(WM_HWIN hWin, uint8_t *ip_address);
-
-extern int get_prev_button_id(void);
-extern int get_next_button_id(void);
-extern int frame_next_button_enable(WM_HWIN hWin, uint8_t onoff);
-extern int frame_prev_button_enable(WM_HWIN hWin, uint8_t onoff);
 
 extern void vTaskGetCombinedRunTimeStats( char* pcWriteBuffer,  UBaseType_t uxClear);
 extern void vTaskClearUsage(void);
@@ -172,15 +158,10 @@ void gui_task( void * pvParameters )
     task_info->hWin_title_logo = CreateTitleLogoWindow();
     demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_title_logo, task_info->hWin_frame, DEMO_NAME_TITLE_LOGO);
 #endif
-    /* get each GUI IDs */
-    prev_button_id = get_prev_button_id();
-    next_button_id = get_next_button_id();
-
     /* notify completing GUI initialization and first touch to main task */
     xTaskNotifyGive(task_info->main_task_handle);
 
     main_10ms_display_update(task_info);
-    main_100ms_display_update(task_info);
     main_1s_display_update(task_info);
 
     while(1)
@@ -190,7 +171,6 @@ void gui_task( void * pvParameters )
         if(counter_10ms > 10)
         {
             counter_10ms = 0;
-            main_100ms_display_update(task_info);
             counter_100ms++;
             if(counter_100ms > 10)
             {
@@ -230,46 +210,6 @@ void main_10ms_display_update(TASK_INFO *task_info)
     else
     {
         /* nothing to do */
-    }
-}
-
-void main_100ms_display_update(TASK_INFO *task_info)
-{
-    DEMO_WINDOW_LIST *p;
-    static DEMO_WINDOW_LIST *prev_p;
-
-    R_SYS_TIME_GetCurrentTime(&task_info->sys_time);
-
-    display_update_time(task_info->hWin_frame, &task_info->sys_time);
-
-    p = demo_window_list_head;
-    while(1)
-    {
-        if(p->current_displayed)
-        {
-            if(prev_p != p)
-            {
-                prev_p = p;
-                display_update_demo_name(task_info->hWin_frame, p->demo_name);
-                WM_BringToTop(p->demo_window_handle);
-                if(p->demo_window_handle != task_info->hWin_title_logo)
-                {
-                    WM_DeleteWindow(task_info->hWin_title_logo);
-                }
-            }
-            break;
-        }
-        else
-        {
-            if(p->next == 0)
-            {
-                break;
-            }
-            else
-            {
-                p = p->next;
-            }
-        }
     }
 }
 
@@ -326,182 +266,3 @@ void main_1s_display_update(TASK_INFO *task_info)
     vPortFree(stats_buffer);
 }
 
-void emWinCallback(WM_MESSAGE * pMsg)
-{
-
-}
-
-void callback_frame_window_to_main(int32_t id, int32_t event)
-{
-    if(id == next_button_id)
-    {
-        if(event == WM_NOTIFICATION_CLICKED)
-        {
-            demo_window_display_next(demo_window_list_head);
-        }
-    }
-    else if(id == prev_button_id)
-    {
-        if(event == WM_NOTIFICATION_CLICKED)
-        {
-            demo_window_display_previous(demo_window_list_head);
-        }
-    }
-}
-
-void delete_window_to_main(WM_HWIN delete_handle)
-{
-    DEMO_WINDOW_LIST *p;
-    DEMO_WINDOW_LIST *pbefore;
-
-    p = demo_window_list_head; /*global */
-    pbefore = NULL;
-    if(p != NULL)
-    {
-        while (p->next != NULL)
-        {
-            if(p->demo_window_handle == delete_handle)
-            {
-                break;
-            }
-            if(pbefore == NULL)
-            {
-                pbefore = demo_window_list_head;
-            }
-            else
-            {
-                pbefore = p;
-            }
-            p = p->next;
-        }
-        if(p->next == NULL)
-        {
-            return;
-        }
-        if(pbefore != NULL)
-        {
-            pbefore->next = p->next;
-            if(p->current_displayed == 1)
-            {
-                pbefore->current_displayed = 1;
-            }
-        }
-        else
-        {
-            demo_window_list_head = p->next;
-            if(p->current_displayed == 1)
-            {
-                demo_window_list_head->current_displayed = 1;
-            }
-        }
-        free(p);
-    }
-}
-
-
-static DEMO_WINDOW_LIST* demo_window_add_list(DEMO_WINDOW_LIST *pdemo_window_list_head, WM_HWIN new_handle, WM_HWIN frame_handle, char *demo_name)
-{
-    DEMO_WINDOW_LIST *p;
-
-    p = malloc(sizeof(DEMO_WINDOW_LIST));
-    if(p == 0)
-    {
-        /* malloc error, nothing to do */
-    }
-    else
-    {
-        p->demo_window_handle = new_handle;
-        p->frame_window_handle = frame_handle;
-        strcpy(p->demo_name, demo_name);
-        if(pdemo_window_list_head == NULL)
-        {
-            p->current_displayed = 1;
-            p->next = NULL;
-        }
-        else
-        {
-            p->next = pdemo_window_list_head;
-            pdemo_window_list_head = p;
-            p = pdemo_window_list_head;
-            pdemo_window_list_head->current_displayed = 1;
-            pdemo_window_list_head->next->current_displayed = 0;
-        }
-    }
-    return p;
-}
-
-static void demo_window_free_list(DEMO_WINDOW_LIST *pdemo_window_list_head)
-{
-    DEMO_WINDOW_LIST *p;
-
-    if(pdemo_window_list_head != NULL)
-    {
-        while (pdemo_window_list_head->next != NULL)
-        {
-            p = pdemo_window_list_head->next;
-            free(pdemo_window_list_head);
-            pdemo_window_list_head = p;
-        }
-        pdemo_window_list_head = 0;
-    }
-}
-
-static void demo_window_display_previous(DEMO_WINDOW_LIST *pdemo_window_list_head)
-{
-    DEMO_WINDOW_LIST *p, *p_prev;
-    p = pdemo_window_list_head;
-
-    while (1)
-    {
-        if(p->current_displayed)
-        {
-            break;
-        }
-        p_prev = p;
-        p = p->next;
-    }
-
-    if(p == pdemo_window_list_head)
-    {
-        /* nothing to do */
-    }
-    else
-    {
-        p_prev->current_displayed = 1;
-        p->current_displayed = 0;
-        if(p_prev->demo_window_handle == pdemo_window_list_head->demo_window_handle)
-        {
-            frame_prev_button_enable(p->frame_window_handle, 0);
-        }
-    }
-}
-
-static void demo_window_display_next(DEMO_WINDOW_LIST *pdemo_window_list_head)
-{
-    DEMO_WINDOW_LIST *p;
-
-    p = pdemo_window_list_head;
-
-    while (1)
-    {
-        if(p->current_displayed)
-        {
-            break;
-        }
-        p = p->next;
-    }
-
-    if(p->next == 0)
-    {
-        /* nothing to do */
-    }
-    else
-    {
-        (p->next)->current_displayed = 1;
-        p->current_displayed = 0;
-        if((p->next)->next == NULL)
-        {
-            frame_next_button_enable(p->frame_window_handle, 0);
-        }
-    }
-}

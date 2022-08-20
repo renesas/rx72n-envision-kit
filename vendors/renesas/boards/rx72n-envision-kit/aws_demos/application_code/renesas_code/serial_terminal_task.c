@@ -143,7 +143,7 @@ Typedef definitions
 /******************************************************************************
  Private global variables
  ******************************************************************************/
-static void display_serial_terminal_putstring_with_uart(WM_HWIN hWin_handle, sci_hdl_t sci_handle, char *string);
+static void serial_terminal_putstring(WM_HWIN hWin_handle, sci_hdl_t sci_handle, char *string);
 static void sci_callback(void *pArgs);
 static void execute_command(uint8_t *command_line);
 static int32_t get_command_code(uint8_t *command);
@@ -157,7 +157,6 @@ static uint32_t _10us_timer_count;
 /******************************************************************************
  External functions
  ******************************************************************************/
-extern void display_serial_terminal_putstring(WM_HWIN hWin_handle, char *string);
 
 extern void vTaskGetCombinedRunTimeStats( char* pcWriteBuffer,  UBaseType_t uxClear);
 extern void vTaskClearUsage(void);
@@ -236,11 +235,11 @@ void serial_terminal_task( void * pvParameters )
     /* create semaphore */
     xSemaphore = xSemaphoreCreateBinary();
 
-    display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, PROMPT);
+    serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, PROMPT);
     while(1)
     {
         xQueueReceive(xQueue, &tmp, portMAX_DELAY);
-        display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, tmp);
+        serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, tmp);
         sci_buffer[current_buffer_pointer++] = tmp[0];
         if((tmp[0] == 0x0a) && (sci_buffer[current_buffer_pointer - 2] == 0x0d))
         {
@@ -255,32 +254,32 @@ void serial_terminal_task( void * pvParameters )
                             if(!strcmp((const char *)arg2, "read"))
                             {
                                 vTaskGetCombinedRunTimeStats(message_buffer, 0);    /* 0 means read */
-                                display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                             }
                             if(!strcmp((const char *)arg2, "reset"))
                             {
                                 vTaskGetCombinedRunTimeStats(message_buffer, 1);    /* 1 means read->reset */
                                 vTaskGetCombinedRunTimeStats(message_buffer, 0);    /* 0 means read */
-                                display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                             }
                         }
                         break;
                     case COMMAND_VERSION:
                         firmware_version_read(&ver);
-                        display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, ver);
-                        display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, "\r\n");
+                        serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, ver);
+                        serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, "\r\n");
                         break;
                     case COMMAND_TIMEZONE:
                         sfd_handle_timezone = R_SFD_SaveObject((uint8_t *)timezone_label, strlen(timezone_label), arg1, strlen((char *)arg1) + 1); /* +1 means string terminator '\0' */
                         R_SFD_GetObjectValue(sfd_handle_timezone, (uint8_t **)&timezone, &timezone_length);
                         if(SYS_TIME_SUCCESS == R_SYS_TIME_ConvertUnixTimeToSystemTime(task_info->sys_time.unix_time, &task_info->sys_time, timezone))
                         {
-                            display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, "timezone is accepted.\r\n");
-                            display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, "system time is updated.\r\n");
+                            serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, "timezone is accepted.\r\n");
+                            serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, "system time is updated.\r\n");
                         }
                         else
                         {
-                            display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, "timezone is not accepted.\r\n");
+                            serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, "timezone is not accepted.\r\n");
                         }
                         break;
                     case COMMAND_RESET:
@@ -290,11 +289,11 @@ void serial_terminal_task( void * pvParameters )
                         if(!strcmp((const char *)arg1, "info"))
                         {
                             sprintf(message_buffer, "physical size = %d bytes.\n", R_SFD_ReadPysicalSize());
-                            display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                            serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                             sprintf(message_buffer, "allocated size = %d bytes.\n", R_SFD_ReadAllocatedStorageSize());
-                            display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                            serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                             sprintf(message_buffer, "free size = %d bytes.\n", R_SFD_ReadFreeSize());
-                            display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                            serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                         }
                         else if(!strcmp((const char *)arg1, "write"))
                         {
@@ -307,7 +306,7 @@ void serial_terminal_task( void * pvParameters )
                                     while(1)
                                     {
                                         xQueueReceive(xQueue, &tmp, portMAX_DELAY);
-                                        display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, tmp);
+                                        serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, tmp);
                                         sci_buffer[current_buffer_pointer++] = tmp[0];
                                         if((strstr(sci_buffer, "-----END RSA PRIVATE KEY-----\n")) || (strstr(sci_buffer, "-----END CERTIFICATE-----\n")))
                                         {
@@ -327,7 +326,7 @@ void serial_terminal_task( void * pvParameters )
                                             else
                                             {
                                                 sprintf(message_buffer, DATA_FLASH_STORE_FAIL);
-                                                display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                                serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                                 break;
                                             }
 
@@ -336,12 +335,12 @@ void serial_terminal_task( void * pvParameters )
                                             if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)target, strlen(target), (uint8_t *)sci_buffer, strlen((const char *)sci_buffer) + 1))
                                             {
                                                 sprintf(message_buffer, DATA_FLASH_STORE_SUCCESS);
-                                                display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                                serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                             }
                                             else
                                             {
                                                 sprintf(message_buffer, DATA_FLASH_STORE_FAIL);
-                                                display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                                serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                             }
                                             break;
                                         }
@@ -362,12 +361,12 @@ void serial_terminal_task( void * pvParameters )
                                     if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)mqtt_broker_endpoint_label, strlen(mqtt_broker_endpoint_label), (uint8_t *)arg4, strlen((const char *)arg4) + 1))
                                     {
                                         sprintf(message_buffer, DATA_FLASH_STORE_SUCCESS);
-                                        display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                        serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                     }
                                     else
                                     {
                                         sprintf(message_buffer, DATA_FLASH_STORE_FAIL);
-                                        display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                        serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                     }
                                 }
                                 else if((!strcmp((const char *)arg3, "iotthingname")))
@@ -376,18 +375,18 @@ void serial_terminal_task( void * pvParameters )
                                     if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)iot_thing_name_label, strlen(iot_thing_name_label), (uint8_t *)arg4, strlen((const char *)arg4) + 1))
                                     {
                                         sprintf(message_buffer, DATA_FLASH_STORE_SUCCESS);
-                                        display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                        serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                     }
                                     else
                                     {
                                         sprintf(message_buffer, DATA_FLASH_STORE_FAIL);
-                                        display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                        serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                     }
                                 }
                                 else
                                 {
                                     sprintf(message_buffer, "unknown argument3 = %s.\n", arg3);
-                                    display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                    serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                 }
                             }
                             else if((!strcmp((const char *)arg2, "tcpsendperformanceserveripaddress")))
@@ -396,12 +395,12 @@ void serial_terminal_task( void * pvParameters )
                                 if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)tcp_send_performance_server_ip_address_label, strlen(tcp_send_performance_server_ip_address_label), (uint8_t *)arg3, strlen((const char *)arg3) + 1))
                                 {
                                     sprintf(message_buffer, DATA_FLASH_STORE_SUCCESS);
-                                    display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                    serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                 }
                                 else
                                 {
                                     sprintf(message_buffer, DATA_FLASH_STORE_FAIL);
-                                    display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                    serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                 }
                             }
                             else if((!strcmp((const char *)arg2, "tcpsendperformanceserverportnumber")))
@@ -410,12 +409,12 @@ void serial_terminal_task( void * pvParameters )
                                 if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)tcp_send_performance_server_port_number_label, strlen(tcp_send_performance_server_port_number_label), (uint8_t *)arg3, strlen((const char *)arg3) + 1))
                                 {
                                     sprintf(message_buffer, DATA_FLASH_STORE_SUCCESS);
-                                    display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                    serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                 }
                                 else
                                 {
                                     sprintf(message_buffer, DATA_FLASH_STORE_FAIL);
-                                    display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                    serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                 }
                             }
                             else if((!strcmp((const char *)arg2, "tracealyzerserveripaddress")))
@@ -424,12 +423,12 @@ void serial_terminal_task( void * pvParameters )
                                 if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)tracealyzer_server_ip_address_label, strlen(tracealyzer_server_ip_address_label), (uint8_t *)arg3, strlen((const char *)arg3) + 1))
                                 {
                                     sprintf(message_buffer, DATA_FLASH_STORE_SUCCESS);
-                                    display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                    serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                 }
                                 else
                                 {
                                     sprintf(message_buffer, DATA_FLASH_STORE_FAIL);
-                                    display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                    serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                 }
                             }
                             else if((!strcmp((const char *)arg2, "tracealyzerserverportnumber")))
@@ -438,18 +437,18 @@ void serial_terminal_task( void * pvParameters )
                                 if(SFD_HANDLE_INVALID != R_SFD_SaveObject((uint8_t *)tracealyzer_server_port_number_label, strlen(tracealyzer_server_port_number_label), (uint8_t *)arg3, strlen((const char *)arg3) + 1))
                                 {
                                     sprintf(message_buffer, DATA_FLASH_STORE_SUCCESS);
-                                    display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                    serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                 }
                                 else
                                 {
                                     sprintf(message_buffer, DATA_FLASH_STORE_FAIL);
-                                    display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                    serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                 }
                             }
                             else
                             {
                                 sprintf(message_buffer, "unknown argument2 = %s.\n", arg2);
-                                display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                             }
                         }
                         else if(!strcmp((const char *)arg1, "read"))
@@ -460,14 +459,14 @@ void serial_terminal_task( void * pvParameters )
                                 if(SFD_SUCCESS == R_SFD_Scan(&label, &label_length, &data, &data_length))
                                 {
                                     sprintf(message_buffer, "label = ");
-                                    display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                    serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                     memcpy(message_buffer, label, label_length);
                                     message_buffer[label_length] = 0;
-                                    display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                    serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                     sprintf(message_buffer, "\n");
-                                    display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                    serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                     sprintf(message_buffer, "data = ");
-                                    display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                    serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                     memcpy(message_buffer, data, data_length);
                                     message_buffer[data_length] = 0;
                                     for(int i = 0; i < strlen(message_buffer); i++)
@@ -482,14 +481,14 @@ void serial_terminal_task( void * pvParameters )
                                             }
                                         }
                                     }
-                                    display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                    serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                     vTaskDelay(100); /* 長い文字列をSCI(UART)出力した際に最後のほうが出力されない。完了待ちの方法が不明なためとりあえず時間待ち */
                                     sprintf(message_buffer, "\n");
-                                    display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                    serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                     sprintf(message_buffer, "data_length(includes string terminator 1byte zero) = %d", data_length);
-                                    display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                    serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                     sprintf(message_buffer, "\n\n");
-                                    display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                                    serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                                 }
                                 else
                                 {
@@ -501,19 +500,19 @@ void serial_terminal_task( void * pvParameters )
                         {
                             R_SFD_EraseAll();
                             sprintf(message_buffer, "completed erasing all flash.\n");
-                            display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                            serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                         }
                         else
                         {
                             sprintf(message_buffer, "unknown argument1 = %s.\n", arg1);
-                            display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, message_buffer);
+                            serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, message_buffer);
                         }
                         break;
                     default:
-                        display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, COMMAND_NOT_FOUND);
+                        serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, COMMAND_NOT_FOUND);
                         break;
                 }
-                display_serial_terminal_putstring_with_uart(task_info->hWin_serial_terminal, sci_handle, PROMPT);
+                serial_terminal_putstring(task_info->hWin_serial_terminal, sci_handle, PROMPT);
             }
             else
             {
@@ -567,14 +566,12 @@ static int32_t get_command_code(uint8_t *command)
     return return_code;
 }
 
-static void display_serial_terminal_putstring_with_uart(WM_HWIN hWin_handle, sci_hdl_t sci_handle, char *string)
+static void serial_terminal_putstring(WM_HWIN hWin_handle, sci_hdl_t sci_handle, char *string)
 {
     uint16_t str_length = 0;
     volatile uint16_t transmit_length = 0;
     sci_err_t sci_err;
     uint32_t retry = 0xFFFF;
-
-    display_serial_terminal_putstring(hWin_handle, string);
 
     str_length = (uint16_t)strlen(string);
 

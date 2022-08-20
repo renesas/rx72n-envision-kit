@@ -133,5 +133,6 @@ extern char *mqtt_broker_endpoint;
 extern char *signing_certificate_pem;
 
 extern xSemaphoreHandle xSemaphoreCodeFlashAccess;
+extern FATFS fatfs;
 
 extern TASK_INFO * get_task_info(void);

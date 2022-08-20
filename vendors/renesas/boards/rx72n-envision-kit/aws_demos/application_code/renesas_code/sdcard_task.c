@@ -131,7 +131,7 @@ void sdcard_task( void * pvParameters )
                     trap();
                 }
                 R_tfat_f_mount(TFAT_DRIVE_NUM_0, &fatfs);
-                firmware_update_update_file_search();
+//                firmware_update_update_file_search();
             }
             else
             {
@@ -139,7 +139,7 @@ void sdcard_task( void * pvParameters )
                 previous_sdc_sd_card_detection = sdc_sd_card_detection;
                 if(SDC_SD_SUCCESS != sdc_sd_card_detection)
                 {
-                    firmware_update_list_clear();
+//                    firmware_update_list_clear();
                     r_sdc_sdmem_demo_power_off(g_sdc_sd_card_no);
                 }
             }
@@ -155,7 +155,7 @@ void sdcard_task( void * pvParameters )
             if(previous_progress != progress)
             {
                 previous_progress = progress;
-                firmware_update_temporary_area_string(progress, (int)((((float)(progress)/100)*(float)(get_update_data_size()))/1024), (int)((float)(get_update_data_size()))/1024);
+//                firmware_update_temporary_area_string(progress, (int)((((float)(progress)/100)*(float)(get_update_data_size()))/1024), (int)((float)(get_update_data_size()))/1024);
             }
         }
         else if(true == is_firmupdatewaitstart())
@@ -168,8 +168,8 @@ void sdcard_task( void * pvParameters )
             {
                 if(0 == firmware_update_complete_flag)
                 {
-                    firmware_update_temporary_area_string(100, (int)((((float)(progress)/100)*(float)(get_update_data_size()))/1024), (int)((float)(get_update_data_size()))/1024);
-                    firmware_update_ok_after_message();
+//                    firmware_update_temporary_area_string(100, (int)((((float)(progress)/100)*(float)(get_update_data_size()))/1024), (int)((float)(get_update_data_size()))/1024);
+//                    firmware_update_ok_after_message();
                     firmware_update_complete_flag = 1;
                 }
             }
@@ -177,8 +177,8 @@ void sdcard_task( void * pvParameters )
             {
                 if(0 == firmware_update_complete_flag)
                 {
-                    firmware_update_ng_after_message();
-                    firmware_update_status_initialize();
+//                    firmware_update_ng_after_message();
+//                    firmware_update_status_initialize();
                     firmware_update_complete_flag = 1;
                 }
             }
