@@ -879,7 +879,7 @@ void update_data_flash_callback_function(void *event)
 void semaphore_take(void)
 {
 #if defined BSP_CFG_RTOS_USED == 0 /* None-OS */
-    /* please implement own exclusive processing on each functions, if there are no code, please do not call following functions in multiply. */
+    /* please implement own exclusive processing on each functions, if there are no code, please do not call APIs (R_SFD_xxxx()) in multiply. */
 #elif defined BSP_CFG_RTOS_USED == 1 /* FreeRTOS */
     xSemaphoreTake( xSemaphoreDataFlashAccess, portMAX_DELAY );
 #endif
@@ -888,7 +888,7 @@ void semaphore_take(void)
 void semaphore_give(void)
 {
 #if defined BSP_CFG_RTOS_USED == 0 /* None-OS */
-    /* please implement own exclusive processing on each functions, if there are no code, please do not call following functions in multiply. */
+    /* please implement own exclusive processing on each functions, if there are no code, please do not call APIs (R_SFD_xxxx()) in multiply. */
 #elif defined BSP_CFG_RTOS_USED == 1 /* FreeRTOS */
     xSemaphoreGive( xSemaphoreDataFlashAccess );
 #endif
