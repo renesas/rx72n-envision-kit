@@ -133,7 +133,7 @@ void         WHEEL__ClipPos               (WHEEL_OBJ * pObj);
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define WHEEL_INIT_ID(p) p->Widget.DebugId = WHEEL_ID
+  #define WHEEL_INIT_ID(p) p->Widget.DebugId = WIDGET_TYPE_WHEEL
 #else
   #define WHEEL_INIT_ID(p)
 #endif

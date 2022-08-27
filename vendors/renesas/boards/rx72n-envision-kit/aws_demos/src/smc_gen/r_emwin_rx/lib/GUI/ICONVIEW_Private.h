@@ -99,7 +99,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define ICONVIEW_INIT_ID(p) (p->Widget.DebugId = ICONVIEW_ID)
+  #define ICONVIEW_INIT_ID(p) (p->Widget.DebugId = WIDGET_TYPE_ICONVIEW)
 #else
   #define ICONVIEW_INIT_ID(p)
 #endif

@@ -92,6 +92,7 @@ struct EDIT_Obj_struct {
   int                  TimerPeriod;
   int                  ScrollPos;       // Horizontal scrolling position
   U16                  PrevStrLen;      // Previous string length, used for scrolling position calculation.
+  const char         * pDispText;       // Pointer to buffer with the password char.
 };
 
 /*********************************************************************
@@ -101,7 +102,7 @@ struct EDIT_Obj_struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define EDIT_INIT_ID(p) (p->Widget.DebugId = EDIT_ID)
+  #define EDIT_INIT_ID(p) (p->Widget.DebugId = WIDGET_TYPE_EDIT)
 #else
   #define EDIT_INIT_ID(p)
 #endif

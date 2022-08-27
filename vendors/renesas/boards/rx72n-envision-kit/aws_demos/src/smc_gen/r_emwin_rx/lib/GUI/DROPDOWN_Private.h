@@ -100,7 +100,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define DROPDOWN_INIT_ID(p) (p->Widget.DebugId = DROPDOWN_ID)
+  #define DROPDOWN_INIT_ID(p) (p->Widget.DebugId = WIDGET_TYPE_DROPDOWN)
 #else
   #define DROPDOWN_INIT_ID(p)
 #endif

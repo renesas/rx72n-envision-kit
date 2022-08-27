@@ -93,15 +93,8 @@ typedef struct {
   int                     LastVisible;
   int                     Sel;
   int                     ReleasedItem;
-  GUI_TIMER_HANDLE        hTimer;
-  GUI_HMEM                hTimerContext;
   WM_HMEM                 hContext;       // Motion context.
 } SWIPELIST_OBJ;
-
-typedef struct {
-  SWIPELIST_Handle hObj;
-  int              NewSel;
-} SWIPELIST_TIMER_CONTEXT;
 
 /*********************************************************************
 *
@@ -110,7 +103,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define SWIPELIST_INIT_ID(p) p->Widget.DebugId = SWIPELIST_ID
+  #define SWIPELIST_INIT_ID(p) p->Widget.DebugId = WIDGET_TYPE_SWIPELIST
 #else
   #define SWIPELIST_INIT_ID(p)
 #endif
@@ -131,7 +124,7 @@ typedef struct {
 //
 // WM_MOTION_OVERLAP... flags are stored in the upper two bits of Props.Flags
 //
-#define OVERLAP_FLAG_SHIFT     6
+#define OVERLAP_FLAG_SHIFT     2
 #define OVERLAP_FLAG_MASK      ((WM_MOTION_OVERLAP_TOP | WM_MOTION_OVERLAP_BOTTOM) << OVERLAP_FLAG_SHIFT)
 
 /*********************************************************************

@@ -137,7 +137,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define KEYBOARD_INIT_ID(p) (p->Widget.DebugId = KEYBOARD_ID)
+  #define KEYBOARD_INIT_ID(p) (p->Widget.DebugId = WIDGET_TYPE_KEYBOARD)
 #else
   #define KEYBOARD_INIT_ID(p)
 #endif

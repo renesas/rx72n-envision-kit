@@ -178,42 +178,14 @@ typedef struct {
 
 /*********************************************************************
 *
-*       SCROLLSTATE_CONVERSION_API
-* 
-*  Description
-*    API that SCROLLER uses to read/write widget properties
-*    to convert scrollstates from linewise to pixelwise and vice versa.
-*/
-typedef struct {
-  //
-  // Getters
-  //
-  void         (* pfGetScrollPos)        (WM_HWIN hParent, int * pScrollStateV, int * pMotionPosY);
-  unsigned int (* pfGetNumRows)          (WM_HWIN hParent);
-  int          (* pfGetRowHeight)        (WM_HWIN hParent);
-  int          (* pfGetYOffset)          (WM_HWIN hParent);
-  int          (* pfGetItemPosY)         (WM_HWIN hParent, unsigned int Index);
-  int          (* pfGetIndexFromItemPosY)(WM_HWIN hParent, int ScrollStateV, int * pRemainder);
-  //
-  // Setters
-  //
-  void         (* pfSetScrollPos)        (WM_HWIN hParent, int ScrollStateV, int MotionPosY);
-  //
-  // Properties
-  //
-  U8 IndvRowHeight; // 1 if each row can have a different height, 0 if not
-} SCROLLSTATE_CONVERSION_API;
-
-/*********************************************************************
-*
 *       SCROLLER_WIDGET_API
 * 
 *  Description
 *    API functions used by the parent widget the SCROLLER is attached to.
 */
 typedef struct {
-  const SCROLLSTATE_CONVERSION_API * pConvAPI;       // Optional, can be NULL.
-  const SCROLLER_INTERFACE_API     * pInterfaceAPI;  // Interface between parent widget and SCROLLER. Must be set.
+  const WIDGET_SCROLLSTATE_API * pConvAPI;       // API for scrollstate conversion. Optional, can be NULL.
+  const SCROLLER_INTERFACE_API * pInterfaceAPI;  // Interface between parent widget and SCROLLER. Must be set.
 } SCROLLER_WIDGET_API;
 
 /*********************************************************************
@@ -299,7 +271,7 @@ struct SCROLLER_Obj {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define SCROLLER_INIT_ID(p) (p->Widget.DebugId = SCROLLER_ID)
+  #define SCROLLER_INIT_ID(p) (p->Widget.DebugId = WIDGET_TYPE_SCROLLER)
 #else
   #define SCROLLER_INIT_ID(p)
 #endif

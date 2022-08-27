@@ -139,6 +139,7 @@ void             LISTVIEW_GetItemTextSorted    (LISTVIEW_Handle hObj, unsigned C
 unsigned         LISTVIEW_GetLBorder           (LISTVIEW_Handle hObj);
 unsigned         LISTVIEW_GetNumColumns        (LISTVIEW_Handle hObj);
 unsigned         LISTVIEW_GetNumRows           (LISTVIEW_Handle hObj);
+unsigned         LISTVIEW_GetOverlap           (LISTVIEW_Handle hObj, int * pPeriod, U8 * pFlags);
 unsigned         LISTVIEW_GetRBorder           (LISTVIEW_Handle hObj);
 int              LISTVIEW_GetRow               (LISTVIEW_Handle hObj, int yPos);
 int              LISTVIEW_GetScrollStepH       (LISTVIEW_Handle hObj);
@@ -173,6 +174,7 @@ void             LISTVIEW_SetItemText          (LISTVIEW_Handle hObj, unsigned C
 void             LISTVIEW_SetItemTextColor     (LISTVIEW_Handle hObj, unsigned Column, unsigned Row, unsigned Index, GUI_COLOR Color);
 void             LISTVIEW_SetItemTextSorted    (LISTVIEW_Handle hObj, unsigned Column, unsigned Row, const char * pText);
 void             LISTVIEW_SetLBorder           (LISTVIEW_Handle hObj, unsigned BorderSize);
+void             LISTVIEW_SetOverlap           (LISTVIEW_Handle hObj, unsigned Overlap, int Period, U8 Flags);
 void             LISTVIEW_SetOwnerDraw         (LISTVIEW_Handle hObj, WIDGET_DRAW_ITEM_FUNC * pfDrawItem);
 void             LISTVIEW_SetRBorder           (LISTVIEW_Handle hObj, unsigned BorderSize);
 unsigned         LISTVIEW_SetRowHeight         (LISTVIEW_Handle hObj, unsigned RowHeight);

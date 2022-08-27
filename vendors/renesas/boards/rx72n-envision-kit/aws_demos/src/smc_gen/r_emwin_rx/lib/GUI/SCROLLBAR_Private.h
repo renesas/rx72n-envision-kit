@@ -149,7 +149,7 @@ struct SCROLLBAR_OBJ {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define SCROLLBAR_INIT_ID(p) (p->Widget.DebugId = SCROLLBAR_ID)
+  #define SCROLLBAR_INIT_ID(p) (p->Widget.DebugId = WIDGET_TYPE_SCROLLBAR)
 #else
   #define SCROLLBAR_INIT_ID(p)
 #endif

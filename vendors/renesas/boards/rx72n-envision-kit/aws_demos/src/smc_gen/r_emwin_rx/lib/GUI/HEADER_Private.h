@@ -109,7 +109,7 @@ extern WIDGET_SKIN const * HEADER__pSkinDefault;
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define HEADER_INIT_ID(p)  (p->Widget.DebugId = HEADER_ID)
+  #define HEADER_INIT_ID(p)  (p->Widget.DebugId = WIDGET_TYPE_HEADER)
 #else
   #define HEADER_INIT_ID(p)
 #endif

@@ -123,17 +123,11 @@ Purpose     : SWIPELIST include
 
 /*********************************************************************
 *
-*       SWIPELIST notification codes
-*
-*  Description
-*    Notifications sent by SWIPELIST widget to its parent widget through
-*    a WM_NOTIFY_PARENT message.
-*
-*    For notifications relating overlap, see SWIPELIST_SetOverlap().
+*       Compatability macros
 */
-#define SWIPELIST_NOTIFICATION_OVERLAP_TOP_ENTERED       (WM_NOTIFICATION_WIDGET + 0)    // Sent when the overlap area was entered at the top of the SWIPELIST.
-#define SWIPELIST_NOTIFICATION_OVERLAP_BOTTOM_ENTERED    (WM_NOTIFICATION_WIDGET + 1)    // Sent when the overlap area was entered at the bottom of the SWIPELIST.
-#define SWIPELIST_NOTIFICATION_OVERLAP_RELEASED          (WM_NOTIFICATION_WIDGET + 2)    // Sent after a dragged overlap area has been released.
+#define SWIPELIST_NOTIFICATION_OVERLAP_TOP_ENTERED       WM_NOTIFICATION_OVERLAP_TOP_ENTERED
+#define SWIPELIST_NOTIFICATION_OVERLAP_BOTTOM_ENTERED    WM_NOTIFICATION_OVERLAP_BOTTOM_ENTERED
+#define SWIPELIST_NOTIFICATION_OVERLAP_RELEASED          WM_NOTIFICATION_OVERLAP_RELEASED
 
 /*********************************************************************
 *

@@ -108,7 +108,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define CHECKBOX_INIT_ID(p) (p->Widget.DebugId = CHECKBOX_ID)
+  #define CHECKBOX_INIT_ID(p) (p->Widget.DebugId = WIDGET_TYPE_CHECKBOX)
 #else
   #define CHECKBOX_INIT_ID(p)
 #endif

@@ -119,9 +119,7 @@ struct LISTVIEW_Obj {
   int                          SelCol;
   int                          ShowGrid;
   int                          SortIndex;                                         // Column for sorting
-  int                          MotionPosX;
   int                          MotionPosY;
-  int                          MotionPosOldY;
   unsigned                     RowDistY;
   unsigned                     LBorder;
   unsigned                     RBorder;
@@ -130,6 +128,9 @@ struct LISTVIEW_Obj {
   WM_SCROLL_STATE              ScrollStateH;
   WM_HMEM                      hSort;
   WM_HMEM                      hContext;                                          // Motion context.
+  unsigned                     OverlapDistance;
+  int                          OverlapPeriod;
+  U8                           OverlapFlags;
   U8                           IsSorted;
   U8                           IsPresorted;
   U8                           ReverseSort;                                       // Set to 1 if reverse sorting is required
@@ -145,7 +146,7 @@ struct LISTVIEW_Obj {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define LISTVIEW_INIT_ID(p) (p->Widget.DebugId = LISTVIEW_ID)
+  #define LISTVIEW_INIT_ID(p) (p->Widget.DebugId = WIDGET_TYPE_LISTVIEW)
 #else
   #define LISTVIEW_INIT_ID(p)
 #endif

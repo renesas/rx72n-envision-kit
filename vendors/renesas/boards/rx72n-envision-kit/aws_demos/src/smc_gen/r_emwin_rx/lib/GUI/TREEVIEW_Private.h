@@ -118,7 +118,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define TREEVIEW_INIT_ID(p) p->Widget.DebugId = TREEVIEW_ID
+  #define TREEVIEW_INIT_ID(p) p->Widget.DebugId = WIDGET_TYPE_TREEVIEW
 #else
   #define TREEVIEW_INIT_ID(p)
 #endif

@@ -150,6 +150,7 @@ void             LISTBOX_DeleteItem            (LISTBOX_Handle hObj, unsigned In
 void             LISTBOX_EnableMotion          (LISTBOX_Handle hObj, int Flags);
 void             LISTBOX_EnableWrapMode        (LISTBOX_Handle hObj, int OnOff);
 GUI_COLOR        LISTBOX_GetBkColor            (LISTBOX_Handle hObj, unsigned Index);
+U16              LISTBOX_GetFixedScrollPos     (LISTBOX_Handle hObj);
 const GUI_FONT * LISTBOX_GetFont               (LISTBOX_Handle hObj);
 unsigned         LISTBOX_GetItemSpacing        (LISTBOX_Handle hObj);
 unsigned         LISTBOX_GetNumItems           (LISTBOX_Handle hObj);

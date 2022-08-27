@@ -72,7 +72,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define TEXT_INIT_ID(p) p->Widget.DebugId = TEXT_ID
+  #define TEXT_INIT_ID(p) p->Widget.DebugId = WIDGET_TYPE_TEXT
 #else
   #define TEXT_INIT_ID(p)
 #endif

@@ -120,7 +120,7 @@ struct MULTIPAGE_Obj {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define MULTIPAGE_INIT_ID(p) (p->Widget.DebugId = MULTIPAGE_ID)
+  #define MULTIPAGE_INIT_ID(p) (p->Widget.DebugId = WIDGET_TYPE_MULTIPAGE)
 #else
   #define MULTIPAGE_INIT_ID(p)
 #endif

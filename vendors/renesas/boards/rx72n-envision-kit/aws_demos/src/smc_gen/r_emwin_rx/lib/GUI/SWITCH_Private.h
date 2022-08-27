@@ -101,7 +101,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define SWITCH_INIT_ID(p) (p->Widget.DebugId = SWITCH_ID)
+  #define SWITCH_INIT_ID(p) (p->Widget.DebugId = WIDGET_TYPE_SWITCH)
 #else
   #define SWITCH_INIT_ID(p)
 #endif

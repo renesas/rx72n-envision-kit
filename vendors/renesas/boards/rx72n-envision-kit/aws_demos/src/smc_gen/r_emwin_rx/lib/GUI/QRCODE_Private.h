@@ -68,7 +68,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define QRCODE_INIT_ID(p) (p->Widget.DebugId = QRCODE_ID)
+  #define QRCODE_INIT_ID(p) (p->Widget.DebugId = WIDGET_TYPE_QRCODE)
 #else
   #define QRCODE_INIT_ID(p)
 #endif

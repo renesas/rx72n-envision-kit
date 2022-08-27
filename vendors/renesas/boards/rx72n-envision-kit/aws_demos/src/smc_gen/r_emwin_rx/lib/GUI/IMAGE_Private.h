@@ -114,7 +114,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define IMAGE_INIT_ID(p) (p->Widget.DebugId = IMAGE_ID)
+  #define IMAGE_INIT_ID(p) (p->Widget.DebugId = WIDGET_TYPE_IMAGE)
 #else
   #define IMAGE_INIT_ID(p)
 #endif

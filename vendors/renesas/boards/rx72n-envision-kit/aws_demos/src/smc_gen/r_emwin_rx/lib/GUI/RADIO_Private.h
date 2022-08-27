@@ -137,7 +137,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define RADIO_INIT_ID(p) p->Widget.DebugId = RADIO_ID
+  #define RADIO_INIT_ID(p) p->Widget.DebugId = WIDGET_TYPE_RADIO
 #else
   #define RADIO_INIT_ID(p)
 #endif

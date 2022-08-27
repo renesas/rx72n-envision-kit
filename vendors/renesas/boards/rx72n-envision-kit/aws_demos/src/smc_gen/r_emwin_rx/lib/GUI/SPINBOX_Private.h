@@ -95,7 +95,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define SPINBOX_INIT_ID(p) (p->Widget.DebugId = SPINBOX_ID)
+  #define SPINBOX_INIT_ID(p) (p->Widget.DebugId = WIDGET_TYPE_SPINBOX)
 #else
   #define SPINBOX_INIT_ID(p)
 #endif

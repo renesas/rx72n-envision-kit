@@ -206,7 +206,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define FRAMEWIN_INIT_ID(p) (p->Widget.DebugId = FRAMEWIN_ID)
+  #define FRAMEWIN_INIT_ID(p) (p->Widget.DebugId = WIDGET_TYPE_FRAMEWIN)
 #else
   #define FRAMEWIN_INIT_ID(p)
 #endif

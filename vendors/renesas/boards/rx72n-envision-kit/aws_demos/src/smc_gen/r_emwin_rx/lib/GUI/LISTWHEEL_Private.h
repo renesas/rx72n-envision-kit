@@ -100,7 +100,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define LISTWHEEL_INIT_ID(p)  (p->Widget.DebugId = LISTWHEEL_ID)
+  #define LISTWHEEL_INIT_ID(p)  (p->Widget.DebugId = WIDGET_TYPE_LISTWHEEL)
 #else
   #define LISTWHEEL_INIT_ID(p)
 #endif

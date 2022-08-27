@@ -84,7 +84,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define KNOB_INIT_ID(p) p->Widget.DebugId = KNOB_ID
+  #define KNOB_INIT_ID(p) p->Widget.DebugId = WIDGET_TYPE_KNOB
 #else
   #define KNOB_INIT_ID(p)
 #endif

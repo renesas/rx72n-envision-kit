@@ -121,7 +121,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define MENU_INIT_ID(pObj)  (pObj->Widget.DebugId = MENU_ID)
+  #define MENU_INIT_ID(pObj)  (pObj->Widget.DebugId = WIDGET_TYPE_MENU)
 #else
   #define MENU_INIT_ID(pObj)
 #endif

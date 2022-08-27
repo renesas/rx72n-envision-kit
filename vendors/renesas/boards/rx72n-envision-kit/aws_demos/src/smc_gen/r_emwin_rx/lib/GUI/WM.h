@@ -391,6 +391,7 @@ typedef struct {
 #define WM_MOTION_GETCONTEXT 3
 #define WM_MOTION_GETDEST    4   // Sent to receive the desired position to move to
 #define WM_MOTION_GETSNAP    5   // Sent to receive the nearest snap position
+#define WM_MOTION_SETCONTEXT 6
 
 /*********************************************************************
 *
@@ -410,10 +411,10 @@ typedef struct {
 *    Flags for setting overlap behavior of widgets. The overlap will
 *    come into effect if a distance has been set.
 */
-#define WM_MOTION_OVERLAP_TOP        (1 << 0)   // Overlap will be active at the top edge of the widget.
-#define WM_MOTION_OVERLAP_BOTTOM     (1 << 1)   // Overlap will be active at the bottom edge of the widget.
-#define WM_MOTION_OVERLAP_LEFT       (1 << 2)   // Overlap will be active at the left edge of the widget.
-#define WM_MOTION_OVERLAP_RIGHT      (1 << 3)   // Overlap will be active at the right edge of the widget.
+#define WM_MOTION_OVERLAP_TOP        (1 << 4)   // Overlap will be active at the top edge of the widget.
+#define WM_MOTION_OVERLAP_BOTTOM     (1 << 5)   // Overlap will be active at the bottom edge of the widget.
+#define WM_MOTION_OVERLAP_LEFT       (1 << 6)   // Overlap will be active at the left edge of the widget.
+#define WM_MOTION_OVERLAP_RIGHT      (1 << 7)   // Overlap will be active at the right edge of the widget.
 
 /*********************************************************************
 *
@@ -424,27 +425,32 @@ typedef struct {
 *    code is sent with a WM_NOTIFY_PARENT message and can be read with
 *    \c{pMsg->Data.v}.
 */
-#define WM_NOTIFICATION_CLICKED             1      // This notification message will be sent when the window has been clicked.
-#define WM_NOTIFICATION_RELEASED            2      // This notification message will be sent when a clicked widget has been released.
-#define WM_NOTIFICATION_MOVED_OUT           3      // This notification message will be sent when the pointer was moved out of the window while it is clicked.
-#define WM_NOTIFICATION_SEL_CHANGED         4      // This notification message will be sent when the selection of a widget has changed.
-#define WM_NOTIFICATION_VALUE_CHANGED       5      // This notification message will be sent when a widget specific value has changed.
-#define WM_NOTIFICATION_SCROLLBAR_ADDED     6      // This notification message will be sent when a SCROLLBAR widget has been added to the window.
-#define WM_NOTIFICATION_CHILD_DELETED       7      // This notification message will be sent from a window to its parent before it is deleted.
-#define WM_NOTIFICATION_GOT_FOCUS           8      // This notification message will be sent once a window receives and accepts the focus.
-#define WM_NOTIFICATION_LOST_FOCUS          9      // This notification message will be sent when the window has lost the focus.
-#define WM_NOTIFICATION_SCROLL_CHANGED     10      // This notification message will be sent when the scroll position of an attached SCROLLBAR widget has changed.
-#define WM_NOTIFICATION_SCROLLER_ADDED     16      // This notification message will be sent when a SCROLLER widget has been added to the window.
+#define WM_NOTIFICATION_CLICKED                   1      // This notification message will be sent when the window has been clicked.
+#define WM_NOTIFICATION_RELEASED                  2      // This notification message will be sent when a clicked widget has been released.
+#define WM_NOTIFICATION_MOVED_OUT                 3      // This notification message will be sent when the pointer was moved out of the window while it is clicked.
+#define WM_NOTIFICATION_SEL_CHANGED               4      // This notification message will be sent when the selection of a widget has changed.
+#define WM_NOTIFICATION_VALUE_CHANGED             5      // This notification message will be sent when a widget specific value has changed.
+#define WM_NOTIFICATION_SCROLLBAR_ADDED           6      // This notification message will be sent when a SCROLLBAR widget has been added to the window.
+#define WM_NOTIFICATION_CHILD_DELETED             7      // This notification message will be sent from a window to its parent before it is deleted.
+#define WM_NOTIFICATION_GOT_FOCUS                 8      // This notification message will be sent once a window receives and accepts the focus.
+#define WM_NOTIFICATION_LOST_FOCUS                9      // This notification message will be sent when the window has lost the focus.
+#define WM_NOTIFICATION_SCROLL_CHANGED           10      // This notification message will be sent when the scroll position of an attached SCROLLBAR widget has changed.
+#define WM_NOTIFICATION_SCROLLER_ADDED           16      // This notification message will be sent when a SCROLLER widget has been added to the window.
+#define WM_NOTIFICATION_OVERLAP_TOP_ENTERED      17      // This notification message will be sent when the top overlap area of a widget was entered.
+#define WM_NOTIFICATION_OVERLAP_BOTTOM_ENTERED   18      // This notification message will be sent when the bottom overlap area of a widget was entered.
+#define WM_NOTIFICATION_OVERLAP_LEFT_ENTERED     19      // This notification message will be sent when the left overlap area of a widget was entered.
+#define WM_NOTIFICATION_OVERLAP_RIGHT_ENTERED    20      // This notification message will be sent when the right overlap area of a widget was entered.
+#define WM_NOTIFICATION_OVERLAP_RELEASED         21      // This notification message will be sent when the overlap area of a widget was entered and has been released.
 
 /* not documented */
-#define WM_NOTIFICATION_MOTION_STOPPED     11
-#define WM_NOTIFICATION_SET                12
-#define WM_NOTIFICATION_CLEAR              13
-#define WM_NOTIFICATION_TEXT_CHANGED       14
-#define WM_NOTIFICATION_ENTER_PRESSED      15
+#define WM_NOTIFICATION_MOTION_STOPPED           11
+#define WM_NOTIFICATION_SET                      12
+#define WM_NOTIFICATION_CLEAR                    13
+#define WM_NOTIFICATION_TEXT_CHANGED             14
+#define WM_NOTIFICATION_ENTER_PRESSED            15
 
-#define WM_NOTIFICATION_WIDGET             20      /* Space for widget defined notifications */
-#define WM_NOTIFICATION_USER               30      /* Space for  application (user) defined notifications */
+#define WM_NOTIFICATION_WIDGET                   30      /* Space for widget defined notifications */
+#define WM_NOTIFICATION_USER                     40      /* Space for  application (user) defined notifications */
 
 /*********************************************************************
 *
@@ -686,6 +692,8 @@ void     WM_MOTION_SetThreshold    (unsigned Threshold);
 /* Motion support, private interface */
 WM_HMEM WM_MOTION__CreateContext(void);
 void    WM_MOTION__DeleteContext(WM_HMEM hContext);
+WM_HMEM WM_MOTION__GetContext   (WM_HWIN hWin);
+void    WM_MOTION__SetContext   (WM_HWIN hWin, WM_HMEM hContext);
 void    WM_MOTION__Stop         (WM_HWIN hWin);
 
 /* Motion support, private function(s) */
@@ -918,10 +926,11 @@ int       WM__SetUserDataEx(WM_HWIN hWin, const void * pSrc, int NumBytes, int S
 *
 *       Capturing input focus
 */
-int  WM_HasCaptured   (WM_HWIN hWin);
-void WM_SetCapture    (WM_HWIN hObj, int AutoRelease);
-void WM_SetCaptureMove(WM_HWIN hWin, const GUI_PID_STATE * pState, int MinVisibility, int LimitTop); /* Not yet documented */
-void WM_ReleaseCapture(void);
+int     WM_HasCaptured   (WM_HWIN hWin);
+WM_HWIN WM_GetCapture    (int * pAutoRelease);
+void    WM_SetCapture    (WM_HWIN hObj, int AutoRelease);
+void    WM_SetCaptureMove(WM_HWIN hWin, const GUI_PID_STATE * pState, int MinVisibility, int LimitTop); /* Not yet documented */
+void    WM_ReleaseCapture(void);
 
 /*********************************************************************
 *

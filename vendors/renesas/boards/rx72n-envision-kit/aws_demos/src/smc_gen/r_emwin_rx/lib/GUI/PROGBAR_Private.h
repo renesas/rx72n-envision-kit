@@ -88,7 +88,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define PROGBAR_INIT_ID(p) p->Widget.DebugId = PROGBAR_ID
+  #define PROGBAR_INIT_ID(p) p->Widget.DebugId = WIDGET_TYPE_PROGBAR
 #else
   #define PROGBAR_INIT_ID(p)
 #endif

@@ -121,7 +121,7 @@ struct GRAPH_OBJ {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define GRAPH_INIT_ID(p) (p->Widget.DebugId = GRAPH_ID)
+  #define GRAPH_INIT_ID(p) (p->Widget.DebugId = WIDGET_TYPE_GRAPH)
 #else
   #define GRAPH_INIT_ID(p)
 #endif

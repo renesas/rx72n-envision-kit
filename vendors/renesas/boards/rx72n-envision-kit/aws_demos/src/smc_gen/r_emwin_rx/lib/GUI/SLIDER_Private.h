@@ -90,7 +90,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define SLIDER_INIT_ID(p) (p->Widget.DebugId = SLIDER_ID)
+  #define SLIDER_INIT_ID(p) (p->Widget.DebugId = WIDGET_TYPE_SLIDER)
 #else
   #define SLIDER_INIT_ID(p)
 #endif

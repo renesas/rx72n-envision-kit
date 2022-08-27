@@ -69,11 +69,6 @@ Purpose     : Interface of AppWizard
 ######################################################################
 */
 //
-// Exclude obsolete functions
-//
-#define APPW_SKIP_OBSOLETE 1
-
-//
 // Dispose flags (coordinates)
 //
 #define APPW_DISPOSE_FLAG_X0 (1 << 0)
@@ -280,9 +275,6 @@ enum {
   APPW_NOTIFICATION_CREATE,
   APPW_NOTIFICATION_DELETE,
   APPW_NOTIFICATION_MOTION,
-#if (APPW_SKIP_OBSOLETE == 0)
-  APPW_NOTIFICATION_ANIMCOORD,
-#endif
   APPW_NOTIFICATION_ANIMEND,
   APPW_NOTIFICATION_ANIMSTART,
   APPW_NOTIFICATION_TIMER,
@@ -505,7 +497,10 @@ enum {
                                     // (pPara + 4)->v     - Target: Row index    (Listview, Dropdown, Listbox)
                                     // (pPara + 5)->v     - Target: Column index (Listview only)
   /* 47 */ APPW_JOB_DELITEM,        // (pPara + 0)->v     - Item index to be deleted
-  /* 48 */ APPW_JOB_MOVETO          // (pPara + 0)->v     - Value
+  /* 48 */ APPW_JOB_MOVETO,         // (pPara + 0)->v     - Value
+  /* 49 */ APPW_JOB_SETRANGE,       // (pPara + 0)->v     - Start value
+                                    // (pPara + 1)->v     - End value
+  /* 50 */ APPW_JOB_ROTATEDISPLAY   // (pPara + 0)->v     - Rotation command (0, CW, CCW, 180, LEFT, RIGHT) to be used
 };
 
 //
@@ -1714,9 +1709,6 @@ int                       APPW_ACTION_SetEnable        (WM_HWIN hWinDst, WM_HWIN
 void                      APPW_ClearShiftScreenActive  (void);
 const APPW_JOB          * APPW_GetJob                  (int Id);
 const APPW_JOB          * APPW_GetJobs                 (int * pNumJobs);
-#if (APPW_SKIP_OBSOLETE == 0)
-const APPW_JOB          * APPW_GetJobsAnim             (int * pNumJobs);
-#endif
 const APPW_JOB          * APPW_GetJobsVar              (int * pNumJobs);
 U8                        APPW_GetTimerActive          (void);
 int                       APPW_ProcessActions          (WM_MESSAGE * pMsg, int RootIndex);
