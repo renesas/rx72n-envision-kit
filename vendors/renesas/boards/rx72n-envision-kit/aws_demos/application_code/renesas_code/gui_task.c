@@ -187,7 +187,7 @@ void main_10ms_display_update(TASK_INFO *task_info)
     APPW_Exec();
     GUI_Exec();
     TickType_t after_appw_exec_time_tick = xTaskGetTickCount();
-    if(after_appw_exec_time_tick > before_appw_exec_time_tick)
+    if(after_appw_exec_time_tick >= before_appw_exec_time_tick)
     {
         if( MINIMUM_TIME_TICK_FOR_UPDATE_DISPLAY > (after_appw_exec_time_tick - before_appw_exec_time_tick))
         {
