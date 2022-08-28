@@ -36,13 +36,18 @@ Purpose     : Generated file do NOT edit!
 #define ID_TIMER_00         (GUI_ID_USER + 6)
 #define ID_WINDOW_00        (GUI_ID_USER + 2)
 #define ID_BOX_01           (GUI_ID_USER + 4)
+#define ID_LISTVIEW_00      (GUI_ID_USER + 14)
+#define ID_LISTVIEW_01      (GUI_ID_USER + 15)
+#define ID_TIMER_01         (GUI_ID_USER + 16)
 
 /*********************************************************************
 *
 *       Slots
 */
-void ID_SCREEN_01__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
-void ID_SCREEN_01__ID_TIMER_00__APPW_NOTIFICATION_TIMER                     (APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
+void ID_SCREEN_01__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START         (APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
+void ID_SCREEN_01__ID_TIMER_00__APPW_NOTIFICATION_TIMER                              (APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
+void ID_SCREEN_01__ID_WINDOW_00__APPW_NOTIFICATION_FIXED__ID_TIMER_01__APPW_JOB_START(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
+void ID_SCREEN_01__ID_TIMER_01__APPW_NOTIFICATION_TIMER                              (APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
 
 /*********************************************************************
 *

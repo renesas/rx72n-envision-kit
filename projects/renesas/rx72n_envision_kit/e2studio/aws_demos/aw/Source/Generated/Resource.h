@@ -63,6 +63,13 @@ extern const unsigned char acDARK_Button_Down_100x30[];
 
 /*********************************************************************
 *
+*       Content
+*/
+extern const APPW_CONTENT ID_CONTENT_000_Data;
+extern const APPW_CONTENT ID_CONTENT_001_Data;
+
+/*********************************************************************
+*
 *       Screens
 */
 #define ID_SCREEN_00 (GUI_ID_USER + 4096)

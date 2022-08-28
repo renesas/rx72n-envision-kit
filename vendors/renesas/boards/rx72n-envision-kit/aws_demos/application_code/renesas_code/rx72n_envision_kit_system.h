@@ -66,10 +66,30 @@
 #define DATAFLASH_LABEL_NAME_TRACEALYZER_SERVER_PORT_NUMBER "tracealyzer_server_port_number"
 
 #define MAX_HISTORY_FPS_INDEX 300 /* for 3 seconds average */
+#define UNIQUE_ID_LENGTH 16
+#define EMWIN_VERSION_STRING_LENGTH 16
+#define FIRMWARE_VERSION_STRING_LENGTH 16
 
 /**********************************************************************************************************************
 Typedef definitions
 **********************************************************************************************************************/
+typedef struct _hardware_info
+{
+	char *cpu_name;
+	char *memory_size;
+	char *frequency;
+	char *crypto;
+	char *board_capability;
+	char *unique_id;
+}HARDWARE_INFO;
+
+typedef struct _software_info
+{
+	char *firmware_version;
+	char *amazon_freertos_version;
+	char *emwin_version;
+	char *compiled_time;
+}SOFTWARE_INFO;
 
 typedef struct _task_info
 {
@@ -112,6 +132,12 @@ typedef struct _task_info
     float current_fps;
     float average_fps;
 
+    /* for static Software info */
+    SOFTWARE_INFO software_info;
+
+    /* for static Hardware info */
+    HARDWARE_INFO hardware_info;
+
     /* system flag */
     volatile uint32_t gui_initialize_complete_flag;
 
@@ -127,6 +153,18 @@ extern const char tcp_send_performance_server_ip_address_label[];
 extern const char tcp_send_performance_server_port_number_label[];
 extern const char tracealyzer_server_ip_address_label[];
 extern const char tracealyzer_server_port_number_label[];
+
+extern const char cpu_name_string[];
+extern const char memory_size_string[];
+extern const char frequency_string[];
+extern const char crypto_string[];
+extern const char board_capability_string[];
+extern char unique_id_string[];
+
+extern char *firmware_version_string;
+extern const char amazon_freertos_version_string[];
+extern char emwin_version_string[];
+extern const char compiled_time_string[];
 
 extern char *iot_thing_name;
 extern char *mqtt_broker_endpoint;

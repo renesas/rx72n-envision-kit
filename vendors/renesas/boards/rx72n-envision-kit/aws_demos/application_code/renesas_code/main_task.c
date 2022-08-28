@@ -128,6 +128,74 @@ void main_task(void)
     /* audio task creation */
     xTaskCreate(audio_task, "audio_task", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.audio_task_handle);
 
+    /* get unique id info */
+    uint8_t unique_id[UNIQUE_ID_LENGTH];
+    for(int i = 0; i < UNIQUE_ID_LENGTH; i++)
+    {
+        if(!(i%4))
+        {
+        	uint32_t unique_id_long;
+        	switch(i)
+        	{
+                case 0:
+                	unique_id_long = FLASHCONST.UIDR0;
+                	break;
+                case 4:
+                	unique_id_long = FLASHCONST.UIDR1;
+                	break;
+                case 8:
+                	unique_id_long = FLASHCONST.UIDR2;
+                	break;
+                case 12:
+                	unique_id_long = FLASHCONST.UIDR3;
+                	break;
+                default:
+                	break;
+        	}
+        	if(i < UNIQUE_ID_LENGTH)
+        	{
+#if __LIT
+                unique_id[i+0] = (unique_id_long & 0x000000ff) >>  0;
+                unique_id[i+1] = (unique_id_long & 0x0000ff00) >>  8;
+                unique_id[i+2] = (unique_id_long & 0x00ff0000) >> 16;
+                unique_id[i+3] = (unique_id_long & 0xff000000) >> 24;
+#else /* not tested */
+                unique_id[i+0] = (unique_id_long & 0xff000000) >> 24;
+                unique_id[i+1] = (unique_id_long & 0x00ff0000) >> 16;
+                unique_id[i+2] = (unique_id_long & 0x0000ff00) >>  8;
+                unique_id[i+3] = (unique_id_long & 0x000000ff) >>  0;
+#endif
+        	}
+        }
+    }
+    char tmp[16];
+    unique_id_string[0] = 0;
+    for(int i = 0; i < UNIQUE_ID_LENGTH; i++)
+    {
+  	  sprintf(tmp, "%02x", unique_id[i]);
+  	  strcat(unique_id_string, tmp);
+    }
+    unique_id_string[UNIQUE_ID_LENGTH*2] = 0;
+
+    /* get emwin version */
+    sprintf(emwin_version_string, "%d", GUI_VERSION);
+
+    /* get firmware version */
+    firmware_version_read(&firmware_version_string);
+
+    /* set each info string pointer to task_info */
+    task_info.hardware_info.cpu_name = (char *)cpu_name_string;
+    task_info.hardware_info.memory_size = (char *)memory_size_string;
+    task_info.hardware_info.frequency = (char *)frequency_string;
+    task_info.hardware_info.crypto = (char *)crypto_string;
+    task_info.hardware_info.board_capability = (char *)board_capability_string;
+    task_info.hardware_info.unique_id = (char *)unique_id_string;
+
+    task_info.software_info.firmware_version = (char *)firmware_version_string;
+    task_info.software_info.amazon_freertos_version = (char *)amazon_freertos_version_string;
+    task_info.software_info.emwin_version = (char *)emwin_version_string;
+    task_info.software_info.compiled_time = (char *)compiled_time_string;
+
     /* wait completing gui initializing */
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 

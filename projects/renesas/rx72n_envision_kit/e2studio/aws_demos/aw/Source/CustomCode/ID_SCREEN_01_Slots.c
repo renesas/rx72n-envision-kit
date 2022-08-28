@@ -40,12 +40,16 @@ void cbID_SCREEN_01(WM_MESSAGE * pMsg) {
 *       ID_SCREEN_01__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START
 */
 void ID_SCREEN_01__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult) {
+  WM_HWIN hItem;
+
   GUI_USE_PARA(pAction);
   GUI_USE_PARA(hScreen);
   GUI_USE_PARA(pMsg);
   GUI_USE_PARA(pResult);
 
   TASK_INFO *task_info = get_task_info();
+
+
 }
 
 /*********************************************************************
@@ -95,6 +99,64 @@ void ID_SCREEN_01__ID_TIMER_00__APPW_NOTIFICATION_TIMER(APPW_ACTION_ITEM * pActi
   hItem = WM_GetDialogItem(hScreen, ID_TEXT_06_FPS);
   sprintf(string, "%3.02f fps", task_info->average_fps);
   TEXT_SetText(hItem, string);
+}
+
+/*********************************************************************
+*
+*       ID_SCREEN_01__ID_WINDOW_00__APPW_NOTIFICATION_FIXED__ID_TIMER_01__APPW_JOB_START
+*/
+void ID_SCREEN_01__ID_WINDOW_00__APPW_NOTIFICATION_FIXED__ID_TIMER_01__APPW_JOB_START(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult) {
+  GUI_USE_PARA(pAction);
+  GUI_USE_PARA(hScreen);
+  GUI_USE_PARA(pMsg);
+  GUI_USE_PARA(pResult);
+}
+
+/*********************************************************************
+*
+*       ID_SCREEN_01__ID_TIMER_01__APPW_NOTIFICATION_TIMER
+*/
+void ID_SCREEN_01__ID_TIMER_01__APPW_NOTIFICATION_TIMER(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult) {
+  WM_HWIN hItem;
+  char string[256] = {0};
+
+  /* this timer is one shot timer */
+
+  GUI_USE_PARA(pAction);
+  GUI_USE_PARA(hScreen);
+  GUI_USE_PARA(pMsg);
+  GUI_USE_PARA(pResult);
+
+  TASK_INFO *task_info = get_task_info();
+
+  /* update Hardware Spec info */
+  hItem = WM_GetDialogItem(hScreen, ID_LISTVIEW_00);
+  sprintf(string, "%s", task_info->hardware_info.cpu_name);
+  LISTVIEW_SetItemText(hItem, 1, 0, string);
+  sprintf(string, "%s", task_info->hardware_info.memory_size);
+  LISTVIEW_SetItemText(hItem, 1, 1, string);
+  sprintf(string, "%s", task_info->hardware_info.frequency);
+  LISTVIEW_SetItemText(hItem, 1, 2, string);
+  sprintf(string, "%s", task_info->hardware_info.crypto);
+  LISTVIEW_SetItemText(hItem, 1, 3, string);
+  sprintf(string, "%s", task_info->hardware_info.board_capability);
+  LISTVIEW_SetItemText(hItem, 1, 4, string);
+  sprintf(string, "0x");
+  strcat(string, task_info->hardware_info.unique_id);
+  string[2+UNIQUE_ID_LENGTH*2] = 0; /* 2 means "0x" */
+  LISTVIEW_SetItemText(hItem, 1, 5, string);
+
+  /* update Software Spec info */
+  hItem = WM_GetDialogItem(hScreen, ID_LISTVIEW_01);
+  sprintf(string, "%s", task_info->software_info.firmware_version);
+  LISTVIEW_SetItemText(hItem, 1, 0, string);
+  sprintf(string, "%s", task_info->software_info.amazon_freertos_version);
+  LISTVIEW_SetItemText(hItem, 1, 1, string);
+  sprintf(string, "%s", task_info->software_info.emwin_version);
+  LISTVIEW_SetItemText(hItem, 1, 2, string);
+  sprintf(string, "%s", task_info->software_info.compiled_time);
+  LISTVIEW_SetItemText(hItem, 1, 3, string);
+
 }
 
 /*************************** End of file ****************************/

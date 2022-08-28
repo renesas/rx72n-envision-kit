@@ -3,14 +3,14 @@
   xSizeDisplay=480
   ySizeDisplay=272
   ColorConv=GUICC_M565
-  LastSavedWith=1.24_6.22
+  LastSavedWith=1.30_6.26d
   BSP=
   ManageTextExt=0
   ShowMissingCharacters=1
   EnableBiDi=0
   EnableThai=0
   EnableFocus=0
-  MultibufEnable=0
+  MultibufEnable=1
   <Bitmaps>
   </Bitmaps>
   <Fonts>
@@ -44,14 +44,74 @@
       Text=100.00 fps
     </Lang>
   </Text>
+  <Content>
+    <Item>
+      Id=2048
+      IdString=ID_CONTENT_000
+      NumColumns=2
+      NumRows=6
+      Size=237,237
+      HeadAlign=12,12
+      TextAlign=12,12
+      <Header>
+        Text=Hardware Spec
+        Text=Information
+      </Header>
+      <Text>
+        <Column>
+          Text=CPU
+          Text=ROM/RAM size
+          Text=Frequency
+          Text=Crypto
+          Text=On Board Capability
+          Text=CPU Unique ID[16 bytes]
+        </Column>
+        <Column>
+          Text=
+          Text=
+          Text=
+          Text=
+          Text=
+          Text=
+        </Column>
+      </Text>
+    </Item>
+    <Item>
+      Id=2049
+      IdString=ID_CONTENT_001
+      NumColumns=2
+      NumRows=4
+      Size=237,237
+      HeadAlign=12,12
+      TextAlign=12,12
+      <Header>
+        Text=Software Spec
+        Text=Information
+      </Header>
+      <Text>
+        <Column>
+          Text=Firmware Version
+          Text=Amazon FreeRTOS Version
+          Text=emWin (Segger) Version
+          Text=Compiled at
+        </Column>
+        <Column>
+          Text=
+          Text=
+          Text=
+          Text=
+        </Column>
+      </Text>
+    </Item>
+  </Content>
   <Variables>
     Item=4096,ID_VAR_00,0
     Item=4097,ID_VAR_01,0
   </Variables>
   <FocusInfo>
-    Color=00000000
+    Color=ff2777b3
     Radius=0
-    Width=0
+    Width=1
   </FocusInfo>
   <Objects>
     <Screen>
@@ -708,6 +768,144 @@
         Color=ffffffff
       </SetColor>
     </Box>
+    <Listview>
+      ParentId=2050
+      IdString=ID_LISTVIEW_00
+      Id=2062
+      IdPrev=0
+      IdPost=0
+      <Dispose>
+        xSize=476
+        ySize=108
+        <X0>
+          Mode=2
+          Off=2
+          Id=0
+        </X0>
+        <Y0>
+          Mode=2
+          Off=4
+          Id=0
+        </Y0>
+      </Dispose>
+      <SetHeight>
+        Height=20
+      </SetHeight>
+      <SetHeight2>
+        Height=20
+      </SetHeight2>
+      <SetBorder>
+        Border=3
+      </SetBorder>
+      <SetColors2>
+        Color0=ffffffff
+        Color1=ff2c2c30
+        Color2=ff000000
+      </SetColors2>
+      <SetFrame>
+        Frame=2
+      </SetFrame>
+      <SetColors3>
+        Color0=ff2c2c30
+        Color2=ff2c2c30
+      </SetColors3>
+      <SetBkColors>
+        Color0=ffffffff
+        Color1=ff2777b3
+        Color2=ff2777b3
+      </SetBkColors>
+      <SetColors>
+        Color0=ff2c2c30
+        Color1=ffffffff
+        Color2=ffffffff
+      </SetColors>
+      <SetVisible2>
+      </SetVisible2>
+      <SetVisible3>
+      </SetVisible3>
+      <SetContent>
+        Id=2048
+      </SetContent>
+      <SetVisible>
+      </SetVisible>
+      <SetFixed>
+        Fixed=2
+      </SetFixed>
+    </Listview>
+    <Listview>
+      ParentId=2050
+      IdString=ID_LISTVIEW_01
+      Id=2063
+      IdPrev=0
+      IdPost=0
+      <Dispose>
+        xSize=476
+        ySize=108
+        <X0>
+          Mode=2
+          Off=2
+          Id=0
+        </X0>
+        <Y0>
+          Mode=2
+          Off=118
+          Id=0
+        </Y0>
+      </Dispose>
+      <SetHeight>
+        Height=20
+      </SetHeight>
+      <SetHeight2>
+        Height=20
+      </SetHeight2>
+      <SetBorder>
+        Border=3
+      </SetBorder>
+      <SetColors2>
+        Color0=ffffffff
+        Color1=ff2c2c30
+        Color2=ff000000
+      </SetColors2>
+      <SetFrame>
+        Frame=2
+      </SetFrame>
+      <SetVisible>
+      </SetVisible>
+      <SetColors3>
+        Color0=ff2c2c30
+        Color2=ff2c2c30
+      </SetColors3>
+      <SetBkColors>
+        Color0=ffffffff
+        Color1=ff2777b3
+        Color2=ff2777b3
+      </SetBkColors>
+      <SetColors>
+        Color0=ff2c2c30
+        Color1=ffffffff
+        Color2=ffffffff
+      </SetColors>
+      <SetVisible2>
+      </SetVisible2>
+      <SetVisible3>
+      </SetVisible3>
+      <SetContent>
+        Id=2049
+      </SetContent>
+      <SetFixed>
+        Fixed=2
+      </SetFixed>
+    </Listview>
+    <Timer>
+      ParentId=2050
+      IdString=ID_TIMER_01
+      Id=2064
+      IdPrev=0
+      IdPost=0
+      <SetPeriod>
+        Period=1000
+      </SetPeriod>
+    </Timer>
   </Objects>
   <Interactions>
     <START>
@@ -790,7 +988,26 @@
       Comment=Update each info on frame
       Flags=0
     </NULL>
+    <START>
+      RootId=6145
+      IdSrc=ID_SCREEN_01
+      NCode=APPW_NOTIFICATION_INITDIALOG
+      IdDst=ID_TIMER_01
+      Slot=ID_SCREEN_01__ID_WINDOW_00__APPW_NOTIFICATION_FIXED__ID_TIMER_01__APPW_JOB_START
+      Flags=0
+    </START>
+    <NULL>
+      RootId=6145
+      IdSrc=ID_TIMER_01
+      NCode=APPW_NOTIFICATION_TIMER
+      Slot=ID_SCREEN_01__ID_TIMER_01__APPW_NOTIFICATION_TIMER
+      Flags=0
+    </NULL>
   </Interactions>
+  <Selection>
+    Root=ID_SCREEN_01
+    Object=2062
+  </Selection>
   <Terms>
   </Terms>
 </Project>

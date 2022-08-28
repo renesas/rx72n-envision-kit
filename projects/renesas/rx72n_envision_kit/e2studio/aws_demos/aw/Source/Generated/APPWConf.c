@@ -69,9 +69,119 @@ static unsigned _NumVars = GUI_COUNTOF(_aVarList);
 
 /*********************************************************************
 *
+*       ID_CONTENT_000
+*/
+static const char * ID_CONTENT_000_Col_0[] = {
+  "CPU",
+  "ROM/RAM size",
+  "Frequency",
+  "Crypto",
+  "On Board Capability",
+  "CPU Unique ID[16 bytes]",
+};
+
+static const char * ID_CONTENT_000_Col_1[] = {
+  "",
+  "",
+  "",
+  "",
+  "",
+  "",
+};
+
+static const char ** ID_CONTENT_000_Text[] = {
+  ID_CONTENT_000_Col_0,
+  ID_CONTENT_000_Col_1,
+};
+
+static const char * ID_CONTENT_000_Head[] = {
+  "Hardware Spec",
+  "Information",
+};
+
+static const U16 ID_CONTENT_000_Size[] = {
+  237, 237
+};
+
+static const U8 ID_CONTENT_000_HeadAlign[] = {
+  12, 12
+};
+
+static const U8 ID_CONTENT_000_TextAlign[] = {
+  12, 12
+};
+
+const APPW_CONTENT ID_CONTENT_000_Data = {
+  ID_CONTENT_000_Text,
+  6,
+  2,
+  ID_CONTENT_000_Head,
+  ID_CONTENT_000_Size,
+  ID_CONTENT_000_HeadAlign,
+  ID_CONTENT_000_TextAlign
+};
+
+/*********************************************************************
+*
+*       ID_CONTENT_001
+*/
+static const char * ID_CONTENT_001_Col_0[] = {
+  "Firmware Version",
+  "Amazon FreeRTOS Version",
+  "emWin (Segger) Version",
+  "Compiled at",
+};
+
+static const char * ID_CONTENT_001_Col_1[] = {
+  "",
+  "",
+  "",
+  "",
+};
+
+static const char ** ID_CONTENT_001_Text[] = {
+  ID_CONTENT_001_Col_0,
+  ID_CONTENT_001_Col_1,
+};
+
+static const char * ID_CONTENT_001_Head[] = {
+  "Software Spec",
+  "Information",
+};
+
+static const U16 ID_CONTENT_001_Size[] = {
+  237, 237
+};
+
+static const U8 ID_CONTENT_001_HeadAlign[] = {
+  12, 12
+};
+
+static const U8 ID_CONTENT_001_TextAlign[] = {
+  12, 12
+};
+
+const APPW_CONTENT ID_CONTENT_001_Data = {
+  ID_CONTENT_001_Text,
+  4,
+  2,
+  ID_CONTENT_001_Head,
+  ID_CONTENT_001_Size,
+  ID_CONTENT_001_HeadAlign,
+  ID_CONTENT_001_TextAlign
+};
+
+/*********************************************************************
+*
 *       Multibuffering
 */
 static U8 _MultibufEnable = 1;
+
+/*********************************************************************
+*
+*       _ShowMissingCharacters
+*/
+static U8 _ShowMissingCharacters = 1;
 
 /*********************************************************************
 *
@@ -119,6 +229,7 @@ void APPW_X_Setup(void) {
   APPW_X_FS_Init();
   APPW_MULTIBUF_Enable(_MultibufEnable);
   APPW_SetData(_apRootList, _NumScreens, _aVarList, _NumVars, (APPW_DRAWING_ITEM **)_appDrawing, _NumDrawings);
+  GUI_ShowMissingCharacters(_ShowMissingCharacters);
 }
 
 /*********************************************************************
