@@ -84,6 +84,7 @@ int32_t wait_first_display(void);
 void firmware_version_read(char **ver_str);
 void amazon_freertos_syslog_putstring(char *string);
 void main_task(void);
+void main_task_init(void);
 TASK_INFO * get_task_info(void);
 
 /******************************************************************************
@@ -92,7 +93,7 @@ TASK_INFO * get_task_info(void);
  Arguments       : none
  Return value    : none
  ******************************************************************************/
-void main_task(void)
+void main_task_init(void)
 {
     uint32_t bank_info;
     R_FLASH_Control(FLASH_CMD_BANK_GET, &bank_info);
@@ -108,10 +109,8 @@ void main_task(void)
     /* sdcard task creation */
     xTaskCreate(sdcard_task, "sdcard", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.sdcard_task_handle);
 
-#if 0
     /* task manager task creation */
     xTaskCreate(task_manager_task, "task_manager", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.task_manager_task_handle);
-#endif
 
     /* sntp task creation */
     xTaskCreate(sntp_task, "sntp", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.sntp_task_handle);
@@ -205,16 +204,10 @@ void main_task(void)
     xTaskNotifyGive(task_info.task_manager_task_handle);
     xTaskNotifyGive(task_info.serial_flash_task_handle);
 
-    /* We should wait for the network to be up before we run any demos. */
-    while( FreeRTOS_IsNetworkUp() == pdFALSE )
-    {
-        vTaskDelay(300);
-    }
+}
 
-    /* start tracealyzer */
-    vTraceEnable(TRC_INIT);
-    vTraceEnable(TRC_START);
-
+void main_task(void)
+{
     /* main loop */
     while(1)
     {

@@ -45,6 +45,16 @@
 /* for using Amazon FreeRTOS */
 #include "FreeRTOS.h"
 
+/* FreeRTOS+TCP includes. */
+#include "FreeRTOS_IP.h"
+
+/* Key provisioning include. */
+#include "aws_dev_mode_key_provisioning.h"
+
+/* Includes for library initialization. */
+#include "iot_demo_runner.h"
+#include "aws_demo.h"
+
 /* for RX72N Envision Kit system common header */
 #include "rx72n_envision_kit_system.h"
 
@@ -77,13 +87,30 @@ void task_manager_task( void * pvParameters );
  ******************************************************************************/
 void task_manager_task( void * pvParameters )
 {
-    TASK_INFO *task_info = (WM_HWIN *)pvParameters;
+    TASK_INFO *task_info = (TASK_INFO *)pvParameters;
 
     /* wait completing gui initializing */
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
+    /* We should wait for the network to be up before we run any demos. */
+    while( FreeRTOS_IsNetworkUp() == pdFALSE )
+    {
+        vTaskDelay(300);
+    }
+	FreeRTOS_printf( ( "The network is up and running\n" ) );
+
+    /* start tracealyzer */
+    vTraceEnable(TRC_INIT);
+    vTraceEnable(TRC_START);
+
+    /* Provision the device with AWS certificate and private key. */
+    vDevModeKeyProvisioning();
+
+    /* Run all demos. */
+    DEMO_RUNNER_RunDemos();
+
     while(1)
     {
-        vTaskDelay(1);
+        vTaskDelay(1000);
     }
 }

@@ -47,6 +47,8 @@
 /* for using Segger emWin */
 #include "GUI.h"
 #include "DIALOG.h"
+#include "Generated/Resource.h"
+#include "Generated/ID_SCREEN_01.h"
 
 /* for using Amazon FreeRTOS */
 #include "FreeRTOS.h"
@@ -75,17 +77,16 @@ static void TFAT_sample(void);
 static void R_error(uint8_t err_code);
 static void trap(void);
 
-extern void firmware_update_list_add(char *pstring);
-extern void firmware_update_list_clear(void);
-extern void firmware_update_update_file_search(void);
+extern void firmware_update_list_add(TASK_INFO *task_info, char *pstring);
+extern void firmware_update_list_clear(TASK_INFO *task_info);
+extern void firmware_update_update_file_search(TASK_INFO *task_info);
 extern void R_SDHI_PinSetTransfer(void);
 extern void R_SDHI_PinSetInit(void);
 extern void software_reset(void);
-extern void display_update_sd_stat(WM_HWIN hWin, int8_t sd_stat);
 
 void sdcard_task( void * pvParameters )
 {
-    TASK_INFO *task_info = (WM_HWIN *)pvParameters;
+    TASK_INFO *task_info = (TASK_INFO *)pvParameters;
 
     /* wait completing gui initializing */
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
@@ -131,7 +132,7 @@ void sdcard_task( void * pvParameters )
                     trap();
                 }
                 R_tfat_f_mount(TFAT_DRIVE_NUM_0, &fatfs);
-//                firmware_update_update_file_search();
+                firmware_update_update_file_search(task_info);
             }
             else
             {
@@ -278,3 +279,66 @@ static void trap(void)
 
     while(err_code);
 } /* End of function trap() */
+
+void firmware_update_update_file_search(TASK_INFO *task_info)
+{
+    FRESULT tfat_ret;
+    int32_t i;
+
+    firmware_update_list_clear(task_info);
+    tfat_ret = R_tfat_f_opendir (&dir,"0:");
+    if(tfat_ret == TFAT_FR_OK)
+    {
+        while(1)
+        {
+            tfat_ret = R_tfat_f_readdir (&dir,  &filinfo );
+            if(tfat_ret == TFAT_FR_OK)
+            {
+                if(filinfo.fname[0] == '\0')
+                {
+                    break;
+                }
+                if(TFAT_AM_DIR == (filinfo.fattrib & TFAT_AM_DIR) )
+                {
+                    continue;
+                }
+                for(i= 0;i<sizeof(filinfo.fname);i++)
+                {
+                    if('A' <=  filinfo.fname[i] && filinfo.fname[i] <= 'Z' )
+                    {
+                        filinfo.fname[i] += 0x20;
+                    }
+                }
+                if(0 != strstr(filinfo.fname,".rsu"))
+                {
+                    firmware_update_list_add(task_info, filinfo.fname);
+                }
+            }
+            else
+            {
+                break;
+            }
+            vTaskDelay(1);
+        }
+    }
+}
+
+void firmware_update_list_add(TASK_INFO *task_info, char *pstring)
+{
+    LISTBOX_AddString(WM_GetDialogItem(task_info->hWin_firmware_update_via_sd_card, ID_LISTBOX_00), pstring);
+}
+
+void firmware_update_list_clear(TASK_INFO *task_info)
+{
+    WM_HWIN hItem;
+    U32 list_num;
+    I32 i;
+
+    hItem = WM_GetDialogItem(task_info->hWin_firmware_update_via_sd_card, ID_LISTBOX_00);
+
+    list_num = LISTBOX_GetNumItems(hItem);
+    for(i = list_num-1; i>=0; i--)
+    {
+        LISTBOX_DeleteItem(hItem, i);
+    }
+}

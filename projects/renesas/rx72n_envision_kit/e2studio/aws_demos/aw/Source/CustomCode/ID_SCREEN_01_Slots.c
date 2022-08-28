@@ -37,19 +37,38 @@ void cbID_SCREEN_01(WM_MESSAGE * pMsg) {
 
 /*********************************************************************
 *
-*       ID_SCREEN_01__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START
+*       ID_SCREEN_01__APPW_NOTIFICATION_INITDIALOG__ID_WINDOW_01__APPW_JOB_SETVIS
 */
-void ID_SCREEN_01__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult) {
-  WM_HWIN hItem;
-
+void ID_SCREEN_01__APPW_NOTIFICATION_INITDIALOG__ID_WINDOW_01__APPW_JOB_SETVIS(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult) {
   GUI_USE_PARA(pAction);
   GUI_USE_PARA(hScreen);
   GUI_USE_PARA(pMsg);
   GUI_USE_PARA(pResult);
 
   TASK_INFO *task_info = get_task_info();
+  task_info->hWin_firmware_update_via_sd_card = hScreen;
+}
 
+/*********************************************************************
+*
+*       ID_SCREEN_01__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START
+*/
+void ID_SCREEN_01__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult) {
+  GUI_USE_PARA(pAction);
+  GUI_USE_PARA(hScreen);
+  GUI_USE_PARA(pMsg);
+  GUI_USE_PARA(pResult);
+}
 
+/*********************************************************************
+*
+*       ID_SCREEN_01__ID_WINDOW_00__APPW_NOTIFICATION_FIXED__ID_TIMER_01__APPW_JOB_START
+*/
+void ID_SCREEN_01__ID_WINDOW_00__APPW_NOTIFICATION_FIXED__ID_TIMER_01__APPW_JOB_START(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult) {
+  GUI_USE_PARA(pAction);
+  GUI_USE_PARA(hScreen);
+  GUI_USE_PARA(pMsg);
+  GUI_USE_PARA(pResult);
 }
 
 /*********************************************************************
@@ -103,17 +122,6 @@ void ID_SCREEN_01__ID_TIMER_00__APPW_NOTIFICATION_TIMER(APPW_ACTION_ITEM * pActi
 
 /*********************************************************************
 *
-*       ID_SCREEN_01__ID_WINDOW_00__APPW_NOTIFICATION_FIXED__ID_TIMER_01__APPW_JOB_START
-*/
-void ID_SCREEN_01__ID_WINDOW_00__APPW_NOTIFICATION_FIXED__ID_TIMER_01__APPW_JOB_START(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult) {
-  GUI_USE_PARA(pAction);
-  GUI_USE_PARA(hScreen);
-  GUI_USE_PARA(pMsg);
-  GUI_USE_PARA(pResult);
-}
-
-/*********************************************************************
-*
 *       ID_SCREEN_01__ID_TIMER_01__APPW_NOTIFICATION_TIMER
 */
 void ID_SCREEN_01__ID_TIMER_01__APPW_NOTIFICATION_TIMER(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult) {
@@ -157,6 +165,72 @@ void ID_SCREEN_01__ID_TIMER_01__APPW_NOTIFICATION_TIMER(APPW_ACTION_ITEM * pActi
   sprintf(string, "%s", task_info->software_info.compiled_time);
   LISTVIEW_SetItemText(hItem, 1, 3, string);
 
+}
+
+/*********************************************************************
+*
+*       ID_SCREEN_01__ID_BUTTON_00__WM_NOTIFICATION_CLICKED
+*/
+void ID_SCREEN_01__ID_BUTTON_00__WM_NOTIFICATION_CLICKED(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult) {
+  GUI_USE_PARA(pAction);
+  GUI_USE_PARA(hScreen);
+  GUI_USE_PARA(pMsg);
+  GUI_USE_PARA(pResult);
+}
+
+/*********************************************************************
+*
+*       ID_SCREEN_01__ID_BUTTON_01__WM_NOTIFICATION_CLICKED
+*/
+void ID_SCREEN_01__ID_BUTTON_01__WM_NOTIFICATION_CLICKED(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult) {
+  GUI_USE_PARA(pAction);
+  GUI_USE_PARA(hScreen);
+  GUI_USE_PARA(pMsg);
+  GUI_USE_PARA(pResult);
+}
+
+/*********************************************************************
+*
+*       ID_SCREEN_01__ID_BUTTON_01__WM_NOTIFICATION_CLICKED__ID_WINDOW_01__APPW_JOB_SETVIS
+*/
+void ID_SCREEN_01__ID_BUTTON_01__WM_NOTIFICATION_CLICKED__ID_WINDOW_01__APPW_JOB_SETVIS(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult) {
+  GUI_USE_PARA(pAction);
+  GUI_USE_PARA(hScreen);
+  GUI_USE_PARA(pMsg);
+  GUI_USE_PARA(pResult);
+}
+
+/*********************************************************************
+*
+*       ID_SCREEN_01__ID_BUTTON_01__WM_NOTIFICATION_CLICKED__ID_WINDOW_00__APPW_JOB_SETVIS
+*/
+void ID_SCREEN_01__ID_BUTTON_01__WM_NOTIFICATION_CLICKED__ID_WINDOW_00__APPW_JOB_SETVIS(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult) {
+  GUI_USE_PARA(pAction);
+  GUI_USE_PARA(hScreen);
+  GUI_USE_PARA(pMsg);
+  GUI_USE_PARA(pResult);
+}
+
+/*********************************************************************
+*
+*       ID_SCREEN_01__ID_BUTTON_00__WM_NOTIFICATION_CLICKED__ID_WINDOW_00__APPW_JOB_SETVIS
+*/
+void ID_SCREEN_01__ID_BUTTON_00__WM_NOTIFICATION_CLICKED__ID_WINDOW_00__APPW_JOB_SETVIS(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult) {
+  GUI_USE_PARA(pAction);
+  GUI_USE_PARA(hScreen);
+  GUI_USE_PARA(pMsg);
+  GUI_USE_PARA(pResult);
+}
+
+/*********************************************************************
+*
+*       ID_SCREEN_01__ID_BUTTON_00__WM_NOTIFICATION_CLICKED__ID_WINDOW_01__APPW_JOB_SETVIS
+*/
+void ID_SCREEN_01__ID_BUTTON_00__WM_NOTIFICATION_CLICKED__ID_WINDOW_01__APPW_JOB_SETVIS(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult) {
+  GUI_USE_PARA(pAction);
+  GUI_USE_PARA(hScreen);
+  GUI_USE_PARA(pMsg);
+  GUI_USE_PARA(pResult);
 }
 
 /*************************** End of file ****************************/

@@ -31,23 +31,38 @@ Purpose     : Generated file do NOT edit!
 #define ID_TEXT_04_TIME     (GUI_ID_USER + 11)
 #define ID_TEXT_05_USB      (GUI_ID_USER + 12)
 #define ID_TEXT_06_FPS      (GUI_ID_USER + 13)
-#define ID_BUTTON_01        (GUI_ID_USER + 8)
-#define ID_BUTTON_00        (GUI_ID_USER + 7)
+#define ID_BUTTON_00        (GUI_ID_USER + 8)
+#define ID_BUTTON_01        (GUI_ID_USER + 7)
 #define ID_TIMER_00         (GUI_ID_USER + 6)
 #define ID_WINDOW_00        (GUI_ID_USER + 2)
+#define ID_WINDOW_01        (GUI_ID_USER + 17)
 #define ID_BOX_01           (GUI_ID_USER + 4)
 #define ID_LISTVIEW_00      (GUI_ID_USER + 14)
 #define ID_LISTVIEW_01      (GUI_ID_USER + 15)
 #define ID_TIMER_01         (GUI_ID_USER + 16)
+#define ID_BOX_02           (GUI_ID_USER + 18)
+#define ID_LISTBOX_00       (GUI_ID_USER + 19)
+#define ID_MULTIEDIT_00     (GUI_ID_USER + 20)
+#define ID_PROGBAR_00       (GUI_ID_USER + 22)
+#define ID_BUTTON_03        (GUI_ID_USER + 23)
+#define ID_TEXT_00          (GUI_ID_USER + 25)
+#define ID_BUTTON_03_Copy   (GUI_ID_USER + 21)
 
 /*********************************************************************
 *
 *       Slots
 */
-void ID_SCREEN_01__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START         (APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
-void ID_SCREEN_01__ID_TIMER_00__APPW_NOTIFICATION_TIMER                              (APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
-void ID_SCREEN_01__ID_WINDOW_00__APPW_NOTIFICATION_FIXED__ID_TIMER_01__APPW_JOB_START(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
-void ID_SCREEN_01__ID_TIMER_01__APPW_NOTIFICATION_TIMER                              (APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
+void ID_SCREEN_01__APPW_NOTIFICATION_INITDIALOG__ID_WINDOW_01__APPW_JOB_SETVIS         (APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
+void ID_SCREEN_01__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START           (APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
+void ID_SCREEN_01__ID_WINDOW_00__APPW_NOTIFICATION_FIXED__ID_TIMER_01__APPW_JOB_START  (APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
+void ID_SCREEN_01__ID_TIMER_00__APPW_NOTIFICATION_TIMER                                (APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
+void ID_SCREEN_01__ID_TIMER_01__APPW_NOTIFICATION_TIMER                                (APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
+void ID_SCREEN_01__ID_BUTTON_00__WM_NOTIFICATION_CLICKED                               (APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
+void ID_SCREEN_01__ID_BUTTON_01__WM_NOTIFICATION_CLICKED                               (APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
+void ID_SCREEN_01__ID_BUTTON_01__WM_NOTIFICATION_CLICKED__ID_WINDOW_01__APPW_JOB_SETVIS(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
+void ID_SCREEN_01__ID_BUTTON_01__WM_NOTIFICATION_CLICKED__ID_WINDOW_00__APPW_JOB_SETVIS(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
+void ID_SCREEN_01__ID_BUTTON_00__WM_NOTIFICATION_CLICKED__ID_WINDOW_00__APPW_JOB_SETVIS(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
+void ID_SCREEN_01__ID_BUTTON_00__WM_NOTIFICATION_CLICKED__ID_WINDOW_01__APPW_JOB_SETVIS(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
 
 /*********************************************************************
 *

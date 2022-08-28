@@ -172,5 +172,7 @@ extern char *signing_certificate_pem;
 
 extern xSemaphoreHandle xSemaphoreCodeFlashAccess;
 extern FATFS fatfs;
+extern FILINFO filinfo;
+extern DIR dir;
 
 extern TASK_INFO * get_task_info(void);

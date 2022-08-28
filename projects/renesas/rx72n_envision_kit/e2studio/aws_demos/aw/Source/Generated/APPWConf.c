@@ -59,6 +59,7 @@ static unsigned _NumScreens = GUI_COUNTOF(_apRootList);
 static APPW_VAR_OBJECT _aVarList[] = {
   { ID_VAR_00, 0, 0, NULL },
   { ID_VAR_01, 0, 0, NULL },
+  { ID_VAR_02_WINDOW_INDEX, 0, 0, NULL },
 };
 
 /*********************************************************************

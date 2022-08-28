@@ -27,10 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "FreeRTOS.h"
 #include "task.h"
 
-/* FreeRTOS includes. */
-#include "FreeRTOS.h"
-#include "task.h"
-
 /* System init includes. */
 #include "iot_system_init.h"
 
@@ -55,6 +51,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define mainTEST_RUNNER_TASK_STACK_SIZE    ( configMINIMAL_STACK_SIZE * 8 )
 
 extern void main_task(void);
+extern void main_task_init(void);
 
 /* The MAC address array is not declared const as the MAC address will
 normally be read from an EEPROM and not hard coded (in real deployed
@@ -168,18 +165,7 @@ void vApplicationDaemonTaskStartupHook( void )
                          ucDNSServerAddress,
                          ucMACAddress );
 
-        /* We should wait for the network to be up before we run any demos. */
-        while( FreeRTOS_IsNetworkUp() == pdFALSE )
-        {
-            vTaskDelay(300);
-        }
-		FreeRTOS_printf( ( "The network is up and running\n" ) );
-
-        /* Provision the device with AWS certificate and private key. */
-        vDevModeKeyProvisioning();
-
-        /* Run all demos. */
-        DEMO_RUNNER_RunDemos();
+        main_task_init();
     }
 }
 

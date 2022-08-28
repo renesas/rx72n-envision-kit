@@ -62,3 +62,5 @@ char *signing_certificate_pem;
 
 xSemaphoreHandle xSemaphoreCodeFlashAccess;
 FATFS fatfs;
+FILINFO filinfo;
+DIR dir;

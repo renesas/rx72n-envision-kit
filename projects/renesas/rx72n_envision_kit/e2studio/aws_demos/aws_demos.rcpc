@@ -272,7 +272,10 @@
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GRAPH_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUI.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIDRV_FlexColor.h</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIDRV_FlexColor_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIDRV_Lin.h</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIDRV_Null.h</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUIDRV_TemplateI.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUI_ARRAY.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUI_ARRAY_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\GUI_BMP_Private.h</Path>
@@ -333,6 +336,8 @@
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\ROTARY_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\SCROLLBAR.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\SCROLLBAR_Private.h</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\SCROLLER.h</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\SCROLLER_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\SEGGER.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\SLIDER.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\SLIDER_Private.h</Path>
@@ -346,6 +351,8 @@
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\TEXT_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\TREEVIEW.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\TREEVIEW_Private.h</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\WHEEL.h</Path>
+                <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\WHEEL_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\WIDGET.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\WINDOW_Private.h</Path>
                 <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_emwin_rx\lib\GUI\WM.h</Path>
@@ -823,6 +830,8 @@
           <Category Name="Image">
             <Path>aw\Resource\Image\DARK_Button_Down_100x30.c</Path>
             <Path>aw\Resource\Image\DARK_Button_Up_100x30.c</Path>
+            <Path>aw\Resource\Image\DARK_Progbar_Tile_H_Blue_1x16.c</Path>
+            <Path>aw\Resource\Image\DARK_Progbar_Tile_H_Gray_1x16.c</Path>
             <Path>aw\Resource\Image\mcu.c</Path>
             <Path>aw\Resource\Image\title_renesas.c</Path>
           </Category>
@@ -950,6 +959,8 @@
             <Path>aw\Simulation\GUI_Lib\ROTARY_Private.h</Path>
             <Path>aw\Simulation\GUI_Lib\SCROLLBAR.h</Path>
             <Path>aw\Simulation\GUI_Lib\SCROLLBAR_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SCROLLER.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SCROLLER_Private.h</Path>
             <Path>aw\Simulation\GUI_Lib\SEGGER.h</Path>
             <Path>aw\Simulation\GUI_Lib\SLIDER.h</Path>
             <Path>aw\Simulation\GUI_Lib\SLIDER_Private.h</Path>
@@ -963,6 +974,8 @@
             <Path>aw\Simulation\GUI_Lib\TEXT_Private.h</Path>
             <Path>aw\Simulation\GUI_Lib\TREEVIEW.h</Path>
             <Path>aw\Simulation\GUI_Lib\TREEVIEW_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\WHEEL.h</Path>
+            <Path>aw\Simulation\GUI_Lib\WHEEL_Private.h</Path>
             <Path>aw\Simulation\GUI_Lib\WIDGET.h</Path>
             <Path>aw\Simulation\GUI_Lib\WINDOW_Private.h</Path>
             <Path>aw\Simulation\GUI_Lib\WM.h</Path>
@@ -2239,8 +2252,8 @@
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\device_shadow_for_aws\source\include"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\device_defender_for_aws\source\include"</Option>
           <Option>-include="${ProjDirPath}\generate"</Option>
-          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace14\${ProjName}\src"</Option>
-          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace14\${ProjName}\aw\Source"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace15\${ProjName}\src"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace15\${ProjName}\aw\Source"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\general"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_pincfg"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_config"</Option>
@@ -2566,6 +2579,8 @@
           <Path>HardwareDebug\Roboto_24_Normal_EXT_AA4.obj</Path>
           <Path>HardwareDebug\DARK_Button_Down_100x30.obj</Path>
           <Path>HardwareDebug\DARK_Button_Up_100x30.obj</Path>
+          <Path>HardwareDebug\DARK_Progbar_Tile_H_Blue_1x16.obj</Path>
+          <Path>HardwareDebug\DARK_Progbar_Tile_H_Gray_1x16.obj</Path>
           <Path>HardwareDebug\mcu.obj</Path>
           <Path>HardwareDebug\title_renesas.obj</Path>
           <Path>HardwareDebug\APPW_Language_0.obj</Path>
@@ -2965,8 +2980,8 @@
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\device_shadow_for_aws\source\include"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\device_defender_for_aws\source\include"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\generate"</IncludePathForC>
-          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace14\${ProjName}\src"</IncludePathForC>
-          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace14\${ProjName}\aw\Source"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace15\${ProjName}\src"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace15\${ProjName}\aw\Source"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\general"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_pincfg"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_config"</IncludePathForC>

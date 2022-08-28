@@ -34,6 +34,9 @@ Purpose     : Generated file do NOT edit!
 #define ID_RTEXT_8 8
 #define ID_RTEXT_9 9
 #define ID_RTEXT_10 10
+#define ID_RTEXT_11 11
+#define ID_RTEXT_12 12
+#define ID_RTEXT_13 13
 
 #define APPW_MANAGE_TEXT APPW_MANAGE_TEXT_EXT
 extern const unsigned char acAPPW_Language_0[];
@@ -53,6 +56,8 @@ extern const unsigned char acmcu[];
 extern const unsigned char actitle_renesas[];
 extern const unsigned char acDARK_Button_Up_100x30[];
 extern const unsigned char acDARK_Button_Down_100x30[];
+extern const unsigned char acDARK_Progbar_Tile_H_Blue_1x16[];
+extern const unsigned char acDARK_Progbar_Tile_H_Gray_1x16[];
 
 /*********************************************************************
 *
@@ -60,6 +65,7 @@ extern const unsigned char acDARK_Button_Down_100x30[];
 */
 #define ID_VAR_00 (GUI_ID_USER + 2048)
 #define ID_VAR_01 (GUI_ID_USER + 2049)
+#define ID_VAR_02_WINDOW_INDEX (GUI_ID_USER + 2050)
 
 /*********************************************************************
 *

@@ -128,7 +128,7 @@ static APPW_CREATE_ITEM _aCreate[] = {
     { 0, 0 }
   },
   { WM_OBJECT_BUTTON_Create,
-    ID_BUTTON_01, ID_SCREEN_01,
+    ID_BUTTON_00, ID_SCREEN_01,
     { { { DISPOSE_MODE_REL_PARENT, 306, 0, 0 },
         { DISPOSE_MODE_REL_PARENT, 2, 0, 0 },
         { DISPOSE_MODE_NULL, 0, 0, 0 },
@@ -139,8 +139,8 @@ static APPW_CREATE_ITEM _aCreate[] = {
     { 0, 0 }
   },
   { WM_OBJECT_BUTTON_Create,
-    ID_BUTTON_00, ID_SCREEN_01,
-    { { { DISPOSE_MODE_REL_PARENT, 395, 0, 0 },
+    ID_BUTTON_01, ID_SCREEN_01,
+    { { { DISPOSE_MODE_REL_PARENT, 394, 0, 0 },
         { DISPOSE_MODE_REL_PARENT, 2, 0, 0 },
         { DISPOSE_MODE_NULL, 0, 0, 0 },
         { DISPOSE_MODE_NULL, 0, 0, 0 },
@@ -162,6 +162,17 @@ static APPW_CREATE_ITEM _aCreate[] = {
   },
   { WM_OBJECT_WINDOW_Create,
     ID_WINDOW_00, ID_SCREEN_01,
+    { { { DISPOSE_MODE_REL_PARENT, 0, 0, 0 },
+        { DISPOSE_MODE_REL_PARENT, 20, 0, 0 },
+        { DISPOSE_MODE_REL_PARENT, 0, 0, 0 },
+        { DISPOSE_MODE_REL_PARENT, 20, 0, 0 },
+      },
+      0, 0, 0, 0, 0, 0
+    },
+    { 0, 0 }
+  },
+  { WM_OBJECT_WINDOW_Create,
+    ID_WINDOW_01, ID_SCREEN_01,
     { { { DISPOSE_MODE_REL_PARENT, 0, 0, 0 },
         { DISPOSE_MODE_REL_PARENT, 20, 0, 0 },
         { DISPOSE_MODE_REL_PARENT, 0, 0, 0 },
@@ -215,6 +226,83 @@ static APPW_CREATE_ITEM _aCreate[] = {
     },
     { 0, 0 }
   },
+  { WM_OBJECT_BOX_Create,
+    ID_BOX_02, ID_WINDOW_01,
+    { { { DISPOSE_MODE_REL_PARENT, 0, 0, 0 },
+        { DISPOSE_MODE_REL_PARENT, 0, 0, 0 },
+        { DISPOSE_MODE_REL_PARENT, 0, 0, 0 },
+        { DISPOSE_MODE_REL_PARENT, 0, 0, 0 },
+      },
+      0, 0, 0, 0, 0, 0
+    },
+    { 0, 0 }
+  },
+  { WM_OBJECT_LISTBOX_Create,
+    ID_LISTBOX_00, ID_WINDOW_01,
+    { { { DISPOSE_MODE_REL_PARENT, 2, 0, 0 },
+        { DISPOSE_MODE_REL_PARENT, 4, 0, 0 },
+        { DISPOSE_MODE_NULL, 0, 0, 0 },
+        { DISPOSE_MODE_NULL, 0, 0, 0 },
+      },
+      150, 200, 0, 0, 0, 0
+    },
+    { 0, 0 }
+  },
+  { WM_OBJECT_MULTIEDIT_Create,
+    ID_MULTIEDIT_00, ID_WINDOW_01,
+    { { { DISPOSE_MODE_REL_PARENT, 156, 0, 0 },
+        { DISPOSE_MODE_REL_PARENT, 4, 0, 0 },
+        { DISPOSE_MODE_NULL, 0, 0, 0 },
+        { DISPOSE_MODE_NULL, 0, 0, 0 },
+      },
+      318, 200, 0, 0, 0, 0
+    },
+    { 0, 0 }
+  },
+  { WM_OBJECT_PROGBAR_Create,
+    ID_PROGBAR_00, ID_WINDOW_01,
+    { { { DISPOSE_MODE_REL_PARENT, 156, 0, 0 },
+        { DISPOSE_MODE_REL_PARENT, 210, 0, 0 },
+        { DISPOSE_MODE_NULL, 0, 0, 0 },
+        { DISPOSE_MODE_NULL, 0, 0, 0 },
+      },
+      140, 16, 0, 0, 0, 0
+    },
+    { 0, 0 }
+  },
+  { WM_OBJECT_BUTTON_Create,
+    ID_BUTTON_03, ID_WINDOW_01,
+    { { { DISPOSE_MODE_REL_PARENT, 306, 0, 0 },
+        { DISPOSE_MODE_REL_PARENT, 210, 0, 0 },
+        { DISPOSE_MODE_NULL, 0, 0, 0 },
+        { DISPOSE_MODE_NULL, 0, 0, 0 },
+      },
+      80, 16, 0, 0, 0, 0
+    },
+    { 0, 0 }
+  },
+  { WM_OBJECT_TEXT_Create,
+    ID_TEXT_00, ID_WINDOW_01,
+    { { { DISPOSE_MODE_REL_PARENT, 6, 0, 0 },
+        { DISPOSE_MODE_REL_PARENT, 203, 0, 0 },
+        { DISPOSE_MODE_NULL, 0, 0, 0 },
+        { DISPOSE_MODE_NULL, 0, 0, 0 },
+      },
+      146, 32, 0, 0, 0, 0
+    },
+    { 0, 0 }
+  },
+  { WM_OBJECT_BUTTON_Create,
+    ID_BUTTON_03_Copy, ID_WINDOW_01,
+    { { { DISPOSE_MODE_REL_PARENT, 394, 0, 0 },
+        { DISPOSE_MODE_REL_PARENT, 210, 0, 0 },
+        { DISPOSE_MODE_NULL, 0, 0, 0 },
+        { DISPOSE_MODE_NULL, 0, 0, 0 },
+      },
+      80, 16, 0, 0, 0, 0
+    },
+    { 0, 0 }
+  },
 };
 
 /*********************************************************************
@@ -265,18 +353,18 @@ static const APPW_SETUP_ITEM _aSetup[] = {
                                                        ARG_V(0) } },
   { ID_TEXT_06_FPS,      APPW_SET_PROP_TEXTID,       { ARG_V(ID_RTEXT_10) } },
   { ID_TEXT_06_FPS,      APPW_SET_PROP_FONT,         { ARG_VP(0, acRoboto_16_Normal_EXT_AA4) } },
-  { ID_BUTTON_01,        APPW_SET_PROP_SBITMAPS,     { ARG_VP(0, acDARK_Button_Up_100x30),
-                                                       ARG_VP(0, acDARK_Button_Down_100x30), } },
-  { ID_BUTTON_01,        APPW_SET_PROP_COLORS,       { ARG_V(GUI_WHITE),
-                                                       ARG_V(0xff646464),
-                                                       ARG_V(GUI_INVALID_COLOR) } },
-  { ID_BUTTON_01,        APPW_SET_PROP_TEXTID,       { ARG_V(ID_RTEXT_5) } },
   { ID_BUTTON_00,        APPW_SET_PROP_SBITMAPS,     { ARG_VP(0, acDARK_Button_Up_100x30),
                                                        ARG_VP(0, acDARK_Button_Down_100x30), } },
   { ID_BUTTON_00,        APPW_SET_PROP_COLORS,       { ARG_V(GUI_WHITE),
                                                        ARG_V(0xff646464),
                                                        ARG_V(GUI_INVALID_COLOR) } },
-  { ID_BUTTON_00,        APPW_SET_PROP_TEXTID,       { ARG_V(ID_RTEXT_4) } },
+  { ID_BUTTON_00,        APPW_SET_PROP_TEXTID,       { ARG_V(ID_RTEXT_5) } },
+  { ID_BUTTON_01,        APPW_SET_PROP_SBITMAPS,     { ARG_VP(0, acDARK_Button_Up_100x30),
+                                                       ARG_VP(0, acDARK_Button_Down_100x30), } },
+  { ID_BUTTON_01,        APPW_SET_PROP_COLORS,       { ARG_V(GUI_WHITE),
+                                                       ARG_V(0xff646464),
+                                                       ARG_V(GUI_INVALID_COLOR) } },
+  { ID_BUTTON_01,        APPW_SET_PROP_TEXTID,       { ARG_V(ID_RTEXT_4) } },
   { ID_TIMER_00,         APPW_SET_PROP_PERIOD,       { ARG_V(1000) } },
   { ID_TIMER_00,         APPW_SET_PROP_AUTORESTART,  { ARG_V(0) } },
   { ID_BOX_01,           APPW_SET_PROP_COLOR,        { ARG_V(GUI_WHITE) } },
@@ -287,7 +375,7 @@ static const APPW_SETUP_ITEM _aSetup[] = {
                                                        ARG_V(0xff2c2c30),
                                                        ARG_V(GUI_BLACK) } },
   { ID_LISTVIEW_00,      APPW_SET_PROP_FRAME,        { ARG_V(2) } },
-  { ID_LISTVIEW_00,      APPW_SET_PROP_COLORS3,      { ARG_V(0xff2c2c30),
+  { ID_LISTVIEW_00,      APPW_SET_PROP_COLORS3,      { ARG_V(0xffbebebe),
                                                        ARG_V(GUI_INVALID_COLOR),
                                                        ARG_V(0xff2c2c30) } },
   { ID_LISTVIEW_00,      APPW_SET_PROP_BKCOLORS,     { ARG_V(GUI_WHITE),
@@ -311,7 +399,7 @@ static const APPW_SETUP_ITEM _aSetup[] = {
                                                        ARG_V(GUI_BLACK) } },
   { ID_LISTVIEW_01,      APPW_SET_PROP_FRAME,        { ARG_V(2) } },
   { ID_LISTVIEW_01,      APPW_SET_PROP_VISIBLE,      { ARG_V(0) } },
-  { ID_LISTVIEW_01,      APPW_SET_PROP_COLORS3,      { ARG_V(0xff2c2c30),
+  { ID_LISTVIEW_01,      APPW_SET_PROP_COLORS3,      { ARG_V(0xffbebebe),
                                                        ARG_V(GUI_INVALID_COLOR),
                                                        ARG_V(0xff2c2c30) } },
   { ID_LISTVIEW_01,      APPW_SET_PROP_BKCOLORS,     { ARG_V(GUI_WHITE),
@@ -327,20 +415,131 @@ static const APPW_SETUP_ITEM _aSetup[] = {
   { ID_LISTVIEW_01,      APPW_SET_PROP_CONTENT,      { ARG_P(&ID_CONTENT_001_Data) } },
   { ID_LISTVIEW_01,      APPW_SET_PROP_FIXED,        { ARG_V(2) } },
   { ID_TIMER_01,         APPW_SET_PROP_PERIOD,       { ARG_V(1000) } },
+  { ID_BOX_02,           APPW_SET_PROP_COLOR,        { ARG_V(GUI_WHITE) } },
+  { ID_LISTBOX_00,       APPW_SET_PROP_BKCOLORS,     { ARG_V(GUI_WHITE),
+                                                       ARG_V(0xff2777b3),
+                                                       ARG_V(0xff2777b3) } },
+  { ID_LISTBOX_00,       APPW_SET_PROP_COLORS,       { ARG_V(0xff2c2c30),
+                                                       ARG_V(GUI_WHITE),
+                                                       ARG_V(GUI_WHITE) } },
+  { ID_LISTBOX_00,       APPW_SET_PROP_FRAME,        { ARG_V(2) } },
+  { ID_LISTBOX_00,       APPW_SET_PROP_COLOR,        { ARG_V(0xff2c2c30) } },
+  { ID_MULTIEDIT_00,     APPW_SET_PROP_BKCOLORS,     { ARG_V(GUI_BLACK),
+                                                       ARG_V(GUI_INVALID_COLOR),
+                                                       ARG_V(GUI_BLACK) } },
+  { ID_MULTIEDIT_00,     APPW_SET_PROP_COLORS,       { ARG_V(GUI_BLACK),
+                                                       ARG_V(GUI_INVALID_COLOR),
+                                                       ARG_V(GUI_WHITE) } },
+  { ID_MULTIEDIT_00,     APPW_SET_PROP_ALIGN,        { ARG_V(GUI_ALIGN_LEFT | GUI_ALIGN_TOP) } },
+  { ID_MULTIEDIT_00,     APPW_SET_PROP_WRAP,         { ARG_V(0) } },
+  { ID_MULTIEDIT_00,     APPW_SET_PROP_PERIOD,       { ARG_V(300) } },
+  { ID_MULTIEDIT_00,     APPW_SET_PROP_MOTION,       { ARG_V(GUI_VERTICAL) } },
+  { ID_MULTIEDIT_00,     APPW_SET_PROP_INVERT,       { ARG_V(0) } },
+  { ID_PROGBAR_00,       APPW_SET_PROP_RADIUS,       { ARG_V(5) } },
+  { ID_PROGBAR_00,       APPW_SET_PROP_FRAME,        { ARG_V(2) } },
+  { ID_PROGBAR_00,       APPW_SET_PROP_COLOR,        { ARG_V(0xff2c2c30) } },
+  { ID_PROGBAR_00,       APPW_SET_PROP_VALUE,        { ARG_V(40) } },
+  { ID_PROGBAR_00,       APPW_SET_PROP_SBITMAPS,     { ARG_VP(0, acDARK_Progbar_Tile_H_Blue_1x16),
+                                                       ARG_VP(0, acDARK_Progbar_Tile_H_Gray_1x16), } },
+  { ID_PROGBAR_00,       APPW_SET_PROP_TILE,         { ARG_V(0) } },
+  { ID_BUTTON_03,        APPW_SET_PROP_SBITMAPS,     { ARG_VP(0, acDARK_Button_Up_100x30),
+                                                       ARG_VP(0, acDARK_Button_Down_100x30), } },
+  { ID_BUTTON_03,        APPW_SET_PROP_COLORS,       { ARG_V(GUI_WHITE),
+                                                       ARG_V(0xff646464),
+                                                       ARG_V(GUI_INVALID_COLOR) } },
+  { ID_BUTTON_03,        APPW_SET_PROP_TEXTID,       { ARG_V(ID_RTEXT_11) } },
+  { ID_TEXT_00,          APPW_SET_PROP_COLOR,        { ARG_V(GUI_BLACK) } },
+  { ID_TEXT_00,          APPW_SET_PROP_ALIGNTEXT,    { ARG_V(GUI_ALIGN_LEFT | GUI_ALIGN_VCENTER),
+                                                       ARG_V(0),
+                                                       ARG_V(0) } },
+  { ID_TEXT_00,          APPW_SET_PROP_TEXTID,       { ARG_V(ID_RTEXT_13) } },
+  { ID_BUTTON_03_Copy,   APPW_SET_PROP_SBITMAPS,     { ARG_VP(0, acDARK_Button_Up_100x30),
+                                                       ARG_VP(0, acDARK_Button_Down_100x30), } },
+  { ID_BUTTON_03_Copy,   APPW_SET_PROP_COLORS,       { ARG_V(GUI_WHITE),
+                                                       ARG_V(0xff646464),
+                                                       ARG_V(GUI_INVALID_COLOR) } },
+  { ID_BUTTON_03_Copy,   APPW_SET_PROP_TEXTID,       { ARG_V(ID_RTEXT_12) } },
 };
+
+/*********************************************************************
+*
+*       Comparison(s)
+*/
+static APPW_COND_COMP _aComparison_05[] = {
+  { { { APPW_IS_VAR, ID_VAR_02_WINDOW_INDEX }, { APPW_IS_VAL, 0 } }, APPW__CompareIsGreater },
+};
+
+static APPW_COND_COMP _aComparison_06[] = {
+  { { { APPW_IS_VAR, ID_VAR_02_WINDOW_INDEX }, { APPW_IS_VAL, 1 } }, APPW__CompareIsLess },
+};
+
+static APPW_COND_COMP _aComparison_07[] = {
+  { { { APPW_IS_VAR, ID_VAR_02_WINDOW_INDEX }, { APPW_IS_VAL, 1 } }, APPW__CompareIsEqual },
+};
+
+static APPW_COND_COMP _aComparison_08[] = {
+  { { { APPW_IS_VAR, ID_VAR_02_WINDOW_INDEX }, { APPW_IS_VAL, 1 } }, APPW__CompareIsEqual },
+};
+
+static APPW_COND_COMP _aComparison_09[] = {
+  { { { APPW_IS_VAR, ID_VAR_02_WINDOW_INDEX }, { APPW_IS_VAL, 0 } }, APPW__CompareIsEqual },
+};
+
+static APPW_COND_COMP _aComparison_0a[] = {
+  { { { APPW_IS_VAR, ID_VAR_02_WINDOW_INDEX }, { APPW_IS_VAL, 0 } }, APPW__CompareIsEqual },
+};
+
+/*********************************************************************
+*
+*       Condition(s)
+*/
+static const APPW_COND _Condition_05 = { "A", _aComparison_05, GUI_COUNTOF(_aComparison_05) };
+static const APPW_COND _Condition_06 = { "A", _aComparison_06, GUI_COUNTOF(_aComparison_06) };
+static const APPW_COND _Condition_07 = { "A", _aComparison_07, GUI_COUNTOF(_aComparison_07) };
+static const APPW_COND _Condition_08 = { "A", _aComparison_08, GUI_COUNTOF(_aComparison_08) };
+static const APPW_COND _Condition_09 = { "A", _aComparison_09, GUI_COUNTOF(_aComparison_09) };
+static const APPW_COND _Condition_0a = { "A", _aComparison_0a, GUI_COUNTOF(_aComparison_0a) };
 
 /*********************************************************************
 *
 *       _aAction
 */
 static const APPW_ACTION_ITEM _aAction[] = {
-  { ID_SCREEN_01,        APPW_NOTIFICATION_INITDIALOG,     ID_TIMER_00,         APPW_JOB_START,          ID_SCREEN_01__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START,
+  { ID_SCREEN_01,        APPW_NOTIFICATION_INITDIALOG,     ID_WINDOW_01,        APPW_JOB_SETVIS,         ID_SCREEN_01__APPW_NOTIFICATION_INITDIALOG__ID_WINDOW_01__APPW_JOB_SETVIS,
+    { ARG_V(APPW_SET_OFF),
+    }, 0, NULL
   },
-  { ID_TIMER_00,         APPW_NOTIFICATION_TIMER,          0,                   APPW_JOB_NULL,           ID_SCREEN_01__ID_TIMER_00__APPW_NOTIFICATION_TIMER,
+  { ID_SCREEN_01,        APPW_NOTIFICATION_INITDIALOG,     ID_TIMER_00,         APPW_JOB_START,          ID_SCREEN_01__APPW_NOTIFICATION_INITDIALOG__ID_TIMER_00__APPW_JOB_START,
   },
   { ID_SCREEN_01,        APPW_NOTIFICATION_INITDIALOG,     ID_TIMER_01,         APPW_JOB_START,          ID_SCREEN_01__ID_WINDOW_00__APPW_NOTIFICATION_FIXED__ID_TIMER_01__APPW_JOB_START,
   },
+  { ID_TIMER_00,         APPW_NOTIFICATION_TIMER,          0,                   APPW_JOB_NULL,           ID_SCREEN_01__ID_TIMER_00__APPW_NOTIFICATION_TIMER,
+  },
   { ID_TIMER_01,         APPW_NOTIFICATION_TIMER,          0,                   APPW_JOB_NULL,           ID_SCREEN_01__ID_TIMER_01__APPW_NOTIFICATION_TIMER,
+  },
+  { ID_BUTTON_00,        WM_NOTIFICATION_CLICKED,          ID_VAR_02_WINDOW_INDEX, APPW_JOB_ADDVALUE,       ID_SCREEN_01__ID_BUTTON_00__WM_NOTIFICATION_CLICKED,
+    { ARG_V(-1),
+    }, 0, &_Condition_05
+  },
+  { ID_BUTTON_01,        WM_NOTIFICATION_CLICKED,          ID_VAR_02_WINDOW_INDEX, APPW_JOB_ADDVALUE,       ID_SCREEN_01__ID_BUTTON_01__WM_NOTIFICATION_CLICKED,
+    { ARG_V(1),
+    }, 0, &_Condition_06
+  },
+  { ID_BUTTON_01,        WM_NOTIFICATION_CLICKED,          ID_WINDOW_01,        APPW_JOB_SETVIS,         ID_SCREEN_01__ID_BUTTON_01__WM_NOTIFICATION_CLICKED__ID_WINDOW_01__APPW_JOB_SETVIS,
+    { ARG_V(APPW_SET_ON),
+    }, 0, &_Condition_07
+  },
+  { ID_BUTTON_01,        WM_NOTIFICATION_CLICKED,          ID_WINDOW_00,        APPW_JOB_SETVIS,         ID_SCREEN_01__ID_BUTTON_01__WM_NOTIFICATION_CLICKED__ID_WINDOW_00__APPW_JOB_SETVIS,
+    { ARG_V(APPW_SET_OFF),
+    }, 0, &_Condition_08
+  },
+  { ID_BUTTON_00,        WM_NOTIFICATION_CLICKED,          ID_WINDOW_00,        APPW_JOB_SETVIS,         ID_SCREEN_01__ID_BUTTON_00__WM_NOTIFICATION_CLICKED__ID_WINDOW_00__APPW_JOB_SETVIS,
+    { ARG_V(APPW_SET_ON),
+    }, 0, &_Condition_09
+  },
+  { ID_BUTTON_00,        WM_NOTIFICATION_CLICKED,          ID_WINDOW_01,        APPW_JOB_SETVIS,         ID_SCREEN_01__ID_BUTTON_00__WM_NOTIFICATION_CLICKED__ID_WINDOW_01__APPW_JOB_SETVIS,
+    { ARG_V(APPW_SET_OFF),
+    }, 0, &_Condition_0a
   },
 };
 
