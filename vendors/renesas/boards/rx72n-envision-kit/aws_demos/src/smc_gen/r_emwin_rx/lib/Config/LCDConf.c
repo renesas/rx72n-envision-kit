@@ -1105,7 +1105,7 @@ void R_EMWIN_EnableDave2D(void)
     GUI_AA_SetFuncDrawArc        ((DRAW_ARC *)draw_arc_aa);
     GUI_AA_SetFuncFillPolygon    ((FILL_POLYGON *)fill_polygon_aa);
 #endif
-    GUI_AA_SetFuncFillCircle     ((FILL_CIRCLE *)fill_circle_aa);
+//    GUI_AA_SetFuncFillCircle     ((FILL_CIRCLE *)fill_circle_aa);  // Temporarily disabled...
     GUI_AA_SetFuncDrawCircle     ((DRAW_CIRCLE *)draw_circle_aa);
     GUI_AA_SetFuncDrawLine       ((DRAW_LINE *)draw_line_aa);
     LCD_SetDevFunc(0, LCD_DEVFUNC_FILLRECT, (void(*)(void))lcd_fill_rect);
