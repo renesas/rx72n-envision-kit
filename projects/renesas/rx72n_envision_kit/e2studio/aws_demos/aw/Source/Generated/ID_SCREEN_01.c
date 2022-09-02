@@ -489,6 +489,14 @@ static APPW_COND_COMP _aComparison_0a[] = {
   { { { APPW_IS_VAR, ID_VAR_02_WINDOW_INDEX }, { APPW_IS_VAL, 0 } }, APPW__CompareIsEqual },
 };
 
+static APPW_COND_COMP _aComparison_0b[] = {
+  { { { APPW_IS_VAR, ID_VAR_02_WINDOW_INDEX }, { APPW_IS_VAL, 0 } }, APPW__CompareIsEqual },
+};
+
+static APPW_COND_COMP _aComparison_0c[] = {
+  { { { APPW_IS_VAR, ID_VAR_02_WINDOW_INDEX }, { APPW_IS_VAL, 1 } }, APPW__CompareIsEqual },
+};
+
 /*********************************************************************
 *
 *       Condition(s)
@@ -499,6 +507,8 @@ static const APPW_COND _Condition_07 = { "A", _aComparison_07, GUI_COUNTOF(_aCom
 static const APPW_COND _Condition_08 = { "A", _aComparison_08, GUI_COUNTOF(_aComparison_08) };
 static const APPW_COND _Condition_09 = { "A", _aComparison_09, GUI_COUNTOF(_aComparison_09) };
 static const APPW_COND _Condition_0a = { "A", _aComparison_0a, GUI_COUNTOF(_aComparison_0a) };
+static const APPW_COND _Condition_0b = { "A", _aComparison_0b, GUI_COUNTOF(_aComparison_0b) };
+static const APPW_COND _Condition_0c = { "A", _aComparison_0c, GUI_COUNTOF(_aComparison_0c) };
 
 /*********************************************************************
 *
@@ -540,6 +550,14 @@ static const APPW_ACTION_ITEM _aAction[] = {
   { ID_BUTTON_00,        WM_NOTIFICATION_CLICKED,          ID_WINDOW_01,        APPW_JOB_SETVIS,         ID_SCREEN_01__ID_BUTTON_00__WM_NOTIFICATION_CLICKED__ID_WINDOW_01__APPW_JOB_SETVIS,
     { ARG_V(APPW_SET_OFF),
     }, 0, &_Condition_0a
+  },
+  { ID_VAR_02_WINDOW_INDEX, WM_NOTIFICATION_VALUE_CHANGED,    ID_TEXT_00_TITLE,    APPW_JOB_SETTEXT,        ID_SCREEN_01__WM_NOTIFICATION_VALUE_CHANGED__ID_TEXT_00_TITLE__APPW_JOB_SETTEXT,
+    { ARG_V(ID_RTEXT_2),
+    }, 65536, &_Condition_0b
+  },
+  { ID_VAR_02_WINDOW_INDEX, WM_NOTIFICATION_VALUE_CHANGED,    ID_TEXT_00_TITLE,    APPW_JOB_SETTEXT,        ID_SCREEN_01__WM_NOTIFICATION_VALUE_CHANGED__ID_TEXT_00_TITLE__APPW_JOB_SETTEXT_0,
+    { ARG_V(ID_RTEXT_14),
+    }, 65536, &_Condition_0c
   },
 };
 

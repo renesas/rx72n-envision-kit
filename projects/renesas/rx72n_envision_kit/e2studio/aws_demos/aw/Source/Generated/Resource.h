@@ -37,6 +37,7 @@ Purpose     : Generated file do NOT edit!
 #define ID_RTEXT_11 11
 #define ID_RTEXT_12 12
 #define ID_RTEXT_13 13
+#define ID_RTEXT_14 14
 
 #define APPW_MANAGE_TEXT APPW_MANAGE_TEXT_EXT
 extern const unsigned char acAPPW_Language_0[];

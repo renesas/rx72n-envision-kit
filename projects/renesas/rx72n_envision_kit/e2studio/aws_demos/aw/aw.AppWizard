@@ -31,6 +31,7 @@
       Id=ID_RTEXT_11
       Id=ID_RTEXT_12
       Id=ID_RTEXT_13
+      Id=ID_RTEXT_14
     </Id>
     <Lang>
       Name=language
@@ -48,6 +49,7 @@
       Text=update
       Text=reset
       Text=file size: 
+      Text=F/W Update via SD
     </Lang>
   </Text>
   <Content>
@@ -1375,7 +1377,35 @@
         OnOff=0
       </Para>
     </SETVIS>
+    <SETTEXT>
+      RootId=6145
+      IdSrc=ID_VAR_02_WINDOW_INDEX
+      NCode=WM_NOTIFICATION_VALUE_CHANGED
+      IdDst=ID_TEXT_00_TITLE
+      Slot=ID_SCREEN_01__WM_NOTIFICATION_VALUE_CHANGED__ID_TEXT_00_TITLE__APPW_JOB_SETTEXT
+      Flags=65536
+      Condition=A,1,IS_VAR,ID_VAR_02_WINDOW_INDEX,==,IS_VAL,0
+      <Para>
+        Text=ID_RTEXT_2
+      </Para>
+    </SETTEXT>
+    <SETTEXT>
+      RootId=6145
+      IdSrc=ID_VAR_02_WINDOW_INDEX
+      NCode=WM_NOTIFICATION_VALUE_CHANGED
+      IdDst=ID_TEXT_00_TITLE
+      Slot=ID_SCREEN_01__WM_NOTIFICATION_VALUE_CHANGED__ID_TEXT_00_TITLE__APPW_JOB_SETTEXT_0
+      Flags=65536
+      Condition=A,1,IS_VAR,ID_VAR_02_WINDOW_INDEX,==,IS_VAL,1
+      <Para>
+        Text=ID_RTEXT_14
+      </Para>
+    </SETTEXT>
   </Interactions>
+  <Selection>
+    Root=ID_SCREEN_01
+    Object=2051
+  </Selection>
   <Terms>
   </Terms>
 </Project>
