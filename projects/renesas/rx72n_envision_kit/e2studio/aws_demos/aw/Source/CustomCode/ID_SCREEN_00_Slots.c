@@ -99,6 +99,15 @@ void ID_SCREEN_00__APPW_NOTIFICATION_PIDPRESSED(APPW_ACTION_ITEM * pAction, WM_H
   GUI_USE_PARA(hScreen);
   GUI_USE_PARA(pMsg);
   GUI_USE_PARA(pResult);
+
+  TASK_INFO *task_info = get_task_info();
+  task_info->gui_initialize_complete_flag = 1;
+
+  /* notify completing GUI initialization and first touch to each tasks */
+  xTaskNotifyGive(task_info->serial_terminal_task_handle);
+  xTaskNotifyGive(task_info->sdcard_task_handle);
+  xTaskNotifyGive(task_info->task_manager_task_handle);
+  xTaskNotifyGive(task_info->serial_flash_task_handle);
 }
 
 /*************************** End of file ****************************/

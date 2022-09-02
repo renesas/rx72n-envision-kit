@@ -130,8 +130,6 @@ void gui_task( void * pvParameters )
     APPW_Init(APPW_PROJECT_PATH);
     APPW_CreateRoot(APPW_INITIAL_SCREEN, WM_HBKWIN);
 
-    /* GUI initialize complete */
-    task_info->gui_initialize_complete_flag = 1;
 #if 0
     /* generate frame window */
     demo_window_free_list(demo_window_list_head);
@@ -158,9 +156,6 @@ void gui_task( void * pvParameters )
     task_info->hWin_title_logo = CreateTitleLogoWindow();
     demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_title_logo, task_info->hWin_frame, DEMO_NAME_TITLE_LOGO);
 #endif
-    /* notify completing GUI initialization and first touch to main task */
-    xTaskNotifyGive(task_info->main_task_handle);
-
     main_10ms_display_update(task_info);
     main_1s_display_update(task_info);
 

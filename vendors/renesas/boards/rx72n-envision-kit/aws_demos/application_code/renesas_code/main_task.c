@@ -195,15 +195,6 @@ void main_task_init(void)
     task_info.software_info.emwin_version = (char *)emwin_version_string;
     task_info.software_info.compiled_time = (char *)compiled_time_string;
 
-    /* wait completing gui initializing */
-    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-
-    /* notify completing GUI initialization and first touch to each tasks */
-    xTaskNotifyGive(task_info.serial_terminal_task_handle);
-    xTaskNotifyGive(task_info.sdcard_task_handle);
-    xTaskNotifyGive(task_info.task_manager_task_handle);
-    xTaskNotifyGive(task_info.serial_flash_task_handle);
-
 }
 
 void main_task(void)
