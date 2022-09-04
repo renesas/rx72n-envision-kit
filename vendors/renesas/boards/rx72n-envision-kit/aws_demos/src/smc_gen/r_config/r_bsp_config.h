@@ -141,7 +141,7 @@ NOTE: The RAM areas are not contiguous.It is separated by 512 KB each.
       settings and choosing the Standard Library section. After that choose 'Contents' in e2 studio.
       This will present a list of modules that can be included. Uncheck the box for stdio.h.
    NOTE: This setting is available only when using CCRX and GNUC. */
-#define BSP_CFG_HEAP_BYTES              (0x1000)
+#define BSP_CFG_HEAP_BYTES              (0x4)
 
 /* Initializes C input & output library functions.
    0 = Disable I/O library initialization in resetprg.c. If you are not using stdio then use this value.
