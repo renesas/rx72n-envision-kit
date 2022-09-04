@@ -661,22 +661,22 @@
         <pinItem allocation="96$B" comments="" direction="None" id="LCD_DATA7" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
         <pinItem allocation="97$B" comments="" direction="None" id="LCD_DATA8" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
         <pinItem allocation="101$B" comments="" direction="None" id="LCD_DATA9" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
-        <pinnumItem comment="OnTFT-INT" id="170"/>
-        <pinnumItem comment="TFT-SCL" id="160"/>
-        <pinnumItem comment="QIO3-B" id="150"/>
-        <pinnumItem comment="VREFL0" id="172"/>
-        <pinnumItem comment="P40" id="173"/>
-        <pinnumItem comment="TFT-SDA" id="163"/>
-        <pinnumItem comment="VREFH0" id="174"/>
-        <pinnumItem comment="AVCC0" id="175"/>
-        <pinnumItem comment="QIO2-B" id="154"/>
-        <pinnumItem comment="P07" id="176"/>
         <pinnumItem comment="QIO0-B" id="145"/>
-        <pinnumItem comment="SDRAM-D1" id="156"/>
         <pinnumItem comment="QSPCLK-B" id="147"/>
-        <pinnumItem comment="SDRAM-D0" id="158"/>
         <pinnumItem comment="QSSL-B" id="148"/>
         <pinnumItem comment="OnTFT-DISP" id="149"/>
+        <pinnumItem comment="QIO3-B" id="150"/>
+        <pinnumItem comment="QIO2-B" id="154"/>
+        <pinnumItem comment="SDRAM-D1" id="156"/>
+        <pinnumItem comment="SDRAM-D0" id="158"/>
+        <pinnumItem comment="TFT-SCL" id="160"/>
+        <pinnumItem comment="TFT-SDA" id="163"/>
+        <pinnumItem comment="OnTFT-INT" id="170"/>
+        <pinnumItem comment="VREFL0" id="172"/>
+        <pinnumItem comment="P40" id="173"/>
+        <pinnumItem comment="VREFH0" id="174"/>
+        <pinnumItem comment="AVCC0" id="175"/>
+        <pinnumItem comment="P07" id="176"/>
     </tool>
     <tool id="Summary" version="1.0.0.0">
         <option id="com.renesas.smc.code.type" value="Linked File"/>
@@ -1300,7 +1300,7 @@
                 <gridItem id="BSP_CFG_STARTUP_DISABLE" selectedIndex="0"/>
                 <gridItem id="BSP_CFG_USER_STACK_ENABLE" selectedIndex="0"/>
                 <gridItem id="BSP_CFG_USTACK_BYTES" selectedIndex="0x1000"/>
-                <gridItem id="BSP_CFG_ISTACK_BYTES" selectedIndex="0x1000"/>
+                <gridItem id="BSP_CFG_ISTACK_BYTES" selectedIndex="0x4"/>
                 <gridItem id="BSP_CFG_HEAP_BYTES" selectedIndex="0x4"/>
                 <gridItem id="BSP_CFG_IO_LIB_ENABLE" selectedIndex="1"/>
                 <gridItem id="BSP_CFG_USER_CHARGET_ENABLED" selectedIndex="0"/>

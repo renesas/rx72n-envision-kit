@@ -131,7 +131,7 @@ NOTE: The RAM areas are not contiguous.It is separated by 512 KB each.
 
 /* Interrupt Stack size in bytes.
  * NOTE: This setting is available only when using CCRX and GNUC. */
-#define BSP_CFG_ISTACK_BYTES            (0x1000)
+#define BSP_CFG_ISTACK_BYTES            (0x4)
 
 /* Heap size in bytes.
    To disable the heap you must follow these steps:
