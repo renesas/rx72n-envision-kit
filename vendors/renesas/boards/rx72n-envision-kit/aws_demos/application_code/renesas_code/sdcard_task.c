@@ -344,14 +344,7 @@ void firmware_update_list_clear(TASK_INFO *task_info)
 
 void firmware_update_ok_after_message(TASK_INFO *task_info)
 {
-    WM_HWIN hItem;
-    WM_HWIN hWin;
-
-    hWin = task_info->hWin_firmware_update_via_sd_card;
-    hItem = WM_GetDialogItem(hWin, ID_PROGBAR_00);
-#if 0
-    PROGBAR_SetValue(hItem, 100);
-#endif
+    APPW_SetValue(ID_SCREEN_01, ID_PROGBAR_00, 100);
     firmware_update_log_string(task_info, "New Firmware install succeeded.\r\n");
 }
 
@@ -370,10 +363,7 @@ static void firmware_update_file_size_progress_bar_string(TASK_INFO *task_info, 
     sprintf(text, "file size: %5d / %5d KBytes", file_size, processed_file_size);
     hItem = WM_GetDialogItem(hWin, ID_TEXT_00);
     TEXT_SetText(hItem, text);
-#if 0
-    hItem = WM_GetDialogItem(hWin, ID_PROGBAR_00);
-    PROGBAR_SetValue(hItem, prog);
-#endif
+    APPW_SetValue(ID_SCREEN_01, ID_PROGBAR_00, prog);
 }
 
 void firmware_update_log_string(TASK_INFO *task_info, char *pstring)
