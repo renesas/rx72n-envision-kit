@@ -355,23 +355,19 @@ void firmware_update_ng_after_message(TASK_INFO *task_info)
 
 static void firmware_update_file_size_progress_bar_string(TASK_INFO *task_info, uint32_t prog, uint32_t file_size, uint32_t processed_file_size)
 {
-    WM_HWIN hItem;
-    WM_HWIN hWin;
     char text[32];
-
-    hWin = task_info->hWin_firmware_update_via_sd_card;
-    sprintf(text, "file size: %5d / %5d KBytes", file_size, processed_file_size);
-    hItem = WM_GetDialogItem(hWin, ID_TEXT_00);
-    TEXT_SetText(hItem, text);
+    sprintf(text, "file size: %5d / %5d KBytes.", file_size, processed_file_size);
+    APPW_SetText(ID_SCREEN_01, ID_TEXT_00, text);
     APPW_SetValue(ID_SCREEN_01, ID_PROGBAR_00, prog);
 }
 
 void firmware_update_log_string(TASK_INFO *task_info, char *pstring)
 {
-    WM_HWIN hItem;
-    WM_HWIN hWin;
-    hWin = task_info->hWin_firmware_update_via_sd_card;
-    hItem = WM_GetDialogItem(hWin, ID_MULTIEDIT_00);
-    MULTIEDIT_AddText(hItem, pstring);
-    MULTIEDIT_SetCursorOffset(hItem, MULTIEDIT_GetTextSize(hItem));
+    char text[512];
+    APPW_GetText(ID_SCREEN_01, ID_MULTIEDIT_00, text, sizeof(text));
+    if(sizeof(text) > strlen(pstring) + strlen(text))
+    {
+      strcat(text, pstring);
+    }
+    APPW_SetText(ID_SCREEN_01, ID_MULTIEDIT_00, text);
 }
