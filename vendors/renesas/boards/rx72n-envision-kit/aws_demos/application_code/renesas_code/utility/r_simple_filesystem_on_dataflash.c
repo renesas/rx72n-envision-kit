@@ -149,8 +149,6 @@ static void check_dataflash_area(uint32_t retry_counter);
 static void data_flash_update_status_initialize(void);
 static void update_data_flash_callback_function(void *event);
 
-static void semaphore_take(void);
-static void semaphore_give(void);
 static void delay(void);
 
 typedef struct _update_data_flash_control_block {
@@ -182,7 +180,7 @@ sfd_err_t R_SFD_Open(void)
         initialized_flag = 1;
     }
 
-    semaphore_take();
+    R_SFD_SemaphoreTake();
     if(FLASH_CFG_DATA_FLASH_BGO == 1)
     {
         R_FLASH_Open();
@@ -196,7 +194,7 @@ sfd_err_t R_SFD_Open(void)
         SFD_DEBUG_PRINT( ("Please set FLASH_CFG_DATA_FLASH_BGO to 1 in r_flash_config_rx.h.") );
         sfd_err = SFD_FATAL_ERROR;
     }
-    semaphore_give();
+    R_SFD_SemaphoreGive();
     return sfd_err;
 }
 
@@ -207,7 +205,7 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
     SFD_HANDLE specified_label_xHandle = SFD_HANDLE_INVALID;
     SFD_HANDLE blank_entry_xHandle = SFD_HANDLE_INVALID;
 
-    semaphore_take();
+    R_SFD_SemaphoreTake();
     R_FLASH_Open();
 
 #if defined USE_MBEDTLS
@@ -343,7 +341,7 @@ SFD_HANDLE R_SFD_SaveObject(uint8_t *label, uint32_t label_length, uint8_t *data
     }
 
     R_FLASH_Close();
-    semaphore_give();
+    R_SFD_SemaphoreGive();
     return blank_entry_xHandle;
 }
 
@@ -360,7 +358,7 @@ SFD_HANDLE R_SFD_FindObject( uint8_t *label, uint8_t label_length )
 {
     SFD_HANDLE xHandle = SFD_HANDLE_INVALID;
     int i;
-    semaphore_take();
+    R_SFD_SemaphoreTake();
 
     for(i = 0; i < SFD_OBJECT_HANDLES_NUM; i++)
     {
@@ -372,7 +370,7 @@ SFD_HANDLE R_SFD_FindObject( uint8_t *label, uint8_t label_length )
             }
         }
     }
-    semaphore_give();
+    R_SFD_SemaphoreGive();
     return xHandle;
 }
 
@@ -382,7 +380,7 @@ sfd_err_t R_SFD_GetObjectValue( SFD_HANDLE xHandle,
 {
     sfd_err_t xReturn = SFD_FATAL_ERROR;
 
-    semaphore_take();
+    R_SFD_SemaphoreTake();
 
     if (xHandle != SFD_HANDLE_INVALID)
     {
@@ -390,7 +388,7 @@ sfd_err_t R_SFD_GetObjectValue( SFD_HANDLE xHandle,
         *data_length = sfd_control_block_data_image->data.sfd_data[xHandle].data_length;
         xReturn = SFD_SUCCESS;
     }
-    semaphore_give();
+    R_SFD_SemaphoreGive();
     return xReturn;
 }
 
@@ -399,7 +397,7 @@ sfd_err_t R_SFD_Scan(uint8_t **label, uint32_t *label_length, uint8_t **data, ui
     int i;
     sfd_err_t xReturn = SFD_FATAL_ERROR;
 
-    semaphore_take();
+    R_SFD_SemaphoreTake();
 
     if(current_handle_index == -1)
     {
@@ -430,7 +428,7 @@ sfd_err_t R_SFD_Scan(uint8_t **label, uint32_t *label_length, uint8_t **data, ui
             }
         }
     }
-    semaphore_give();
+    R_SFD_SemaphoreGive();
     return xReturn;
 }
 
@@ -444,7 +442,7 @@ sfd_err_t R_SFD_EraseAll(void)
 {
     sfd_err_t xReturn = SFD_FATAL_ERROR;
 
-    semaphore_take();
+    R_SFD_SemaphoreTake();
 
     for (int i = 0; i < SFD_OBJECT_HANDLES_NUM; i++)
     {
@@ -459,7 +457,7 @@ sfd_err_t R_SFD_EraseAll(void)
     update_dataflash_data();
 
     R_SFD_ResetScan();
-    semaphore_give();
+    R_SFD_SemaphoreGive();
     xReturn = SFD_SUCCESS;
     return xReturn;
 }
@@ -480,15 +478,33 @@ uint32_t R_SFD_ReadFreeSize(void)
     int i;
     uint32_t total_size = 0;
 
-    semaphore_take();
+    R_SFD_SemaphoreTake();
 
     for(i = 0; i < SFD_OBJECT_HANDLES_NUM; i++)
     {
         total_size += sfd_control_block_data_image->data.sfd_data[i].data_length;
     }
 
-    semaphore_give();
+    R_SFD_SemaphoreGive();
     return (SFD_LOCAL_STORAGE_SIZE - total_size);
+}
+
+void R_SFD_SemaphoreTake(void)
+{
+#if defined BSP_CFG_RTOS_USED == 0 /* None-OS */
+    /* please implement own exclusive processing on each functions, if there are no code, please do not call APIs (R_SFD_xxxx()) in multiply. */
+#elif defined BSP_CFG_RTOS_USED == 1 /* FreeRTOS */
+    xSemaphoreTake( xSemaphoreDataFlashAccess, portMAX_DELAY );
+#endif
+}
+
+void R_SFD_SemaphoreGive(void)
+{
+#if defined BSP_CFG_RTOS_USED == 0 /* None-OS */
+    /* please implement own exclusive processing on each functions, if there are no code, please do not call APIs (R_SFD_xxxx()) in multiply. */
+#elif defined BSP_CFG_RTOS_USED == 1 /* FreeRTOS */
+    xSemaphoreGive( xSemaphoreDataFlashAccess );
+#endif
 }
 
 static void update_dataflash_data(void)
@@ -874,24 +890,6 @@ void update_data_flash_callback_function(void *event)
         default:
             break;
     }
-}
-
-void semaphore_take(void)
-{
-#if defined BSP_CFG_RTOS_USED == 0 /* None-OS */
-    /* please implement own exclusive processing on each functions, if there are no code, please do not call APIs (R_SFD_xxxx()) in multiply. */
-#elif defined BSP_CFG_RTOS_USED == 1 /* FreeRTOS */
-    xSemaphoreTake( xSemaphoreDataFlashAccess, portMAX_DELAY );
-#endif
-}
-
-void semaphore_give(void)
-{
-#if defined BSP_CFG_RTOS_USED == 0 /* None-OS */
-    /* please implement own exclusive processing on each functions, if there are no code, please do not call APIs (R_SFD_xxxx()) in multiply. */
-#elif defined BSP_CFG_RTOS_USED == 1 /* FreeRTOS */
-    xSemaphoreGive( xSemaphoreDataFlashAccess );
-#endif
 }
 
 void delay(void)

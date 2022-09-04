@@ -148,6 +148,7 @@ uint32_t firmware_update(void)
             /* this state will be changed by other process request using load_firmware_control_block.status */
             break;
         case FIRMWARE_UPDATE_STATE_ERASE: /* erase bank1 user program area */
+            R_SFD_SemaphoreTake();
             xSemaphoreTake( xSemaphoreCodeFlashAccess, portMAX_DELAY);
             R_FLASH_Open();
             cb_func_info.pcallback = flash_load_firmware_callback_function;
@@ -213,6 +214,7 @@ uint32_t firmware_update(void)
             /* this state will be changed by callback routine */
             break;
         case FIRMWARE_UPDATE_STATE_FINALIZE: /* finalize */
+            R_SFD_SemaphoreGive();
             xSemaphoreGive(xSemaphoreCodeFlashAccess);
             firmware_update_control_block_bank1 = (FIRMWARE_UPDATE_CONTROL_BLOCK*)FIRMWARE_TEMPORARY_AREA_LOW_ADDRESS;
             if (!strcmp((const char *)p_block_header->signature_type, INTEGRITY_CHECK_SCHEME_HASH_SHA256_STANDALONE))
@@ -259,10 +261,12 @@ uint32_t firmware_update(void)
             break;
         case FIRMWARE_UPDATE_STATE_COMPLETED:
             R_FLASH_Close();
+            R_SFD_SemaphoreGive();
             xSemaphoreGive( xSemaphoreCodeFlashAccess );
             break;
         case FIRMWARE_UPDATE_STATE_ERROR:
             R_FLASH_Close();
+            R_SFD_SemaphoreGive();
             xSemaphoreGive( xSemaphoreCodeFlashAccess );
             load_firmware_control_block.progress = 100;
             break;
@@ -539,7 +543,7 @@ void software_reset(void)
     R_BSP_InterruptsDisable();
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_LPC_CGC_SWR);
     SYSTEM.SWRR = 0xa501;
-    while(1);   /* software reset */
+    while (1); /* software reset */
 }
 
 /* end of file */

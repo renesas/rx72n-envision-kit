@@ -73,5 +73,7 @@ uint32_t R_SFD_ReadPysicalSize(void);
 uint32_t R_SFD_ReadAllocatedStorageSize(void);
 uint32_t R_SFD_ReadFreeSize(void);
 sfd_err_t R_SFD_Close(void);
+void R_SFD_SemaphoreTake(void);
+void R_SFD_SemaphoreGive(void);
 
 #endif
