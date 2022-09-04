@@ -293,7 +293,7 @@ static APPW_CREATE_ITEM _aCreate[] = {
     { 0, 0 }
   },
   { WM_OBJECT_BUTTON_Create,
-    ID_BUTTON_03_Copy, ID_WINDOW_01,
+    ID_BUTTON_04, ID_WINDOW_01,
     { { { DISPOSE_MODE_REL_PARENT, 394, 0, 0 },
         { DISPOSE_MODE_REL_PARENT, 210, 0, 0 },
         { DISPOSE_MODE_NULL, 0, 0, 0 },
@@ -427,7 +427,7 @@ static const APPW_SETUP_ITEM _aSetup[] = {
   { ID_MULTIEDIT_00,     APPW_SET_PROP_BKCOLORS,     { ARG_V(GUI_BLACK),
                                                        ARG_V(GUI_INVALID_COLOR),
                                                        ARG_V(GUI_BLACK) } },
-  { ID_MULTIEDIT_00,     APPW_SET_PROP_COLORS,       { ARG_V(GUI_BLACK),
+  { ID_MULTIEDIT_00,     APPW_SET_PROP_COLORS,       { ARG_V(GUI_GREEN),
                                                        ARG_V(GUI_INVALID_COLOR),
                                                        ARG_V(GUI_WHITE) } },
   { ID_MULTIEDIT_00,     APPW_SET_PROP_ALIGN,        { ARG_V(GUI_ALIGN_LEFT | GUI_ALIGN_TOP) } },
@@ -453,12 +453,12 @@ static const APPW_SETUP_ITEM _aSetup[] = {
                                                        ARG_V(0),
                                                        ARG_V(0) } },
   { ID_TEXT_00,          APPW_SET_PROP_TEXTID,       { ARG_V(ID_RTEXT_13) } },
-  { ID_BUTTON_03_Copy,   APPW_SET_PROP_SBITMAPS,     { ARG_VP(0, acDARK_Button_Up_100x30),
+  { ID_BUTTON_04,        APPW_SET_PROP_SBITMAPS,     { ARG_VP(0, acDARK_Button_Up_100x30),
                                                        ARG_VP(0, acDARK_Button_Down_100x30), } },
-  { ID_BUTTON_03_Copy,   APPW_SET_PROP_COLORS,       { ARG_V(GUI_WHITE),
+  { ID_BUTTON_04,        APPW_SET_PROP_COLORS,       { ARG_V(GUI_WHITE),
                                                        ARG_V(0xff646464),
                                                        ARG_V(GUI_INVALID_COLOR) } },
-  { ID_BUTTON_03_Copy,   APPW_SET_PROP_TEXTID,       { ARG_V(ID_RTEXT_12) } },
+  { ID_BUTTON_04,        APPW_SET_PROP_TEXTID,       { ARG_V(ID_RTEXT_12) } },
 };
 
 /*********************************************************************
@@ -558,6 +558,8 @@ static const APPW_ACTION_ITEM _aAction[] = {
   { ID_VAR_02_WINDOW_INDEX, WM_NOTIFICATION_VALUE_CHANGED,    ID_TEXT_00_TITLE,    APPW_JOB_SETTEXT,        ID_SCREEN_01__WM_NOTIFICATION_VALUE_CHANGED__ID_TEXT_00_TITLE__APPW_JOB_SETTEXT_0,
     { ARG_V(ID_RTEXT_14),
     }, 65536, &_Condition_0c
+  },
+  { ID_BUTTON_03,        WM_NOTIFICATION_CLICKED,          0,                   APPW_JOB_NULL,           ID_SCREEN_01__ID_BUTTON_03__WM_NOTIFICATION_CLICKED,
   },
 };
 

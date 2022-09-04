@@ -39,6 +39,7 @@
 #include "r_cryptogram.h"
 #include "code_signer_public_key.h"
 #include "base64_decode.h"
+#include "firm_update.h"
 
 /* RX72N Envision Kit system header include */
 #include "rx72n_envision_kit_system.h"
@@ -46,27 +47,6 @@
 /***********************************************************************************************************************
  Macro definitions
  ***********************************************************************************************************************/
-#define LIFECYCLE_STATE_BLANK                   (0xff)
-#define LIFECYCLE_STATE_TESTING                 (0xfe)
-#define LIFECYCLE_STATE_INITIAL_FIRM_INSTALLED  (0xfc)
-#define LIFECYCLE_STATE_VALID                   (0xf8)
-#define LIFECYCLE_STATE_INVALID                 (0xf0)
-
-#define FIRMWARE_UPDATE_STATE_INITIALIZE 0
-#define FIRMWARE_UPDATE_STATE_ERASE 1
-#define FIRMWARE_UPDATE_STATE_ERASE_WAIT_COMPLETE 2
-#define FIRMWARE_UPDATE_STATE_READ_WAIT_COMPLETE 3
-#define FIRMWARE_UPDATE_STATE_READ_START 4
-#define FIRMWARE_UPDATE_STATE_WRITE_WAIT_COMPLETE 5
-#define FIRMWARE_UPDATE_STATE_FINALIZE 6
-#define FIRMWARE_UPDATE_STATE_FINALIZE_WAIT_ERASE_DATA_FLASH 7
-#define FIRMWARE_UPDATE_STATE_FINALIZE_WAIT_WRITE_DATA_FLASH 8
-#define FIRMWARE_UPDATE_STATE_FINALIZE_COMPLETED 9
-
-#define FIRMWARE_UPDATE_STATE_CAN_SWAP_BANK 100
-#define FIRMWARE_UPDATE_STATE_WAIT_START 101
-#define FIRMWARE_UPDATE_STATE_COMPLETED 102
-#define FIRMWARE_UPDATE_STATE_ERROR 103
 
 /*------------------------------------------ firmware update configuration (start) --------------------------------------------*/
 #define FIRMWARE_LOW_ADDRESS FLASH_CF_BLOCK_13
@@ -76,8 +56,6 @@
 #define FIRMWARE_USER_FIRMWARE_HEADER_LENGTH 0x200
 /*------------------------------------------ firmware update configuration (end) --------------------------------------------*/
 
-#define INTEGRITY_CHECK_SCHEME_HASH_SHA256_STANDALONE "hash-sha256"
-#define INTEGRITY_CHECK_SCHEME_SIG_SHA256_ECDSA_STANDALONE "sig-sha256-ecdsa"
 #define FIRMWARE_TARGET_BLOCK_NUMBER (FLASH_NUM_BLOCKS_CF - FIRMWARE_MIRROR_BLOCK_NUM_FOR_SMALL - FIRMWARE_MIRROR_BLOCK_NUM_FOR_MEDIUM)
 #define FIRMWARE_TEMPORARY_AREA_LOW_ADDRESS FLASH_CF_LO_BANK_LO_ADDR
 #define USER_RESET_VECTOR_ADDRESS (FIRMWARE_LOW_ADDRESS - 4)
@@ -94,7 +72,7 @@
 #define TC_SHA256_DIGEST_SIZE (32)
 #define TC_SHA256_STATE_BLOCKS (TC_SHA256_DIGEST_SIZE/4)
 
-#define FLASH_INTERRUPT_PRIORITY 1 /* 0(low) - 15(high) */
+#define FLASH_INTERRUPT_PRIORITY 15 /* 0(low) - 15(high) */
 
 /***********************************************************************************************************************
  Typedef definitions
@@ -131,14 +109,6 @@ volatile    uint32_t firmware_read_length;
 /***********************************************************************************************************************
  Exported global variables (to be accessed by other files)
  ***********************************************************************************************************************/
-void firmware_update_request(char *string);
-bool is_firmupdating(void);
-bool is_firmupdatewaitstart(void);
-uint32_t firmware_update(void);
-uint32_t get_update_data_size(void);
-void flash_bank_swap_callback_function(void *event);
-void load_firmware_status(uint32_t *now_status, uint32_t *finish_status);
-void software_reset(void);
 
 const uint8_t code_signer_public_key[] = CODE_SIGNER_PUBLIC_KEY_PEM;
 const uint32_t code_signer_public_key_length = sizeof(code_signer_public_key);
@@ -175,22 +145,11 @@ uint32_t firmware_update(void)
             load_firmware_control_block.status = FIRMWARE_UPDATE_STATE_WAIT_START;
             break;
         case FIRMWARE_UPDATE_STATE_WAIT_START: /* wait start */
-            xSemaphoreGive( xSemaphoreCodeFlashAccess );
-            R_FLASH_Open();
             /* this state will be changed by other process request using load_firmware_control_block.status */
             break;
         case FIRMWARE_UPDATE_STATE_ERASE: /* erase bank1 user program area */
-            xSemaphoreTake(xSemaphoreCodeFlashAccess, portMAX_DELAY);
-            cb_func_info.pcallback = flash_load_firmware_callback_function;
-            cb_func_info.int_priority = FLASH_INTERRUPT_PRIORITY;
-            flash_error_code = R_FLASH_Control(FLASH_CMD_SET_BGO_CALLBACK, (void *)&cb_func_info);
-            if (FLASH_SUCCESS != flash_error_code)
-            {
-                printf("R_FLASH_Control() returns error. %d.\r\n", flash_error_code);
-                printf("system error.\r\n");
-                load_firmware_control_block.status = FIRMWARE_UPDATE_STATE_ERROR;
-                break;
-            }
+            xSemaphoreTake( xSemaphoreCodeFlashAccess, portMAX_DELAY);
+            R_FLASH_Open();
             cb_func_info.pcallback = flash_load_firmware_callback_function;
             cb_func_info.int_priority = FLASH_INTERRUPT_PRIORITY;
             flash_error_code = R_FLASH_Control(FLASH_CMD_SET_BGO_CALLBACK, (void *)&cb_func_info);
@@ -288,8 +247,6 @@ uint32_t firmware_update(void)
             {
                 load_firmware_control_block.status= FIRMWARE_UPDATE_STATE_ERROR;
             }
-            R_FLASH_Close();
-            xSemaphoreGive( xSemaphoreCodeFlashAccess );
             break;
         case FIRMWARE_UPDATE_STATE_FINALIZE_WAIT_ERASE_DATA_FLASH:
             /* this state will be changed by callback routine */
@@ -301,8 +258,12 @@ uint32_t firmware_update(void)
             load_firmware_control_block.status = FIRMWARE_UPDATE_STATE_COMPLETED;
             break;
         case FIRMWARE_UPDATE_STATE_COMPLETED:
+            R_FLASH_Close();
+            xSemaphoreGive( xSemaphoreCodeFlashAccess );
             break;
         case FIRMWARE_UPDATE_STATE_ERROR:
+            R_FLASH_Close();
+            xSemaphoreGive( xSemaphoreCodeFlashAccess );
             load_firmware_control_block.progress = 100;
             break;
         default:
@@ -379,6 +340,8 @@ static int32_t extract_update_file_parameters(uint8_t *string, uint8_t *type, ui
     ret = R_tfat_f_open(&file, (const char *)string, TFAT_FA_READ | TFAT_FA_OPEN_EXISTING);
     if (TFAT_RES_OK == ret)
     {
+        load_firmware_control_block.firmware_length = file.fsize;
+
         ret = R_tfat_f_read(&file, buf, FIRMWARE_UPDATE_BLOCK_LENGTH, &size);
         if (TFAT_RES_OK == ret)
         {
@@ -438,7 +401,6 @@ void flash_load_firmware_callback_function(void *event)
             {
                 load_firmware_control_block.offset += FIRMWARE_UPDATE_BLOCK_LENGTH;
                 load_firmware_control_block.progress = (uint32_t)(((float)(load_firmware_control_block.offset)/(float)((FLASH_CF_MEDIUM_BLOCK_SIZE * FIRMWARE_TARGET_BLOCK_NUMBER))*100));
-                load_firmware_control_block.firmware_length = load_firmware_control_block.firmware_read_length;
                 if (load_firmware_control_block.offset == (FLASH_CF_MEDIUM_BLOCK_SIZE * FIRMWARE_TARGET_BLOCK_NUMBER))
                 {
                     load_firmware_control_block.progress = 100;
@@ -490,7 +452,7 @@ uint32_t get_update_data_size(void)
     return (load_firmware_control_block.firmware_length);
 }
 
-bool is_firmupdating(void)
+bool is_firmware_updating(void)
 {
     if (FIRMWARE_UPDATE_STATE_CAN_SWAP_BANK < load_firmware_control_block.status)
     {
@@ -499,7 +461,7 @@ bool is_firmupdating(void)
     return true;
 }
 
-bool is_firmupdatewaitstart(void)
+bool is_firmware_update_wait_start(void)
 {
     if (FIRMWARE_UPDATE_STATE_WAIT_START != load_firmware_control_block.status)
     {
@@ -508,10 +470,9 @@ bool is_firmupdatewaitstart(void)
     return true;
 }
 
-void load_firmware_status(uint32_t *now_status, uint32_t *finish_status)
+void load_firmware_status(uint32_t *current_status)
 {
-    *now_status    = load_firmware_control_block.status;
-    *finish_status = FIRMWARE_UPDATE_STATE_COMPLETED;
+    *current_status    = load_firmware_control_block.status;
 }
 
 static int32_t firmware_verification_sha256_ecdsa(const uint8_t * pucData, uint32_t ulSize, const uint8_t * pucSignature)

@@ -250,7 +250,7 @@ void main_1s_display_update(TASK_INFO *task_info)
 #endif
     task_info->ip_address = ip_address_array;
 
-    /* get/set FPS averatge info */
+    /* get/set FPS average info */
     float tmp_fps = 0;
     for(int i = 0; i < MAX_HISTORY_FPS_INDEX; i++)
     {

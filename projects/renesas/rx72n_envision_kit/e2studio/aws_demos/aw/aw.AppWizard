@@ -1042,7 +1042,7 @@
         Color2=ff000000
       </SetBkColors>
       <SetColors>
-        Color0=ff000000
+        Color0=ff00ff00
         Color2=ffffffff
       </SetColors>
       <SetAlign>
@@ -1165,7 +1165,7 @@
     </Text>
     <Button>
       ParentId=2065
-      IdString=ID_BUTTON_03_Copy
+      IdString=ID_BUTTON_04
       Id=2069
       IdPrev=0
       IdPost=0
@@ -1401,10 +1401,18 @@
         Text=ID_RTEXT_14
       </Para>
     </SETTEXT>
+    <NULL>
+      RootId=6145
+      IdSrc=ID_BUTTON_03
+      NCode=WM_NOTIFICATION_CLICKED
+      Slot=ID_SCREEN_01__ID_BUTTON_03__WM_NOTIFICATION_CLICKED
+      Comment=Action for update button clicked
+      Flags=0
+    </NULL>
   </Interactions>
   <Selection>
     Root=ID_SCREEN_01
-    Object=2051
+    Object=2068
   </Selection>
   <Terms>
   </Terms>

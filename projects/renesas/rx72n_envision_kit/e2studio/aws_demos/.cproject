@@ -79,6 +79,7 @@
 									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../freertos_kernel/portable/Renesas/RX600v2"/>
 									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/config_files"/>
 									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code"/>
+									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/renesas_code/utility&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/aws_demos/application_code/aws_code&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../../../../vendors/renesas/boards/rx72n-envision-kit/ports/ota_pal_for_aws&quot;"/>
 									<listOptionValue builtIn="false" value="${ProjDirPath}/../../../../../demos/include"/>
@@ -711,18 +712,6 @@
 						</toolChain>
 					</folderInfo>
 					<fileInfo id="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.configuration.216582545.1511590152" name="common_demo_include.h" rcbsApplicability="disable" resourcePath="application_code/aws_code/sntp_client/common_demo_include.h" toolsToInvoke=""/>
-					<folderInfo id="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.configuration.216582545.133762958" name="/" resourcePath="application_code/renesas_code/guibuilder_output">
-						<toolChain id="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.toolChain.356246530" name="Renesas CCRX Toolchain" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.toolChain" unusedChildren="">
-							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.dsp.1562117047" name="DSP Assembler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.dsp.283334129"/>
-							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.common.372644515" name="Common" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.common.1850118877"/>
-							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler.992554137" name="Compiler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler.829055"/>
-							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.assembler.1382304027" name="Assembler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.assembler.175236271"/>
-							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.linker.47754167" name="Linker" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.linker.2099553218"/>
-							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.librarian.704241646" name="Library Generator" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.librarian.1357919725"/>
-							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.converter.682832674" name="Converter" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.converter.1607322956"/>
-							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.rtosConfig.550359858" name="RTOS Configurator" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.rtosConfig.1733071265"/>
-						</toolChain>
-					</folderInfo>
 					<sourceEntries>
 						<entry excluding="aw/Simulation|demos/common/http_demo_helpers|libraries/coreHTTP|demos/coreHTTP|demos/ota/ota_demo_core_http|vendors/renesas/boards/rx72n-envision-kit/aws_demos/src/smc_gen|smc_gen" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>

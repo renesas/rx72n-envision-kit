@@ -37,6 +37,7 @@
             <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\utility\base64_decode.c</Path>
             <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\utility\base64_decode.h</Path>
             <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\utility\firm_update.c</Path>
+            <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\utility\firm_update.h</Path>
             <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\utility\r_cryptogram.h</Path>
             <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\utility\r_sdc_sdmem_rx_demo_pin.c</Path>
             <Path>..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\utility\r_sdc_sdmem_rx_demo_pin.h</Path>
@@ -2188,6 +2189,7 @@
           <Option>-include="${ProjDirPath}\..\..\..\..\..\freertos_kernel\portable\Renesas\RX600v2"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\config_files"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\utility"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\aws_code"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\ports\ota_pal_for_aws"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\demos\include"</Option>
@@ -2252,8 +2254,8 @@
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\device_shadow_for_aws\source\include"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\device_defender_for_aws\source\include"</Option>
           <Option>-include="${ProjDirPath}\generate"</Option>
-          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace15\${ProjName}\src"</Option>
-          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace15\${ProjName}\aw\Source"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace16\${ProjName}\src"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace16\${ProjName}\aw\Source"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\general"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_pincfg"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_config"</Option>
@@ -2916,6 +2918,7 @@
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\freertos_kernel\portable\Renesas\RX600v2"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\config_files"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\renesas_code\utility"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\application_code\aws_code"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\ports\ota_pal_for_aws"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\demos\include"</IncludePathForC>
@@ -2980,8 +2983,8 @@
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\device_shadow_for_aws\source\include"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\device_defender_for_aws\source\include"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\generate"</IncludePathForC>
-          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace15\${ProjName}\src"</IncludePathForC>
-          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace15\${ProjName}\aw\Source"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace16\${ProjName}\src"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace16\${ProjName}\aw\Source"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\general"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_pincfg"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_config"</IncludePathForC>

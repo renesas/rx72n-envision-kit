@@ -255,4 +255,35 @@ void ID_SCREEN_01__WM_NOTIFICATION_VALUE_CHANGED__ID_TEXT_00_TITLE__APPW_JOB_SET
   GUI_USE_PARA(pResult);
 }
 
+/*********************************************************************
+*
+*       ID_SCREEN_01__ID_BUTTON_03__WM_NOTIFICATION_CLICKED
+*/
+void ID_SCREEN_01__ID_BUTTON_03__WM_NOTIFICATION_CLICKED(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult) {
+  WM_HWIN hItem;
+  char selected_file_name[256+1];
+  int select_id;
+
+  TASK_INFO *task_info = get_task_info();
+  hItem = WM_GetDialogItem(hScreen, ID_LISTBOX_00);
+
+  select_id = LISTBOX_GetSel(hItem);
+  if(select_id == -1)
+  {
+      firmware_update_log_string(task_info, "No file selected.\r\n");
+      return;
+  }
+  LISTBOX_GetItemText(hItem, select_id, selected_file_name, 256);
+  if(true != is_firmware_updating())
+  {
+      hItem = WM_GetDialogItem(hScreen, ID_MULTIEDIT_00);
+      firmware_update_request(selected_file_name);
+      firmware_update_log_string(task_info, "start firmware update.\r\n");
+  }
+  else
+  {
+      firmware_update_log_string(task_info, "cannot firmware update in this status.\r\n");
+  }
+}
+
 /*************************** End of file ****************************/

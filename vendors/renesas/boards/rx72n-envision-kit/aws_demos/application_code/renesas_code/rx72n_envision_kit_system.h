@@ -26,6 +26,9 @@
  *         : 29.12.2019 1.00 First Release
  *********************************************************************************************************************/
 
+#ifndef RX72N_ENVISION_KIT_STYSTEM_HEADER_FILE
+#define RX72N_ENVISION_KIT_STYSTEM_HEADER_FILE
+
 /******************************************************************************
  Includes   <System Includes> , "Project Includes"
  ******************************************************************************/
@@ -141,6 +144,11 @@ typedef struct _task_info
     /* system flag */
     volatile uint32_t gui_initialize_complete_flag;
 
+    /* for firmware update file size */
+    uint32_t file_size;
+    uint32_t processed_file_size;
+    uint32_t progress;
+
 }TASK_INFO;
 
 extern const char timezone_label[];
@@ -176,3 +184,14 @@ extern FILINFO filinfo;
 extern DIR dir;
 
 extern TASK_INFO * get_task_info(void);
+extern void firmware_update_request(char *string);
+extern bool is_firmware_updating(void);
+extern bool is_firmware_update_wait_start(void);
+extern uint32_t firmware_update(void);
+extern uint32_t get_update_data_size(void);
+extern void flash_bank_swap_callback_function(void *event);
+extern void load_firmware_status(uint32_t *now_status, uint32_t *finish_status);
+extern void software_reset(void);
+extern void firmware_update_log_string(TASK_INFO *task_info, char *pstring);
+
+#endif
