@@ -66,6 +66,7 @@ void ID_SCREEN_01__ID_BUTTON_00__WM_NOTIFICATION_CLICKED__ID_WINDOW_01__APPW_JOB
 void ID_SCREEN_01__WM_NOTIFICATION_VALUE_CHANGED__ID_TEXT_00_TITLE__APPW_JOB_SETTEXT   (APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
 void ID_SCREEN_01__WM_NOTIFICATION_VALUE_CHANGED__ID_TEXT_00_TITLE__APPW_JOB_SETTEXT_0 (APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
 void ID_SCREEN_01__ID_BUTTON_03__WM_NOTIFICATION_CLICKED                               (APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
+void ID_SCREEN_01__ID_BUTTON_04__WM_NOTIFICATION_CLICKED                               (APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult);
 
 /*********************************************************************
 *

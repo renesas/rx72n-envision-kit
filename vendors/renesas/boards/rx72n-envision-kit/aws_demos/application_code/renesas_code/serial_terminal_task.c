@@ -163,7 +163,6 @@ extern void vTaskClearUsage(void);
 extern void vTaskClearUsageSingleList(List_t *pxList);
 
 extern void firmware_version_read(char **ver_str);
-extern void software_reset(void);
 
 /*******************************************************************************
  global variables and functions

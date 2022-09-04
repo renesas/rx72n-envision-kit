@@ -1090,7 +1090,7 @@
         Color=ff2c2c30
       </SetColor>
       <SetValue>
-        Value=40
+        Value=0
       </SetValue>
       <SetSbitmaps>
         Index0=DARK_Progbar_Tile_H_Blue_1x16.png
@@ -1409,10 +1409,18 @@
       Comment=Action for update button clicked
       Flags=0
     </NULL>
+    <NULL>
+      RootId=6145
+      IdSrc=ID_BUTTON_04
+      NCode=WM_NOTIFICATION_CLICKED
+      Slot=ID_SCREEN_01__ID_BUTTON_04__WM_NOTIFICATION_CLICKED
+      Comment=Action for reset button clicked
+      Flags=0
+    </NULL>
   </Interactions>
   <Selection>
     Root=ID_SCREEN_01
-    Object=2068
+    Object=2069
   </Selection>
   <Terms>
   </Terms>

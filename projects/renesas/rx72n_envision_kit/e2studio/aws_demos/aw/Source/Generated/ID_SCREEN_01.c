@@ -438,7 +438,7 @@ static const APPW_SETUP_ITEM _aSetup[] = {
   { ID_PROGBAR_00,       APPW_SET_PROP_RADIUS,       { ARG_V(5) } },
   { ID_PROGBAR_00,       APPW_SET_PROP_FRAME,        { ARG_V(2) } },
   { ID_PROGBAR_00,       APPW_SET_PROP_COLOR,        { ARG_V(0xff2c2c30) } },
-  { ID_PROGBAR_00,       APPW_SET_PROP_VALUE,        { ARG_V(40) } },
+  { ID_PROGBAR_00,       APPW_SET_PROP_VALUE,        { ARG_V(0) } },
   { ID_PROGBAR_00,       APPW_SET_PROP_SBITMAPS,     { ARG_VP(0, acDARK_Progbar_Tile_H_Blue_1x16),
                                                        ARG_VP(0, acDARK_Progbar_Tile_H_Gray_1x16), } },
   { ID_PROGBAR_00,       APPW_SET_PROP_TILE,         { ARG_V(0) } },
@@ -560,6 +560,8 @@ static const APPW_ACTION_ITEM _aAction[] = {
     }, 65536, &_Condition_0c
   },
   { ID_BUTTON_03,        WM_NOTIFICATION_CLICKED,          0,                   APPW_JOB_NULL,           ID_SCREEN_01__ID_BUTTON_03__WM_NOTIFICATION_CLICKED,
+  },
+  { ID_BUTTON_04,        WM_NOTIFICATION_CLICKED,          0,                   APPW_JOB_NULL,           ID_SCREEN_01__ID_BUTTON_04__WM_NOTIFICATION_CLICKED,
   },
 };
 

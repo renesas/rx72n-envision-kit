@@ -56,6 +56,7 @@
 #include "r_tfat_lib.h"
 #include "r_simple_filesystem_on_dataflash_if.h"
 #include "Pin.h"
+#include "firm_update.h"
 
 #define DATAFLASH_LABEL_NAME_TIMEZONE "timezone"
 #define DATAFLASH_LABEL_NAME_CLIENT_PRIVATE_KEY "client_private_key"
@@ -72,6 +73,8 @@
 #define UNIQUE_ID_LENGTH 16
 #define EMWIN_VERSION_STRING_LENGTH 16
 #define FIRMWARE_VERSION_STRING_LENGTH 16
+
+#define SOFTWARE_RESET_WAIT_TIME 5000 /* 5s */
 
 /**********************************************************************************************************************
 Typedef definitions
@@ -143,6 +146,7 @@ typedef struct _task_info
 
     /* system flag */
     volatile uint32_t gui_initialize_complete_flag;
+    volatile uint32_t software_reset_requested_flag;
 
     /* for firmware update file size */
     uint32_t file_size;

@@ -87,7 +87,6 @@ static void firmware_update_file_size_progress_bar_string(TASK_INFO *task_info, 
 
 extern void R_SDHI_PinSetTransfer(void);
 extern void R_SDHI_PinSetInit(void);
-extern void software_reset(void);
 
 void sdcard_task( void * pvParameters )
 {
@@ -153,6 +152,14 @@ void sdcard_task( void * pvParameters )
                     }
                 }
             }
+        	if(task_info->software_reset_requested_flag)
+        	{
+        		char text[64];
+        		sprintf(text, "software reset request detected. wait %d seconds...\r\n", SOFTWARE_RESET_WAIT_TIME / configTICK_RATE_HZ);
+        	    firmware_update_log_string(task_info, text);
+    			vTaskDelay(SOFTWARE_RESET_WAIT_TIME);
+    			software_reset();
+        	}
     	}
 
         progress = firmware_update();
@@ -174,8 +181,8 @@ void sdcard_task( void * pvParameters )
                 {
 					firmware_update_file_size_progress_bar_string(task_info, 100, (int)((((float)(progress)/100)*(float)(get_update_data_size()))/1024), (int)((float)(get_update_data_size()))/1024);
 					firmware_update_ok_after_message(task_info);
-					vTaskDelay(5000);
-					software_reset();
+					firmware_update_status_initialize();
+					task_info->software_reset_requested_flag = 1;
                 }
                 else if(FIRMWARE_UPDATE_STATE_ERROR == firmware_update_status)
                 {

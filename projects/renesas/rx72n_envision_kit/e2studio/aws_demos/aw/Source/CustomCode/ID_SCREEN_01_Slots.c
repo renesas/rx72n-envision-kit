@@ -264,6 +264,11 @@ void ID_SCREEN_01__ID_BUTTON_03__WM_NOTIFICATION_CLICKED(APPW_ACTION_ITEM * pAct
   char selected_file_name[256+1];
   int select_id;
 
+  GUI_USE_PARA(pAction);
+  GUI_USE_PARA(hScreen);
+  GUI_USE_PARA(pMsg);
+  GUI_USE_PARA(pResult);
+
   TASK_INFO *task_info = get_task_info();
   hItem = WM_GetDialogItem(hScreen, ID_LISTBOX_00);
 
@@ -284,6 +289,20 @@ void ID_SCREEN_01__ID_BUTTON_03__WM_NOTIFICATION_CLICKED(APPW_ACTION_ITEM * pAct
   {
       firmware_update_log_string(task_info, "cannot firmware update in this status.\r\n");
   }
+}
+
+/*********************************************************************
+*
+*       ID_SCREEN_01__ID_BUTTON_04__WM_NOTIFICATION_CLICKED
+*/
+void ID_SCREEN_01__ID_BUTTON_04__WM_NOTIFICATION_CLICKED(APPW_ACTION_ITEM * pAction, WM_HWIN hScreen, WM_MESSAGE * pMsg, int * pResult) {
+  GUI_USE_PARA(pAction);
+  GUI_USE_PARA(hScreen);
+  GUI_USE_PARA(pMsg);
+  GUI_USE_PARA(pResult);
+
+  TASK_INFO *task_info = get_task_info();
+  task_info->software_reset_requested_flag = 1;
 }
 
 /*************************** End of file ****************************/
