@@ -769,8 +769,8 @@
                 <gridItem id="ETHER_CFG_MODE_SEL" selectedIndex="0"/>
                 <gridItem id="ETHER_CFG_CH0_PHY_ADDRESS" selectedIndex="0"/>
                 <gridItem id="ETHER_CFG_CH1_PHY_ADDRESS" selectedIndex="1"/>
-                <gridItem id="ETHER_CFG_EMAC_RX_DESCRIPTORS" selectedIndex="2"/>
-                <gridItem id="ETHER_CFG_EMAC_TX_DESCRIPTORS" selectedIndex="2"/>
+                <gridItem id="ETHER_CFG_EMAC_RX_DESCRIPTORS" selectedIndex="3"/>
+                <gridItem id="ETHER_CFG_EMAC_TX_DESCRIPTORS" selectedIndex="3"/>
                 <gridItem id="ETHER_CFG_BUFSIZE" selectedIndex="1536"/>
                 <gridItem id="ETHER_CFG_AL1_INT_PRIORTY" selectedIndex="13"/>
                 <gridItem id="ETHER_CFG_CH0_PHY_ACCESS" selectedIndex="0"/>

@@ -283,7 +283,7 @@ uint32_t ulRand(void);
 #define ipconfigTCP_RX_BUFFER_LENGTH                   ( 1460 * 3 )
 
 /* Define the size of Tx buffer for TCP sockets. */
-#define ipconfigTCP_TX_BUFFER_LENGTH                   ( 1460 * 6 )
+#define ipconfigTCP_TX_BUFFER_LENGTH                   ( 1460 * 4 )
 
 /* When using call-back handlers, the driver may check if the handler points to
  * real program memory (RAM or flash) or just has a random non-zero value. */
