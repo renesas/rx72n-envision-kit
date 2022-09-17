@@ -1,6 +1,6 @@
 /*
- * FreeRTOS Kernel V10.2.0
- * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel V10.3.0
+ * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -29,7 +29,7 @@
 #include "serial_term_uart.h"
 
 /* Unity includes. */
-#if defined(AMAZON_FREERTOS_ENABLE_UNIT_TESTS)
+#if defined(FREERTOS_ENABLE_UNIT_TESTS)
 #include "unity_internals.h"
 #elif defined(ENABLE_UNIT_TESTS)
 #include "unity.h"
@@ -52,11 +52,11 @@
 #define configENABLE_BACKWARD_COMPATIBILITY        1
 #define configUSE_PREEMPTION                       1
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION    0
-#define configMAX_PRIORITIES                       (7)
-#define configTICK_RATE_HZ                         (1000)
-#define configMINIMAL_STACK_SIZE                   (( unsigned short ) 512)
-#define configTOTAL_HEAP_SIZE                      (( size_t ) ( 256U * 1024U ))
-#define configMAX_TASK_NAME_LEN                    (12)
+#define configMAX_PRIORITIES                       ( 7 )
+#define configTICK_RATE_HZ                         ( 1000 )
+#define configMINIMAL_STACK_SIZE                   ( ( unsigned short ) 512 )
+#define configTOTAL_HEAP_SIZE                      ( ( size_t ) ( 288U * 1024U ) )
+#define configMAX_TASK_NAME_LEN                    ( 12 )
 #define configUSE_TRACE_FACILITY                   1
 #define configUSE_16_BIT_TICKS                     0
 #define configIDLE_SHOULD_YIELD                    1
@@ -72,8 +72,8 @@
 
 #define configUSE_DAEMON_TASK_STARTUP_HOOK 1
 
-#define configCPU_CLOCK_HZ				(BSP_ICLK_HZ)
-#define configPERIPHERAL_CLOCK_HZ		(BSP_PCLKB_HZ)
+#define configCPU_CLOCK_HZ				( BSP_ICLK_HZ )
+#define configPERIPHERAL_CLOCK_HZ		( BSP_PCLKB_HZ )
 #define configUSE_QUEUE_SETS			1
 
 /* Hook function related definitions. */
@@ -84,9 +84,9 @@
 
 /* Software timer related definitions. */
 #define configUSE_TIMERS                           1
-#define configTIMER_TASK_PRIORITY                  (configMAX_PRIORITIES - 1)
+#define configTIMER_TASK_PRIORITY                  ( 6 )
 #define configTIMER_QUEUE_LENGTH                   5
-#define configTIMER_TASK_STACK_DEPTH               (configMINIMAL_STACK_SIZE * 6)
+#define configTIMER_TASK_STACK_DEPTH               ( configMINIMAL_STACK_SIZE * 6 )
 
 /* The interrupt priority used by the kernel itself for the tick interrupt and
 the pended interrupt.  This would normally be the lowest priority. */
@@ -117,7 +117,7 @@ void vConfigureTimerForRunTimeStats( void );
 
 /* Co-routine definitions. */
 #define configUSE_CO_ROUTINES                   0
-#define configMAX_CO_ROUTINE_PRIORITIES         (2)
+#define configMAX_CO_ROUTINE_PRIORITIES         ( 2 )
 
 /* Currently the TCP/IP stack is using dynamic allocation, and the MQTT task is
  * using static allocation. */
@@ -153,7 +153,7 @@ void vConfigureTimerForRunTimeStats( void );
  * functions. */
 #define configUSE_STATS_FORMATTING_FUNCTIONS    1
 
-#if defined(ENABLE_UNIT_TESTS) || defined(AMAZON_FREERTOS_ENABLE_UNIT_TESTS)
+#if defined(ENABLE_UNIT_TESTS) || defined(FREERTOS_ENABLE_UNIT_TESTS)
 /* unity testing */
 #define configASSERT( x ) do { if( ( x ) == 0 ) TEST_ABORT(); } while( 0 )
 #elif defined(CONFIG_FREERTOS_ASSERT_DISABLE) || defined(NDEBUG)
@@ -203,7 +203,7 @@ extern void vLoggingPrint( const char * pcMessage );
 
 /* Only used when running in the FreeRTOS Windows simulator.  Defines the
  * priority of the task used to simulate Ethernet interrupts. */
-#define configMAC_ISR_SIMULATOR_PRIORITY     (configMAX_PRIORITIES - 1)
+#define configMAC_ISR_SIMULATOR_PRIORITY     ( configMAX_PRIORITIES - 1 )
 
 /* This demo creates a virtual network connection by accessing the raw Ethernet
  * or WiFi data to and from a real network connection.  Many computers have more
@@ -235,8 +235,8 @@ extern void vLoggingPrint( const char * pcMessage );
 #define configMAC_ADDR1                      0x90
 #define configMAC_ADDR2                      0x50
 #define configMAC_ADDR3                      0x00
-#define configMAC_ADDR4                      0x00
-#define configMAC_ADDR5                      0x01
+#define configMAC_ADDR4                      0x79
+#define configMAC_ADDR5                      0x03
 
 /* Default IP address configuration.  Used in ipconfigUSE_DHCP is set to 0, or
  * ipconfigUSE_DHCP is set to 1 but a DNS server cannot be contacted. */
@@ -268,23 +268,21 @@ extern void vLoggingPrint( const char * pcMessage );
 #define configNET_MASK3                      0
 
 /* The UDP port to which print messages are sent. */
-#define configPRINT_PORT                     (15000)
+#define configPRINT_PORT                     ( 15000 )
 
-#define configPROFILING                      (0)
+#define configPROFILING                      ( 0 )
 
 /* Pseudo random number generater used by some demo tasks. */
 uint32_t ulRand(void);
 #define configRAND32()    ulRand()
 
 /* The platform FreeRTOS is running on. */
-#define configPLATFORM_NAME    "RenesasRX72N"
+#define configPLATFORM_NAME    "RenesasRX65N"
 
 /* Header required for the tracealyzer recorder library. */
-//#include "trcRecorder.h"
+#include "trcRecorder.h"
 
 /* When the FIT configurator or the Smart Configurator is used, platform.h has to be used. */
 #define configINCLUDE_PLATFORM_H_INSTEAD_OF_IODEFINE_H  1
-
-#define configINCLUDE_FREERTOS_TASK_C_ADDITIONS_H 1
 
 #endif /* FREERTOS_CONFIG_H */

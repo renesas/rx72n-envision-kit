@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2022  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.50 - Graphical user interface for embedded applications **
+** emWin V6.26 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only  be used  in accordance  with  a license  and should  not be  re-
@@ -20,11 +20,11 @@ Licensor:                 SEGGER Software GmbH
 Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
 Licensed SEGGER software: emWin
 License number:           GUI-00678
-License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
-License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
+License model:            License and Service Agreement, signed December 16th, 2016, Amendment No. 1 signed May 16th, 2019 and Amendment No. 2, signed September 20th, 2021 by Carsten Jauch, Managing Director
+License valid for:        RX (based on RX-V1, RX-V2 or RX-V3)
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2016-12-22 - 2019-12-31
+SUA period:               2016-12-22 - 2022-12-31
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : HEADER_Private.h
@@ -65,6 +65,8 @@ typedef struct {
   GUI_COLOR           TextColor;
   GUI_COLOR           ArrowColor;
   HEADER_SKIN_PRIVATE SkinPrivate;
+  U8                  BorderH;
+  U8                  BorderV;
 } HEADER_PROPS;
 
 typedef struct {
@@ -80,6 +82,9 @@ typedef struct {
   int                 DirIndicatorReverse;
   unsigned            Fixed;
   U8                  DragLimit;
+  U8                  ResizeableColumns;
+  U8                  Height;
+  U8                  xOff;
 } HEADER_Obj;
 
 /*********************************************************************
@@ -91,8 +96,6 @@ typedef struct {
 
 extern HEADER_PROPS        HEADER__DefaultProps;
 extern const GUI_CURSOR  * HEADER__pDefaultCursor;
-extern int                 HEADER__DefaultBorderH;
-extern int                 HEADER__DefaultBorderV;
 
 extern const WIDGET_SKIN   HEADER__SkinClassic;
 extern       WIDGET_SKIN   HEADER__Skin;
@@ -106,7 +109,7 @@ extern WIDGET_SKIN const * HEADER__pSkinDefault;
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define HEADER_INIT_ID(p)  (p->Widget.DebugId = HEADER_ID)
+  #define HEADER_INIT_ID(p)  (p->Widget.DebugId = WIDGET_TYPE_HEADER)
 #else
   #define HEADER_INIT_ID(p)
 #endif
@@ -115,11 +118,18 @@ extern WIDGET_SKIN const * HEADER__pSkinDefault;
   HEADER_Obj * HEADER_LockH(HEADER_Handle h);
   #define HEADER_LOCK_H(h)   HEADER_LockH(h)
 #else
-  #define HEADER_LOCK_H(h)   (HEADER_Obj *)GUI_LOCK_H(h)
+  #define HEADER_LOCK_H(h)   (HEADER_Obj *)WM_LOCK_H(h)
 #endif
 
-void HEADER__SetDrawObj(HEADER_Handle hObj, unsigned Index, GUI_DRAW_HANDLE hDrawObj);
-
+/*********************************************************************
+*
+*       Private (module internal) functions
+*
+**********************************************************************
+*/
+void         HEADER__SetDrawObj       (HEADER_Handle hObj, unsigned Index, GUI_DRAW_HANDLE hDrawObj);
+void         HEADER__SetOffset        (HEADER_Handle hObj, U8 xOff);
+const char * HEADER__GetItemTextLocked(HEADER_Handle hObj, unsigned Index, void ** ppUnlock);
 
 #endif // GUI_WINSUPPORT
 #endif // Avoid multiple inclusion

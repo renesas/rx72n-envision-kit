@@ -14,15 +14,14 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2019 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2022 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_cg_hardware_setup.c
-* Version      : 1.0.101
-* Device(s)    : R5F572NNHxFB
-* Description  : Initialization file for code generation configurations.
-* Creation Date: 2020-11-20
+* File Name        : r_cg_hardware_setup.c
+* Version          : 1.0.110
+* Device(s)        : R5F572NNHxFB
+* Description      : Initialization file for code generation configurations.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************

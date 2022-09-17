@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2022  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.50 - Graphical user interface for embedded applications **
+** emWin V6.26 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only  be used  in accordance  with  a license  and should  not be  re-
@@ -20,11 +20,11 @@ Licensor:                 SEGGER Software GmbH
 Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
 Licensed SEGGER software: emWin
 License number:           GUI-00678
-License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
-License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
+License model:            License and Service Agreement, signed December 16th, 2016, Amendment No. 1 signed May 16th, 2019 and Amendment No. 2, signed September 20th, 2021 by Carsten Jauch, Managing Director
+License valid for:        RX (based on RX-V1, RX-V2 or RX-V3)
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2016-12-22 - 2019-12-31
+SUA period:               2016-12-22 - 2022-12-31
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : SCROLLBAR_Private.h
@@ -149,7 +149,7 @@ struct SCROLLBAR_OBJ {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define SCROLLBAR_INIT_ID(p) (p->Widget.DebugId = SCROLLBAR_ID)
+  #define SCROLLBAR_INIT_ID(p) (p->Widget.DebugId = WIDGET_TYPE_SCROLLBAR)
 #else
   #define SCROLLBAR_INIT_ID(p)
 #endif
@@ -158,7 +158,7 @@ struct SCROLLBAR_OBJ {
   SCROLLBAR_OBJ * SCROLLBAR_LockH(SCROLLBAR_Handle h);
   #define SCROLLBAR_LOCK_H(h)   SCROLLBAR_LockH(h)
 #else
-  #define SCROLLBAR_LOCK_H(h)   (SCROLLBAR_OBJ *)GUI_LOCK_H(h)
+  #define SCROLLBAR_LOCK_H(h)   (SCROLLBAR_OBJ *)WM_LOCK_H(h)
 #endif
 
 /*********************************************************************
@@ -167,8 +167,10 @@ struct SCROLLBAR_OBJ {
 *
 **********************************************************************
 */
+int  SCROLLBAR__GetPressedState  (SCROLLBAR_Handle hObj);
 void SCROLLBAR__InvalidatePartner(SCROLLBAR_Handle hObj);
 void SCROLLBAR__Rect2VRect       (const WIDGET * pWidget, GUI_RECT * pRect);
+void SCROLLBAR__SetPosNoNotify   (SCROLLBAR_Handle hObj, WM_SCROLL_STATE * pState);
 
 /*********************************************************************
 *

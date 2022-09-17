@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2022  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.50 - Graphical user interface for embedded applications **
+** emWin V6.26 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only  be used  in accordance  with  a license  and should  not be  re-
@@ -20,11 +20,11 @@ Licensor:                 SEGGER Software GmbH
 Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
 Licensed SEGGER software: emWin
 License number:           GUI-00678
-License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
-License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
+License model:            License and Service Agreement, signed December 16th, 2016, Amendment No. 1 signed May 16th, 2019 and Amendment No. 2, signed September 20th, 2021 by Carsten Jauch, Managing Director
+License valid for:        RX (based on RX-V1, RX-V2 or RX-V3)
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2016-12-22 - 2019-12-31
+SUA period:               2016-12-22 - 2022-12-31
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : IMAGE_Private.h
@@ -87,10 +87,23 @@ typedef struct {
   void              * pVoid;        // Void pointer passed to GetData() function
   GUI_GET_DATA_FUNC * pfGetData;    // Pointer to GetData() function
   //
+  // Alignment (Important: When tiling is active, alignment does not have any effect)
+  //
+  I16                 xOff, yOff;   // Additional offsets
+  U8                  Align;        // Alignment
+  //
   // Data items used if memory devices are available and IMAGE_CF_MEMDEV has been set
   //
   #if GUI_SUPPORT_MEMDEV
     GUI_MEMDEV_Handle hMem;
+    unsigned          Scale;
+    unsigned          Angle;
+    U8                Alpha;
+    U8                IsDirty;
+    //
+    // Pointer to scaling function
+    //
+    void (* pFunc)(GUI_MEMDEV_Handle hSrc, GUI_MEMDEV_Handle hDst, int dx, int dy, int a, int Mag);
   #endif
 } IMAGE_OBJ;
 
@@ -101,7 +114,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define IMAGE_INIT_ID(p) (p->Widget.DebugId = IMAGE_ID)
+  #define IMAGE_INIT_ID(p) (p->Widget.DebugId = WIDGET_TYPE_IMAGE)
 #else
   #define IMAGE_INIT_ID(p)
 #endif
@@ -110,7 +123,7 @@ typedef struct {
   IMAGE_OBJ * IMAGE__LockH(IMAGE_Handle h);
   #define IMAGE_LOCK_H(h)   IMAGE__LockH(h)
 #else
-  #define IMAGE_LOCK_H(h)   (IMAGE_OBJ *)GUI_LOCK_H(h)
+  #define IMAGE_LOCK_H(h)   (IMAGE_OBJ *)WM_LOCK_H(h)
 #endif
 
 /*********************************************************************
@@ -129,6 +142,7 @@ extern IMAGE_PROPS IMAGE__DefaultProps;
 */
 void IMAGE__SetWindowSize(IMAGE_Handle hObj);
 void IMAGE__FreeAttached (IMAGE_Handle hObj, int LeaveTimer);
+void IMAGE__SetVoid      (IMAGE_Handle hObj, const void * pData);
 
 #endif // GUI_WINSUPPORT
 #endif // IMAGE_PRIVATE_H

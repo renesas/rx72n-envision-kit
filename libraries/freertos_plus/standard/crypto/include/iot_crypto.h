@@ -1,6 +1,6 @@
 /*
- * Amazon FreeRTOS Crypto V1.0.6
- * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Crypto V1.1.2
+ * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -48,13 +48,6 @@ void CRYPTO_Init( void );
  * @see MBEDTLS_THREADING_ALT
  */
 void CRYPTO_ConfigureThreading( void );
-
-/**
- * @brief Configures crypto library heap callouts so that the FreeRTOS heap is
- * used instead of the C runtime heap. Skipping this call is likely to cause
- * runtime memory corruption in the application.
- */
-void CRYPTO_ConfigureHeap( void );
 
 /**
  * @brief Library-independent cryptographic algorithm identifiers.

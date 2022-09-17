@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2022  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.50 - Graphical user interface for embedded applications **
+** emWin V6.26 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only  be used  in accordance  with  a license  and should  not be  re-
@@ -20,11 +20,11 @@ Licensor:                 SEGGER Software GmbH
 Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
 Licensed SEGGER software: emWin
 License number:           GUI-00678
-License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
-License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
+License model:            License and Service Agreement, signed December 16th, 2016, Amendment No. 1 signed May 16th, 2019 and Amendment No. 2, signed September 20th, 2021 by Carsten Jauch, Managing Director
+License valid for:        RX (based on RX-V1, RX-V2 or RX-V3)
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2016-12-22 - 2019-12-31
+SUA period:               2016-12-22 - 2022-12-31
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : SPINBOX.h
@@ -80,10 +80,13 @@ Purpose     : SPINBOX header file
 
 /*********************************************************************
 *
-*       Timer indices
+*       SPINBOX timer indexes
+*
+*  Description
+*    Timer indexes used by the routine SPINBOX_SetTimerPeriod().
 */
-#define SPINBOX_TI_TIMERSTART       0  // Timer for starting auto increment
-#define SPINBOX_TI_TIMERINC         1  // Timer for period between two increments
+#define SPINBOX_TI_TIMERSTART       0      // Time it takes to start auto increase/decrease of its value.
+#define SPINBOX_TI_TIMERINC         1      // Time between two increments/decrements.
 
 /*********************************************************************
 *
@@ -144,6 +147,7 @@ GUI_COLOR        SPINBOX_GetBkColor      (SPINBOX_Handle hObj, unsigned int Inde
 GUI_COLOR        SPINBOX_GetButtonBkColor(SPINBOX_Handle hObj, unsigned int Index);
 EDIT_Handle      SPINBOX_GetEditHandle   (SPINBOX_Handle hObj);
 const GUI_FONT * SPINBOX_GetFont         (SPINBOX_Handle hObj);
+void             SPINBOX_GetRange        (SPINBOX_Handle hObj, I32 * pMin, I32 * pMax);
 GUI_COLOR        SPINBOX_GetTextColor    (SPINBOX_Handle hObj, unsigned int Index);
 U32              SPINBOX_GetTimerPeriod  (SPINBOX_Handle hObj, U32 Index);
 int              SPINBOX_GetUserData     (SPINBOX_Handle hObj, void * pDest, int NumBytes);

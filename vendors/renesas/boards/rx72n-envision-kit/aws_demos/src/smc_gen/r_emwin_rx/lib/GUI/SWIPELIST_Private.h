@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2022  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.50 - Graphical user interface for embedded applications **
+** emWin V6.26 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only  be used  in accordance  with  a license  and should  not be  re-
@@ -20,11 +20,11 @@ Licensor:                 SEGGER Software GmbH
 Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
 Licensed SEGGER software: emWin
 License number:           GUI-00678
-License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
-License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
+License model:            License and Service Agreement, signed December 16th, 2016, Amendment No. 1 signed May 16th, 2019 and Amendment No. 2, signed September 20th, 2021 by Carsten Jauch, Managing Director
+License valid for:        RX (based on RX-V1, RX-V2 or RX-V3)
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2016-12-22 - 2019-12-31
+SUA period:               2016-12-22 - 2022-12-31
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : SWIPELIST.h
@@ -73,11 +73,13 @@ typedef struct {
   const GUI_FONT * pHeaderFont;
   const GUI_FONT * pTextFont;
   GUI_COLOR        aTextColor[5];
-  GUI_COLOR        aBkColor[3];
+  GUI_COLOR        aBkColor[4];
   int              BitmapSpace;
   int              aBorderSize[4];
+  int              Period;
   U8               Flags;
   int              Threshold;
+  unsigned         Overlap;
 } SWIPELIST_PROPS;
 
 typedef struct {
@@ -91,6 +93,7 @@ typedef struct {
   int                     LastVisible;
   int                     Sel;
   int                     ReleasedItem;
+  WM_HMEM                 hContext;       // Motion context.
 } SWIPELIST_OBJ;
 
 /*********************************************************************
@@ -100,7 +103,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define SWIPELIST_INIT_ID(p) p->Widget.DebugId = SWIPELIST_ID
+  #define SWIPELIST_INIT_ID(p) p->Widget.DebugId = WIDGET_TYPE_SWIPELIST
 #else
   #define SWIPELIST_INIT_ID(p)
 #endif
@@ -109,8 +112,20 @@ typedef struct {
   SWIPELIST_OBJ * SWIPELIST_LockH(SWIPELIST_Handle h);
   #define SWIPELIST_LOCK_H(h)   SWIPELIST_LockH(h)
 #else
-  #define SWIPELIST_LOCK_H(h)   (SWIPELIST_OBJ *)GUI_LOCK_H(h)
+  #define SWIPELIST_LOCK_H(h)   (SWIPELIST_OBJ *)WM_LOCK_H(h)
 #endif
+
+/*********************************************************************
+*
+*       Defines
+*
+**********************************************************************
+*/
+//
+// WM_MOTION_OVERLAP... flags are stored in the upper two bits of Props.Flags
+//
+#define OVERLAP_FLAG_SHIFT     2
+#define OVERLAP_FLAG_MASK      ((WM_MOTION_OVERLAP_TOP | WM_MOTION_OVERLAP_BOTTOM) << OVERLAP_FLAG_SHIFT)
 
 /*********************************************************************
 *

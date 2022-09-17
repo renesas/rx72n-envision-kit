@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2022  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.50 - Graphical user interface for embedded applications **
+** emWin V6.26 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only  be used  in accordance  with  a license  and should  not be  re-
@@ -20,11 +20,11 @@ Licensor:                 SEGGER Software GmbH
 Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
 Licensed SEGGER software: emWin
 License number:           GUI-00678
-License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
-License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
+License model:            License and Service Agreement, signed December 16th, 2016, Amendment No. 1 signed May 16th, 2019 and Amendment No. 2, signed September 20th, 2021 by Carsten Jauch, Managing Director
+License valid for:        RX (based on RX-V1, RX-V2 or RX-V3)
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2016-12-22 - 2019-12-31
+SUA period:               2016-12-22 - 2022-12-31
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : RADIO.h
@@ -49,9 +49,11 @@ Purpose     : RADIO include
 *
 *       Bitmap indices
 */
-#define RADIO_BI_INACTIV 0
-#define RADIO_BI_ACTIV   1
-#define RADIO_BI_CHECK   2
+#define RADIO_BI_INACTIV  0
+#define RADIO_BI_ACTIV    1
+#define RADIO_BI_INACTIVE RADIO_BI_INACTIV
+#define RADIO_BI_ACTIVE   RADIO_BI_ACTIV
+#define RADIO_BI_CHECK    2
 
 /*********************************************************************
 *
@@ -141,6 +143,7 @@ GUI_COLOR          RADIO_GetFocusColor(RADIO_Handle hObj);
 const GUI_FONT *   RADIO_GetFont      (RADIO_Handle hObj);
 const GUI_BITMAP * RADIO_GetImage     (RADIO_Handle hObj, unsigned int Index);
 int                RADIO_GetNumItems  (RADIO_Handle hObj);
+U16                RADIO_GetSpacing   (RADIO_Handle hObj);
 int                RADIO_GetText      (RADIO_Handle hObj, unsigned Index, char * pBuffer, int MaxLen);
 GUI_COLOR          RADIO_GetTextColor (RADIO_Handle hObj);
 int                RADIO_GetUserData  (RADIO_Handle hObj, void * pDest, int NumBytes);
@@ -150,6 +153,7 @@ GUI_COLOR          RADIO_SetFocusColor(RADIO_Handle hObj, GUI_COLOR Color);
 void               RADIO_SetFont      (RADIO_Handle hObj, const GUI_FONT * pFont);
 void               RADIO_SetGroupId   (RADIO_Handle hObj, U8 GroupId);
 void               RADIO_SetImage     (RADIO_Handle hObj, const GUI_BITMAP * pBitmap, unsigned int Index);
+void               RADIO_SetSpacing   (RADIO_Handle hObj, U16 Spacing);
 void               RADIO_SetText      (RADIO_Handle hObj, const char* pText, unsigned Index);
 void               RADIO_SetTextColor (RADIO_Handle hObj, GUI_COLOR Color);
 void               RADIO_SetValue     (RADIO_Handle hObj, int v);

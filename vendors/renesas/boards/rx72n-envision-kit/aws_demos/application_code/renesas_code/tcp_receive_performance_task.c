@@ -74,13 +74,13 @@ static uint8_t receive_buffer[RECEIVE_DATA_UNIT_LENGTH];
 
 void tcp_receive_performance_task( void * pvParameters )
 {
-	Socket_t xListeningSocket, xConnectedSocket;
-	SocketsSockaddr_t xTimeServerAddress;
-	struct freertos_sockaddr xClient, xBindAddress;
-	const BaseType_t xBacklog = 20;
-	socklen_t xSize = sizeof( xClient );
-	static const TickType_t xReceiveTimeOut = portMAX_DELAY;
-	BaseType_t return_value;
+    Socket_t xListeningSocket, xConnectedSocket;
+    SocketsSockaddr_t xTimeServerAddress;
+    struct freertos_sockaddr xClient, xBindAddress;
+    const BaseType_t xBacklog = 20;
+    socklen_t xSize = sizeof( xClient );
+    static const TickType_t xReceiveTimeOut = portMAX_DELAY;
+    BaseType_t return_value;
 
     while(1)
     {
@@ -117,27 +117,27 @@ void tcp_receive_performance_task( void * pvParameters )
         /* Wait for incoming connections. */
         xConnectedSocket = FreeRTOS_accept( xListeningSocket, &xClient, &xSize );
 
-		configPRINTF( ( "Connected from iperf client: OK.\r\n" ) );
+        configPRINTF( ( "Connected from iperf client: OK.\r\n" ) );
 
-		while(1)
-		{
-			/* Receive the string from the socket. */
-			return_value = FreeRTOS_recv( xConnectedSocket, /* The socket being received to. */
-						  ( void * ) receive_buffer,        /* The data being received. */
-						  RECEIVE_DATA_UNIT_LENGTH,         /* The length of the data being received. */
-						  0 );                              /* No flags. */
-			if(0 > return_value)
-			{
-				break;
-			}
-		}
+        while(1)
+        {
+            /* Receive the string from the socket. */
+            return_value = FreeRTOS_recv( xConnectedSocket, /* The socket being received to. */
+                          ( void * ) receive_buffer,        /* The data being received. */
+                          RECEIVE_DATA_UNIT_LENGTH,         /* The length of the data being received. */
+                          0 );                              /* No flags. */
+            if(0 > return_value)
+            {
+                break;
+            }
+        }
         configPRINTF( ( "Shutting down connection from iperf client.\r\n" ) );
         SOCKETS_Shutdown( xConnectedSocket, SOCKETS_SHUT_RDWR );
 
         /* finish */
         while(1)
         {
-        	vTaskDelay(0xffffffff);
+            vTaskDelay(0xffffffff);
         }
     }
 }

@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2022  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.50 - Graphical user interface for embedded applications **
+** emWin V6.26 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only  be used  in accordance  with  a license  and should  not be  re-
@@ -20,11 +20,11 @@ Licensor:                 SEGGER Software GmbH
 Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
 Licensed SEGGER software: emWin
 License number:           GUI-00678
-License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
-License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
+License model:            License and Service Agreement, signed December 16th, 2016, Amendment No. 1 signed May 16th, 2019 and Amendment No. 2, signed September 20th, 2021 by Carsten Jauch, Managing Director
+License valid for:        RX (based on RX-V1, RX-V2 or RX-V3)
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2016-12-22 - 2019-12-31
+SUA period:               2016-12-22 - 2022-12-31
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : EDIT_Private.h
@@ -83,12 +83,16 @@ struct EDIT_Obj_struct {
   U8                   EditMode;        // Insert or overwrite mode
   U8                   XSizeCursor;     // Size of cursor when working in insert mode
   U8                   Flags;
+  U8                   Radius;          // Currently only used by AppWizard
   tEDIT_AddKeyEx     * pfAddKeyEx;      // Handle key input
   tEDIT_UpdateBuffer * pfUpdateBuffer;  // Update textbuffer
   EDIT_PROPS           Props;
   WM_HTIMER            hTimer;
   U8                   MinMaxMode;
   int                  TimerPeriod;
+  int                  ScrollPos;       // Horizontal scrolling position
+  U16                  PrevStrLen;      // Previous string length, used for scrolling position calculation.
+  const char         * pDispText;       // Pointer to buffer with the password char.
 };
 
 /*********************************************************************
@@ -98,7 +102,7 @@ struct EDIT_Obj_struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define EDIT_INIT_ID(p) (p->Widget.DebugId = EDIT_ID)
+  #define EDIT_INIT_ID(p) (p->Widget.DebugId = WIDGET_TYPE_EDIT)
 #else
   #define EDIT_INIT_ID(p)
 #endif
@@ -107,7 +111,7 @@ struct EDIT_Obj_struct {
   EDIT_Obj * EDIT_LockH(EDIT_Handle h);
   #define EDIT_LOCK_H(h)   EDIT_LockH(h)
 #else
-  #define EDIT_LOCK_H(h)   (EDIT_Obj *)GUI_LOCK_H(h)
+  #define EDIT_LOCK_H(h)   (EDIT_Obj *)WM_LOCK_H(h)
 #endif
 
 /*********************************************************************
@@ -126,6 +130,7 @@ extern EDIT_PROPS EDIT__DefaultProps;
 */
 U16  EDIT__GetCurrentChar  (EDIT_Obj * pObj);
 void EDIT__SetCursorPos    (EDIT_Handle hObj, int CursorPos);
+void EDIT__SetCursorPosEx  (EDIT_Handle hObj, int CursorPos, U8 Delete);
 void EDIT__SetValueUnsigned(EDIT_Handle hObj, I32 Value);
 
 #endif // GUI_WINSUPPORT

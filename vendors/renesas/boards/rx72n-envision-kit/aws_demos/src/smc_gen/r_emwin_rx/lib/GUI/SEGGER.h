@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2022  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.50 - Graphical user interface for embedded applications **
+** emWin V6.26 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only  be used  in accordance  with  a license  and should  not be  re-
@@ -20,11 +20,11 @@ Licensor:                 SEGGER Software GmbH
 Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
 Licensed SEGGER software: emWin
 License number:           GUI-00678
-License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
-License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
+License model:            License and Service Agreement, signed December 16th, 2016, Amendment No. 1 signed May 16th, 2019 and Amendment No. 2, signed September 20th, 2021 by Carsten Jauch, Managing Director
+License valid for:        RX (based on RX-V1, RX-V2 or RX-V3)
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2016-12-22 - 2019-12-31
+SUA period:               2016-12-22 - 2022-12-31
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File    : SEGGER.h
@@ -91,6 +91,12 @@ extern "C" {     /* Make sure we have C-declarations in C++ programs */
 #ifndef   SEGGER_USE_PARA                   // Some compiler complain about unused parameters.
   #define SEGGER_USE_PARA(Para) (void)Para  // This works for most compilers.
 #endif
+
+#define SEGGER_ADDR2PTR(Type, Addr)  (/*lint -e(923) -e(9078)*/((Type*)((PTR_ADDR)(Addr))))    // Allow cast from address to pointer.
+#define SEGGER_PTR2ADDR(p)           (/*lint -e(923) -e(9078)*/((PTR_ADDR)(p)))                // Allow cast from pointer to address.
+#define SEGGER_PTR2PTR(Type, p)      (/*lint -e(740) -e(826) -e(9079) -e(9087)*/((Type*)(p)))  // Allow cast from one pointer type to another (ignore different size).
+#define SEGGER_PTR_DISTANCE(p0, p1)  (SEGGER_PTR2ADDR(p0) - SEGGER_PTR2ADDR(p1))
+
 
 /*********************************************************************
 *
@@ -162,7 +168,7 @@ void SEGGER_memxor    (void* pDest, const void* pSrc, unsigned NumBytes);
 void SEGGER_StoreChar    (SEGGER_BUFFER_DESC* pBufferDesc, char c);
 void SEGGER_PrintUnsigned(SEGGER_BUFFER_DESC* pBufferDesc, U32 v, unsigned Base, int Precision);
 void SEGGER_PrintInt     (SEGGER_BUFFER_DESC* pBufferDesc, I32 v, unsigned Base, int Precision);
-//int  SEGGER_snprintf     (char* pBuffer, int BufferSize, const char* sFormat, ...);
+int  SEGGER_snprintf     (char* pBuffer, int BufferSize, const char* sFormat, ...);
 int  SEGGER_vsnprintf    (char* pBuffer, int BufferSize, const char* sFormat, va_list ParamList);
 int  SEGGER_vsnprintfEx  (SEGGER_SNPRINTF_CONTEXT* pContext, const char* sFormat, va_list ParamList);
 
@@ -170,6 +176,14 @@ int  SEGGER_PRINTF_AddFormatter      (SEGGER_PRINTF_FORMATTER* pFormatter, SEGGE
 void SEGGER_PRINTF_AddDoubleFormatter(void);
 void SEGGER_PRINTF_AddIPFormatter    (void);
 void SEGGER_PRINTF_AddHTMLFormatter  (void);
+
+int      SEGGER_strncasecmp(const char *sText1, const char *sText2, unsigned Count);
+int      SEGGER_strcasecmp (const char *sText1, const char *sText2);
+int      SEGGER_tolower    (int c);
+unsigned SEGGER_strlen     (const char* s);
+int      SEGGER_isalpha    (int c);
+int      SEGGER_isalnum    (int c);
+int      SEGGER_atoi       (const char* s);
 
 #if defined(__cplusplus)
 }                /* Make sure we have C-declarations in C++ programs */

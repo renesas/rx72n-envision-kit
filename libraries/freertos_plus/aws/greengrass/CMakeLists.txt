@@ -34,8 +34,12 @@ afr_module_dependencies(
     ${AFR_CURRENT_MODULE}
     PUBLIC
         AFR::secure_sockets
+        AFR::logging
+        # This dependency is required for auto-including
+        # the coreMQTT library on the FreeRTOS console
+        # when the Greengrass library is selected.
+        AFR::core_mqtt_demo_dependencies
     PRIVATE
-        AFR::mqtt
         3rdparty::jsmn
 )
 
@@ -44,7 +48,8 @@ afr_test_module()
 afr_module_sources(
     ${AFR_CURRENT_MODULE}
     INTERFACE
-        "${test_dir}/aws_test_greengrass_discovery.c"
+        "${test_dir}/aws_test_ggd_system.c"
+        "${test_dir}/aws_test_ggd_unit.c"
         "${test_dir}/aws_test_helper_secure_connect.c"
 )
 afr_module_dependencies(

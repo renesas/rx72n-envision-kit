@@ -27,9 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "FreeRTOS.h"
 #include "task.h"
 
-/* Version includes. */
-#include "aws_application_version.h"
-
 /* System init includes. */
 #include "iot_system_init.h"
 
@@ -46,11 +43,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "aws_demo.h"
 #include "aws_clientcredential.h"
 
+/* RX72N Envision Kit system header include */
+#include "rx72n_envision_kit_system.h"
+
 #define mainLOGGING_TASK_STACK_SIZE         ( configMINIMAL_STACK_SIZE * 6 )
 #define mainLOGGING_MESSAGE_QUEUE_LENGTH    ( 15 )
 #define mainTEST_RUNNER_TASK_STACK_SIZE    ( configMINIMAL_STACK_SIZE * 8 )
 
 extern void main_task(void);
+extern void main_task_init(void);
 
 /* The MAC address array is not declared const as the MAC address will
 normally be read from an EEPROM and not hard coded (in real deployed
@@ -128,10 +129,24 @@ static void prvMiscInitialization( void )
     /* Initialize UART for serial terminal. */
     uart_config();
 
+    /* enable MCU pins */
+    R_Pins_Create();
+
+    /* system timer initialization */
+    R_SYS_TIME_Open();
+
     /* Start logging task. */
     xLoggingTaskInitialize( mainLOGGING_TASK_STACK_SIZE,
                             tskIDLE_PRIORITY,
                             mainLOGGING_MESSAGE_QUEUE_LENGTH );
+
+    /* flash initialization */
+    R_FLASH_Open();
+    R_SFD_Open();
+
+    /* flash access semaphore creation */
+    xSemaphoreCodeFlashAccess = xSemaphoreCreateBinary();
+    xSemaphoreGive(xSemaphoreCodeFlashAccess);
 }
 /*-----------------------------------------------------------*/
 
@@ -150,18 +165,7 @@ void vApplicationDaemonTaskStartupHook( void )
                          ucDNSServerAddress,
                          ucMACAddress );
 
-        /* We should wait for the network to be up before we run any demos. */
-        while( FreeRTOS_IsNetworkUp() == pdFALSE )
-        {
-            vTaskDelay(300);
-        }
-		FreeRTOS_printf( ( "The network is up and running\n" ) );
-
-        /* Provision the device with AWS certificate and private key. */
-        vDevModeKeyProvisioning();
-
-        /* Run all demos. */
-        DEMO_RUNNER_RunDemos();
+        main_task_init();
     }
 }
 

@@ -1,6 +1,6 @@
 /*
- * FreeRTOS+TCP V2.1.0
- * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS+TCP V2.3.2 LTS Patch 2
+ * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -24,21 +24,25 @@
  */
 
 #ifndef NETWORK_INTERFACE_H
-#define NETWORK_INTERFACE_H
+    #define NETWORK_INTERFACE_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+    #ifdef __cplusplus
+        extern "C" {
+    #endif
 
-/* NOTE PUBLIC API FUNCTIONS. */
-BaseType_t xNetworkInterfaceInitialise( void );
-BaseType_t xNetworkInterfaceOutput( NetworkBufferDescriptor_t * const pxNetworkBuffer, BaseType_t xReleaseAfterSend );
-void vNetworkInterfaceAllocateRAMToBuffers( NetworkBufferDescriptor_t pxNetworkBuffers[ ipconfigNUM_NETWORK_BUFFER_DESCRIPTORS ] );
-BaseType_t xGetPhyLinkStatus( void );
+/* INTERNAL API FUNCTIONS. */
+    BaseType_t xNetworkInterfaceInitialise( void );
+    BaseType_t xNetworkInterfaceOutput( NetworkBufferDescriptor_t * const pxNetworkBuffer,
+                                        BaseType_t xReleaseAfterSend );
 
-#ifdef __cplusplus
-} // extern "C"
-#endif
+/* The following function is defined only when BufferAllocation_1.c is linked in the project. */
+    void vNetworkInterfaceAllocateRAMToBuffers( NetworkBufferDescriptor_t pxNetworkBuffers[ ipconfigNUM_NETWORK_BUFFER_DESCRIPTORS ] );
+
+/* The following function is defined only when BufferAllocation_1.c is linked in the project. */
+    BaseType_t xGetPhyLinkStatus( void );
+
+    #ifdef __cplusplus
+        } /* extern "C" */
+    #endif
 
 #endif /* NETWORK_INTERFACE_H */
-

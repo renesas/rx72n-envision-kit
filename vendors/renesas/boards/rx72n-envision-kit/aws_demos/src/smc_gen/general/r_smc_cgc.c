@@ -18,11 +18,10 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_smc_cgc.c
-* Version      : 1.6.0
-* Device(s)    : R5F572NNHxFB
-* Description  : This file implements CGC setting.
-* Creation Date: 2020-04-24
+* File Name        : r_smc_cgc.c
+* Version          : 2.1.0
+* Device(s)        : R5F572NNHxFB
+* Description      : This file implements CGC setting.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -48,20 +47,15 @@ Global variables and functions
 
 /***********************************************************************************************************************
 * Function Name: R_CGC_Create
-* Description  : This function initializes the clock generator
+* Description  : This function generates CGC pin settings
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
 
 void R_CGC_Create(void)
 {
-    /* Set CLKOUT25M pin */
-    MPC.P56PFS.BYTE = 0x2AU;
-    PORT5.DSCR2.BYTE |= 0x40U;
-    PORT5.PMR.BYTE |= 0x40U;
-
     R_CGC_Create_UserInit();
 }
 
 /* Start user code for adding. Do not edit comment generated here */
-/* End user code. Do not edit comment generated here */   
+/* End user code. Do not edit comment generated here */

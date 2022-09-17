@@ -1,20 +1,6 @@
 # -------------------------------------------------------------------------------------------------
 # 3rdparty libraries
 # -------------------------------------------------------------------------------------------------
-# http_parser - HTTP message parser
-if(EXISTS "${AFR_3RDPARTY_DIR}/http_parser")
-    afr_3rdparty_module(http_parser)
-    target_sources(
-        3rdparty::http_parser INTERFACE
-        "${AFR_3RDPARTY_DIR}/http_parser/http_parser.h"
-        "${AFR_3RDPARTY_DIR}/http_parser/http_parser.c"
-    )
-    target_include_directories(
-        3rdparty::http_parser INTERFACE
-        "${AFR_3RDPARTY_DIR}/http_parser"
-    )
-endif()
-
 # jsmn - JSON parser
 if(EXISTS "${AFR_3RDPARTY_DIR}/jsmn")
     afr_3rdparty_module(jsmn)
@@ -37,7 +23,6 @@ if(EXISTS "${AFR_3RDPARTY_DIR}/lwip" AND NOT "${AFR_BOARD}" STREQUAL "pc.windows
     target_sources(
         afr_3rdparty_lwip
         PRIVATE
-            "${AFR_MODULES_ABSTRACTIONS_DIR}/lwip_osal/src/sys_arch.c"
             "${AFR_3RDPARTY_DIR}/lwip/src/api/api_lib.c"
             "${AFR_3RDPARTY_DIR}/lwip/src/api/api_msg.c"
             "${AFR_3RDPARTY_DIR}/lwip/src/api/err.c"
@@ -87,62 +72,200 @@ if(EXISTS "${AFR_3RDPARTY_DIR}/lwip" AND NOT "${AFR_BOARD}" STREQUAL "pc.windows
         afr_3rdparty_lwip
         PUBLIC
             "${AFR_3RDPARTY_DIR}/lwip/src/include"
-            "${AFR_MODULES_ABSTRACTIONS_DIR}/lwip_osal/include"
     )
     target_link_libraries(
         afr_3rdparty_lwip
-        PRIVATE AFR::kernel
+        PRIVATE
+            AFR::kernel
+            3rdparty::lwip_osal
     )
     add_library(3rdparty::lwip ALIAS afr_3rdparty_lwip)
 endif()
 
-# mbedtls - TLS protocol implementation
-if(EXISTS "${AFR_3RDPARTY_DIR}/mbedtls")
-    afr_glob_src(mbedtls_src DIRECTORY "${AFR_3RDPARTY_DIR}/mbedtls" RECURSE)
-    # Build to static library to save some time.
+# lwip implementation based on FreeRTOS
+if(EXISTS "${AFR_3RDPARTY_DIR}/lwip_osal" AND NOT "${AFR_BOARD}" STREQUAL "pc.windows")
     add_library(
-        afr_3rdparty_mbedtls STATIC EXCLUDE_FROM_ALL
-        ${mbedtls_src}
-        "${AFR_MODULES_ABSTRACTIONS_DIR}/pkcs11/mbedtls/threading_alt.h"
+        afr_3rdparty_lwip_osal STATIC EXCLUDE_FROM_ALL
     )
+
     target_include_directories(
-        afr_3rdparty_mbedtls
+        afr_3rdparty_lwip_osal
         PUBLIC
-            "${AFR_3RDPARTY_DIR}/mbedtls/include"
-            "${AFR_3RDPARTY_DIR}/mbedtls/include/mbedtls"
-            "${AFR_MODULES_ABSTRACTIONS_DIR}/pkcs11/mbedtls"
+            "${AFR_3RDPARTY_DIR}/lwip_osal/include"
+    )
+
+    target_sources(
+        afr_3rdparty_lwip_osal
+        PRIVATE
+            "${AFR_3RDPARTY_DIR}/lwip_osal/include/lwipopts_freertos.h"
+            "${AFR_3RDPARTY_DIR}/lwip_osal/include/arch/cc.h"
+            "${AFR_3RDPARTY_DIR}/lwip_osal/include/arch/perf.h"
+            "${AFR_3RDPARTY_DIR}/lwip_osal/include/arch/sys_arch.h"
+            "${AFR_3RDPARTY_DIR}/lwip_osal/src/sys_arch.c"
     )
     target_link_libraries(
-        afr_3rdparty_mbedtls
-        PRIVATE AFR::kernel
+        afr_3rdparty_lwip_osal
+        PRIVATE
+            AFR::kernel
+            3rdparty::lwip
     )
-    add_library(3rdparty::mbedtls ALIAS afr_3rdparty_mbedtls)
+    add_library(3rdparty::lwip_osal ALIAS afr_3rdparty_lwip_osal)
 endif()
+
+# mbedtls - TLS protocol implementation
+if(EXISTS "${AFR_3RDPARTY_DIR}/mbedtls")
+    if (${AFR_SEPARATE_MBEDTLS_SOURCE_BUILD})
+        # In current CI environment, build command is too long to build, 
+        # split the source file to reduce the command length
+        message("AFR_SEPARATE_MBEDTLS_SOURCE_BUILD enabled")
+        file(GLOB mbedtls_library_files_part1 "${AFR_3RDPARTY_DIR}/mbedtls/library/[a-o]*.[hc]")
+        file(GLOB mbedtls_library_files_part2 "${AFR_3RDPARTY_DIR}/mbedtls/library/[^a-o]*.[hc]")
+
+        afr_glob_src(mbedtls_include DIRECTORY "${AFR_3RDPARTY_DIR}/mbedtls/include" RECURSE)
+
+        # Build to static library to save some time.
+        # Part 1
+        add_library(
+            afr_3rdparty_mbedtls STATIC EXCLUDE_FROM_ALL
+            ${mbedtls_include}
+            ${mbedtls_library_files_part1}
+            "${AFR_3RDPARTY_DIR}/mbedtls_utils/mbedtls_utils.c"
+            "${AFR_3RDPARTY_DIR}/mbedtls_utils/mbedtls_error.h"
+            "${AFR_3RDPARTY_DIR}/mbedtls_utils/mbedtls_error.c"
+            "${AFR_3RDPARTY_DIR}/mbedtls_config/threading_alt.h"
+        )
+        # The "${AFR_3RDPARTY_DIR}/pkcs11" directory must be included before
+        # "${AFR_3RDPARTY_DIR}/mbedtls/include/mbedtls". This is because mbedtls/include
+        # contains a pkcs11.h header file that will be used over the pkcs11.h file defined
+        # in the pkcs11 directory. These pkcs11.h files are not interchangeable, the one in
+        # the pkcs11 directory should be used. Ideally everywhere the mbed tls header files
+        # are used, they would reference #include "mbedtls/xxx.h" to avoid a naming
+        # conflict. Some vendor/external code does not do this and for that reason we need
+        # to include the "${AFR_3RDPARTY_DIR}/mbedtls/include/mbedtls" directory
+        target_include_directories(
+            afr_3rdparty_mbedtls PUBLIC 
+            "${AFR_3RDPARTY_DIR}/pkcs11"
+        )
+        target_include_directories(
+            afr_3rdparty_mbedtls PUBLIC
+            "${AFR_3RDPARTY_DIR}/mbedtls/include"
+            "${AFR_3RDPARTY_DIR}/mbedtls/library"
+            "${AFR_3RDPARTY_DIR}/mbedtls_config"
+            "${AFR_3RDPARTY_DIR}/mbedtls/include/mbedtls"
+            "${AFR_3RDPARTY_DIR}/mbedtls_utils"
+        )
+
+        # Build to static library to save some time.
+        # Part 2
+        add_library(
+            afr_3rdparty_mbedtls_part2 STATIC EXCLUDE_FROM_ALL
+            ${mbedtls_include}
+            ${mbedtls_library_files_part2}
+            "${AFR_3RDPARTY_DIR}/mbedtls_utils/mbedtls_utils.c"
+            "${AFR_3RDPARTY_DIR}/mbedtls_utils/mbedtls_error.h"
+            "${AFR_3RDPARTY_DIR}/mbedtls_utils/mbedtls_error.c"
+            "${AFR_3RDPARTY_DIR}/mbedtls_config/threading_alt.h"
+        )
+        # The "${AFR_3RDPARTY_DIR}/pkcs11" directory must be included before
+        # "${AFR_3RDPARTY_DIR}/mbedtls/include/mbedtls". This is because mbedtls/include
+        # contains a pkcs11.h header file that will be used over the pkcs11.h file defined
+        # in the pkcs11 directory. These pkcs11.h files are not interchangeable, the one in
+        # the pkcs11 directory should be used. Ideally everywhere the mbed tls header files
+        # are used, they would reference #include "mbedtls/xxx.h" to avoid a naming
+        # conflict. Some vendor/external code does not do this and for that reason we need
+        # to include the "${AFR_3RDPARTY_DIR}/mbedtls/include/mbedtls" directory
+        target_include_directories(
+            afr_3rdparty_mbedtls_part2 PUBLIC 
+            "${AFR_3RDPARTY_DIR}/pkcs11"
+        )
+        target_include_directories(
+            afr_3rdparty_mbedtls_part2 PUBLIC
+            "${AFR_3RDPARTY_DIR}/mbedtls/include"
+            "${AFR_3RDPARTY_DIR}/mbedtls/library"
+            "${AFR_3RDPARTY_DIR}/mbedtls_config"
+            "${AFR_3RDPARTY_DIR}/mbedtls/include/mbedtls"
+            "${AFR_3RDPARTY_DIR}/mbedtls_utils"
+        )
+        target_link_libraries(
+            afr_3rdparty_mbedtls
+            PRIVATE AFR::kernel
+            afr_3rdparty_mbedtls_part2
+        )
+        target_link_libraries(
+            afr_3rdparty_mbedtls_part2
+            PRIVATE AFR::kernel
+            afr_3rdparty_mbedtls
+        )
+        add_library(3rdparty::mbedtls ALIAS afr_3rdparty_mbedtls)
+
+    else()
+        afr_glob_src(mbedtls_library DIRECTORY "${AFR_3RDPARTY_DIR}/mbedtls/library" RECURSE)
+        afr_glob_src(mbedtls_include DIRECTORY "${AFR_3RDPARTY_DIR}/mbedtls/include" RECURSE)
+
+        # Build to static library to save some time.
+        add_library(
+            afr_3rdparty_mbedtls STATIC EXCLUDE_FROM_ALL
+            ${mbedtls_library}
+            ${mbedtls_include}
+            "${AFR_3RDPARTY_DIR}/mbedtls_utils/mbedtls_utils.c"
+            "${AFR_3RDPARTY_DIR}/mbedtls_utils/mbedtls_error.h"
+            "${AFR_3RDPARTY_DIR}/mbedtls_utils/mbedtls_error.c"
+            "${AFR_3RDPARTY_DIR}/mbedtls_config/threading_alt.h"
+        )
+        # The "${AFR_3RDPARTY_DIR}/pkcs11" directory must be included before
+        # "${AFR_3RDPARTY_DIR}/mbedtls/include/mbedtls". This is because mbedtls/include
+        # contains a pkcs11.h header file that will be used over the pkcs11.h file defined
+        # in the pkcs11 directory. These pkcs11.h files are not interchangeable, the one in
+        # the pkcs11 directory should be used. Ideally everywhere the mbed tls header files
+        # are used, they would reference #include "mbedtls/xxx.h" to avoid a naming
+        # conflict. Some vendor/external code does not do this and for that reason we need
+        # to include the "${AFR_3RDPARTY_DIR}/mbedtls/include/mbedtls" directory
+        target_include_directories(
+            afr_3rdparty_mbedtls PUBLIC 
+            "${AFR_3RDPARTY_DIR}/pkcs11"
+        )
+        target_include_directories(
+            afr_3rdparty_mbedtls PUBLIC
+            "${AFR_3RDPARTY_DIR}/mbedtls/include"
+            "${AFR_3RDPARTY_DIR}/mbedtls/library"
+            "${AFR_3RDPARTY_DIR}/mbedtls_config"
+            "${AFR_3RDPARTY_DIR}/mbedtls/include/mbedtls"
+            "${AFR_3RDPARTY_DIR}/mbedtls_utils"
+        )
+        target_link_libraries(
+            afr_3rdparty_mbedtls
+            PRIVATE AFR::kernel
+        )
+        add_library(3rdparty::mbedtls ALIAS afr_3rdparty_mbedtls)
+    endif() # DEFINED AFR_BOARD AND AFR_BOARD STREQUAL ti.cc3220_launchpad
+endif() # EXISTS "${AFR_3RDPARTY_DIR}/mbedtls"
 
 # pkcs11 standard header
 if(EXISTS "${AFR_3RDPARTY_DIR}/pkcs11")
-    afr_3rdparty_module(pkcs11)
+    add_library(afr_3rdparty_pkcs11 INTERFACE)
     target_sources(
-        3rdparty::pkcs11 INTERFACE
+        afr_3rdparty_pkcs11 INTERFACE
         "${AFR_3RDPARTY_DIR}/pkcs11/pkcs11.h"
         "${AFR_3RDPARTY_DIR}/pkcs11/pkcs11f.h"
         "${AFR_3RDPARTY_DIR}/pkcs11/pkcs11t.h"
     )
     target_include_directories(
-        3rdparty::pkcs11 INTERFACE
+        afr_3rdparty_pkcs11 INTERFACE
         "${AFR_3RDPARTY_DIR}/pkcs11"
     )
+    add_library(3rdparty::pkcs11 ALIAS afr_3rdparty_pkcs11)
 endif()
 
 # tinycbor - CBOR implementation
 if(EXISTS "${AFR_3RDPARTY_DIR}/tinycbor")
     set(tinycbor_src
-        "${AFR_3RDPARTY_DIR}/tinycbor/cborpretty.c"
-        "${AFR_3RDPARTY_DIR}/tinycbor/cborencoder.c"
-        "${AFR_3RDPARTY_DIR}/tinycbor/cborencoder_close_container_checked.c"
-        "${AFR_3RDPARTY_DIR}/tinycbor/cborerrorstrings.c"
-        "${AFR_3RDPARTY_DIR}/tinycbor/cborparser.c"
-        "${AFR_3RDPARTY_DIR}/tinycbor/cborparser_dup_string.c"
+        "${AFR_3RDPARTY_DIR}/tinycbor/src/cborpretty.c"
+        "${AFR_3RDPARTY_DIR}/tinycbor/src/cborpretty_stdio.c"
+        "${AFR_3RDPARTY_DIR}/tinycbor/src/cborencoder.c"
+        "${AFR_3RDPARTY_DIR}/tinycbor/src/cborencoder_close_container_checked.c"
+        "${AFR_3RDPARTY_DIR}/tinycbor/src/cborerrorstrings.c"
+        "${AFR_3RDPARTY_DIR}/tinycbor/src/cborparser.c"
+        "${AFR_3RDPARTY_DIR}/tinycbor/src/cborparser_dup_string.c"
     )
     add_library(
         afr_3rdparty_tinycbor STATIC EXCLUDE_FROM_ALL
@@ -156,7 +279,7 @@ if(EXISTS "${AFR_3RDPARTY_DIR}/tinycbor")
     target_include_directories(
         afr_3rdparty_tinycbor
         PUBLIC
-            "${AFR_3RDPARTY_DIR}/tinycbor"
+            "${AFR_3RDPARTY_DIR}/tinycbor/src"
     )
     target_link_libraries(
         afr_3rdparty_tinycbor

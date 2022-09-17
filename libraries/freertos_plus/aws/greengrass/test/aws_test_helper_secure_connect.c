@@ -1,6 +1,6 @@
 /*
- * Amazon FreeRTOS Greengrass V1.0.5
- * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Greengrass V2.0.2
+ * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -29,31 +29,28 @@
 #include "unity_fixture.h"
 #include "aws_ggd_config.h"
 #include "aws_ggd_config_defaults.h"
-#include "iot_mqtt.h"
 #include "iot_init.h"
 
-TEST_GROUP( Full_GGD_Helper );
+TEST_GROUP( GGD_Helper_System );
 
-TEST_SETUP( Full_GGD_Helper )
+TEST_SETUP( GGD_Helper_System )
 {
     TEST_ASSERT_EQUAL( true, IotSdk_Init() );
-    TEST_ASSERT_EQUAL( IOT_MQTT_SUCCESS, IotMqtt_Init() );
 }
 
-TEST_TEAR_DOWN( Full_GGD_Helper )
+TEST_TEAR_DOWN( GGD_Helper_System )
 {
-    IotMqtt_Cleanup();
     IotSdk_Cleanup();
 }
 
 
-TEST_GROUP_RUNNER( Full_GGD_Helper )
+TEST_GROUP_RUNNER( GGD_Helper_System )
 {
-    RUN_TEST_CASE( Full_GGD_Helper, SecureConnect_Connect_Disconnect );
-    RUN_TEST_CASE( Full_GGD_Helper, SecureConnect_Send );
+    RUN_TEST_CASE( GGD_Helper_System, SecureConnect_Connect_Disconnect );
+    RUN_TEST_CASE( GGD_Helper_System, SecureConnect_Send );
 }
 
-TEST( Full_GGD_Helper, SecureConnect_Connect_Disconnect )
+TEST( GGD_Helper_System, SecureConnect_Connect_Disconnect )
 {
     GGD_HostAddressData_t xHostAddressData = { 0 };
     Socket_t xSocket;
@@ -108,7 +105,7 @@ TEST( Full_GGD_Helper, SecureConnect_Connect_Disconnect )
     /** @}*/
 }
 
-TEST( Full_GGD_Helper, SecureConnect_Send )
+TEST( GGD_Helper_System, SecureConnect_Send )
 {
 #define PAYLOAD    "Hello"
     char cPayload[] = PAYLOAD;

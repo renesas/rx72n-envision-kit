@@ -1,0 +1,15 @@
+RX72N Benchmark Demonstration Program
+Touch screen to start user program...
+System Information
+CPU Load   0%
+next
+back
+IP: 0.0.0.0
+SD: detach
+USB: N/A
+Time: 00/00/0000 00:00:00
+100.00 fps
+update
+reset
+file size: 
+F/W Update via SD

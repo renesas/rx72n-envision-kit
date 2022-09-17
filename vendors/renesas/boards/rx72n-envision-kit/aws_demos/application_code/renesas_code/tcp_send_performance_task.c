@@ -74,46 +74,47 @@ static uint8_t send_buffer[SEND_DATA_UNIT_LENGTH];
 
 void tcp_send_performance_task( void * pvParameters )
 {
-	Socket_t xSocket;
-	uint32_t tcp_send_performance_server_ip_address;
-	struct freertos_sockaddr xIperfServerAddress;
-	BaseType_t return_value;
-	SFD_HANDLE sfd_handle_tcp_send_performance_server_ip_address;
-	uint8_t *tcp_send_performance_server_ip_address_string;
-	uint32_t tcp_send_performance_server_ip_address_string_length;
+    Socket_t xSocket;
+    uint32_t tcp_send_performance_server_ip_address;
+    struct freertos_sockaddr xIperfServerAddress;
+    BaseType_t return_value;
+    SFD_HANDLE sfd_handle_tcp_send_performance_server_ip_address;
+    uint8_t *tcp_send_performance_server_ip_address_string;
+    uint32_t tcp_send_performance_server_ip_address_string_length;
 
-	SFD_HANDLE sfd_handle_tcp_send_performance_server_port_number;
-	uint8_t *tcp_send_performance_server_port_number_string;
-	uint32_t tcp_send_performance_server_port_number_string_length;
-	uint16_t tcp_send_performance_server_port_number;
-	uint32_t ip_address1, ip_address2, ip_address3, ip_address4;
+    SFD_HANDLE sfd_handle_tcp_send_performance_server_port_number;
+    uint8_t *tcp_send_performance_server_port_number_string;
+    uint32_t tcp_send_performance_server_port_number_string_length;
+    uint16_t tcp_send_performance_server_port_number;
+    uint32_t ip_address1, ip_address2, ip_address3, ip_address4;
 
-	uint8_t parameter_not_found_flag = 0;
+    uint8_t parameter_not_found_flag = 0;
 
-	sfd_handle_tcp_send_performance_server_ip_address = R_SFD_FindObject(tcp_send_performance_server_ip_address_label, strlen((char *)tcp_send_performance_server_ip_address_label));
-	if(sfd_handle_tcp_send_performance_server_ip_address == SFD_HANDLE_INVALID)
-	{
+    configPRINTF( ( "Searching TCP performance test server IP address and port number info on dataflash.\r\n" ) );
+    sfd_handle_tcp_send_performance_server_ip_address = R_SFD_FindObject(tcp_send_performance_server_ip_address_label, strlen((char *)tcp_send_performance_server_ip_address_label));
+    if(sfd_handle_tcp_send_performance_server_ip_address == SFD_HANDLE_INVALID)
+    {
         configPRINTF( ( "no parameter exist: %s\r\n", tcp_send_performance_server_ip_address_label ) );
-		parameter_not_found_flag++;
-	}
-	else
-	{
-		R_SFD_GetObjectValue(sfd_handle_tcp_send_performance_server_ip_address, (uint8_t **)&tcp_send_performance_server_ip_address_string, &tcp_send_performance_server_ip_address_string_length);
+        parameter_not_found_flag++;
+    }
+    else
+    {
+        R_SFD_GetObjectValue(sfd_handle_tcp_send_performance_server_ip_address, (uint8_t **)&tcp_send_performance_server_ip_address_string, &tcp_send_performance_server_ip_address_string_length);
         configPRINTF( ( "parameter found: %s = %s\r\n", tcp_send_performance_server_ip_address_label, tcp_send_performance_server_ip_address_string ) );
-	}
+    }
 
-	sfd_handle_tcp_send_performance_server_port_number = R_SFD_FindObject(tcp_send_performance_server_port_number_label, strlen((char *)tcp_send_performance_server_port_number_label));
-	if(sfd_handle_tcp_send_performance_server_port_number == SFD_HANDLE_INVALID)
-	{
+    sfd_handle_tcp_send_performance_server_port_number = R_SFD_FindObject(tcp_send_performance_server_port_number_label, strlen((char *)tcp_send_performance_server_port_number_label));
+    if(sfd_handle_tcp_send_performance_server_port_number == SFD_HANDLE_INVALID)
+    {
         configPRINTF( ( "no parameter exist: %s\r\n", tcp_send_performance_server_port_number_label ) );
-		parameter_not_found_flag++;
-	}
-	else
-	{
-		R_SFD_GetObjectValue(sfd_handle_tcp_send_performance_server_port_number, (uint8_t **)&tcp_send_performance_server_port_number_string, &tcp_send_performance_server_port_number_string_length);
-		sscanf((char *)tcp_send_performance_server_port_number_string, "%d", &tcp_send_performance_server_port_number);
+        parameter_not_found_flag++;
+    }
+    else
+    {
+        R_SFD_GetObjectValue(sfd_handle_tcp_send_performance_server_port_number, (uint8_t **)&tcp_send_performance_server_port_number_string, &tcp_send_performance_server_port_number_string_length);
+        sscanf((char *)tcp_send_performance_server_port_number_string, "%d", &tcp_send_performance_server_port_number);
         configPRINTF( ( "parameter found: %s = %d\r\n", tcp_send_performance_server_port_number_label, tcp_send_performance_server_port_number ) );
-	}
+    }
 
     if(!parameter_not_found_flag)
     {
@@ -141,20 +142,20 @@ void tcp_send_performance_task( void * pvParameters )
 
             while(1)
             {
-				/* Send the string to the socket. */
-            	return_value = FreeRTOS_send( xSocket, /* The socket being sent to. */
-							  ( void * ) send_buffer,  /* The data being sent. */
-							  SEND_DATA_UNIT_LENGTH,   /* The length of the data being sent. */
-							  0 );                     /* No flags. */
-				if(0 > return_value)
-				{
-					break;
-				}
+                /* Send the string to the socket. */
+                return_value = FreeRTOS_send( xSocket, /* The socket being sent to. */
+                              ( void * ) send_buffer,  /* The data being sent. */
+                              SEND_DATA_UNIT_LENGTH,   /* The length of the data being sent. */
+                              0 );                     /* No flags. */
+                if(0 > return_value)
+                {
+                    break;
+                }
             }
         }
         else
         {
-        	configPRINTF( ( "Connecting iperf server: NG.\r\n" ) );
+            configPRINTF( ( "Connecting iperf server: NG.\r\n" ) );
         }
         configPRINTF( ( "Shutting down connection to iperf server.\r\n" ) );
         SOCKETS_Shutdown( xSocket, SOCKETS_SHUT_RDWR );
@@ -162,6 +163,6 @@ void tcp_send_performance_task( void * pvParameters )
     /* finish */
     while(1)
     {
-    	vTaskDelay(0xffffffff);
+        vTaskDelay(0xffffffff);
     }
 }

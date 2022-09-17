@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2022  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.50 - Graphical user interface for embedded applications **
+** emWin V6.26 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only  be used  in accordance  with  a license  and should  not be  re-
@@ -20,11 +20,11 @@ Licensor:                 SEGGER Software GmbH
 Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
 Licensed SEGGER software: emWin
 License number:           GUI-00678
-License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
-License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
+License model:            License and Service Agreement, signed December 16th, 2016, Amendment No. 1 signed May 16th, 2019 and Amendment No. 2, signed September 20th, 2021 by Carsten Jauch, Managing Director
+License valid for:        RX (based on RX-V1, RX-V2 or RX-V3)
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2016-12-22 - 2019-12-31
+SUA period:               2016-12-22 - 2022-12-31
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : ICONVIEW.h
@@ -57,13 +57,22 @@ Purpose     : ICONVIEW include
 #define ICONVIEW_CF_AUTOSCROLLBAR_V (1 << 1)
 #define ICONVIEW_SF_AUTOSCROLLBAR_V ICONVIEW_CF_AUTOSCROLLBAR_V
 
-//
-// Color indices
-//
-#define ICONVIEW_CI_BK              0
-#define ICONVIEW_CI_UNSEL           0
-#define ICONVIEW_CI_SEL             1
-#define ICONVIEW_CI_DISABLED        2
+/*********************************************************************
+*
+*       ICONVIEW color indexes
+*
+*  Description
+*    Color indexes used by the ICONVIEW widget.
+*
+*  Additional information
+*    ICONVIEW_CI_BK is only used by the routines ICONVIEW_GetBkColor() and
+*    ICONVIEW_SetBkColor() instead of ICONVIEW_CI_UNSEL.
+*/
+#define ICONVIEW_CI_BK              0           // Color used to draw the widget background.
+#define ICONVIEW_CI_UNSEL           0           // Color of an unselected item.
+#define ICONVIEW_CI_SEL             1           // Color of a selected item.
+#define ICONVIEW_CI_DISABLED        2           // Color used in disabled state.
+/* # emDoc */
 
 //
 // Icon alignment flags, horizontal
@@ -102,7 +111,6 @@ int              ICONVIEW_AddBMPItem              (ICONVIEW_Handle hObj, const U
 int              ICONVIEW_AddBMPItemEx            (ICONVIEW_Handle hObj, const void * pBMP, GUI_GET_DATA_FUNC * pfGetData, const char * pText);
 int              ICONVIEW_AddStreamedBitmapItem   (ICONVIEW_Handle hObj, const void * pStreamedBitmap, const char * pText);
 void             ICONVIEW_DeleteItem              (ICONVIEW_Handle hObj, unsigned Index);
-//void             ICONVIEW_EnableStreamAuto        (void);
 GUI_COLOR        ICONVIEW_GetBkColor              (ICONVIEW_Handle hObj, int Index);
 const GUI_FONT * ICONVIEW_GetFont                 (ICONVIEW_Handle hObj);
 U32              ICONVIEW_GetItemUserData         (ICONVIEW_Handle hObj, int Index);

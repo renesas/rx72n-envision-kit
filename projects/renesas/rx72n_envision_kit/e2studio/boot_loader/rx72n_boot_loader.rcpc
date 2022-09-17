@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MicomToolCommonProjectFile Version="1.00">
+  <CreatorType Name="e2studio" Version=""/>
+  <Placeholders>
+    <PlaceholderPrefix>${</PlaceholderPrefix>
+    <PlaceholderPostfix>}</PlaceholderPostfix>
+  </Placeholders>
+  <Project Name="rx72n_boot_loader" Type="Application">
+    <Files>
+      <Category Name="src">
+        <Path>src\rx72n_boot_loader.c</Path>
+        <Category Name="key">
+          <Path>src\key\code_signer_public_key.h</Path>
+        </Category>
+        <Category Name="smc_gen">
+          <Category Name="general">
+            <Path>src\smc_gen\general\r_cg_hardware_setup.c</Path>
+            <Path>src\smc_gen\general\r_cg_macrodriver.h</Path>
+            <Path>src\smc_gen\general\r_cg_userdefine.h</Path>
+            <Path>src\smc_gen\general\r_smc_cgc.c</Path>
+            <Path>src\smc_gen\general\r_smc_cgc.h</Path>
+            <Path>src\smc_gen\general\r_smc_cgc_user.c</Path>
+            <Path>src\smc_gen\general\r_smc_entry.h</Path>
+            <Path>src\smc_gen\general\r_smc_interrupt.c</Path>
+            <Path>src\smc_gen\general\r_smc_interrupt.h</Path>
+          </Category>
+          <Category Name="r_bsp">
+            <Path>src\smc_gen\r_bsp\platform.h</Path>
+            <Path>src\smc_gen\r_bsp\readme.txt</Path>
+            <Category Name="board">
+              <Category Name="generic_rx72n">
+                <Path>src\smc_gen\r_bsp\board\generic_rx72n\hwsetup.c</Path>
+                <Path>src\smc_gen\r_bsp\board\generic_rx72n\hwsetup.h</Path>
+                <Path>src\smc_gen\r_bsp\board\generic_rx72n\r_bsp.h</Path>
+                <Path>src\smc_gen\r_bsp\board\generic_rx72n\r_bsp_config_reference.h</Path>
+                <Path>src\smc_gen\r_bsp\board\generic_rx72n\r_bsp_interrupt_config_reference.h</Path>
+              </Category>
+              <Category Name="user">
+                <Path>src\smc_gen\r_bsp\board\user\r_bsp.h</Path>
+              </Category>
+            </Category>
+            <Category Name="doc">
+              <Category Name="en">
+                <Path>src\smc_gen\r_bsp\doc\en\r01an1685ej0552-rx-bsp.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_bsp\doc\ja\r01an1685jj0552-rx-bsp.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="mcu">
+              <Category Name="all">
+                <Path>src\smc_gen\r_bsp\mcu\all\dbsct.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\lowlvl.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\lowlvl.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\lowsrc.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\lowsrc.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\mcu_locks.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_common.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_common.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_cpu.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_interrupts.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_interrupts.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_locking.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_mcu_startup.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_mcu_startup.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_software_interrupt.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_bsp_software_interrupt.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_rtos.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_rx_compiler.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_rx_intrinsic_functions.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_rx_intrinsic_functions.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\r_typedefs.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\resetprg.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\sbrk.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\all\sbrk.h</Path>
+              </Category>
+              <Category Name="rx72n">
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_clocks.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_clocks.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_info.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_init.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_init.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_interrupts.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_interrupts.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_locks.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_mapped_interrupts.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_mapped_interrupts.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\mcu_mapped_interrupts_private.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\r_bsp_cpu.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\r_bsp_locking.h</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\vecttbl.c</Path>
+                <Path>src\smc_gen\r_bsp\mcu\rx72n\vecttbl.h</Path>
+                <Category Name="register_access">
+                  <Category Name="ccrx">
+                    <Path>src\smc_gen\r_bsp\mcu\rx72n\register_access\ccrx\iodefine.h</Path>
+                  </Category>
+                </Category>
+              </Category>
+            </Category>
+          </Category>
+          <Category Name="r_byteq">
+            <Path>src\smc_gen\r_byteq\r_byteq_if.h</Path>
+            <Path>src\smc_gen\r_byteq\readme.txt</Path>
+            <Category Name="doc">
+              <Category Name="en">
+                <Path>src\smc_gen\r_byteq\doc\en\r01an1683ej0180-rx-apl.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_byteq\doc\ja\r01an1683jj0180-rx-apl.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_byteq\ref\r_byteq_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Path>src\smc_gen\r_byteq\src\r_byteq.c</Path>
+              <Path>src\smc_gen\r_byteq\src\r_byteq_private.h</Path>
+            </Category>
+          </Category>
+          <Category Name="r_cmt_rx">
+            <Path>src\smc_gen\r_cmt_rx\r_cmt_rx_if.h</Path>
+            <Path>src\smc_gen\r_cmt_rx\readme.txt</Path>
+            <Category Name="doc">
+              <Category Name="en">
+                <Path>src\smc_gen\r_cmt_rx\doc\en\r01an1856ej0431-rx-timer.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_cmt_rx\doc\ja\r01an1856jj0431-rx-timer.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_cmt_rx\ref\r_cmt_rx_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Path>src\smc_gen\r_cmt_rx\src\r_cmt_rx.c</Path>
+            </Category>
+          </Category>
+          <Category Name="r_config">
+            <Path>src\smc_gen\r_config\r_bsp_config.h</Path>
+            <Path>src\smc_gen\r_config\r_bsp_config_readme.txt</Path>
+            <Path>src\smc_gen\r_config\r_bsp_interrupt_config.h</Path>
+            <Path>src\smc_gen\r_config\r_byteq_config.h</Path>
+            <Path>src\smc_gen\r_config\r_cmt_rx_config.h</Path>
+            <Path>src\smc_gen\r_config\r_flash_rx_config.h</Path>
+            <Path>src\smc_gen\r_config\r_glcdc_rx_config.h</Path>
+            <Path>src\smc_gen\r_config\r_sci_rx_config.h</Path>
+            <Path>src\smc_gen\r_config\r_simple_glcdc_config_rx_config.h</Path>
+            <Path>src\smc_gen\r_config\r_simple_graphic_rx_config.h</Path>
+          </Category>
+          <Category Name="r_flash_rx">
+            <Path>src\smc_gen\r_flash_rx\r_flash_rx_if.h</Path>
+            <Path>src\smc_gen\r_flash_rx\readme.txt</Path>
+            <Category Name="doc">
+              <Category Name="en">
+                <Path>src\smc_gen\r_flash_rx\doc\en\r01an2184ej0450-rx-flash.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_flash_rx\doc\ja\r01an2184jj0450-rx-flash.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_flash_rx\ref\r_flash_rx_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Path>src\smc_gen\r_flash_rx\src\r_flash_fcu.c</Path>
+              <Path>src\smc_gen\r_flash_rx\src\r_flash_fcu.h</Path>
+              <Path>src\smc_gen\r_flash_rx\src\r_flash_group.c</Path>
+              <Path>src\smc_gen\r_flash_rx\src\r_flash_group.h</Path>
+              <Path>src\smc_gen\r_flash_rx\src\r_flash_rx.c</Path>
+              <Path>src\smc_gen\r_flash_rx\src\r_flash_rx.h</Path>
+              <Path>src\smc_gen\r_flash_rx\src\r_flash_targets.h</Path>
+              <Category Name="flash_type_1">
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_codeflash.c</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_codeflash.h</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_codeflash_extra.c</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_codeflash_extra.h</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_dataflash.c</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_dataflash.h</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_flash_common.h</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_flash_type1.c</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_flash_type1_if.h</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_1\r_flash_utils.c</Path>
+              </Category>
+              <Category Name="flash_type_3">
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_3\r_flash_type3.c</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_3\r_flash_type3_if.h</Path>
+              </Category>
+              <Category Name="flash_type_4">
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_4\r_flash_type4.c</Path>
+                <Path>src\smc_gen\r_flash_rx\src\flash_type_4\r_flash_type4_if.h</Path>
+              </Category>
+              <Category Name="targets">
+                <Category Name="rx72n">
+                  <Path>src\smc_gen\r_flash_rx\src\targets\rx72n\r_flash_rx72n.h</Path>
+                </Category>
+              </Category>
+            </Category>
+          </Category>
+          <Category Name="r_glcdc_rx">
+            <Path>src\smc_gen\r_glcdc_rx\r_glcdc_rx_if.h</Path>
+            <Path>src\smc_gen\r_glcdc_rx\readme.txt</Path>
+            <Category Name="doc">
+              <Category Name="en">
+                <Path>src\smc_gen\r_glcdc_rx\doc\en\r01an3609ej0130-rx-lcd.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_glcdc_rx\doc\ja\r01an3609jj0130-rx-lcd.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_glcdc_rx\ref\r_glcdc_rx_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Path>src\smc_gen\r_glcdc_rx\src\r_glcdc_private.c</Path>
+              <Path>src\smc_gen\r_glcdc_rx\src\r_glcdc_private.h</Path>
+              <Path>src\smc_gen\r_glcdc_rx\src\r_glcdc_rx.c</Path>
+              <Category Name="targets">
+                <Category Name="rx72n">
+                  <Path>src\smc_gen\r_glcdc_rx\src\targets\rx72n\r_glcdc_rx72n.c</Path>
+                </Category>
+              </Category>
+            </Category>
+          </Category>
+          <Category Name="r_pincfg">
+            <Path>src\smc_gen\r_pincfg\Pin.c</Path>
+            <Path>src\smc_gen\r_pincfg\Pin.h</Path>
+            <Path>src\smc_gen\r_pincfg\r_glcdc_rx_pinset.c</Path>
+            <Path>src\smc_gen\r_pincfg\r_glcdc_rx_pinset.h</Path>
+            <Path>src\smc_gen\r_pincfg\r_pinset.h</Path>
+            <Path>src\smc_gen\r_pincfg\r_sci_rx_pinset.c</Path>
+            <Path>src\smc_gen\r_pincfg\r_sci_rx_pinset.h</Path>
+          </Category>
+          <Category Name="r_sci_rx">
+            <Path>src\smc_gen\r_sci_rx\r_sci_rx_if.h</Path>
+            <Path>src\smc_gen\r_sci_rx\readme.txt</Path>
+            <Category Name="doc">
+              <Category Name="en">
+                <Path>src\smc_gen\r_sci_rx\doc\en\r01an1815ej0340-rx-serial.pdf</Path>
+              </Category>
+              <Category Name="ja">
+                <Path>src\smc_gen\r_sci_rx\doc\ja\r01an1815jj0340-rx-serial.pdf</Path>
+              </Category>
+            </Category>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_sci_rx\ref\r_sci_rx_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Path>src\smc_gen\r_sci_rx\src\r_sci_rx.c</Path>
+              <Path>src\smc_gen\r_sci_rx\src\r_sci_rx_platform.h</Path>
+              <Path>src\smc_gen\r_sci_rx\src\r_sci_rx_private.h</Path>
+              <Category Name="targets">
+                <Category Name="rx72n">
+                  <Path>src\smc_gen\r_sci_rx\src\targets\rx72n\r_sci_rx72n.c</Path>
+                  <Path>src\smc_gen\r_sci_rx\src\targets\rx72n\r_sci_rx72n_data.c</Path>
+                  <Path>src\smc_gen\r_sci_rx\src\targets\rx72n\r_sci_rx72n_private.h</Path>
+                </Category>
+              </Category>
+            </Category>
+          </Category>
+          <Category Name="r_simple_glcdc_config_rx">
+            <Path>src\smc_gen\r_simple_glcdc_config_rx\r_simple_glcdc_config_rx_if.h</Path>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_simple_glcdc_config_rx\ref\r_simple_glcdc_config_rx_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Path>src\smc_gen\r_simple_glcdc_config_rx\src\r_simple_glcdc_config_rx.c</Path>
+            </Category>
+          </Category>
+          <Category Name="r_simple_graphic_rx">
+            <Path>src\smc_gen\r_simple_graphic_rx\r_simple_graphic_if.h</Path>
+            <Category Name="ref">
+              <Path>src\smc_gen\r_simple_graphic_rx\ref\r_simple_graphic_rx_config_reference.h</Path>
+            </Category>
+            <Category Name="src">
+              <Path>src\smc_gen\r_simple_graphic_rx\src\r_ascii.c</Path>
+              <Path>src\smc_gen\r_simple_graphic_rx\src\r_ascii.h</Path>
+              <Path>src\smc_gen\r_simple_graphic_rx\src\r_simple_graphic.c</Path>
+            </Category>
+          </Category>
+        </Category>
+        <Category Name="src">
+          <Path>src\src\base64_decode.c</Path>
+          <Path>src\src\base64_decode.h</Path>
+          <Path>src\src\r_simple_filesystem_on_dataflash.c</Path>
+          <Path>src\src\r_simple_filesystem_on_dataflash_if.h</Path>
+          <Category Name="tinycrypt">
+            <Category Name="lib">
+              <Category Name="include">
+                <Category Name="tinycrypt">
+                  <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\include\tinycrypt\aes.h</Path>
+                  <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\include\tinycrypt\cbc_mode.h</Path>
+                  <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\include\tinycrypt\ccm_mode.h</Path>
+                  <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\include\tinycrypt\cmac_mode.h</Path>
+                  <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\include\tinycrypt\constants.h</Path>
+                  <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\include\tinycrypt\ctr_mode.h</Path>
+                  <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\include\tinycrypt\ctr_prng.h</Path>
+                  <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\include\tinycrypt\ecc.h</Path>
+                  <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\include\tinycrypt\ecc_dh.h</Path>
+                  <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\include\tinycrypt\ecc_dsa.h</Path>
+                  <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\include\tinycrypt\ecc_platform_specific.h</Path>
+                  <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\include\tinycrypt\hmac.h</Path>
+                  <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\include\tinycrypt\hmac_prng.h</Path>
+                  <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\include\tinycrypt\sha256.h</Path>
+                  <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\include\tinycrypt\utils.h</Path>
+                </Category>
+              </Category>
+              <Category Name="source">
+                <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\source\ecc.c</Path>
+                <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\source\ecc_dsa.c</Path>
+                <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\source\sha256.c</Path>
+                <Path>..\..\..\..\..\libraries\3rdparty\tinycrypt\lib\source\utils.c</Path>
+              </Category>
+            </Category>
+          </Category>
+        </Category>
+      </Category>
+    </Files>
+    <Device Category="com.renesas.cdt.managedbuild.renesas.ccrx.common.option.cpu.rx600" Series="RX">R5F572NNHxFB_DUAL</Device>
+    <BuildOptions Name="CC-RX" Version="v3.04.00">
+      <BuildMode Active="True" Name="HardwareDebug">
+        <GeneralOptions/>
+        <CompileOptions>
+          <Option>-isa=rxv3</Option>
+          <Option>-fpu</Option>
+          <Option>-dpfpu</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\src"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\src\sha1\include"</Option>
+          <Option>-include="C:\git\rx72n-envision-kit\libraries\3rdparty\tinycrypt\lib\include"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\key"</Option>
+          <Option>-include="${ProjDirPath}\generate"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_config"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_byteq"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_byteq\src"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_simple_graphic_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_simple_glcdc_config_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_bsp"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_flash_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_flash_rx\src"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_flash_rx\src\flash_type_1"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_flash_rx\src\flash_type_3"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_flash_rx\src\flash_type_4"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_flash_rx\src\targets"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_sci_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_sci_rx\src"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_glcdc_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_cmt_rx"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_cmt_rx\src"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\general"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_pincfg"</Option>
+          <Option>-asmopt=-bank</Option>
+          <Option>-utf8</Option>
+          <Option>-nomessage</Option>
+          <Option>-debug</Option>
+          <Option>-outcode=utf8</Option>
+          <Option>-tfu=intrinsic</Option>
+          <Option>-nologo</Option>
+          <Option>-lang=c99</Option>
+          <Option>-lang=cpp</Option>
+          <Option>-output=obj=${CONFIGDIR}\${FILELEAF}.obj</Option>
+          <Option>-obj_path=${CONFIGDIR}</Option>
+        </CompileOptions>
+        <AssembleOptions>
+          <Option>-isa=rxv3</Option>
+          <Option>-fpu</Option>
+          <Option>-dpfpu</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\general"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_pincfg"</Option>
+          <Option>-utf8</Option>
+          <Option>-bank</Option>
+          <Option>-debug</Option>
+          <Option>-nologo</Option>
+          <Option>-output=${CONFIGDIR}</Option>
+        </AssembleOptions>
+        <LinkOptions>
+          <Option>-output="${ProjName}.abs"</Option>
+          <Option>-form=absolute</Option>
+          <Option>-nomessage</Option>
+          <Option>-vect=_undefined_interrupt_source_isr</Option>
+          <Option>-list=${ProjName}.map</Option>
+          <Option>-show=all</Option>
+          <Option>-nooptimize</Option>
+          <Option>-rom=D=R,D_1=R_1,D_2=R_2,D_8=R_8,PFRAM2=RPFRAM2</Option>
+          <Option>-cpu=RAM=00000000-0007ffff,FIX=00080000-00083fff,FIX=00086000-00087fff,FIX=00088000-0009ffff,FIX=000a0000-000a3fff,RAM=000a4000-000a5fff,FIX=000a6000-000bffff,FIX=000c0000-000dffff,FIX=000e0000-000fffff,ROM=00100000-00107fff,FIX=007fc000-007fcfff,FIX=007fe000-007fffff,RAM=00800000-0087ffff,RAM=00ff8000-00ffffff,RAM=fe7f5d00-fe7f5d7f,RAM=fe7f7d70-fe7f7d9f,ROM=ffc00000-ffffffff</Option>
+          <Option>-nologo</Option>
+          <Option>-start=SU,SI,B_1,R_1,B_2,R_2,B,R,B_8,R_8,RPFRAM2/0,C_BOOTLOADER_KEY_STORAGE*/0100000,B_FRAME_BUFFER_1/0800000,C_BOOT_LOADER_MAGIC_CODE_1,PResetPRG,C_1,C_2,C,C_8,C$*,D*,W*,L,PIntPRG,P*/0FFFC0000,EXCEPTVECT/0FFFFFF80,RESETVECT/0FFFFFFFC</Option>
+          <Option>-end</Option>
+          <Option>-output="${ProjName}.mot"</Option>
+          <Option>-form=stype</Option>
+          <Option>-byte_count=10</Option>
+          <Option>-nologo</Option>
+          <Option>-nomessage</Option>
+          <Option>-exit</Option>
+          <PreLinker>Auto</PreLinker>
+        </LinkOptions>
+        <LibraryGenerateOptions>
+          <Option>-isa=rxv3</Option>
+          <Option>-fpu</Option>
+          <Option>-dpfpu</Option>
+          <Option>-lang=c99</Option>
+          <Option>-head=runtime,math,stdio,stdlib,string,new</Option>
+          <Option>-output="${ProjName}.lib"</Option>
+          <Option>-nologo</Option>
+          <GenerateMode>BuildOptionChanged</GenerateMode>
+        </LibraryGenerateOptions>
+        <LinkOrder>
+          <Path>HardwareDebug\rx72n_boot_loader.obj</Path>
+          <Path>HardwareDebug\r_cg_hardware_setup.obj</Path>
+          <Path>HardwareDebug\r_smc_cgc.obj</Path>
+          <Path>HardwareDebug\r_smc_cgc_user.obj</Path>
+          <Path>HardwareDebug\r_smc_interrupt.obj</Path>
+          <Path>HardwareDebug\hwsetup.obj</Path>
+          <Path>HardwareDebug\dbsct.obj</Path>
+          <Path>HardwareDebug\lowlvl.obj</Path>
+          <Path>HardwareDebug\lowsrc.obj</Path>
+          <Path>HardwareDebug\mcu_locks.obj</Path>
+          <Path>HardwareDebug\r_bsp_common.obj</Path>
+          <Path>HardwareDebug\r_bsp_cpu.obj</Path>
+          <Path>HardwareDebug\r_bsp_interrupts.obj</Path>
+          <Path>HardwareDebug\r_bsp_locking.obj</Path>
+          <Path>HardwareDebug\r_bsp_mcu_startup.obj</Path>
+          <Path>HardwareDebug\r_bsp_software_interrupt.obj</Path>
+          <Path>HardwareDebug\r_rx_intrinsic_functions.obj</Path>
+          <Path>HardwareDebug\resetprg.obj</Path>
+          <Path>HardwareDebug\sbrk.obj</Path>
+          <Path>HardwareDebug\mcu_clocks.obj</Path>
+          <Path>HardwareDebug\mcu_init.obj</Path>
+          <Path>HardwareDebug\mcu_interrupts.obj</Path>
+          <Path>HardwareDebug\mcu_mapped_interrupts.obj</Path>
+          <Path>HardwareDebug\vecttbl.obj</Path>
+          <Path>HardwareDebug\r_byteq.obj</Path>
+          <Path>HardwareDebug\r_cmt_rx.obj</Path>
+          <Path>HardwareDebug\r_codeflash.obj</Path>
+          <Path>HardwareDebug\r_codeflash_extra.obj</Path>
+          <Path>HardwareDebug\r_dataflash.obj</Path>
+          <Path>HardwareDebug\r_flash_type1.obj</Path>
+          <Path>HardwareDebug\r_flash_utils.obj</Path>
+          <Path>HardwareDebug\r_flash_type3.obj</Path>
+          <Path>HardwareDebug\r_flash_type4.obj</Path>
+          <Path>HardwareDebug\r_flash_fcu.obj</Path>
+          <Path>HardwareDebug\r_flash_group.obj</Path>
+          <Path>HardwareDebug\r_flash_rx.obj</Path>
+          <Path>HardwareDebug\r_glcdc_private.obj</Path>
+          <Path>HardwareDebug\r_glcdc_rx.obj</Path>
+          <Path>HardwareDebug\r_glcdc_rx72n.obj</Path>
+          <Path>HardwareDebug\Pin.obj</Path>
+          <Path>HardwareDebug\r_glcdc_rx_pinset.obj</Path>
+          <Path>HardwareDebug\r_sci_rx_pinset.obj</Path>
+          <Path>HardwareDebug\r_sci_rx.obj</Path>
+          <Path>HardwareDebug\r_sci_rx72n.obj</Path>
+          <Path>HardwareDebug\r_sci_rx72n_data.obj</Path>
+          <Path>HardwareDebug\r_simple_glcdc_config_rx.obj</Path>
+          <Path>HardwareDebug\r_ascii.obj</Path>
+          <Path>HardwareDebug\r_simple_graphic.obj</Path>
+          <Path>HardwareDebug\base64_decode.obj</Path>
+          <Path>HardwareDebug\r_simple_filesystem_on_dataflash.obj</Path>
+          <Path>HardwareDebug\ecc.obj</Path>
+          <Path>HardwareDebug\ecc_dsa.obj</Path>
+          <Path>HardwareDebug\sha256.obj</Path>
+          <Path>HardwareDebug\utils.obj</Path>
+          <Path>HardwareDebug\rx72n_boot_loader.lib</Path>
+        </LinkOrder>
+        <CommonOptions>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\src"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\src\sha1\include"</IncludePathForC>
+          <IncludePathForC>"C:\git\rx72n-envision-kit\libraries\3rdparty\tinycrypt\lib\include"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\key"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\generate"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_config"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_byteq"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_byteq\src"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_simple_graphic_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_simple_glcdc_config_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_bsp"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_flash_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_flash_rx\src"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_flash_rx\src\flash_type_1"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_flash_rx\src\flash_type_3"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_flash_rx\src\flash_type_4"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_flash_rx\src\targets"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_sci_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_sci_rx\src"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_glcdc_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_cmt_rx"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_cmt_rx\src"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\general"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_pincfg"</IncludePathForC>
+          <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\general"</IncludePathForAsm>
+          <IncludePathForAsm>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace12\${ProjName}\src\smc_gen\r_pincfg"</IncludePathForAsm>
+        </CommonOptions>
+      </BuildMode>
+    </BuildOptions>
+  </Project>
+</MicomToolCommonProjectFile>

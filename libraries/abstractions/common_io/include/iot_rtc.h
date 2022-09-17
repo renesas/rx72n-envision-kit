@@ -1,6 +1,6 @@
 /*
- * Amazon FreeRTOS Common IO V1.0.0
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Common IO V0.1.3
+ * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -98,14 +98,14 @@ typedef enum IotRtcIoctlRequest
 /**
  * @brief   RTC descriptor type defined in the source file.
  */
-struct                      IotRtcDescriptor_t;
+struct                      IotRtcDescriptor;
 
 /**
  * @brief   IotRtcHandle_t type is the RTC handle returned by calling iot_rtc_open()
  *          this is initialized in open and returned to caller. Caller must pass this pointer
  *          to the rest of the APIs.
  */
-typedef struct IotRtcDescriptor_t * IotRtcHandle_t;
+typedef struct IotRtcDescriptor * IotRtcHandle_t;
 
 /**
  * @brief   RTC notification callback type. This callback is passed
@@ -169,6 +169,7 @@ void iot_rtc_set_callback( IotRtcHandle_t const pxRtcHandle,
  *      - xRequest is invalid
  *      - pvBuffer == NULL (excluding eCancelRtcAlarm, eCancelRtcWakeup)
  *      - if date/time is set in the past for eSetRtcAlarm
+ *   - IOT_RTC_SET_FAILED if date/time is invalid for eSetRtcAlarm.
  *   - IOT_RTC_NOT_STARTED on error
  *   - IOT_RTC_FUNCTION_NOT_SUPPORTED if feature not supported
  *      - Only valid for eCancelRtcAlarm, eCancelRtcWakeup

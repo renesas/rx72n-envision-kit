@@ -11,7 +11,7 @@
  *            digests instead.
  */
 /*
- *  Copyright (C) 2006-2018, Arm Limited (or its affiliates), All Rights Reserved
+ *  Copyright The Mbed TLS Contributors
  *  SPDX-License-Identifier: Apache-2.0
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -25,14 +25,12 @@
  *  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *  This file is part of Mbed TLS (https://tls.mbed.org)
  */
 #ifndef MBEDTLS_SHA1_H
 #define MBEDTLS_SHA1_H
 
 #if !defined(MBEDTLS_CONFIG_FILE)
-#include "config.h"
+#include "mbedtls/config.h"
 #else
 #include MBEDTLS_CONFIG_FILE
 #endif
@@ -41,8 +39,10 @@
 #include <stdint.h>
 
 /* MBEDTLS_ERR_SHA1_HW_ACCEL_FAILED is deprecated and should not be used. */
-#define MBEDTLS_ERR_SHA1_HW_ACCEL_FAILED                  -0x0035  /**< SHA-1 hardware accelerator failed */
-#define MBEDTLS_ERR_SHA1_BAD_INPUT_DATA                   -0x0073  /**< SHA-1 input data was malformed. */
+/** SHA-1 hardware accelerator failed */
+#define MBEDTLS_ERR_SHA1_HW_ACCEL_FAILED                  -0x0035
+/** SHA-1 input data was malformed. */
+#define MBEDTLS_ERR_SHA1_BAD_INPUT_DATA                   -0x0073
 
 #ifdef __cplusplus
 extern "C" {
@@ -328,6 +328,8 @@ MBEDTLS_DEPRECATED void mbedtls_sha1( const unsigned char *input,
 #undef MBEDTLS_DEPRECATED
 #endif /* !MBEDTLS_DEPRECATED_REMOVED */
 
+#if defined(MBEDTLS_SELF_TEST)
+
 /**
  * \brief          The SHA-1 checkup routine.
  *
@@ -340,6 +342,8 @@ MBEDTLS_DEPRECATED void mbedtls_sha1( const unsigned char *input,
  *
  */
 int mbedtls_sha1_self_test( int verbose );
+
+#endif /* MBEDTLS_SELF_TEST */
 
 #ifdef __cplusplus
 }

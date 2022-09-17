@@ -35,24 +35,13 @@
 #include <string.h>
 #include <stdlib.h>
 
-/* for using FIT Module */
-#include "platform.h"
-#include "r_pinset.h"
-#include "r_sys_time_rx_if.h"
-#include "r_gpio_rx_if.h"
-#include "r_flash_rx_if.h"
-#include "r_usb_basic_if.h"
-#include "r_tfat_lib.h"
-#include "r_simple_filesystem_on_dataflash_if.h"
-#include "Pin.h"
-
 /* for using Segger emWin */
 #include "GUI.h"
 #include "DIALOG.h"
 
 /* for using Amazon FreeRTOS */
 #include "FreeRTOS.h"
-#include "aws_application_version.h"
+#include "ota_demo_config.h"
 
 /* for RX72N Envision Kit system common header */
 #include "rx72n_envision_kit_system.h"
@@ -60,12 +49,11 @@
 /**********************************************************************************************************************
 Typedef definitions
 **********************************************************************************************************************/
-#define RX72N_ENVISION_KIT_TASKS_STACK	1024
+#define RX72N_ENVISION_KIT_TASKS_STACK    1024
 
 /******************************************************************************
  External variables
  ******************************************************************************/
-xSemaphoreHandle xSemaphoreFlashAccess;
 
 /******************************************************************************
  Private global variables
@@ -89,8 +77,6 @@ extern void tcp_receive_performance_task( void * pvParameters );
 extern void serial_flash_task( void * pvParameters );
 extern void audio_task( void * pvParameters );
 
-extern void display_syslog_putstring(WM_HWIN hWin_handle, char *string);
-
 /*******************************************************************************
  global variables and functions
 ********************************************************************************/
@@ -98,6 +84,8 @@ int32_t wait_first_display(void);
 void firmware_version_read(char **ver_str);
 void amazon_freertos_syslog_putstring(char *string);
 void main_task(void);
+void main_task_init(void);
+TASK_INFO * get_task_info(void);
 
 /******************************************************************************
  Function Name   : main
@@ -105,30 +93,10 @@ void main_task(void);
  Arguments       : none
  Return value    : none
  ******************************************************************************/
-void main_task(void)
+void main_task_init(void)
 {
     uint32_t bank_info;
-
-    /* enable MCU pins */
-    R_Pins_Create();
-
-    /* system timer initialization */
-    R_SYS_TIME_Open();
-
-    /* GUI initialization */
-    GUI_Exit();
-    GUI_Init();
-    LCDCONF_EnableDave2D();
-    WM_MULTIBUF_Enable(1);
-
-    /* flash initialization */
-    R_FLASH_Open();
     R_FLASH_Control(FLASH_CMD_BANK_GET, &bank_info);
-    R_SFD_Open();
-
-    /* flash access semaphore creation */
-    xSemaphoreFlashAccess = xSemaphoreCreateMutex();
-    xSemaphoreGive(xSemaphoreFlashAccess);
 
     task_info.main_task_handle = xTaskGetCurrentTaskHandle();
 
@@ -141,10 +109,8 @@ void main_task(void)
     /* sdcard task creation */
     xTaskCreate(sdcard_task, "sdcard", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.sdcard_task_handle);
 
-#if 0
     /* task manager task creation */
     xTaskCreate(task_manager_task, "task_manager", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.task_manager_task_handle);
-#endif
 
     /* sntp task creation */
     xTaskCreate(sntp_task, "sntp", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.sntp_task_handle);
@@ -161,15 +127,78 @@ void main_task(void)
     /* audio task creation */
     xTaskCreate(audio_task, "audio_task", RX72N_ENVISION_KIT_TASKS_STACK, &task_info, tskIDLE_PRIORITY, &task_info.audio_task_handle);
 
-    /* wait completing gui initializing */
-    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+    /* get unique id info */
+    uint8_t unique_id[UNIQUE_ID_LENGTH];
+    for(int i = 0; i < UNIQUE_ID_LENGTH; i++)
+    {
+        if(!(i%4))
+        {
+        	uint32_t unique_id_long;
+        	switch(i)
+        	{
+                case 0:
+                	unique_id_long = FLASHCONST.UIDR0;
+                	break;
+                case 4:
+                	unique_id_long = FLASHCONST.UIDR1;
+                	break;
+                case 8:
+                	unique_id_long = FLASHCONST.UIDR2;
+                	break;
+                case 12:
+                	unique_id_long = FLASHCONST.UIDR3;
+                	break;
+                default:
+                	break;
+        	}
+        	if(i < UNIQUE_ID_LENGTH)
+        	{
+#if __LIT
+                unique_id[i+0] = (unique_id_long & 0x000000ff) >>  0;
+                unique_id[i+1] = (unique_id_long & 0x0000ff00) >>  8;
+                unique_id[i+2] = (unique_id_long & 0x00ff0000) >> 16;
+                unique_id[i+3] = (unique_id_long & 0xff000000) >> 24;
+#else /* not tested */
+                unique_id[i+0] = (unique_id_long & 0xff000000) >> 24;
+                unique_id[i+1] = (unique_id_long & 0x00ff0000) >> 16;
+                unique_id[i+2] = (unique_id_long & 0x0000ff00) >>  8;
+                unique_id[i+3] = (unique_id_long & 0x000000ff) >>  0;
+#endif
+        	}
+        }
+    }
+    char tmp[16];
+    unique_id_string[0] = 0;
+    for(int i = 0; i < UNIQUE_ID_LENGTH; i++)
+    {
+  	  sprintf(tmp, "%02x", unique_id[i]);
+  	  strcat(unique_id_string, tmp);
+    }
+    unique_id_string[UNIQUE_ID_LENGTH*2] = 0;
 
-    /* notify completing GUI initialization and first touch to each tasks */
-	xTaskNotifyGive(task_info.serial_terminal_task_handle);
-	xTaskNotifyGive(task_info.sdcard_task_handle);
-	xTaskNotifyGive(task_info.task_manager_task_handle);
-	xTaskNotifyGive(task_info.serial_flash_task_handle);
+    /* get emwin version */
+    sprintf(emwin_version_string, "%d", GUI_VERSION);
 
+    /* get firmware version */
+    firmware_version_read(&firmware_version_string);
+
+    /* set each info string pointer to task_info */
+    task_info.hardware_info.cpu_name = (char *)cpu_name_string;
+    task_info.hardware_info.memory_size = (char *)memory_size_string;
+    task_info.hardware_info.frequency = (char *)frequency_string;
+    task_info.hardware_info.crypto = (char *)crypto_string;
+    task_info.hardware_info.board_capability = (char *)board_capability_string;
+    task_info.hardware_info.unique_id = (char *)unique_id_string;
+
+    task_info.software_info.firmware_version = (char *)firmware_version_string;
+    task_info.software_info.amazon_freertos_version = (char *)amazon_freertos_version_string;
+    task_info.software_info.emwin_version = (char *)emwin_version_string;
+    task_info.software_info.compiled_time = (char *)compiled_time_string;
+
+}
+
+void main_task(void)
+{
     /* main loop */
     while(1)
     {
@@ -189,7 +218,12 @@ void firmware_version_read(char **ver_str)
 
 void amazon_freertos_syslog_putstring(char *string)
 {
-	display_syslog_putstring(task_info.hWin_system_log, string);
+//    display_syslog_putstring(task_info.hWin_system_log, string);
+}
+
+TASK_INFO * get_task_info(void)
+{
+    return &task_info;
 }
 
 /******************************************************************************

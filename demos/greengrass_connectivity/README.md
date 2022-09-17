@@ -1,9 +1,14 @@
 ## Greengrass Discovery Demo
-In order to setup and run the Amazon FreeRTOS demo application for Greengrass discovery, please follow the instructions in [Greengrass Discovery Demo](https://docs.aws.amazon.com/freertos/latest/userguide/gg-demo.html).
+In order to setup and run the FreeRTOS demo application for Greengrass discovery, please follow the instructions in [Greengrass Discovery Demo](https://docs.aws.amazon.com/freertos/latest/userguide/gg-demo.html).
+
+## Compatibility with V2 Greengrass devices
+AWS IoT Greengrass V2 support for client devices is backward-compatible with AWS IoT Greengrass V1, so you can connect V1 core devices to V2 core devices without changing their application code. To enable client devices to connect to a V2 core device, deploy Greengrass components that enable client device support, and associate the client devices to the core device. To relay messages between client devices, the AWS IoT Core cloud service, and Greengrass components (including Lambda functions), deploy and configure the [MQTT bridge component](https://docs.aws.amazon.com/greengrass/v2/developerguide/mqtt-bridge-component.html). You can deploy the [IP detector](https://docs.aws.amazon.com/greengrass/v2/developerguide/ip-detector-component.html) component to automatically detect connectivity information, or you can manually manage endpoints. For more information, see [Interact with local IoT devices](https://docs.aws.amazon.com/greengrass/v2/developerguide/interact-with-local-iot-devices.html).
+
+For more details, please refer to the AWS documentation about [running AWS IoT Greengrass V1 applications on AWS IoT Greengrass V2](https://docs.aws.amazon.com/greengrass/v2/developerguide/move-from-v1.html#connect-v1-greengrass-devices).
 
 ## Advanced Diagnostics
 
-It can be instructive to use the AWS command-line interface (CLI) to drill into the cloud-based configuration of your Greengrass Core, and of the AWS IoT Thing that you're using with Amazon FreeRTOS. Check online for instructions on [installing](https://docs.aws.amazon.com/cli/latest/userguide/installing.html) and [configuring](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html) the AWS CLI. 
+It can be instructive to use the AWS command-line interface (CLI) to drill into the cloud-based configuration of your Greengrass Core, and of the AWS IoT Thing that you're using with FreeRTOS. Check online for instructions on [installing](https://docs.aws.amazon.com/cli/latest/userguide/installing.html) and [configuring](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html) the AWS CLI. 
 
 In order to perform advanced diagnostics on my Greengrass Core configuration, I start by listing all of the Greengrass groups associated with my account in my default AWS region (i.e., the region I've set as the default for my AWS CLI environment). I happen to only have one Greengrass group, as shown in the following output.
 
@@ -65,7 +70,7 @@ C:\>aws greengrass get-core-definition-version --core-definition-id 35821d2d-523
 }
 ```
 
-The above core definition is one way for me to get the Thing name of my Greengrass core. This allows me to double-check its connectivity information. Note that Greengrass Core connectivity information can either be explicitly defined or be auto-discovered. Whatever the connectivity info, I should next confirm that it is accessible from the network that my Amazon FreeRTOS device is on. If the Amazon FreeRTOS device can't discover the Greengrass Core, or if it can't connect to it, then this demo will fail. 
+The above core definition is one way for me to get the Thing name of my Greengrass core. This allows me to double-check its connectivity information. Note that Greengrass Core connectivity information can either be explicitly defined or be auto-discovered. Whatever the connectivity info, I should next confirm that it is accessible from the network that my FreeRTOS device is on. If the FreeRTOS device can't discover the Greengrass Core, or if it can't connect to it, then this demo will fail. 
 
 ```
 C:\>aws greengrass get-connectivity-info --thing-name ip-172-00-11-22
@@ -122,7 +127,7 @@ C:\>aws greengrass get-device-definition-version --device-definition-id 097a9ca7
 }
 ```
 
-Now that I've explored the configuration of my Greengrass Core, I want to verify the configuration of the AWS IoT Thing that's running this demo. I start by querying the certificate from the AWS IoT registry. Separately, I must confirm that certificate output from the command below is the same certificate I am using in my Amazon FreeRTOS device code:
+Now that I've explored the configuration of my Greengrass Core, I want to verify the configuration of the AWS IoT Thing that's running this demo. I start by querying the certificate from the AWS IoT registry. Separately, I must confirm that certificate output from the command below is the same certificate I am using in my FreeRTOS device code:
 
 ```
 C:\>aws iot describe-certificate --certificate-id 003a4c70a976add0ebbeb4957b98c6b6436906bcb8e6ecc6ba5445f995e753d7

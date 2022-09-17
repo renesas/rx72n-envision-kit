@@ -41,11 +41,11 @@
 /* for using Segger emWin */
 #include "GUI.h"
 #include "DIALOG.h"
+#include "Generated/Resource.h"
 
 /* for using Amazon FreeRTOS */
 #include "FreeRTOS.h"
 #include "FreeRTOS_IP.h"
-#include "aws_application_version.h"
 
 /* for RX72N Envision Kit system common header */
 #include "rx72n_envision_kit_system.h"
@@ -60,13 +60,15 @@ Typedef definitions
 #define DEMO_NAME_SERIAL_TERMINAL "Serial Terminal"
 #define DEMO_NAME_TASK_MANAGER "Task Manager"
 
+#define MINIMUM_TIME_TICK_FOR_UPDATE_DISPLAY 10 /* 100fps */
+
 typedef struct _demo_window_list
 {
-	WM_HWIN demo_window_handle;
-	WM_HWIN frame_window_handle;
-	uint32_t current_displayed;
-	char demo_name[32];
-	struct  _demo_window_list *next;
+    WM_HWIN demo_window_handle;
+    WM_HWIN frame_window_handle;
+    uint32_t current_displayed;
+    char demo_name[32];
+    struct  _demo_window_list *next;
 }DEMO_WINDOW_LIST;
 
 
@@ -84,7 +86,6 @@ static void demo_window_display_previous(DEMO_WINDOW_LIST *pdemo_window_list_hea
 static void demo_window_display_next(DEMO_WINDOW_LIST *pdemo_window_list_head);
 
 static void main_10ms_display_update(TASK_INFO *task_info);
-static void main_100ms_display_update(TASK_INFO *task_info);
 static void main_1s_display_update(TASK_INFO *task_info);
 
 static int32_t next_button_id, prev_button_id;
@@ -92,28 +93,15 @@ static int32_t next_button_id, prev_button_id;
 /******************************************************************************
  External functions
  ******************************************************************************/
-extern WM_HWIN CreateFrameWindow(void);
-extern WM_HWIN CreateSystemLogWindow(void);
-extern WM_HWIN CreateTaskManager(void);
-extern WM_HWIN CreateFirmwareUpdateViaSDCard(void);
-extern WM_HWIN CreateTitleLogoWindow(void);
-extern WM_HWIN CreateFirmwareUpdateWindow(void);
-extern WM_HWIN CreateSerialTerminalWindow(void);
 
 extern void display_update_usb_stat(WM_HWIN hWin, int8_t usb_stat);
 extern void display_update_sd_stat(WM_HWIN hWin, int8_t sd_stat);
 extern void display_update_ip_stat(WM_HWIN hWin, uint8_t *ip_address);
 extern void display_update_time(WM_HWIN hWin, SYS_TIME *sys_time);
-extern void display_update_demo_name(WM_HWIN hWin, char *demo_name);
 extern void display_syslog_putstring(WM_HWIN hWin, char *string);
 extern void display_update_cpu_load(WM_HWIN hWin, uint32_t cpu_load);
 extern void display_update_freertos_ram(WM_HWIN hWin, int32_t remaining, int32_t max);
 extern void display_update_ip_stat(WM_HWIN hWin, uint8_t *ip_address);
-
-extern int get_prev_button_id(void);
-extern int get_next_button_id(void);
-extern int frame_next_button_enable(WM_HWIN hWin, uint8_t onoff);
-extern int frame_prev_button_enable(WM_HWIN hWin, uint8_t onoff);
 
 extern void vTaskGetCombinedRunTimeStats( char* pcWriteBuffer,  UBaseType_t uxClear);
 extern void vTaskClearUsage(void);
@@ -122,10 +110,6 @@ extern void vTaskClearUsageSingleList(List_t *pxList);
 /*******************************************************************************
  global variables and functions
 ********************************************************************************/
-
-volatile int32_t first_touch_wait_flag;
-volatile int32_t gui_initialize_complete_flag;
-
 void gui_task( void * pvParameters );
 void emWinCallback(WM_MESSAGE * pMsg);
 void callback_frame_window_to_main(int32_t id, int32_t event);
@@ -138,345 +122,142 @@ void callback_frame_window_to_main(int32_t id, int32_t event);
  ******************************************************************************/
 void gui_task( void * pvParameters )
 {
-	static uint32_t counter_10ms = 0, counter_100ms = 0;
-	TASK_INFO *task_info = (TASK_INFO *)pvParameters;
+    static uint32_t counter_10ms = 0, counter_100ms = 0;
+    TASK_INFO *task_info = (TASK_INFO *)pvParameters;
 
-	/* GUI initialize complete */
-	gui_initialize_complete_flag = 1;
-
-	/* generate frame window */
-	demo_window_free_list(demo_window_list_head);
-	task_info->hWin_frame = CreateFrameWindow();
-
-	/* generate sub windows */
-	task_info->hWin_d2_audio = CreateD2AudioDemo();
-	demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_d2_audio, task_info->hWin_frame, DEMO_NAME_D2_AUDIO_RECORD_AND_PLAY);
-
-	task_info->hWin_system_log = CreateSystemLogWindow();
-	demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_system_log, task_info->hWin_frame, DEMO_NAME_SYSTEM_LOG);
-
-	task_info->hWin_serial_terminal = CreateSerialTerminalWindow();
-	demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_serial_terminal, task_info->hWin_frame, DEMO_NAME_SERIAL_TERMINAL);
-
-	task_info->hWin_firmware_update_via_sd_card = CreateFirmwareUpdateViaSDCard();
-	demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_firmware_update_via_sd_card, task_info->hWin_frame, DEMO_NAME_FIRMWARE_UPDATE_VIA_SD_CARD);
+    /* GUI initialization */
+    APPW_X_Setup();
+    APPW_Init(APPW_PROJECT_PATH);
+    APPW_CreateRoot(APPW_INITIAL_SCREEN, WM_HBKWIN);
 
 #if 0
-	task_info->hWin_task_manager = CreateTaskManager();
-	demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_task_manager, task_info->hWin_frame, DEMO_NAME_TASK_MANAGER);
+    /* generate frame window */
+    demo_window_free_list(demo_window_list_head);
+    task_info->hWin_frame = CreateFrameWindow();
+
+    /* generate sub windows */
+    task_info->hWin_d2_audio = CreateD2AudioDemo();
+    demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_d2_audio, task_info->hWin_frame, DEMO_NAME_D2_AUDIO_RECORD_AND_PLAY);
+
+    task_info->hWin_system_log = CreateSystemLogWindow();
+    demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_system_log, task_info->hWin_frame, DEMO_NAME_SYSTEM_LOG);
+
+    task_info->hWin_serial_terminal = CreateSerialTerminalWindow();
+    demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_serial_terminal, task_info->hWin_frame, DEMO_NAME_SERIAL_TERMINAL);
+
+    task_info->hWin_firmware_update_via_sd_card = CreateFirmwareUpdateViaSDCard();
+    demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_firmware_update_via_sd_card, task_info->hWin_frame, DEMO_NAME_FIRMWARE_UPDATE_VIA_SD_CARD);
+
+#if 0
+    task_info->hWin_task_manager = CreateTaskManager();
+    demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_task_manager, task_info->hWin_frame, DEMO_NAME_TASK_MANAGER);
 #endif
 
-	task_info->hWin_title_logo = CreateTitleLogoWindow();
-	demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_title_logo, task_info->hWin_frame, DEMO_NAME_TITLE_LOGO);
+    task_info->hWin_title_logo = CreateTitleLogoWindow();
+    demo_window_list_head = demo_window_add_list(demo_window_list_head, task_info->hWin_title_logo, task_info->hWin_frame, DEMO_NAME_TITLE_LOGO);
+#endif
+    main_10ms_display_update(task_info);
+    main_1s_display_update(task_info);
 
-	/* get each GUI IDs */
-	prev_button_id = get_prev_button_id();
-	next_button_id = get_next_button_id();
-
-	/* wait until first touch screen */
-	GUI_Delay(10);
-	vTaskDelay(1000);	/* this wait needs for ignoring touch event at WM_TOUCH_CHILD in TitleLogoWindowDLG.c when initializing. */
-
-	first_touch_wait_flag = 1;
-	while(first_touch_wait_flag)
-	{
-		GUI_Delay(10);
-		vTaskDelay(10);
-	}
-
-	/* notify completing GUI initialization and first touch to main task */
-	xTaskNotifyGive(task_info->main_task_handle);
-
-	main_10ms_display_update(task_info);
-	main_100ms_display_update(task_info);
-	main_1s_display_update(task_info);
-
-	while(1)
-	{
-		main_10ms_display_update(task_info);
-		vTaskDelay(10);
-		counter_10ms++;
-		if(counter_10ms > 10)
-		{
-			counter_10ms = 0;
-			main_100ms_display_update(task_info);
-			counter_100ms++;
-			if(counter_100ms > 10)
-			{
-				counter_100ms = 0;
-				main_1s_display_update(task_info);
-			}
-		}
-	}
+    while(1)
+    {
+        main_10ms_display_update(task_info);
+        counter_10ms++;
+        if(counter_10ms > 10)
+        {
+            counter_10ms = 0;
+            counter_100ms++;
+            if(counter_100ms > 10)
+            {
+                counter_100ms = 0;
+                main_1s_display_update(task_info);
+            }
+        }
+    }
 }
 
 void main_10ms_display_update(TASK_INFO *task_info)
 {
-	GUI_Exec(); /* Do the background work ... Update windows etc.) */
-//	GUI_X_ExecIdle(); /* Nothing left to do for the moment ... Idle processing */
-}
-
-void main_100ms_display_update(TASK_INFO *task_info)
-{
-	DEMO_WINDOW_LIST *p;
-	static DEMO_WINDOW_LIST *prev_p;
-
-	R_SYS_TIME_GetCurrentTime(&task_info->sys_time);
-
-	display_update_time(task_info->hWin_frame, &task_info->sys_time);
-
-	p = demo_window_list_head;
-	while(1)
-	{
-		if(p->current_displayed)
-		{
-			if(prev_p != p)
-			{
-				prev_p = p;
-				display_update_demo_name(task_info->hWin_frame, p->demo_name);
-				WM_BringToTop(p->demo_window_handle);
-				if(p->demo_window_handle != task_info->hWin_title_logo)
-				{
-		    		WM_DeleteWindow(task_info->hWin_title_logo);
-				}
-			}
-			break;
-		}
-		else
-		{
-			if(p->next == 0)
-			{
-				break;
-			}
-			else
-			{
-				p = p->next;
-			}
-		}
-	}
+    TickType_t before_appw_exec_time_tick = xTaskGetTickCount();
+    APPW_Exec();
+    GUI_Exec();
+    TickType_t after_appw_exec_time_tick = xTaskGetTickCount();
+    if(after_appw_exec_time_tick >= before_appw_exec_time_tick)
+    {
+        if( MINIMUM_TIME_TICK_FOR_UPDATE_DISPLAY > (after_appw_exec_time_tick - before_appw_exec_time_tick))
+        {
+            /* >100fps pattern */
+            vTaskDelay(MINIMUM_TIME_TICK_FOR_UPDATE_DISPLAY - (after_appw_exec_time_tick - before_appw_exec_time_tick));
+            task_info->current_fps = 1000 / MINIMUM_TIME_TICK_FOR_UPDATE_DISPLAY;
+        }
+        else
+        {
+            /* <100fps pattern */
+            vTaskDelay(1);
+            task_info->current_fps = (float)((float)1000 / (float)(after_appw_exec_time_tick - before_appw_exec_time_tick));
+        }
+        task_info->history_fps[task_info->history_fps_index++] = task_info->current_fps;
+        if(MAX_HISTORY_FPS_INDEX == task_info->history_fps_index)
+        {
+            task_info->history_fps_index = 0;
+        }
+    }
+    else
+    {
+        /* nothing to do */
+    }
 }
 
 void main_1s_display_update(TASK_INFO *task_info)
 {
-	TaskStatus_t *stats_buffer;
-	uint32_t task_number, priority, hwm, cpu_time, idle_cpu_time, total_cpu_time, cpu_load, state;
-	float idle_rate;
-	static uint32_t previous_total_cpu_time = 0, previous_idle_cpu_time = 0;
-	uint8_t ip_address_array[4];
-	uint32_t ip_address;
-	uint32_t number_of_tasks;
+    TaskStatus_t *stats_buffer;
+    uint32_t task_number, priority, hwm, cpu_time, idle_cpu_time, total_cpu_time, cpu_load, state;
+    float idle_rate;
+    static uint32_t previous_total_cpu_time = 0, previous_idle_cpu_time = 0;
+    static uint8_t ip_address_array[4];
+    uint32_t ip_address;
+    uint32_t number_of_tasks;
 
-	/* get freertos CPU load info */
-	number_of_tasks = uxTaskGetNumberOfTasks();
-	stats_buffer = pvPortMalloc(number_of_tasks * sizeof(TaskStatus_t));
-	number_of_tasks = uxTaskGetSystemState(stats_buffer, number_of_tasks, &total_cpu_time);
-	for(int i = 0; i < number_of_tasks; i++)
-	{
-		if(!strcmp(stats_buffer[i].pcTaskName, "IDLE"))
-		{
-			idle_cpu_time = stats_buffer[i].ulRunTimeCounter;
-		}
-	}
-	idle_rate = ((float)(idle_cpu_time - previous_idle_cpu_time) / (float)(total_cpu_time - previous_total_cpu_time));
-	cpu_load = 100 - (uint32_t)(idle_rate * 100);
-	display_update_cpu_load(task_info->hWin_frame, cpu_load);
-	previous_idle_cpu_time = idle_cpu_time;
-	previous_total_cpu_time = total_cpu_time;
+    /* get/set freertos CPU load info */
+    number_of_tasks = uxTaskGetNumberOfTasks();
+    stats_buffer = pvPortMalloc(number_of_tasks * sizeof(TaskStatus_t));
+    number_of_tasks = uxTaskGetSystemState(stats_buffer, number_of_tasks, &total_cpu_time);
+    for(int i = 0; i < number_of_tasks; i++)
+    {
+        if(!strcmp(stats_buffer[i].pcTaskName, "IDLE"))
+        {
+            idle_cpu_time = stats_buffer[i].ulRunTimeCounter;
+        }
+    }
+    idle_rate = ((float)(idle_cpu_time - previous_idle_cpu_time) / (float)(total_cpu_time - previous_total_cpu_time));
+    cpu_load = 100 - (uint32_t)(idle_rate * 100);
+    task_info->cpu_load = cpu_load;
+    previous_idle_cpu_time = idle_cpu_time;
+    previous_total_cpu_time = total_cpu_time;
 
-	/* get IP address info */
-	ip_address = FreeRTOS_GetIPAddress();
+    /* get/set IP address info */
+    ip_address = FreeRTOS_GetIPAddress();
 #if (__LIT)
-	ip_address_array[3] = (ip_address & 0xff000000) >> 24;
-	ip_address_array[2] = (ip_address & 0x00ff0000) >> 16;
-	ip_address_array[1] = (ip_address & 0x0000ff00) >>  8;
-	ip_address_array[0] = (ip_address & 0x000000ff) >>  0;
+    ip_address_array[3] = (ip_address & 0xff000000) >> 24;
+    ip_address_array[2] = (ip_address & 0x00ff0000) >> 16;
+    ip_address_array[1] = (ip_address & 0x0000ff00) >>  8;
+    ip_address_array[0] = (ip_address & 0x000000ff) >>  0;
 #else
-	ip_address_array[0] = (ip_address & 0xff000000) >> 24;
-	ip_address_array[1] = (ip_address & 0x00ff0000) >> 16;
-	ip_address_array[2] = (ip_address & 0x0000ff00) >>  8;
-	ip_address_array[3] = (ip_address & 0x000000ff) >>  0;
+    ip_address_array[0] = (ip_address & 0xff000000) >> 24;
+    ip_address_array[1] = (ip_address & 0x00ff0000) >> 16;
+    ip_address_array[2] = (ip_address & 0x0000ff00) >>  8;
+    ip_address_array[3] = (ip_address & 0x000000ff) >>  0;
 #endif
-	display_update_ip_stat(task_info->hWin_frame, ip_address_array);
+    task_info->ip_address = ip_address_array;
 
-	vPortFree(stats_buffer);
+    /* get/set FPS average info */
+    float tmp_fps = 0;
+    for(int i = 0; i < MAX_HISTORY_FPS_INDEX; i++)
+    {
+        tmp_fps += task_info->history_fps[i];
+    }
+    task_info->average_fps = tmp_fps / MAX_HISTORY_FPS_INDEX;
+
+    vPortFree(stats_buffer);
 }
 
-void emWinCallback(WM_MESSAGE * pMsg)
-{
-
-}
-
-void callback_frame_window_to_main(int32_t id, int32_t event)
-{
-	if(id == next_button_id)
-	{
-		if(event == WM_NOTIFICATION_CLICKED)
-		{
-			demo_window_display_next(demo_window_list_head);
-		}
-	}
-	else if(id == prev_button_id)
-	{
-		if(event == WM_NOTIFICATION_CLICKED)
-		{
-			demo_window_display_previous(demo_window_list_head);
-		}
-	}
-}
-
-void delete_window_to_main(WM_HWIN delete_handle)
-{
-	DEMO_WINDOW_LIST *p;
-	DEMO_WINDOW_LIST *pbefore;
-
-	p = demo_window_list_head; /*global */
-	pbefore = NULL;
-	if(p != NULL)
-	{
-		while (p->next != NULL)
-		{
-			if(p->demo_window_handle == delete_handle)
-			{
-				break;
-			}
-			if(pbefore == NULL)
-			{
-				pbefore = demo_window_list_head;
-			}
-			else
-			{
-				pbefore = p;
-			}
-			p = p->next;
-		}
-		if(p->next == NULL)
-		{
-			return;
-		}
-		if(pbefore != NULL)
-		{
-			pbefore->next = p->next;
-			if(p->current_displayed == 1)
-			{
-				pbefore->current_displayed = 1;
-			}
-		}
-		else
-		{
-			demo_window_list_head = p->next;
-			if(p->current_displayed == 1)
-			{
-				demo_window_list_head->current_displayed = 1;
-			}
-		}
-		free(p);
-	}
-}
-
-
-static DEMO_WINDOW_LIST* demo_window_add_list(DEMO_WINDOW_LIST *pdemo_window_list_head, WM_HWIN new_handle, WM_HWIN frame_handle, char *demo_name)
-{
-	DEMO_WINDOW_LIST *p;
-
-	p = malloc(sizeof(DEMO_WINDOW_LIST));
-	if(p == 0)
-	{
-		/* malloc error, nothing to do */
-	}
-	else
-	{
-		p->demo_window_handle = new_handle;
-		p->frame_window_handle = frame_handle;
-		strcpy(p->demo_name, demo_name);
-		if(pdemo_window_list_head == NULL)
-		{
-			p->current_displayed = 1;
-			p->next = NULL;
-		}
-		else
-		{
-			p->next = pdemo_window_list_head;
-			pdemo_window_list_head = p;
-			p = pdemo_window_list_head;
-			pdemo_window_list_head->current_displayed = 1;
-			pdemo_window_list_head->next->current_displayed = 0;
-		}
-	}
-	return p;
-}
-
-static void demo_window_free_list(DEMO_WINDOW_LIST *pdemo_window_list_head)
-{
-	DEMO_WINDOW_LIST *p;
-
-	if(pdemo_window_list_head != NULL)
-	{
-		while (pdemo_window_list_head->next != NULL)
-		{
-			p = pdemo_window_list_head->next;
-			free(pdemo_window_list_head);
-			pdemo_window_list_head = p;
-		}
-		pdemo_window_list_head = 0;
-	}
-}
-
-static void demo_window_display_previous(DEMO_WINDOW_LIST *pdemo_window_list_head)
-{
-	DEMO_WINDOW_LIST *p, *p_prev;
-	p = pdemo_window_list_head;
-
-	while (1)
-	{
-		if(p->current_displayed)
-		{
-			break;
-		}
-		p_prev = p;
-		p = p->next;
-	}
-
-	if(p == pdemo_window_list_head)
-	{
-		/* nothing to do */
-	}
-	else
-	{
-		p_prev->current_displayed = 1;
-		p->current_displayed = 0;
-		if(p_prev->demo_window_handle == pdemo_window_list_head->demo_window_handle)
-		{
-			frame_prev_button_enable(p->frame_window_handle, 0);
-		}
-	}
-}
-
-static void demo_window_display_next(DEMO_WINDOW_LIST *pdemo_window_list_head)
-{
-	DEMO_WINDOW_LIST *p;
-
-	p = pdemo_window_list_head;
-
-	while (1)
-	{
-		if(p->current_displayed)
-		{
-			break;
-		}
-		p = p->next;
-	}
-
-	if(p->next == 0)
-	{
-		/* nothing to do */
-	}
-	else
-	{
-		(p->next)->current_displayed = 1;
-		p->current_displayed = 0;
-		if((p->next)->next == NULL)
-		{
-			frame_next_button_enable(p->frame_window_handle, 0);
-		}
-	}
-}

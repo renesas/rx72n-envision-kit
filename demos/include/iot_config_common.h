@@ -1,6 +1,6 @@
 /*
- * Amazon FreeRTOS V201910.00
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS V202203.00
+ * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -51,7 +51,7 @@
 
 /* Enable asserts in libraries by default. */
 #ifndef IOT_METRICS_ENABLE_ASSERTS
-    #define IOT_METRICS_ENABLE_ASSERTS         ( 0 )
+    #define IOT_METRICS_ENABLE_ASSERTS         ( 1 )
 #endif
 #ifndef IOT_CONTAINERS_ENABLE_ASSERTS
     #define IOT_CONTAINERS_ENABLE_ASSERTS      ( 1 )
@@ -60,7 +60,7 @@
     #define IOT_TASKPOOL_ENABLE_ASSERTS        ( 1 )
 #endif
 #ifndef IOT_MQTT_ENABLE_ASSERTS
-    #define IOT_MQTT_ENABLE_ASSERTS            ( 0 )
+    #define IOT_MQTT_ENABLE_ASSERTS            ( 1 )
 #endif
 #ifndef AWS_IOT_SHADOW_ENABLE_ASSERTS
     #define AWS_IOT_SHADOW_ENABLE_ASSERTS      ( 1 )
@@ -79,11 +79,14 @@
 #define IotMqtt_Assert( expression )           configASSERT( expression )
 #define AwsIotShadow_Assert( expression )      configASSERT( expression )
 #define AwsIotDefender_Assert( expression )    configASSERT( expression )
-#define IotBle_Assert( expression )            configASSERT( expression )
+
+#ifndef IotBle_Assert
+    #define IotBle_Assert( expression )        configASSERT( expression )
+#endif
 
 /* Control the usage of dynamic memory allocation. */
 #ifndef IOT_STATIC_MEMORY_ONLY
-    #define IOT_STATIC_MEMORY_ONLY    ( 1 )
+    #define IOT_STATIC_MEMORY_ONLY    ( 0 )
 #endif
 
 /* Memory allocation configuration. Note that these functions will not be affected

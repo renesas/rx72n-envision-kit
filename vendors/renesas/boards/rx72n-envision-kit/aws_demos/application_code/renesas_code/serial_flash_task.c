@@ -37,7 +37,6 @@
 
 /* for using Amazon FreeRTOS */
 #include "FreeRTOS.h"
-#include "aws_application_version.h"
 
 /* for RX72N Envision Kit system common header */
 #include "rx72n_envision_kit_system.h"
@@ -111,7 +110,7 @@ void serial_flash_task( void * pvParameters )
     while(1)
     {
         serial_flash_update();
-        vTaskDelay(1);
+        vTaskDelay(1000);
     }
 }
 /* End of function serial_flash_task() */
@@ -140,17 +139,17 @@ static serial_flash_state_t serial_flash_update(void)
         case SERIAL_FLASH_STATE_ERASE_WAIT_COMPLETE:
             if (R_FLASH_SPI_Polling(gDevNo, FLASH_SPI_MODE_ERASE_POLL) == FLASH_SPI_SUCCESS)
             {
-				serial_flash_address += SERIAL_FLASH_64KB_SIZE;
-				if (SERIAL_FLASH_TASK_DATA_SIZE == serial_flash_address)
-				{
-					serial_flash_address = 0;
-					Flash_Info_W.cnt     = SERIAL_FLASH_TASK_DATA_SIZE;
-					g_serial_flash_state = SERIAL_FLASH_STATE_WRITE;
-				}
-				else
-				{
-					g_serial_flash_state = SERIAL_FLASH_STATE_ERASE;
-				}
+                serial_flash_address += SERIAL_FLASH_64KB_SIZE;
+                if (SERIAL_FLASH_TASK_DATA_SIZE == serial_flash_address)
+                {
+                    serial_flash_address = 0;
+                    Flash_Info_W.cnt     = SERIAL_FLASH_TASK_DATA_SIZE;
+                    g_serial_flash_state = SERIAL_FLASH_STATE_WRITE;
+                }
+                else
+                {
+                    g_serial_flash_state = SERIAL_FLASH_STATE_ERASE;
+                }
             }
             break;
         case SERIAL_FLASH_STATE_WRITE:
@@ -169,16 +168,16 @@ static serial_flash_state_t serial_flash_update(void)
         case SERIAL_FLASH_STATE_WRITE_WAIT_COMPLETE:
             if (R_FLASH_SPI_Polling(gDevNo, FLASH_SPI_MODE_PROG_POLL) == FLASH_SPI_SUCCESS)
             {
-				serial_flash_address += SERIAL_FLASH_PAGE_SIZE;
-				if (SERIAL_FLASH_TASK_DATA_SIZE == serial_flash_address)
-				{
-					serial_flash_address = 0;
-					g_serial_flash_state = SERIAL_FLASH_STATE_READ;
-				}
-				else
-				{
-					g_serial_flash_state = SERIAL_FLASH_STATE_WRITE;
-				}
+                serial_flash_address += SERIAL_FLASH_PAGE_SIZE;
+                if (SERIAL_FLASH_TASK_DATA_SIZE == serial_flash_address)
+                {
+                    serial_flash_address = 0;
+                    g_serial_flash_state = SERIAL_FLASH_STATE_READ;
+                }
+                else
+                {
+                    g_serial_flash_state = SERIAL_FLASH_STATE_WRITE;
+                }
             }
             break;
         case SERIAL_FLASH_STATE_READ:
@@ -188,9 +187,9 @@ static serial_flash_state_t serial_flash_update(void)
             Flash_Info_R.op_mode = FLASH_SPI_QUAD;
             if (R_FLASH_SPI_Read_Data(gDevNo, &Flash_Info_R) == FLASH_SPI_SUCCESS)
             {
-				serial_flash_address += SERIAL_FLASH_PAGE_SIZE;
-				if (SERIAL_FLASH_TASK_DATA_SIZE == serial_flash_address)
-				{
+                serial_flash_address += SERIAL_FLASH_PAGE_SIZE;
+                if (SERIAL_FLASH_TASK_DATA_SIZE == serial_flash_address)
+                {
                      serial_flash_address = 0;
                      g_serial_flash_state = SERIAL_FLASH_STATE_FINISH;
                 }

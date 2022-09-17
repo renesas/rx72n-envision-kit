@@ -3,13 +3,13 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2019  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2022  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
 **********************************************************************
 
-** emWin V5.50 - Graphical user interface for embedded applications **
+** emWin V6.26 - Graphical user interface for embedded applications **
 emWin is protected by international copyright laws.   Knowledge of the
 source code may not be used to write a similar product.  This file may
 only  be used  in accordance  with  a license  and should  not be  re-
@@ -20,11 +20,11 @@ Licensor:                 SEGGER Software GmbH
 Licensed to:              Renesas Electronics Europe GmbH, Arcadiastrasse 10, 40472 Duesseldorf, Germany
 Licensed SEGGER software: emWin
 License number:           GUI-00678
-License model:            License and Service Agreement, signed December 16th, 2016 and Amendment No. 1, signed May 16th, 2019
-License valid for:        RX65N, RX651, RX72M, RX72N, RX661, RX66N
+License model:            License and Service Agreement, signed December 16th, 2016, Amendment No. 1 signed May 16th, 2019 and Amendment No. 2, signed September 20th, 2021 by Carsten Jauch, Managing Director
+License valid for:        RX (based on RX-V1, RX-V2 or RX-V3)
 ----------------------------------------------------------------------
 Support and Update Agreement (SUA)
-SUA period:               2016-12-22 - 2019-12-31
+SUA period:               2016-12-22 - 2022-12-31
 Contact to extend SUA:    sales@segger.com
 ----------------------------------------------------------------------
 File        : LISTBOX_Private.h
@@ -49,8 +49,14 @@ Purpose     : Private LISTBOX include
 *
 **********************************************************************
 */
-#define LISTBOX_ITEM_SELECTED (1 << 0)
-#define LISTBOX_ITEM_DISABLED (1 << 1)
+#define LISTBOX_ITEM_SELECTED         (1 << 0)
+#define LISTBOX_ITEM_DISABLED         (1 << 1)
+//
+// Private flags
+//
+#define LISTBOX_MOTION_STARTED        (1 << 0)   // Set while motion is running.
+#define LISTBOX_MOTION_PID_PRESSED    (1 << 1)   // Set if PID is pressed during motion.
+#define LISTBOX_TIMER_SNAPPING        (1 << 2)   // Set at the start of a manual snapping operation (_SnapToNearestItem). Cleared when it is done.
 
 /*********************************************************************
 *
@@ -76,19 +82,25 @@ typedef struct {
 } LISTBOX_PROPS;
 
 typedef struct {
-  WIDGET Widget;
-  GUI_ARRAY ItemArray;
-  WIDGET_DRAW_ITEM_FUNC* pfDrawItem;
-  WM_SCROLL_STATE ScrollStateV;
-  WM_SCROLL_STATE ScrollStateH;
-  LISTBOX_PROPS Props;
-  WM_HWIN hOwner;
-  I16 Sel;                        /* current selection */
-  U8 Flags;
-  U8  ScrollbarWidth;
-  U16 ItemSpacing;
-  U16 ContentSizeX;
-  U16 FixedScrollPos;
+  WIDGET                  Widget;
+  GUI_ARRAY               ItemArray;
+  WIDGET_DRAW_ITEM_FUNC * pfDrawItem;
+  WM_SCROLL_STATE         ScrollStateV;
+  WM_SCROLL_STATE         ScrollStateH;
+  LISTBOX_PROPS           Props;
+  WM_HWIN                 hOwner;
+  int                     MotionPosY;
+  int                     TotalRowHeight;            // Cached value
+  int                     yOffset;                   // Cached value
+  WM_HMEM                 hContext;                  // Motion context.
+  GUI_TIMER_HANDLE        hTimer;                    // Timer for motion snapping.
+  I16                     Sel;                       /* current selection */
+  U16                     ItemSpacing;
+  U16                     ContentSizeX;
+  U16                     FixedScrollPos;
+  U8                      Flags;
+  U8                      ScrollbarWidth;
+  U8                      FlagsIntern;               // Internal flags, see above.
 } LISTBOX_Obj;
 
 /*********************************************************************
@@ -98,7 +110,7 @@ typedef struct {
 **********************************************************************
 */
 #if GUI_DEBUG_LEVEL >= GUI_DEBUG_LEVEL_CHECK_ALL
-  #define LISTBOX_INIT_ID(p) p->Widget.DebugId = LISTBOX_ID
+  #define LISTBOX_INIT_ID(p) p->Widget.DebugId = WIDGET_TYPE_LISTBOX
 #else
   #define LISTBOX_INIT_ID(p)
 #endif
@@ -107,8 +119,10 @@ typedef struct {
   LISTBOX_Obj * LISTBOX_LockH(LISTBOX_Handle h);
   #define LISTBOX_LOCK_H(h)   LISTBOX_LockH(h)
 #else
-  #define LISTBOX_LOCK_H(h)   (LISTBOX_Obj *)GUI_LOCK_H(h)
+  #define LISTBOX_LOCK_H(h)   (LISTBOX_Obj *)WM_LOCK_H(h)
 #endif
+
+#define LISTBOX_H2P(h)       ((LISTBOX_Obj *)WM_H2P(h))
 
 /*********************************************************************
 *
@@ -125,6 +139,8 @@ extern LISTBOX_PROPS LISTBOX_DefaultProps;
 *
 **********************************************************************
 */
+int          LISTBOX__GetItemPosY           (LISTBOX_Handle hObj, unsigned Index);
+int          LISTBOX__GetItemSizeY          (LISTBOX_Handle hObj, unsigned Index);
 unsigned     LISTBOX__GetNumItems           (const LISTBOX_Obj * pObj);
 const char * LISTBOX__GetpStringLocked      (LISTBOX_Handle hObj, int Index, LISTBOX_ITEM ** ppItem);
 void         LISTBOX__InvalidateInsideArea  (LISTBOX_Handle hObj);
@@ -137,8 +153,6 @@ void         LISTBOX__AddSize               (LISTBOX_Obj * pObj, int Index);
 
 #endif /* GUI_WINSUPPORT */
 
-#else                            /* Avoid problems with empty object modules */
-  void LISTBOX_C(void) {}
-#endif
+#endif /* LISTBOX_PRIVATE_H */
 
 /*************************** End of file ****************************/

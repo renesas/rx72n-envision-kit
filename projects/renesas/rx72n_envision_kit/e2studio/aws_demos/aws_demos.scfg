@@ -9,10 +9,11 @@
                 <option id="com.renesas.smc.toolchain.option.rtos" key="com.renesas.smc.toolchain.option.rtos.freertos">
                     <item id="com.renesas.smc.toolchain.option.rtos.freertos" value="AmazonFreeRTOS_RX_v201908.00-rx-0.1.16"/>
                 </option>
+                <option id="com.renesas.smc.toolchain.option.dual" key="com.renesas.smc.toolchain.option.dual.false"/>
             </toolchain>
         </configuration>
         <platform id="R5F572NNHxFB"/>
-        <option id="board" value="カスタムユーザボード"/>
+        <option id="board" value="user_board"/>
     </general>
     <tool id="Clock">
         <option enabled="true" id="vccinput" selection="textinputitem">
@@ -588,77 +589,78 @@
         <Item currentVect="255" id="PERIA_INTA255" priority="15" usedState="未使用"/>
     </tool>
     <tool id="Pins" version="1.0.1.0">
-        <pinItem allocation="10" comments="" direction="None" id="EMLE" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="20" comments="" direction="None" id="XTAL" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="84$B" comments="" direction="None" id="LCD_TCON3" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="83$B" comments="" direction="None" id="LCD_TCON2" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="81$B" comments="" direction="None" id="LCD_TCON0" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="50" comments="" direction="None" id="CLKOUT25M" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="27" comments="" direction="None" id="SSDA6" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="37$C" comments="" direction="None" id="SDHI_CMD" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="36$C" comments="" direction="None" id="SDHI_CLK" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="4" comments="" direction="None" id="SSIDATA1" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="9" comments="" direction="None" id="SSILRCK0" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="2" comments="" direction="None" id="SSILRCK1" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="45" comments="" direction="None" id="RXD2" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="128" comments="" direction="None" id="RXD7" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="121$B" comments="" direction="None" id="QSPCLK" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="65" comments="" direction="None" id="ET0_TX_EN" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="67" comments="" direction="None" id="ET0_TX_ER" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="8" comments="" direction="None" id="AUDIO_CLK" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="85" comments="" direction="None" id="ET0_MDC" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="60" comments="" direction="None" id="ET0_COL" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="131" comments="" direction="None" id="TXD7" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="58" comments="" direction="None" id="ET0_CRS" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="44" comments="" direction="None" id="TXD2" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="80$B" comments="" direction="None" id="LCD_CLK" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="123$B" comments="" direction="None" id="QIO3" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="120$B" comments="" direction="None" id="QIO0" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="124$B" comments="" direction="None" id="QIO2" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="119$B" comments="" direction="None" id="QIO1" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="22" comments="" direction="None" id="EXTAL" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="26" comments="" direction="None" id="SSCL6" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="16" comments="" direction="None" id="FINED" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="32" comments="" direction="None" id="SDHI_CD" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="38$C" comments="" direction="None" id="SDHI_D3" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="39$C" comments="" direction="None" id="SDHI_D2" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="34$C" comments="" direction="None" id="SDHI_D1" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="35$C" comments="" direction="None" id="SDHI_D0" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="70" comments="" direction="None" id="ET0_RX_DV" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="110$B" comments="" direction="None" id="LCD_DATA15" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="102$B" comments="" direction="None" id="LCD_DATA10" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="68" comments="" direction="None" id="ET0_RX_ER" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="109$B" comments="" direction="None" id="LCD_DATA14" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="108$B" comments="" direction="None" id="LCD_DATA13" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="107$B" comments="" direction="None" id="LCD_DATA12" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="106$B" comments="" direction="None" id="LCD_DATA11" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="7" comments="" direction="None" id="SSIBCK0" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="61" comments="" direction="None" id="ET0_ETXD3" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="62" comments="" direction="None" id="ET0_ETXD2" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="63" comments="" direction="None" id="ET0_ETXD1" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="64" comments="" direction="None" id="ET0_ETXD0" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="6" comments="" direction="None" id="SSIBCK1" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="11" comments="" direction="None" id="SSIRXD0" isUsedBySoftware="true" locked="false" status="0"/>
-        <pinItem allocation="69" comments="" direction="None" id="ET0_RX_CLK" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="75" comments="" direction="None" id="ET0_ERXD3" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="73" comments="" direction="None" id="ET0_ERXD2" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="72" comments="" direction="None" id="ET0_ERXD1" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="71" comments="" direction="None" id="ET0_ERXD0" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="43" comments="" direction="None" id="USB0_OVRCURA" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="66" comments="" direction="None" id="ET0_TX_CLK" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="13" comments="" direction="None" id="SSITXD0" isUsedBySoftware="false" locked="false" status="4"/>
-        <pinItem allocation="40" comments="" direction="None" id="USB0_VBUSEN" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="86" comments="" direction="None" id="ET0_MDIO" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="87$B" comments="" direction="None" id="LCD_DATA0" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="88$B" comments="" direction="None" id="LCD_DATA1" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="89$B" comments="" direction="None" id="LCD_DATA2" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="90$B" comments="" direction="None" id="LCD_DATA3" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="92$B" comments="" direction="None" id="LCD_DATA4" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="94$B" comments="" direction="None" id="LCD_DATA5" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="95$B" comments="" direction="None" id="LCD_DATA6" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="96$B" comments="" direction="None" id="LCD_DATA7" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="97$B" comments="" direction="None" id="LCD_DATA8" isUsedBySoftware="false" locked="false" status="0"/>
-        <pinItem allocation="101$B" comments="" direction="None" id="LCD_DATA9" isUsedBySoftware="false" locked="false" status="0"/>
+        <pinItem allocation="10" comments="" direction="None" id="EMLE" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="20" comments="" direction="None" id="XTAL" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="84$B" comments="" direction="None" id="LCD_TCON3" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="83$B" comments="" direction="None" id="LCD_TCON2" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="81$B" comments="" direction="None" id="LCD_TCON0" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="50" comments="" direction="None" id="CLKOUT25M" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="27" comments="" direction="None" id="SSDA6" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="37$C" comments="" direction="None" id="SDHI_CMD" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="36$C" comments="" direction="None" id="SDHI_CLK" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="4" comments="" direction="None" id="SSIDATA1" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="9" comments="" direction="None" id="SSILRCK0" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="2" comments="" direction="None" id="SSILRCK1" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="45" comments="" direction="None" id="RXD2" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="128" comments="" direction="None" id="RXD7" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="121$B" comments="" direction="None" id="QSPCLK" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="141" comments="" direction="None" id="AN000" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="65" comments="" direction="None" id="ET0_TX_EN" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="67" comments="" direction="None" id="ET0_TX_ER" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="8" comments="" direction="None" id="AUDIO_CLK" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="85" comments="" direction="None" id="ET0_MDC" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="60" comments="" direction="None" id="ET0_COL" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="131" comments="" direction="None" id="TXD7" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="58" comments="" direction="None" id="ET0_CRS" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="44" comments="" direction="None" id="TXD2" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="80$B" comments="" direction="None" id="LCD_CLK" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="123$B" comments="" direction="None" id="QIO3" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="120$B" comments="" direction="None" id="QIO0" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="124$B" comments="" direction="None" id="QIO2" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="119$B" comments="" direction="None" id="QIO1" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="22" comments="" direction="None" id="EXTAL" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="26" comments="" direction="None" id="SSCL6" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="16" comments="" direction="None" id="FINED" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="32" comments="" direction="None" id="SDHI_CD" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="38$C" comments="" direction="None" id="SDHI_D3" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="39$C" comments="" direction="None" id="SDHI_D2" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="34$C" comments="" direction="None" id="SDHI_D1" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="35$C" comments="" direction="None" id="SDHI_D0" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="70" comments="" direction="None" id="ET0_RX_DV" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="110$B" comments="" direction="None" id="LCD_DATA15" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="102$B" comments="" direction="None" id="LCD_DATA10" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="68" comments="" direction="None" id="ET0_RX_ER" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="109$B" comments="" direction="None" id="LCD_DATA14" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="108$B" comments="" direction="None" id="LCD_DATA13" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="107$B" comments="" direction="None" id="LCD_DATA12" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="106$B" comments="" direction="None" id="LCD_DATA11" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="7" comments="" direction="None" id="SSIBCK0" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="61" comments="" direction="None" id="ET0_ETXD3" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="62" comments="" direction="None" id="ET0_ETXD2" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="63" comments="" direction="None" id="ET0_ETXD1" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="64" comments="" direction="None" id="ET0_ETXD0" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="6" comments="" direction="None" id="SSIBCK1" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="11" comments="" direction="None" id="SSIRXD0" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="69" comments="" direction="None" id="ET0_RX_CLK" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="75" comments="" direction="None" id="ET0_ERXD3" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="73" comments="" direction="None" id="ET0_ERXD2" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="72" comments="" direction="None" id="ET0_ERXD1" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="71" comments="" direction="None" id="ET0_ERXD0" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="43" comments="" direction="None" id="USB0_OVRCURA" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="66" comments="" direction="None" id="ET0_TX_CLK" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="13" comments="" direction="None" id="SSITXD0" isUsedBySoftware="false" locked="false" operationMode="" status="4"/>
+        <pinItem allocation="40" comments="" direction="None" id="USB0_VBUSEN" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="86" comments="" direction="None" id="ET0_MDIO" isUsedBySoftware="false" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="87$B" comments="" direction="None" id="LCD_DATA0" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="88$B" comments="" direction="None" id="LCD_DATA1" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="89$B" comments="" direction="None" id="LCD_DATA2" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="90$B" comments="" direction="None" id="LCD_DATA3" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="92$B" comments="" direction="None" id="LCD_DATA4" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="94$B" comments="" direction="None" id="LCD_DATA5" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="95$B" comments="" direction="None" id="LCD_DATA6" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="96$B" comments="" direction="None" id="LCD_DATA7" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="97$B" comments="" direction="None" id="LCD_DATA8" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
+        <pinItem allocation="101$B" comments="" direction="None" id="LCD_DATA9" isUsedBySoftware="true" locked="false" operationMode="" status="0"/>
         <pinnumItem comment="QIO0-B" id="145"/>
         <pinnumItem comment="QSPCLK-B" id="147"/>
         <pinnumItem comment="QSSL-B" id="148"/>
@@ -767,8 +769,8 @@
                 <gridItem id="ETHER_CFG_MODE_SEL" selectedIndex="0"/>
                 <gridItem id="ETHER_CFG_CH0_PHY_ADDRESS" selectedIndex="0"/>
                 <gridItem id="ETHER_CFG_CH1_PHY_ADDRESS" selectedIndex="1"/>
-                <gridItem id="ETHER_CFG_EMAC_RX_DESCRIPTORS" selectedIndex="4"/>
-                <gridItem id="ETHER_CFG_EMAC_TX_DESCRIPTORS" selectedIndex="4"/>
+                <gridItem id="ETHER_CFG_EMAC_RX_DESCRIPTORS" selectedIndex="2"/>
+                <gridItem id="ETHER_CFG_EMAC_TX_DESCRIPTORS" selectedIndex="2"/>
                 <gridItem id="ETHER_CFG_BUFSIZE" selectedIndex="1536"/>
                 <gridItem id="ETHER_CFG_AL1_INT_PRIORTY" selectedIndex="13"/>
                 <gridItem id="ETHER_CFG_CH0_PHY_ACCESS" selectedIndex="0"/>
@@ -959,35 +961,6 @@
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
         </configuration>
-        <configuration inuse="true" name="r_tfat_driver_rx">
-            <component description="依存モジュール: r_cmt_rx バージョン 3.21&#10;依存モジュール: r_sys_time_rx バージョン 1.00&#10;依存モジュール: r_tfat_rx バージョン 3.04&#10;" detailDescription="Memory Driver Interface for Open Source FAT File System." display="r_tfat_driver_rx" id="r_tfat_driver_rx1.05" version="1.05">
-                <gridItem id="TFAT_USB_DRIVE_NUM" selectedIndex="0"/>
-                <gridItem id="TFAT_SDMEM_DRIVE_NUM" selectedIndex="1"/>
-                <gridItem id="TFAT_USB_MINI_DRIVE_NUM" selectedIndex="0"/>
-                <gridItem id="TFAT_DRIVE_ALLOC_NUM_0" selectedIndex="1"/>
-                <gridItem id="TFAT_DRIVE_ALLOC_NUM_1" selectedIndex="3"/>
-                <gridItem id="TFAT_DRIVE_ALLOC_NUM_2" selectedIndex="3"/>
-                <gridItem id="TFAT_DRIVE_ALLOC_NUM_3" selectedIndex="3"/>
-                <gridItem id="TFAT_DRIVE_ALLOC_NUM_4" selectedIndex="3"/>
-                <gridItem id="TFAT_DRIVE_ALLOC_NUM_5" selectedIndex="3"/>
-                <gridItem id="TFAT_DRIVE_ALLOC_NUM_6" selectedIndex="3"/>
-                <gridItem id="TFAT_DRIVE_ALLOC_NUM_7" selectedIndex="3"/>
-                <gridItem id="TFAT_DRIVE_ALLOC_NUM_8" selectedIndex="3"/>
-                <gridItem id="TFAT_DRIVE_ALLOC_NUM_9" selectedIndex="3"/>
-            </component>
-            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-        </configuration>
-        <configuration inuse="true" name="r_tfat_rx">
-            <component description="依存モジュール: r_tfat_driver_rx バージョン 1.04&#10;依存モジュール: r_cmt_rx バージョン 3.21&#10;依存モジュール: r_sys_time_rx バージョン 1.00&#10;&#10;  " detailDescription="Open Source FAT File System." display="r_tfat_rx" id="r_tfat_rx3.04" version="3.04"/>
-            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-        </configuration>
-        <configuration inuse="true" name="r_emwin_rx">
-            <component description="依存モジュール: r_cmt_rx バージョン 3.21&#10;依存モジュール: r_dmaca_rx バージョン 1.05&#10;依存モジュール: r_drw2d_rx バージョン 1.02&#10;依存モジュール: r_glcdc_rx バージョン 1.00&#10;依存モジュール: r_gpio_rx バージョン 2.31&#10;依存モジュール: r_sci_iic_rx バージョン 2.20&#10;emWin is designed to provide an efficient, processor- and display controller-independent graphical user interface for any application that operates with a graphical display. It is compatible with single-task and multitask environments, with a proprietary operating system or with any commercial RTOS. emWin is shipped as C source code. It may be adapted to any size physical and virtual display with any display controller and CPU." detailDescription="Graphic Library with Graphical User Interface" display="r_emwin_rx" id="r_emwin_rx5.50" version="5.50"/>
-            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-        </configuration>
         <configuration inuse="true" name="r_dmaca_rx">
             <component description="依存モジュール: r_bsp バージョン 5.50&#10;This driver gives the user an easy API to control the MCU's DMAC. DMAC module transfers the data&#10;                 corresponding to an interrupt when it signals to DMAC. Each module can register its transfer settings with DMAC driver such as: interrupt number, destination and source address, data counter, transfer mode (3 modes: normal, repeat, block), enable or disable chain transfer." detailDescription="DMAC driver" display="r_dmaca_rx" id="r_dmaca_rx2.30" version="2.30">
                 <gridItem id="DMACA_CFG_PARAM_CHECKING_ENABLE" selectedIndex="0"/>
@@ -998,7 +971,7 @@
         </configuration>
         <configuration inuse="true" name="r_s12ad_rx">
             <component description="依存モジュール: r_bsp バージョン 5.51&#10;This A/D driver supports the temperature sensor, internal reference voltage sensor, and all analog channels available on the MCU. Single scan and continuous scanning are supported. Group and Double Trigger modes are supported. Triggers may be synchronous, asynchronous, or initiated by software. " detailDescription="Multi-Channel A/D and Sensor Driver." display="r_s12ad_rx" id="r_s12ad_rx4.50" version="4.50">
-                <gridItem id="AN000" selectedIndex="0"/>
+                <gridItem id="AN000" selectedIndex="1"/>
                 <gridItem id="AN001" selectedIndex="0"/>
                 <gridItem id="AN002" selectedIndex="0"/>
                 <gridItem id="AN003" selectedIndex="0"/>
@@ -1035,7 +1008,7 @@
                 <gridItem id="ADTRG0#" selectedIndex="0"/>
                 <gridItem id="ADST0" selectedIndex="0"/>
                 <gridItem id="PGAVSS0" selectedIndex="0"/>
-                <gridItem id="S12AD0" selectedIndex="0"/>
+                <gridItem id="S12AD0" selectedIndex="1"/>
                 <gridItem id="AN100" selectedIndex="0"/>
                 <gridItem id="AN101" selectedIndex="0"/>
                 <gridItem id="AN102" selectedIndex="0"/>
@@ -1301,44 +1274,6 @@
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
         </configuration>
-        <configuration inuse="true" name="r_glcdc_rx">
-            <component description="依存モジュール: r_bsp バージョン 5.20, 5.50&#10;The GLCDC FIT module provides the method to output image data read from memory to the LCD panel. " detailDescription="Graphics LCD Controller Module." display="r_glcdc_rx" id="r_glcdc_rx1.30" version="1.30">
-                <gridItem id="LCD_CLK" selectedIndex="1"/>
-                <gridItem id="LCD_TCON0" selectedIndex="1"/>
-                <gridItem id="LCD_TCON1" selectedIndex="0"/>
-                <gridItem id="LCD_TCON2" selectedIndex="1"/>
-                <gridItem id="LCD_TCON3" selectedIndex="1"/>
-                <gridItem id="LCD_DATA0" selectedIndex="1"/>
-                <gridItem id="LCD_DATA1" selectedIndex="1"/>
-                <gridItem id="LCD_DATA2" selectedIndex="1"/>
-                <gridItem id="LCD_DATA3" selectedIndex="1"/>
-                <gridItem id="LCD_DATA4" selectedIndex="1"/>
-                <gridItem id="LCD_DATA5" selectedIndex="1"/>
-                <gridItem id="LCD_DATA6" selectedIndex="1"/>
-                <gridItem id="LCD_DATA7" selectedIndex="1"/>
-                <gridItem id="LCD_DATA8" selectedIndex="1"/>
-                <gridItem id="LCD_DATA9" selectedIndex="1"/>
-                <gridItem id="LCD_DATA10" selectedIndex="1"/>
-                <gridItem id="LCD_DATA11" selectedIndex="1"/>
-                <gridItem id="LCD_DATA12" selectedIndex="1"/>
-                <gridItem id="LCD_DATA13" selectedIndex="1"/>
-                <gridItem id="LCD_DATA14" selectedIndex="1"/>
-                <gridItem id="LCD_DATA15" selectedIndex="1"/>
-                <gridItem id="LCD_DATA16" selectedIndex="0"/>
-                <gridItem id="LCD_DATA17" selectedIndex="0"/>
-                <gridItem id="LCD_DATA18" selectedIndex="0"/>
-                <gridItem id="LCD_DATA19" selectedIndex="0"/>
-                <gridItem id="LCD_DATA20" selectedIndex="0"/>
-                <gridItem id="LCD_DATA21" selectedIndex="0"/>
-                <gridItem id="LCD_DATA22" selectedIndex="0"/>
-                <gridItem id="LCD_DATA23" selectedIndex="0"/>
-                <gridItem id="LCD_EXTCLK" selectedIndex="0"/>
-                <gridItem id="GLCDC_CFG_PARAM_CHECKING_ENABLE" selectedIndex="1"/>
-                <gridItem id="GLCDC_CFG_INTERRUPT_PRIORITY_LEVEL" selectedIndex="1"/>
-            </component>
-            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-        </configuration>
         <configuration inuse="true" name="r_cmt_rx">
             <component description="依存モジュール: r_bsp バージョン 5.50&#10;This module creates a timer tick using a CMT channel based on a frequency input by the user." detailDescription="Simple CMT driver for creating timer tick." display="r_cmt_rx" id="r_cmt_rx4.31" version="4.31">
                 <gridItem id="CMT_RX_CFG_IPR" selectedIndex="13"/>
@@ -1348,11 +1283,6 @@
         </configuration>
         <configuration inuse="true" name="r_usb_hmsc">
             <component description="依存モジュール: r_bsp バージョン 5.50&#10;依存モジュール: r_usb_basic バージョン 1.30&#10;The r_usb_hmsc package provides USB Host mass storage class driver" detailDescription="USB Host Mass Storage Class" display="r_usb_hmsc" id="r_usb_hmsc1.30" version="1.30"/>
-            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
-        </configuration>
-        <configuration inuse="true" name="r_drw2d_rx">
-            <component description="依存モジュール: なし&#10;Drawing 2D engine(DRW2D) driver for RX MCUs" detailDescription="Drawing 2D engine driver for RX MCUs" display="r_drw2d_rx" id="r_drw2d_rx1.10" version="1.10"/>
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
         </configuration>
@@ -1370,8 +1300,8 @@
                 <gridItem id="BSP_CFG_STARTUP_DISABLE" selectedIndex="0"/>
                 <gridItem id="BSP_CFG_USER_STACK_ENABLE" selectedIndex="0"/>
                 <gridItem id="BSP_CFG_USTACK_BYTES" selectedIndex="0x1000"/>
-                <gridItem id="BSP_CFG_ISTACK_BYTES" selectedIndex="0x1000"/>
-                <gridItem id="BSP_CFG_HEAP_BYTES" selectedIndex="0x1000"/>
+                <gridItem id="BSP_CFG_ISTACK_BYTES" selectedIndex="0x4"/>
+                <gridItem id="BSP_CFG_HEAP_BYTES" selectedIndex="0x4"/>
                 <gridItem id="BSP_CFG_IO_LIB_ENABLE" selectedIndex="1"/>
                 <gridItem id="BSP_CFG_USER_CHARGET_ENABLED" selectedIndex="0"/>
                 <gridItem id="BSP_CFG_USER_CHARGET_FUNCTION" selectedIndex="my_sw_charget_function"/>
@@ -1639,6 +1569,294 @@
                 <gridItem id="SSIE_CH1_AUCKE" selectedIndex="1"/>
                 <gridItem id="SSIE_CH0_OMOD" selectedIndex="0"/>
                 <gridItem id="SSIE_CH1_OMOD" selectedIndex="0"/>
+            </component>
+            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+        </configuration>
+        <configuration inuse="true" name="r_tfat_driver_rx">
+            <component description="依存モジュール: r_cmt_rx バージョン 3.21&#10;依存モジュール: r_sys_time_rx バージョン 1.00&#10;依存モジュール: r_tfat_rx バージョン 3.04&#10;" detailDescription="Memory Driver Interface for Open Source FAT File System." display="r_tfat_driver_rx" id="r_tfat_driver_rx1.05" version="1.05">
+                <gridItem id="TFAT_USB_DRIVE_NUM" selectedIndex="0"/>
+                <gridItem id="TFAT_SDMEM_DRIVE_NUM" selectedIndex="1"/>
+                <gridItem id="TFAT_USB_MINI_DRIVE_NUM" selectedIndex="0"/>
+                <gridItem id="TFAT_DRIVE_ALLOC_NUM_0" selectedIndex="1"/>
+                <gridItem id="TFAT_DRIVE_ALLOC_NUM_1" selectedIndex="3"/>
+                <gridItem id="TFAT_DRIVE_ALLOC_NUM_2" selectedIndex="3"/>
+                <gridItem id="TFAT_DRIVE_ALLOC_NUM_3" selectedIndex="3"/>
+                <gridItem id="TFAT_DRIVE_ALLOC_NUM_4" selectedIndex="3"/>
+                <gridItem id="TFAT_DRIVE_ALLOC_NUM_5" selectedIndex="3"/>
+                <gridItem id="TFAT_DRIVE_ALLOC_NUM_6" selectedIndex="3"/>
+                <gridItem id="TFAT_DRIVE_ALLOC_NUM_7" selectedIndex="3"/>
+                <gridItem id="TFAT_DRIVE_ALLOC_NUM_8" selectedIndex="3"/>
+                <gridItem id="TFAT_DRIVE_ALLOC_NUM_9" selectedIndex="3"/>
+            </component>
+            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+        </configuration>
+        <configuration inuse="true" name="r_tfat_rx">
+            <component description="依存モジュール: r_tfat_driver_rx バージョン 1.04&#10;依存モジュール: r_cmt_rx バージョン 3.21&#10;依存モジュール: r_sys_time_rx バージョン 1.00&#10;&#10;  " detailDescription="Open Source FAT File System." display="r_tfat_rx" id="r_tfat_rx3.04" version="3.04"/>
+            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+        </configuration>
+        <configuration inuse="true" name="r_drw2d_rx">
+            <component description="依存モジュール: r_bsp バージョン 5.63&#10;Drawing 2D engine(DRW2D) driver for RX MCUs" detailDescription="Drawing 2D engine driver for RX MCUs" display="r_drw2d_rx" id="r_drw2d_rx1.11" version="1.11"/>
+            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+        </configuration>
+        <configuration inuse="true" name="r_emwin_rx">
+            <component description="依存モジュール: r_cmt_rx バージョン 4.90&#10;依存モジュール: r_dmaca_rx バージョン 2.60&#10;依存モジュール: r_drw2d_rx バージョン 1.11&#10;依存モジュール: r_glcdc_rx バージョン 1.50&#10;依存モジュール: r_gpio_rx バージョン 4.10&#10;依存モジュール: r_sci_iic_rx バージョン 2.49&#10;emWin is designed to provide an efficient, processor- and display controller-independent graphical user interface for any application that operates with a graphical display. It is compatible with single-task and multitask environments, with a proprietary operating system or with any commercial RTOS. emWin is shipped as C source code. It may be adapted to any size physical and virtual display with any display controller and CPU.&#10;The version number 6.22 means the version of emWin library, and 1.00 means that of FIT module.&#10;This FIT module includes an installer of AppWizard v1.24." detailDescription="Graphic Library with Graphical User Interface" display="r_emwin_rx" id="r_emwin_rx6.22.1.00" version="6.22.1.00">
+                <gridItem id="EMWIN_GUI_NUM_BYTES" selectedIndex="102400"/>
+                <gridItem id="EMWIN_BITS_PER_PIXEL" selectedIndex="3"/>
+                <gridItem id="EMWIN_NUM_BUFFERS" selectedIndex="2"/>
+                <gridItem id="EMWIN_GUI_FRAME_BUFFER1" selectedIndex="0x00800000"/>
+                <gridItem id="EMWIN_GUI_FRAME_BUFFER2" selectedIndex="0x00840000"/>
+                <gridItem id="EMWIN_GUI_FRAME_BUFFER3" selectedIndex="0x00000000"/>
+                <gridItem id="EMWIN_DMAC_NUMBER" selectedIndex="0"/>
+                <gridItem id="EMWIN_INIT_DMAC" selectedIndex="1"/>
+                <gridItem id="EMWIN_USE_DRW2D" selectedIndex="1"/>
+                <gridItem id="EMWIN_XSIZE_PHYS" selectedIndex="480"/>
+                <gridItem id="EMWIN_YSIZE_PHYS" selectedIndex="272"/>
+                <gridItem id="EMWIN_DISPLAY_ORIENTATION" selectedIndex="0"/>
+                <gridItem id="EMWIN_DISPLAY_DRIVER" selectedIndex="0"/>
+                <gridItem id="EMWIN_LCD_IF" selectedIndex="0"/>
+                <gridItem id="EMWIN_USE_DISP_SIGNAL_PIN" selectedIndex="1"/>
+                <gridItem id="EMWIN_DISP_SIGNAL_PIN" selectedIndex="GPIO_PORT_B_PIN_3"/>
+                <gridItem id="EMWIN_USE_BACKLIGHT_PIN" selectedIndex="1"/>
+                <gridItem id="EMWIN_BACKLIGHT_PIN" selectedIndex="GPIO_PORT_6_PIN_7"/>
+                <gridItem id="EMWIN_USE_TOUCH" selectedIndex="1"/>
+                <gridItem id="EMWIN_TOUCH_IF" selectedIndex="0"/>
+                <gridItem id="EMWIN_TOUCH_IF_NUMBER" selectedIndex="EMWIN_SCI_IIC_NUMBER"/>
+                <gridItem id="EMWIN_USE_MULTITOUCH" selectedIndex="0"/>
+                <gridItem id="EMWIN_MAX_NUM_TOUCHPOINTS" selectedIndex="10"/>
+                <gridItem id="EMWIN_SLAVE_ADDRESS" selectedIndex="0x00000038"/>
+                <gridItem id="EMWIN_USE_TOUCH_IC_RESET_PIN" selectedIndex="1"/>
+                <gridItem id="EMWIN_TOUCH_IC_RESET_PIN" selectedIndex="GPIO_PORT_6_PIN_6"/>
+            </component>
+            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+            <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
+        </configuration>
+        <configuration inuse="true" name="r_glcdc_rx">
+            <component description="依存モジュール: r_bsp バージョン 5.20, 5.50, 5.52, 5.61&#10;The GLCDC FIT module provides the method to output image data read from memory to the LCD panel. " detailDescription="Graphics LCD Controller Module." display="r_glcdc_rx" id="r_glcdc_rx1.50" version="1.50">
+                <gridItem id="LCD_CLK" selectedIndex="1"/>
+                <gridItem id="LCD_TCON0" selectedIndex="1"/>
+                <gridItem id="LCD_TCON1" selectedIndex="0"/>
+                <gridItem id="LCD_TCON2" selectedIndex="1"/>
+                <gridItem id="LCD_TCON3" selectedIndex="1"/>
+                <gridItem id="LCD_DATA0" selectedIndex="1"/>
+                <gridItem id="LCD_DATA1" selectedIndex="1"/>
+                <gridItem id="LCD_DATA2" selectedIndex="1"/>
+                <gridItem id="LCD_DATA3" selectedIndex="1"/>
+                <gridItem id="LCD_DATA4" selectedIndex="1"/>
+                <gridItem id="LCD_DATA5" selectedIndex="1"/>
+                <gridItem id="LCD_DATA6" selectedIndex="1"/>
+                <gridItem id="LCD_DATA7" selectedIndex="1"/>
+                <gridItem id="LCD_DATA8" selectedIndex="1"/>
+                <gridItem id="LCD_DATA9" selectedIndex="1"/>
+                <gridItem id="LCD_DATA10" selectedIndex="1"/>
+                <gridItem id="LCD_DATA11" selectedIndex="1"/>
+                <gridItem id="LCD_DATA12" selectedIndex="1"/>
+                <gridItem id="LCD_DATA13" selectedIndex="1"/>
+                <gridItem id="LCD_DATA14" selectedIndex="1"/>
+                <gridItem id="LCD_DATA15" selectedIndex="1"/>
+                <gridItem id="LCD_DATA16" selectedIndex="0"/>
+                <gridItem id="LCD_DATA17" selectedIndex="0"/>
+                <gridItem id="LCD_DATA18" selectedIndex="0"/>
+                <gridItem id="LCD_DATA19" selectedIndex="0"/>
+                <gridItem id="LCD_DATA20" selectedIndex="0"/>
+                <gridItem id="LCD_DATA21" selectedIndex="0"/>
+                <gridItem id="LCD_DATA22" selectedIndex="0"/>
+                <gridItem id="LCD_DATA23" selectedIndex="0"/>
+                <gridItem id="LCD_EXTCLK" selectedIndex="0"/>
+                <gridItem id="GLCDC_CFG_PARAM_CHECKING_ENABLE" selectedIndex="1"/>
+                <gridItem id="GLCDC_CFG_INTERRUPT_PRIORITY_LEVEL" selectedIndex="15"/>
+                <gridItem id="GLCDC_CFG_CONFIGURATION_MODE" selectedIndex="0"/>
+                <gridItem id="USE_QE_DISPLAY_CONFIGURATION" selectedIndex="1"/>
+                <gridItem id="LCD_CH0_W_HFP" selectedIndex="17"/>
+                <gridItem id="LCD_CH0_W_HBP" selectedIndex="62"/>
+                <gridItem id="LCD_CH0_DISP_HW" selectedIndex="480"/>
+                <gridItem id="LCD_CH0_W_HSYNC" selectedIndex="25"/>
+                <gridItem id="LCD_CH0_W_VFP" selectedIndex="8"/>
+                <gridItem id="LCD_CH0_W_VBP" selectedIndex="7"/>
+                <gridItem id="LCD_CH0_DISP_VW" selectedIndex="272"/>
+                <gridItem id="LCD_CH0_W_VSYNC" selectedIndex="1"/>
+                <gridItem id="LCD_CH0_OUT_FORMAT" selectedIndex="2"/>
+                <gridItem id="LCD_CH0_OUT_ENDIAN" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_OUT_COLOR_ORDER" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_OUT_EDGE" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_OUT_BG_COLOR" selectedIndex="0x00000000"/>
+                <gridItem id="LCD_CH0_TCON_PIN_HSYNC" selectedIndex="2"/>
+                <gridItem id="LCD_CH0_TCON_PIN_VSYNC" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_TCON_PIN_DE" selectedIndex="3"/>
+                <gridItem id="LCD_CH0_TCON_POL_HSYNC" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_TCON_POL_VSYNC" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_TCON_POL_DE" selectedIndex="1"/>
+                <gridItem id="LCD_CH0_OUT_CLK_DIV_RATIO" selectedIndex="11"/>
+                <gridItem id="LCD_CH0_IN_GR2_PBASE" selectedIndex="0x00800000"/>
+                <gridItem id="LCD_CH0_IN_GR2_HSIZE" selectedIndex="480"/>
+                <gridItem id="LCD_CH0_IN_GR2_VSIZE" selectedIndex="272"/>
+                <gridItem id="LCD_CH0_IN_GR2_LINEOFFSET" selectedIndex="960"/>
+                <gridItem id="LCD_CH0_IN_GR2_FORMAT" selectedIndex="2"/>
+                <gridItem id="LCD_CH0_IN_GR2_COORD_X" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_IN_GR2_COORD_Y" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_IN_GR2_FRAME_EDGE" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_IN_GR2_BG_COLOR" selectedIndex="0x00000000"/>
+                <gridItem id="LCD_CH0_BLEND_GR2_VISIBLE" selectedIndex="1"/>
+                <gridItem id="LCD_CH0_BLEND_GR2_BLEND_CONTROL" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_BLEND_GR2_FRAME_EDGE" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_BLEND_GR2_FIXED_BLEND_VALUE" selectedIndex="255"/>
+                <gridItem id="LCD_CH0_BLEND_GR2_FADE_SPEED" selectedIndex="255"/>
+                <gridItem id="LCD_CH0_BLEND_GR2_START_COORD_X" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_BLEND_GR2_START_COORD_Y" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_BLEND_GR2_END_COORD_X" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_BLEND_GR2_END_COORD_Y" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_CHROMAKEY_GR2_ENABLE" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_CHROMAKEY_GR2_BEFORE_ARGB" selectedIndex="0x00000000"/>
+                <gridItem id="LCD_CH0_CHROMAKEY_GR2_AFTER_ARGB" selectedIndex="0x00000000"/>
+                <gridItem id="LCD_CH0_CLUT_GR2_ENABLE" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_CLUT_GR2_PBASE" selectedIndex="FIT_NO_PTR"/>
+                <gridItem id="LCD_CH0_CLUT_GR2_START" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_CLUT_GR2_SIZE" selectedIndex="256"/>
+                <gridItem id="LCD_CH0_IN_GR1_PBASE" selectedIndex="NULL"/>
+                <gridItem id="LCD_CH0_IN_GR1_HSIZE" selectedIndex="480"/>
+                <gridItem id="LCD_CH0_IN_GR1_VSIZE" selectedIndex="272"/>
+                <gridItem id="LCD_CH0_IN_GR1_LINEOFFSET" selectedIndex="960"/>
+                <gridItem id="LCD_CH0_IN_GR1_FORMAT" selectedIndex="2"/>
+                <gridItem id="LCD_CH0_IN_GR1_COORD_X" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_IN_GR1_COORD_Y" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_IN_GR1_FRAME_EDGE" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_IN_GR1_BG_COLOR" selectedIndex="0x00000000"/>
+                <gridItem id="LCD_CH0_BLEND_GR1_VISIBLE" selectedIndex="1"/>
+                <gridItem id="LCD_CH0_BLEND_GR1_BLEND_CONTROL" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_BLEND_GR1_FRAME_EDGE" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_BLEND_GR1_FIXED_BLEND_VALUE" selectedIndex="255"/>
+                <gridItem id="LCD_CH0_BLEND_GR1_FADE_SPEED" selectedIndex="255"/>
+                <gridItem id="LCD_CH0_BLEND_GR1_START_COORD_X" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_BLEND_GR1_START_COORD_Y" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_BLEND_GR1_END_COORD_X" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_BLEND_GR1_END_COORD_Y" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_CHROMAKEY_GR1_ENABLE" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_CHROMAKEY_GR1_BEFORE_ARGB" selectedIndex="0x00000000"/>
+                <gridItem id="LCD_CH0_CHROMAKEY_GR1_AFTER_ARGB" selectedIndex="0x00000000"/>
+                <gridItem id="LCD_CH0_CLUT_GR1_ENABLE" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_CLUT_GR1_PBASE" selectedIndex="FIT_NO_PTR"/>
+                <gridItem id="LCD_CH0_CLUT_GR1_START" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_CLUT_GR1_SIZE" selectedIndex="256"/>
+                <gridItem id="LCD_CH0_DETECT_VPOS" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_DETECT_GR1UF" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_DETECT_GR2UF" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_INTERRUPT_VPOS_ENABLE" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_INTERRUPT_GR1UF_ENABLE" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_INTERRUPT_GR2UF_ENABLE" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_CALLBACK_ENABLE" selectedIndex="0"/>
+                <gridItem id="LCD_CH0_PCALLBACK" selectedIndex="glcdc_callback"/>
+                <gridItem id="IMGC_OUTCTL_CALIB_ROUTE" selectedIndex="0"/>
+                <gridItem id="IMGC_BRIGHT_OUTCTL_ACTIVE" selectedIndex="1"/>
+                <gridItem id="IMGC_BRIGHT_OUTCTL_OFFSET_G" selectedIndex="512"/>
+                <gridItem id="IMGC_BRIGHT_OUTCTL_OFFSET_B" selectedIndex="512"/>
+                <gridItem id="IMGC_BRIGHT_OUTCTL_OFFSET_R" selectedIndex="512"/>
+                <gridItem id="IMGC_CONTRAST_OUTCTL_ACTIVE" selectedIndex="1"/>
+                <gridItem id="IMGC_CONTRAST_OUTCTL_GAIN_G" selectedIndex="128"/>
+                <gridItem id="IMGC_CONTRAST_OUTCTL_GAIN_B" selectedIndex="128"/>
+                <gridItem id="IMGC_CONTRAST_OUTCTL_GAIN_R" selectedIndex="128"/>
+                <gridItem id="IMGC_GAMMA_ACTIVE" selectedIndex="1"/>
+                <gridItem id="IMGC_GAMMA_G_GAIN_00" selectedIndex="1317"/>
+                <gridItem id="IMGC_GAMMA_G_GAIN_01" selectedIndex="1157"/>
+                <gridItem id="IMGC_GAMMA_G_GAIN_02" selectedIndex="1103"/>
+                <gridItem id="IMGC_GAMMA_G_GAIN_03" selectedIndex="1069"/>
+                <gridItem id="IMGC_GAMMA_G_GAIN_04" selectedIndex="1045"/>
+                <gridItem id="IMGC_GAMMA_G_GAIN_05" selectedIndex="1026"/>
+                <gridItem id="IMGC_GAMMA_G_GAIN_06" selectedIndex="1010"/>
+                <gridItem id="IMGC_GAMMA_G_GAIN_07" selectedIndex="997"/>
+                <gridItem id="IMGC_GAMMA_G_GAIN_08" selectedIndex="986"/>
+                <gridItem id="IMGC_GAMMA_G_GAIN_09" selectedIndex="976"/>
+                <gridItem id="IMGC_GAMMA_G_GAIN_10" selectedIndex="967"/>
+                <gridItem id="IMGC_GAMMA_G_GAIN_11" selectedIndex="959"/>
+                <gridItem id="IMGC_GAMMA_G_GAIN_12" selectedIndex="952"/>
+                <gridItem id="IMGC_GAMMA_G_GAIN_13" selectedIndex="945"/>
+                <gridItem id="IMGC_GAMMA_G_GAIN_14" selectedIndex="939"/>
+                <gridItem id="IMGC_GAMMA_G_GAIN_15" selectedIndex="919"/>
+                <gridItem id="IMGC_GAMMA_G_TH_01" selectedIndex="64"/>
+                <gridItem id="IMGC_GAMMA_G_TH_02" selectedIndex="128"/>
+                <gridItem id="IMGC_GAMMA_G_TH_03" selectedIndex="192"/>
+                <gridItem id="IMGC_GAMMA_G_TH_04" selectedIndex="256"/>
+                <gridItem id="IMGC_GAMMA_G_TH_05" selectedIndex="320"/>
+                <gridItem id="IMGC_GAMMA_G_TH_06" selectedIndex="384"/>
+                <gridItem id="IMGC_GAMMA_G_TH_07" selectedIndex="448"/>
+                <gridItem id="IMGC_GAMMA_G_TH_08" selectedIndex="512"/>
+                <gridItem id="IMGC_GAMMA_G_TH_09" selectedIndex="576"/>
+                <gridItem id="IMGC_GAMMA_G_TH_10" selectedIndex="640"/>
+                <gridItem id="IMGC_GAMMA_G_TH_11" selectedIndex="704"/>
+                <gridItem id="IMGC_GAMMA_G_TH_12" selectedIndex="768"/>
+                <gridItem id="IMGC_GAMMA_G_TH_13" selectedIndex="832"/>
+                <gridItem id="IMGC_GAMMA_G_TH_14" selectedIndex="896"/>
+                <gridItem id="IMGC_GAMMA_G_TH_15" selectedIndex="960"/>
+                <gridItem id="IMGC_GAMMA_B_GAIN_00" selectedIndex="1317"/>
+                <gridItem id="IMGC_GAMMA_B_GAIN_01" selectedIndex="1157"/>
+                <gridItem id="IMGC_GAMMA_B_GAIN_02" selectedIndex="1103"/>
+                <gridItem id="IMGC_GAMMA_B_GAIN_03" selectedIndex="1069"/>
+                <gridItem id="IMGC_GAMMA_B_GAIN_04" selectedIndex="1045"/>
+                <gridItem id="IMGC_GAMMA_B_GAIN_05" selectedIndex="1026"/>
+                <gridItem id="IMGC_GAMMA_B_GAIN_06" selectedIndex="1010"/>
+                <gridItem id="IMGC_GAMMA_B_GAIN_07" selectedIndex="997"/>
+                <gridItem id="IMGC_GAMMA_B_GAIN_08" selectedIndex="986"/>
+                <gridItem id="IMGC_GAMMA_B_GAIN_09" selectedIndex="976"/>
+                <gridItem id="IMGC_GAMMA_B_GAIN_10" selectedIndex="967"/>
+                <gridItem id="IMGC_GAMMA_B_GAIN_11" selectedIndex="959"/>
+                <gridItem id="IMGC_GAMMA_B_GAIN_12" selectedIndex="952"/>
+                <gridItem id="IMGC_GAMMA_B_GAIN_13" selectedIndex="945"/>
+                <gridItem id="IMGC_GAMMA_B_GAIN_14" selectedIndex="939"/>
+                <gridItem id="IMGC_GAMMA_B_GAIN_15" selectedIndex="919"/>
+                <gridItem id="IMGC_GAMMA_B_TH_01" selectedIndex="64"/>
+                <gridItem id="IMGC_GAMMA_B_TH_02" selectedIndex="128"/>
+                <gridItem id="IMGC_GAMMA_B_TH_03" selectedIndex="192"/>
+                <gridItem id="IMGC_GAMMA_B_TH_04" selectedIndex="256"/>
+                <gridItem id="IMGC_GAMMA_B_TH_05" selectedIndex="320"/>
+                <gridItem id="IMGC_GAMMA_B_TH_06" selectedIndex="384"/>
+                <gridItem id="IMGC_GAMMA_B_TH_07" selectedIndex="448"/>
+                <gridItem id="IMGC_GAMMA_B_TH_08" selectedIndex="512"/>
+                <gridItem id="IMGC_GAMMA_B_TH_09" selectedIndex="576"/>
+                <gridItem id="IMGC_GAMMA_B_TH_10" selectedIndex="640"/>
+                <gridItem id="IMGC_GAMMA_B_TH_11" selectedIndex="704"/>
+                <gridItem id="IMGC_GAMMA_B_TH_12" selectedIndex="768"/>
+                <gridItem id="IMGC_GAMMA_B_TH_13" selectedIndex="832"/>
+                <gridItem id="IMGC_GAMMA_B_TH_14" selectedIndex="896"/>
+                <gridItem id="IMGC_GAMMA_B_TH_15" selectedIndex="960"/>
+                <gridItem id="IMGC_GAMMA_R_GAIN_00" selectedIndex="1317"/>
+                <gridItem id="IMGC_GAMMA_R_GAIN_01" selectedIndex="1157"/>
+                <gridItem id="IMGC_GAMMA_R_GAIN_02" selectedIndex="1103"/>
+                <gridItem id="IMGC_GAMMA_R_GAIN_03" selectedIndex="1069"/>
+                <gridItem id="IMGC_GAMMA_R_GAIN_04" selectedIndex="1045"/>
+                <gridItem id="IMGC_GAMMA_R_GAIN_05" selectedIndex="1026"/>
+                <gridItem id="IMGC_GAMMA_R_GAIN_06" selectedIndex="1010"/>
+                <gridItem id="IMGC_GAMMA_R_GAIN_07" selectedIndex="997"/>
+                <gridItem id="IMGC_GAMMA_R_GAIN_08" selectedIndex="986"/>
+                <gridItem id="IMGC_GAMMA_R_GAIN_09" selectedIndex="976"/>
+                <gridItem id="IMGC_GAMMA_R_GAIN_10" selectedIndex="967"/>
+                <gridItem id="IMGC_GAMMA_R_GAIN_11" selectedIndex="959"/>
+                <gridItem id="IMGC_GAMMA_R_GAIN_12" selectedIndex="952"/>
+                <gridItem id="IMGC_GAMMA_R_GAIN_13" selectedIndex="945"/>
+                <gridItem id="IMGC_GAMMA_R_GAIN_14" selectedIndex="939"/>
+                <gridItem id="IMGC_GAMMA_R_GAIN_15" selectedIndex="919"/>
+                <gridItem id="IMGC_GAMMA_R_TH_01" selectedIndex="64"/>
+                <gridItem id="IMGC_GAMMA_R_TH_02" selectedIndex="128"/>
+                <gridItem id="IMGC_GAMMA_R_TH_03" selectedIndex="192"/>
+                <gridItem id="IMGC_GAMMA_R_TH_04" selectedIndex="256"/>
+                <gridItem id="IMGC_GAMMA_R_TH_05" selectedIndex="320"/>
+                <gridItem id="IMGC_GAMMA_R_TH_06" selectedIndex="384"/>
+                <gridItem id="IMGC_GAMMA_R_TH_07" selectedIndex="448"/>
+                <gridItem id="IMGC_GAMMA_R_TH_08" selectedIndex="512"/>
+                <gridItem id="IMGC_GAMMA_R_TH_09" selectedIndex="576"/>
+                <gridItem id="IMGC_GAMMA_R_TH_10" selectedIndex="640"/>
+                <gridItem id="IMGC_GAMMA_R_TH_11" selectedIndex="704"/>
+                <gridItem id="IMGC_GAMMA_R_TH_12" selectedIndex="768"/>
+                <gridItem id="IMGC_GAMMA_R_TH_13" selectedIndex="832"/>
+                <gridItem id="IMGC_GAMMA_R_TH_14" selectedIndex="896"/>
+                <gridItem id="IMGC_GAMMA_R_TH_15" selectedIndex="960"/>
+                <gridItem id="IMGC_DITHER_ACTIVE" selectedIndex="0"/>
+                <gridItem id="IMGC_DITHER_MODE" selectedIndex="0"/>
+                <gridItem id="IMGC_DITHER_2X2_PA" selectedIndex="3"/>
+                <gridItem id="IMGC_DITHER_2X2_PB" selectedIndex="0"/>
+                <gridItem id="IMGC_DITHER_2X2_PC" selectedIndex="2"/>
+                <gridItem id="IMGC_DITHER_2X2_PD" selectedIndex="1"/>
             </component>
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>
             <source description="Components supporting Firmware Integration Technology" display="Firmware Integration Technology" id="com.renesas.smc.tools.swcomponent.fit.source"/>

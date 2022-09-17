@@ -1,6 +1,6 @@
 /*
- * Amazon FreeRTOS V201910.00
- * Copyright (C) 2019 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS V202203.00
+ * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -23,13 +23,26 @@
  * http://www.FreeRTOS.org
  */
 
+/*
+ ****************************************************************************
+ * NOTE!
+ * This file is for ease of demonstration only.  Secret information should not
+ * be pasted into the header file in production devices.  Do not paste
+ * production secrets here!  Production devices should store secrets such as
+ * private keys securely, such as within a secure element.  See our examples that
+ * demonstrate how to use the PKCS #11 API for secure keys access.
+ ****************************************************************************
+ */
+
 #ifndef AWS_CLIENT_CREDENTIAL_KEYS_H
 #define AWS_CLIENT_CREDENTIAL_KEYS_H
+
+/* @TEST_ANCHOR */
 
 /*
  * @brief PEM-encoded client certificate.
  *
- * @todo If you are running one of the Amazon FreeRTOS demo projects, set this
+ * @todo If you are running one of the FreeRTOS demo projects, set this
  * to the certificate that will be used for TLS client authentication.
  *
  * @note Must include the PEM header and footer:
@@ -37,7 +50,9 @@
  * "...base64 data...\n"\
  * "-----END CERTIFICATE-----\n"
  */
-#define keyCLIENT_CERTIFICATE_PEM                  NULL
+#ifndef keyCLIENT_CERTIFICATE_PEM
+    #define keyCLIENT_CERTIFICATE_PEM    NULL
+#endif
 
 /*
  * @brief PEM-encoded issuer certificate for AWS IoT Just In Time Registration (JITR).
@@ -58,19 +73,29 @@
  * "...base64 data...\n"\
  * "-----END CERTIFICATE-----\n"
  */
-#define keyJITR_DEVICE_CERTIFICATE_AUTHORITY_PEM    NULL
+#ifndef keyJITR_DEVICE_CERTIFICATE_AUTHORITY_PEM
+    #define keyJITR_DEVICE_CERTIFICATE_AUTHORITY_PEM    NULL
+#endif
 
 /*
  * @brief PEM-encoded client private key.
  *
- * @todo If you are running one of the Amazon FreeRTOS demo projects, set this
+ * @todo If you are running one of the FreeRTOS demo projects, set this
  * to the private key that will be used for TLS client authentication.
+ * Please note pasting a key into the header file in this manner is for
+ * convenience of demonstration only and should not be done in production.
+ * Never past a production private key here!.  Production devices should
+ * store keys securely, such as within a secure element.  Additionally,
+ * we provide the corePKCS library that further enhances security by
+ * enabling keys to be used without exposing them to software.
  *
  * @note Must include the PEM header and footer:
  * "-----BEGIN RSA PRIVATE KEY-----\n"\
  * "...base64 data...\n"\
  * "-----END RSA PRIVATE KEY-----\n"
  */
-#define keyCLIENT_PRIVATE_KEY_PEM                   NULL
+#ifndef keyCLIENT_PRIVATE_KEY_PEM
+    #define keyCLIENT_PRIVATE_KEY_PEM    NULL
+#endif
 
 #endif /* AWS_CLIENT_CREDENTIAL_KEYS_H */
