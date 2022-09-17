@@ -443,6 +443,7 @@ sfd_err_t R_SFD_EraseAll(void)
     sfd_err_t xReturn = SFD_FATAL_ERROR;
 
     R_SFD_SemaphoreTake();
+    R_FLASH_Open();
 
     for (int i = 0; i < SFD_OBJECT_HANDLES_NUM; i++)
     {
@@ -457,6 +458,8 @@ sfd_err_t R_SFD_EraseAll(void)
     update_dataflash_data();
 
     R_SFD_ResetScan();
+
+    R_FLASH_Close();
     R_SFD_SemaphoreGive();
     xReturn = SFD_SUCCESS;
     return xReturn;
