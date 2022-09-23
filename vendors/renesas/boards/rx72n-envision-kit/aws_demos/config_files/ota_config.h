@@ -46,7 +46,7 @@
     #define LIBRARY_LOG_NAME     "OTA"
 #endif
 #ifndef LIBRARY_LOG_LEVEL
-    #define LIBRARY_LOG_LEVEL    LOG_ERROR
+    #define LIBRARY_LOG_LEVEL    LOG_DEBUG
 #endif
 
 #include "logging_stack.h"
@@ -63,7 +63,7 @@
  *
  * <b>Possible values:</b> Any unsigned 32 integer. <br>
  */
-#define otaconfigLOG2_FILE_BLOCK_SIZE           10UL
+#define otaconfigLOG2_FILE_BLOCK_SIZE           12UL
 
 /**
  * @brief Size of the file data block message (excluding the header).
@@ -118,7 +118,7 @@
  *
  * <b>Possible values:</b> Any unsigned 32 integer value greater than 0. <br>
  */
-#define otaconfigMAX_NUM_BLOCKS_REQUEST         4U
+#define otaconfigMAX_NUM_BLOCKS_REQUEST         1U
 
 /**
  * @brief The maximum number of requests allowed to send without a response
