@@ -168,6 +168,7 @@ void prvInitSocket(void)
 	else
 	{
 		R_SFD_GetObjectValue(sfd_handle_tracealyzer_server_ip_address, (uint8_t **)&tracealyzer_server_ip_address_string, &tracealyzer_server_ip_address_string_length);
+		sscanf(tracealyzer_server_ip_address_string, "%d.%d.%d.%d", &ip_address1, &ip_address2, &ip_address3, &ip_address4);
         configPRINTF( ( "parameter found: %s = %s\r\n", tracealyzer_server_ip_address_label, tracealyzer_server_ip_address_string ) );
 	}
 
@@ -190,10 +191,10 @@ void prvInitSocket(void)
 
 		sock = SOCKETS_Socket(SOCKETS_AF_INET, SOCKETS_SOCK_STREAM, SOCKETS_IPPROTO_TCP);
 
-		configPRINTF( ( "Connecting to %d.%d.%d.%d, port %d\r\n", HOST_IPADDRESS_0, HOST_IPADDRESS_1, HOST_IPADDRESS_2, HOST_IPADDRESS_3, HOST_PORT) );
+		configPRINTF( ( "Connecting to %d.%d.%d.%d, port %d\r\n", ip_address1, ip_address2, ip_address3, ip_address4, tracealyzer_server_port_number) );
 
-		addr.ulAddress = IPv4(HOST_IPADDRESS_0, HOST_IPADDRESS_1, HOST_IPADDRESS_2, HOST_IPADDRESS_3);
-		addr.usPort =  SOCKETS_htons(HOST_PORT);
+		addr.ulAddress = IPv4(ip_address1, ip_address2, ip_address3, ip_address4);
+		addr.usPort =  SOCKETS_htons(tracealyzer_server_port_number);
 
 		status = SOCKETS_Connect(sock, &addr, sizeof( SocketsSockaddr_t ) );
 

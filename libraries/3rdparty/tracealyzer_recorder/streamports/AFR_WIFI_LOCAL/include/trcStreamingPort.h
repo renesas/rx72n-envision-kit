@@ -133,13 +133,6 @@
 extern "C" {
 #endif
 
-
-#define HOST_IPADDRESS_0 192
-#define HOST_IPADDRESS_1 168
-#define HOST_IPADDRESS_2 1
-#define HOST_IPADDRESS_3 210
-#define HOST_PORT 12000
-
 void prvInitSocket(void);
 int32_t prvReadFromSocket(void* ptrData, uint32_t size, int32_t* ptrBytesRead);
 int32_t prvWriteToSocket(void* ptrData, uint32_t size, int32_t* ptrBytesWritten);
