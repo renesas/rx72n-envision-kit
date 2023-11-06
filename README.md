@@ -19,3 +19,7 @@ RX72N Envision Kit bootloader/demos based on Amazon FreeRTOS
 
 ## elements14: Renesas RX72N Envision Kit - Review
 * https://www.element14.com/community/roadTestReviews/3641/l/renesas-rx72n-envision-kit-review
+
+## Tracealyzer demo on RX72N Envision Kit
+https://github.com/renesas/rx72n-envision-kit/assets/37968119/26790de7-03f8-4235-94a4-0f3afd66e6d4
+
