@@ -380,9 +380,9 @@
         <Item currentVect="39" id="RSPI0_SPTI0" priority="15" usedState="未使用"/>
         <Item currentVect="40" id="RSPI1_SPRI1" priority="15" usedState="未使用"/>
         <Item currentVect="41" id="RSPI1_SPTI1" priority="15" usedState="未使用"/>
-        <Item currentVect="42" id="QSPI_SPRI" priority="15" usedState="未使用"/>
-        <Item currentVect="43" id="QSPI_SPTI" priority="15" usedState="未使用"/>
-        <Item currentVect="44" id="SDHI_SBFAI" priority="15" usedState="未使用"/>
+        <Item currentVect="42" id="QSPI_SPRI" priority="10" usedState="使用中"/>
+        <Item currentVect="43" id="QSPI_SPTI" priority="10" usedState="使用中"/>
+        <Item currentVect="44" id="SDHI_SBFAI" priority="10" usedState="使用中"/>
         <Item currentVect="45" id="MMCIF_MBFAI" priority="15" usedState="未使用"/>
         <Item currentVect="46" id="SSIE0_SSITXI0" priority="15" usedState="未使用"/>
         <Item currentVect="47" id="SSIE0_SSIRXI0" priority="15" usedState="未使用"/>
@@ -422,7 +422,7 @@
         <Item currentVect="84" id="SCI5_RXI5" priority="15" usedState="未使用"/>
         <Item currentVect="85" id="SCI5_TXI5" priority="15" usedState="未使用"/>
         <Item currentVect="86" id="SCI6_RXI6" priority="15" usedState="未使用"/>
-        <Item currentVect="87" id="SCI6_TXI6" priority="15" usedState="未使用"/>
+        <Item currentVect="87" id="SCI6_TXI6" priority="2" usedState="使用中"/>
         <Item currentVect="88" id="LVD1_LVD1" priority="15" usedState="未使用"/>
         <Item currentVect="89" id="LVD2_LVD2" priority="15" usedState="未使用"/>
         <Item currentVect="90" id="USB0_USBR0" priority="15" usedState="未使用"/>
@@ -443,9 +443,9 @@
         <Item currentVect="107" groupchild="&lt;br&gt;1-POEGGAI&lt;br&gt;2-POEGGBI&lt;br&gt;3-POEGGCI&lt;br&gt;4-POEGGDI" id="BL2" priority="15" usedState="未使用"/>
         <Item currentVect="108" id="RSPI2_SPRI2" priority="15" usedState="未使用"/>
         <Item currentVect="109" id="RSPI2_SPTI2" priority="15" usedState="未使用"/>
-        <Item currentVect="110" groupchild="&lt;br&gt;1-TEI0&lt;br&gt;2-ERI0&lt;br&gt;3-TEI1&lt;br&gt;4-ERI1&lt;br&gt;5-TEI2&lt;br&gt;6-ERI2&lt;br&gt;7-TEI3&lt;br&gt;8-ERI3&lt;br&gt;9-TEI4&lt;br&gt;10-ERI4&lt;br&gt;11-TEI5&lt;br&gt;12-ERI5&lt;br&gt;13-TEI6&lt;br&gt;14-ERI6&lt;br&gt;15-TEI12&lt;br&gt;16-ERI12&lt;br&gt;17-SCIX0&lt;br&gt;18-SCIX1&lt;br&gt;19-SCIX2&lt;br&gt;20-SCIX3&lt;br&gt;21-QSPSSLI&lt;br&gt;22-FERRI&lt;br&gt;23-MENDI&lt;br&gt;24-OVFI&lt;br&gt;25-DOPCI&lt;br&gt;26-PCFEI&lt;br&gt;27-PCERI" id="BL0" priority="15" usedState="未使用"/>
-        <Item currentVect="111" groupchild="&lt;br&gt;1-CDETI&lt;br&gt;2-CACI&lt;br&gt;3-SDACI&lt;br&gt;4-CDETIO&lt;br&gt;5-ERRIO&lt;br&gt;6-ACCIO&lt;br&gt;7-OEI1&lt;br&gt;8-OEI2&lt;br&gt;9-OEI3&lt;br&gt;10-OEI4&lt;br&gt;11-TEI0&lt;br&gt;12-EEI0&lt;br&gt;13-TEI2&lt;br&gt;14-EEI2&lt;br&gt;15-SSIF0&lt;br&gt;16-SSIF1&lt;br&gt;17-S12CMPAI&lt;br&gt;18-S12CMPBI&lt;br&gt;19-S12CMPAI1&lt;br&gt;20-S12CMPBI1&lt;br&gt;21-TEI1&lt;br&gt;22-EEI1" id="BL1" priority="15" usedState="未使用"/>
-        <Item currentVect="112" groupchild="&lt;br&gt;1-TEI8&lt;br&gt;2-ERI8&lt;br&gt;3-TEI9&lt;br&gt;4-ERI9&lt;br&gt;5-TEI10&lt;br&gt;6-ERI10&lt;br&gt;7-TEI11&lt;br&gt;8-ERI11&lt;br&gt;9-SPII0&lt;br&gt;10-SPEI0&lt;br&gt;11-SPII1&lt;br&gt;12-SPEI1&lt;br&gt;13-SPII2&lt;br&gt;14-SPEI2&lt;br&gt;15-TEI7&lt;br&gt;16-ERI7" id="AL0" priority="15" usedState="未使用"/>
+        <Item currentVect="110" groupchild="&lt;br&gt;1-TEI0&lt;br&gt;2-ERI0&lt;br&gt;3-TEI1&lt;br&gt;4-ERI1&lt;br&gt;5-TEI2&lt;br&gt;6-ERI2&lt;br&gt;7-TEI3&lt;br&gt;8-ERI3&lt;br&gt;9-TEI4&lt;br&gt;10-ERI4&lt;br&gt;11-TEI5&lt;br&gt;12-ERI5&lt;br&gt;13-TEI6&lt;br&gt;14-ERI6&lt;br&gt;15-TEI12&lt;br&gt;16-ERI12&lt;br&gt;17-SCIX0&lt;br&gt;18-SCIX1&lt;br&gt;19-SCIX2&lt;br&gt;20-SCIX3&lt;br&gt;21-QSPSSLI&lt;br&gt;22-FERRI&lt;br&gt;23-MENDI&lt;br&gt;24-OVFI&lt;br&gt;25-DOPCI&lt;br&gt;26-PCFEI&lt;br&gt;27-PCERI" id="BL0" priority="3" usedState="使用中"/>
+        <Item currentVect="111" groupchild="&lt;br&gt;1-CDETI&lt;br&gt;2-CACI&lt;br&gt;3-SDACI&lt;br&gt;4-CDETIO&lt;br&gt;5-ERRIO&lt;br&gt;6-ACCIO&lt;br&gt;7-OEI1&lt;br&gt;8-OEI2&lt;br&gt;9-OEI3&lt;br&gt;10-OEI4&lt;br&gt;11-TEI0&lt;br&gt;12-EEI0&lt;br&gt;13-TEI2&lt;br&gt;14-EEI2&lt;br&gt;15-SSIF0&lt;br&gt;16-SSIF1&lt;br&gt;17-S12CMPAI&lt;br&gt;18-S12CMPBI&lt;br&gt;19-S12CMPAI1&lt;br&gt;20-S12CMPBI1&lt;br&gt;21-TEI1&lt;br&gt;22-EEI1" id="BL1" priority="10" usedState="使用中"/>
+        <Item currentVect="112" groupchild="&lt;br&gt;1-TEI8&lt;br&gt;2-ERI8&lt;br&gt;3-TEI9&lt;br&gt;4-ERI9&lt;br&gt;5-TEI10&lt;br&gt;6-ERI10&lt;br&gt;7-TEI11&lt;br&gt;8-ERI11&lt;br&gt;9-SPII0&lt;br&gt;10-SPEI0&lt;br&gt;11-SPII1&lt;br&gt;12-SPEI1&lt;br&gt;13-SPII2&lt;br&gt;14-SPEI2&lt;br&gt;15-TEI7&lt;br&gt;16-ERI7" id="AL0" priority="3" usedState="使用中"/>
         <Item currentVect="113" groupchild="&lt;br&gt;1-MINT&lt;br&gt;2-PINT&lt;br&gt;3-EINT0&lt;br&gt;4-EINT1&lt;br&gt;5-VPOS&lt;br&gt;6-GR1UF&lt;br&gt;7-GR2UF&lt;br&gt;8-DRW_IRQ" id="AL1" priority="14" usedState="使用中"/>
         <Item currentVect="114" id="SCI11_RXI11" priority="15" usedState="未使用"/>
         <Item currentVect="115" id="SCI11_TXI11" priority="15" usedState="未使用"/>
@@ -516,7 +516,7 @@
         <Item currentVect="182" defaultVect="182" id="CAN1_TXF1" priority="15" usedState="未使用"/>
         <Item currentVect="183" defaultVect="183" id="CAN1_RXM1" priority="15" usedState="未使用"/>
         <Item currentVect="184" defaultVect="184" id="CAN1_TXM1" priority="15" usedState="未使用"/>
-        <Item currentVect="185" defaultVect="185" id="USB0_USBI0" priority="15" usedState="未使用"/>
+        <Item currentVect="185" defaultVect="185" id="USB0_USBI0" priority="3" usedState="使用中"/>
         <Item currentVect="186" defaultVect="186" id="S12AD_S12ADI" priority="15" usedState="未使用"/>
         <Item currentVect="187" defaultVect="187" id="S12AD_S12GBADI" priority="15" usedState="未使用"/>
         <Item currentVect="188" defaultVect="188" id="S12AD_S12GCADI" priority="15" usedState="未使用"/>
@@ -1300,7 +1300,7 @@
                 <gridItem id="BSP_CFG_STARTUP_DISABLE" selectedIndex="0"/>
                 <gridItem id="BSP_CFG_USER_STACK_ENABLE" selectedIndex="0"/>
                 <gridItem id="BSP_CFG_USTACK_BYTES" selectedIndex="0x1000"/>
-                <gridItem id="BSP_CFG_ISTACK_BYTES" selectedIndex="0x4"/>
+                <gridItem id="BSP_CFG_ISTACK_BYTES" selectedIndex="0x400"/>
                 <gridItem id="BSP_CFG_HEAP_BYTES" selectedIndex="0x4"/>
                 <gridItem id="BSP_CFG_IO_LIB_ENABLE" selectedIndex="1"/>
                 <gridItem id="BSP_CFG_USER_CHARGET_ENABLED" selectedIndex="0"/>

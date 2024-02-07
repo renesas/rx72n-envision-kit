@@ -825,19 +825,19 @@
 			<locationURI>AWS_IOT_MCU_ROOT/demos/device_defender_for_aws/metrics_collector/freertos_plus_tcp/metrics_collector.c</locationURI>
 		</link>
 		<link>
-			<name>freertos_kernel/portable/Renesas/RX600v2/port.c</name>
+			<name>freertos_kernel/portable/Renesas/RX700v3_DPFPU/port.c</name>
 			<type>1</type>
-			<locationURI>AWS_IOT_MCU_ROOT/freertos_kernel/portable/Renesas/RX600v2/port.c</locationURI>
+			<locationURI>AWS_IOT_MCU_ROOT/freertos_kernel/portable/Renesas/RX700v3_DPFPU/port.c</locationURI>
 		</link>
 		<link>
-			<name>freertos_kernel/portable/Renesas/RX600v2/port_asm.src</name>
+			<name>freertos_kernel/portable/Renesas/RX700v3_DPFPU/port_asm.src</name>
 			<type>1</type>
-			<locationURI>AWS_IOT_MCU_ROOT/freertos_kernel/portable/Renesas/RX600v2/port_asm.src</locationURI>
+			<locationURI>AWS_IOT_MCU_ROOT/freertos_kernel/portable/Renesas/RX700v3_DPFPU/port_asm.src</locationURI>
 		</link>
 		<link>
-			<name>freertos_kernel/portable/Renesas/RX600v2/portmacro.h</name>
+			<name>freertos_kernel/portable/Renesas/RX700v3_DPFPU/portmacro.h</name>
 			<type>1</type>
-			<locationURI>AWS_IOT_MCU_ROOT/freertos_kernel/portable/Renesas/RX600v2/portmacro.h</locationURI>
+			<locationURI>AWS_IOT_MCU_ROOT/freertos_kernel/portable/Renesas/RX700v3_DPFPU/portmacro.h</locationURI>
 		</link>
 		<link>
 			<name>libraries/3rdparty/mbedtls/library/aes.c</name>

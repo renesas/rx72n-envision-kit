@@ -59,7 +59,7 @@
  * no effect.  If configUSE_TASK_DPFPU_SUPPORT is set to 0 then tasks never take care
  * of any DPFPU context (even if DPFPU registers are used). */
     #ifndef configUSE_TASK_DPFPU_SUPPORT
-        #define configUSE_TASK_DPFPU_SUPPORT 1
+        #define configUSE_TASK_DPFPU_SUPPORT 2
     #endif
 
 /*-----------------------------------------------------------*/

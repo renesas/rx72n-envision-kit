@@ -188,13 +188,13 @@ void main_10ms_display_update(TASK_INFO *task_info)
         {
             /* >100fps pattern */
             vTaskDelay(MINIMUM_TIME_TICK_FOR_UPDATE_DISPLAY - (after_appw_exec_time_tick - before_appw_exec_time_tick));
-//            task_info->current_fps = 1000 / MINIMUM_TIME_TICK_FOR_UPDATE_DISPLAY;
+            task_info->current_fps = 1000 / MINIMUM_TIME_TICK_FOR_UPDATE_DISPLAY;
         }
         else
-        {
+      {
             /* <100fps pattern */
             vTaskDelay(1);
-//            task_info->current_fps = (float)((float)1000 / (float)(after_appw_exec_time_tick - before_appw_exec_time_tick));
+            task_info->current_fps = (float)((float)1000 / (float)(after_appw_exec_time_tick - before_appw_exec_time_tick));
         }
         task_info->history_fps[task_info->history_fps_index++] = task_info->current_fps;
         if(MAX_HISTORY_FPS_INDEX == task_info->history_fps_index)

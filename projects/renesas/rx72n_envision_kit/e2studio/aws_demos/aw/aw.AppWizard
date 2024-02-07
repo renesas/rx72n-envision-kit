@@ -466,7 +466,7 @@
       IdPrev=0
       IdPost=0
       <Dispose>
-        xSize=98
+        xSize=164
         ySize=32
         <X0>
           Mode=2
@@ -1420,7 +1420,7 @@
   </Interactions>
   <Selection>
     Root=ID_SCREEN_01
-    Object=2069
+    Object=2057
   </Selection>
   <Terms>
   </Terms>

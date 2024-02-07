@@ -843,6 +843,151 @@
             <Path>aw\Resource\Text\APPW_Pattern.txt</Path>
           </Category>
         </Category>
+        <Category Name="Simulation">
+          <Category Name="Config">
+            <Path>aw\Simulation\Config\APPW_X_WIN32.c</Path>
+            <Path>aw\Simulation\Config\GUIConf.c</Path>
+            <Path>aw\Simulation\Config\GUIConf.h</Path>
+            <Path>aw\Simulation\Config\GUI_SIM_Win32.h</Path>
+            <Path>aw\Simulation\Config\LCDConf.c</Path>
+            <Path>aw\Simulation\Config\LCDConf.h</Path>
+            <Path>aw\Simulation\Config\SIMConf.c</Path>
+          </Category>
+          <Category Name="GUI_Lib">
+            <Path>aw\Simulation\GUI_Lib\AppWizard.h</Path>
+            <Path>aw\Simulation\GUI_Lib\BUTTON.h</Path>
+            <Path>aw\Simulation\GUI_Lib\BUTTON_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\CALENDAR.h</Path>
+            <Path>aw\Simulation\GUI_Lib\CHECKBOX.h</Path>
+            <Path>aw\Simulation\GUI_Lib\CHECKBOX_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\CHOOSECOLOR.h</Path>
+            <Path>aw\Simulation\GUI_Lib\CHOOSEFILE.h</Path>
+            <Path>aw\Simulation\GUI_Lib\DIALOG.h</Path>
+            <Path>aw\Simulation\GUI_Lib\DIALOG_Type.h</Path>
+            <Path>aw\Simulation\GUI_Lib\DROPDOWN.h</Path>
+            <Path>aw\Simulation\GUI_Lib\DROPDOWN_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\EDIT.h</Path>
+            <Path>aw\Simulation\GUI_Lib\EDIT_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\FRAMEWIN.h</Path>
+            <Path>aw\Simulation\GUI_Lib\FRAMEWIN_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GAUGE.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GAUGE_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GRAPH.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GRAPH_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_BitPlains.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_FlexColor.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_FlexColor_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_Lin.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_Null.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13513.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13517.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13748.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13781.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13L01.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13L02.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D13L04.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_S1D15G00.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_SH_MEM.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_SLin.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_SLinEPD.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_SLinEPD_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_SPage.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_SPage_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_SSD1322.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_SSD1926.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_ST7591_DCache.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_TemplateI.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_UC1698G.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUIDRV_Win32.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_ARRAY.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_ARRAY_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_BMP_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_ConfDefaults.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_Debug.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_FontIntern.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_GCache_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_GIF_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_HOOK.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_JPEG_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_SPRITE_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_SPY_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_SetOrientation.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_SetOrientationCX.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_Type.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_VNC.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI_Version.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI__BiDi2_Brackets_800.h</Path>
+            <Path>aw\Simulation\GUI_Lib\GUI__BiDi2_Types_800.h</Path>
+            <Path>aw\Simulation\GUI_Lib\Global.h</Path>
+            <Path>aw\Simulation\GUI_Lib\HEADER.h</Path>
+            <Path>aw\Simulation\GUI_Lib\HEADER_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\ICONVIEW.h</Path>
+            <Path>aw\Simulation\GUI_Lib\ICONVIEW_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\IMAGE.h</Path>
+            <Path>aw\Simulation\GUI_Lib\IMAGE_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\IP_FS.h</Path>
+            <Path>aw\Simulation\GUI_Lib\KEYBOARD.h</Path>
+            <Path>aw\Simulation\GUI_Lib\KEYBOARD_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\KNOB.h</Path>
+            <Path>aw\Simulation\GUI_Lib\KNOB_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LCD.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LCD_ConfDefaults.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LCD_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LCD_Protected.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LCD_SIM.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LISTBOX.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LISTBOX_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LISTVIEW.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LISTVIEW_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LISTWHEEL.h</Path>
+            <Path>aw\Simulation\GUI_Lib\LISTWHEEL_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\MENU.h</Path>
+            <Path>aw\Simulation\GUI_Lib\MENU_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\MESSAGEBOX.h</Path>
+            <Path>aw\Simulation\GUI_Lib\MULTIEDIT.h</Path>
+            <Path>aw\Simulation\GUI_Lib\MULTIEDIT_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\MULTIPAGE.h</Path>
+            <Path>aw\Simulation\GUI_Lib\MULTIPAGE_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\PROGBAR.h</Path>
+            <Path>aw\Simulation\GUI_Lib\PROGBAR_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\QRCODE.h</Path>
+            <Path>aw\Simulation\GUI_Lib\QRCODE_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\RADIO.h</Path>
+            <Path>aw\Simulation\GUI_Lib\RADIO_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\ROTARY.h</Path>
+            <Path>aw\Simulation\GUI_Lib\ROTARY_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SCROLLBAR.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SCROLLBAR_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SCROLLER.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SCROLLER_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SEGGER.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SLIDER.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SLIDER_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SPINBOX.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SPINBOX_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SWIPELIST.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SWIPELIST_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SWITCH.h</Path>
+            <Path>aw\Simulation\GUI_Lib\SWITCH_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\TEXT.h</Path>
+            <Path>aw\Simulation\GUI_Lib\TEXT_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\TREEVIEW.h</Path>
+            <Path>aw\Simulation\GUI_Lib\TREEVIEW_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\WHEEL.h</Path>
+            <Path>aw\Simulation\GUI_Lib\WHEEL_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\WIDGET.h</Path>
+            <Path>aw\Simulation\GUI_Lib\WINDOW_Private.h</Path>
+            <Path>aw\Simulation\GUI_Lib\WM.h</Path>
+            <Path>aw\Simulation\GUI_Lib\WM_GUI.h</Path>
+            <Path>aw\Simulation\GUI_Lib\WM_Intern.h</Path>
+          </Category>
+          <Category Name="Simulation">
+            <Path>aw\Simulation\Simulation\GUI_SIM_Win32.h</Path>
+            <Path>aw\Simulation\Simulation\WinMain.c</Path>
+          </Category>
+        </Category>
         <Category Name="Source">
           <Path>aw\Source\APPW_MainTask.c</Path>
           <Category Name="CustomCode">
@@ -1020,10 +1165,10 @@
             <Path>..\..\..\..\..\freertos_kernel\portable\MemMang\heap_4.c</Path>
           </Category>
           <Category Name="Renesas">
-            <Category Name="RX600v2">
-              <Path>..\..\..\..\..\freertos_kernel\portable\Renesas\RX600v2\port.c</Path>
-              <Path>..\..\..\..\..\freertos_kernel\portable\Renesas\RX600v2\port_asm.src</Path>
-              <Path>..\..\..\..\..\freertos_kernel\portable\Renesas\RX600v2\portmacro.h</Path>
+            <Category Name="RX700v3_DPFPU">
+              <Path>..\..\..\..\..\freertos_kernel\portable\Renesas\RX700v3_DPFPU\port.c</Path>
+              <Path>..\..\..\..\..\freertos_kernel\portable\Renesas\RX700v3_DPFPU\port_asm.src</Path>
+              <Path>..\..\..\..\..\freertos_kernel\portable\Renesas\RX700v3_DPFPU\portmacro.h</Path>
             </Category>
           </Category>
         </Category>
@@ -2109,8 +2254,8 @@
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\device_shadow_for_aws\source\include"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\libraries\device_defender_for_aws\source\include"</Option>
           <Option>-include="${ProjDirPath}\generate"</Option>
-          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace16\${ProjName}\src"</Option>
-          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace16\${ProjName}\aw\Source"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\a5088582\e2_studio\workspace5\${ProjName}\src"</Option>
+          <Option>-include="${ProjDirPath}\..\..\..\..\..\..\..\Users\a5088582\e2_studio\workspace5\${ProjName}\aw\Source"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\general"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_pincfg"</Option>
           <Option>-include="${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_config"</Option>
@@ -2717,6 +2862,11 @@
           <Path>HardwareDebug\r_sci_rx72n_data.obj</Path>
           <Path>HardwareDebug\aws_demos.lib</Path>
         </LinkOrder>
+        <NoTargetFile Target="aw\Simulation\Config\APPW_X_WIN32.c"/>
+        <NoTargetFile Target="aw\Simulation\Config\GUIConf.c"/>
+        <NoTargetFile Target="aw\Simulation\Config\LCDConf.c"/>
+        <NoTargetFile Target="aw\Simulation\Config\SIMConf.c"/>
+        <NoTargetFile Target="aw\Simulation\Simulation\WinMain.c"/>
         <NoTargetFile Target="AWS_IOT_MCU_ROOT\demos\common\http_demo_helpers\http_demo_utils.c"/>
         <NoTargetFile Target="AWS_IOT_MCU_ROOT\demos\coreHTTP\http_demo_mutual_auth.c"/>
         <NoTargetFile Target="AWS_IOT_MCU_ROOT\demos\coreHTTP\http_demo_s3_download.c"/>
@@ -2833,8 +2983,8 @@
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\device_shadow_for_aws\source\include"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\libraries\device_defender_for_aws\source\include"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\generate"</IncludePathForC>
-          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace16\${ProjName}\src"</IncludePathForC>
-          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\Shelty\e2_studio\workspace16\${ProjName}\aw\Source"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\a5088582\e2_studio\workspace5\${ProjName}\src"</IncludePathForC>
+          <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\..\..\Users\a5088582\e2_studio\workspace5\${ProjName}\aw\Source"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\general"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_pincfg"</IncludePathForC>
           <IncludePathForC>"${ProjDirPath}\..\..\..\..\..\vendors\renesas\boards\rx72n-envision-kit\aws_demos\src\smc_gen\r_config"</IncludePathForC>

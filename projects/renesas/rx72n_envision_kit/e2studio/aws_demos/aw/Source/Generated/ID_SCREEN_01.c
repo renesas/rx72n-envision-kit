@@ -3,7 +3,7 @@
 *        Solutions for real time microcontroller applications        *
 **********************************************************************
 *                                                                    *
-*        (c) 1996 - 2022  SEGGER Microcontroller GmbH                *
+*        (c) 1996 - 2024  SEGGER Microcontroller GmbH                *
 *                                                                    *
 *        Internet: www.segger.com    Support:  support@segger.com    *
 *                                                                    *
@@ -79,7 +79,7 @@ static APPW_CREATE_ITEM _aCreate[] = {
         { DISPOSE_MODE_NULL, 0, 0, 0 },
         { DISPOSE_MODE_NULL, 0, 0, 0 },
       },
-      98, 32, 0, 0, 0, 0
+      164, 32, 0, 0, 0, 0
     },
     { 0, 0 }
   },

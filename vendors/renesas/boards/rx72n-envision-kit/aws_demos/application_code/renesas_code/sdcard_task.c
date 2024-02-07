@@ -154,7 +154,7 @@ void sdcard_task( void * pvParameters )
             }
         	if(task_info->software_reset_requested_flag)
         	{
-        		char text[64];
+        		char text[64]; /* Take care for buffer overflow by next sprintf(). */
         		sprintf(text, "software reset request detected. wait %d seconds...\r\n", SOFTWARE_RESET_WAIT_TIME / configTICK_RATE_HZ);
         	    firmware_update_log_string(task_info, text);
     			vTaskDelay(SOFTWARE_RESET_WAIT_TIME);
@@ -355,7 +355,7 @@ void firmware_update_ng_after_message(TASK_INFO *task_info)
 
 static void firmware_update_file_size_progress_bar_string(TASK_INFO *task_info, uint32_t prog, uint32_t file_size, uint32_t processed_file_size)
 {
-    char text[32];
+    char text[36]; /* Take care for buffer overflow by next sprintf(). */
     sprintf(text, "file size: %5d / %5d KBytes.", file_size, processed_file_size);
     APPW_SetText(ID_SCREEN_01, ID_TEXT_00, text);
     APPW_SetValue(ID_SCREEN_01, ID_PROGBAR_00, prog);

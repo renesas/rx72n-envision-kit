@@ -14,12 +14,12 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2019 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2022 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
 * File Name        : r_smc_interrupt.c
-* Version          : 1.2.10
+* Version          : 1.2.12
 * Device(s)        : R5F572NNHxFB
 * Description      : This file implements interrupt setting.
 ***********************************************************************************************************************/
@@ -54,12 +54,39 @@ Global variables and functions
 
 void R_Interrupt_Create(void)
 {
+    /* Disable group BL0 interrupt*/
+    IEN(ICU,GROUPBL0) = 0U;
+    
+    /* Disable group BL1 interrupt*/
+    IEN(ICU,GROUPBL1) = 0U;
+    
+    /* Disable group AL0 interrupt*/
+    IEN(ICU,GROUPAL0) = 0U;
+    
     /* Disable group AL1 interrupt*/
     IEN(ICU,GROUPAL1) = 0U;
     
 
+    /* Set group BL0 interrupt priority level */
+    IPR(ICU,GROUPBL0) = _03_ICU_PRIORITY_LEVEL3;
+
+    /* Set group BL1 interrupt priority level */
+    IPR(ICU,GROUPBL1) = _0A_ICU_PRIORITY_LEVEL10;
+
+    /* Set group AL0 interrupt priority level */
+    IPR(ICU,GROUPAL0) = _03_ICU_PRIORITY_LEVEL3;
+
     /* Set group AL1 interrupt priority level */
     IPR(ICU,GROUPAL1) = _0E_ICU_PRIORITY_LEVEL14;
+
+    /* Enable group BL0 interrupt */
+    IEN(ICU,GROUPBL0) = 1U;
+
+    /* Enable group BL1 interrupt */
+    IEN(ICU,GROUPBL1) = 1U;
+
+    /* Enable group AL0 interrupt */
+    IEN(ICU,GROUPAL0) = 1U;
 
     /* Enable group AL1 interrupt */
     IEN(ICU,GROUPAL1) = 1U;

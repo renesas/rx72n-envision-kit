@@ -14,12 +14,12 @@
 * following link:
 * http://www.renesas.com/disclaimer
 *
-* Copyright (C) 2019 Renesas Electronics Corporation. All rights reserved.
+* Copyright (C) 2022 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
 * File Name        : r_smc_interrupt.h
-* Version          : 1.2.10
+* Version          : 1.2.12
 * Device(s)        : R5F572NNHxFB
 * Description      : This file implements interrupt setting.
 ***********************************************************************************************************************/
@@ -76,9 +76,9 @@ Macro definitions
 #define ICU_RSPI0_SPTI0_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_RSPI1_SPRI1_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_RSPI1_SPTI1_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
-#define ICU_QSPI_SPRI_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
-#define ICU_QSPI_SPTI_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
-#define ICU_SDHI_SBFAI_PRIORITY                    (_0F_ICU_PRIORITY_LEVEL15)
+#define ICU_QSPI_SPRI_PRIORITY                     (_0A_ICU_PRIORITY_LEVEL10)
+#define ICU_QSPI_SPTI_PRIORITY                     (_0A_ICU_PRIORITY_LEVEL10)
+#define ICU_SDHI_SBFAI_PRIORITY                    (_0A_ICU_PRIORITY_LEVEL10)
 #define ICU_MMCIF_MBFAI_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_SSIE0_SSITXI0_PRIORITY                 (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_SSIE0_SSIRXI0_PRIORITY                 (_0F_ICU_PRIORITY_LEVEL15)
@@ -118,7 +118,7 @@ Macro definitions
 #define ICU_SCI5_RXI5_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_SCI5_TXI5_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_SCI6_RXI6_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
-#define ICU_SCI6_TXI6_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
+#define ICU_SCI6_TXI6_PRIORITY                     (_02_ICU_PRIORITY_LEVEL2)
 #define ICU_LVD1_LVD1_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_LVD2_LVD2_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_USB0_USBR0_PRIORITY                    (_0F_ICU_PRIORITY_LEVEL15)
@@ -139,9 +139,9 @@ Macro definitions
 #define ICU_ICU_GROUPBL2_PRIORITY                  (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_RSPI2_SPRI2_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_RSPI2_SPTI2_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
-#define ICU_ICU_GROUPBL0_PRIORITY                  (_0F_ICU_PRIORITY_LEVEL15)
-#define ICU_ICU_GROUPBL1_PRIORITY                  (_0F_ICU_PRIORITY_LEVEL15)
-#define ICU_ICU_GROUPAL0_PRIORITY                  (_0F_ICU_PRIORITY_LEVEL15)
+#define ICU_ICU_GROUPBL0_PRIORITY                  (_03_ICU_PRIORITY_LEVEL3)
+#define ICU_ICU_GROUPBL1_PRIORITY                  (_0A_ICU_PRIORITY_LEVEL10)
+#define ICU_ICU_GROUPAL0_PRIORITY                  (_03_ICU_PRIORITY_LEVEL3)
 #define ICU_ICU_GROUPAL1_PRIORITY                  (_0E_ICU_PRIORITY_LEVEL14)
 #define ICU_SCI11_RXI11_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_SCI11_TXI11_PRIORITY                   (_0F_ICU_PRIORITY_LEVEL15)
@@ -212,7 +212,7 @@ Macro definitions
 #define ICU_CAN1_TXF1_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_CAN1_RXM1_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_CAN1_TXM1_PRIORITY                     (_0F_ICU_PRIORITY_LEVEL15)
-#define ICU_USB0_USBI0_PRIORITY                    (_0F_ICU_PRIORITY_LEVEL15)
+#define ICU_USB0_USBI0_PRIORITY                    (_03_ICU_PRIORITY_LEVEL3)
 #define ICU_S12AD_S12ADI_PRIORITY                  (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_S12AD_S12GBADI_PRIORITY                (_0F_ICU_PRIORITY_LEVEL15)
 #define ICU_S12AD_S12GCADI_PRIORITY                (_0F_ICU_PRIORITY_LEVEL15)
