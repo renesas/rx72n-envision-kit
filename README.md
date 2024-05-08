@@ -21,5 +21,8 @@ RX72N Envision Kit bootloader/demos based on Amazon FreeRTOS
 * https://www.element14.com/community/roadTestReviews/3641/l/renesas-rx72n-envision-kit-review
 
 ## Tracealyzer demo on RX72N Envision Kit
-https://github.com/renesas/rx72n-envision-kit/assets/37968119/26790de7-03f8-4235-94a4-0f3afd66e6d4
-
+* https://github.com/renesas/rx72n-envision-kit/assets/37968119/26790de7-03f8-4235-94a4-0f3afd66e6d4
+  * 1) Start(0:00-0:08): RX72N(includes Tracealyzer Recoder) connects to PC(Tracealyzer), PC can display the detailed RX72N internal status related on FreeRTOS.
+  * 2) AWS IoT Core connection(0:08-0.10): RX72N Envision Kit connected to AWS IoT Core. CPU usage (upper-center window) indicates 100% for TLS connection establishing to AWS IoT Core connection.
+  * 3) Change demo to Firmware Update from SD Card(0:25-0.30): Push "next" button to change demo display. 
+  * 4) Firmware Update from SD Card Demo(0:30-0.48): Push "update" button to start firmware update. Flash self-programing and SD card reading are occuring and these behaviour can be monitored through Tracealyzer.
